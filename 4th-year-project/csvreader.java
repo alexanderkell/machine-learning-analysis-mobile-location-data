@@ -2,12 +2,21 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
  
-public class csvreader{
-    //public static void main(String[] args) throws FileNotFoundException{
+public class csvReader{
+     //public static void main(String[] args) throws FileNotFoundException{
+	static String fn =new String();
+	
+	public static String fSet(String fname){
+		csvReader.fn=fname;
+		return fn;
+			
+	}
+	
 	public static String[][] wd(int opt) throws FileNotFoundException{
-        Scanner scanner = new Scanner(new File("N:/Eclipse/workspace/4th Year Project/src/26th Sept.csv"));//Get scanner instance
+		String filename = new String(fn);//reads file name and hierarchy
+		Scanner scanner = new Scanner(new File(filename));//Get scanner instance
         scanner.useDelimiter(";|\\n"); //Set the delimiter used in file
-        int length = 20000; //csvsize.wil("24th Sept.csv");
+        int length = 20000; //following will calc length of csv: csvsize.wil("24th Sept.csv");
         String[][] data = new String[8][length];
         for(int x=0; x<5;x++){//intialise the data matrix to avoid null pointer errors
       		for(int y=0; y<length;y++){

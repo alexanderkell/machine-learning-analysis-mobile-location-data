@@ -1,0 +1,820 @@
+import java.awt.BasicStroke;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Shape;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import libsvm.svm_model;
+
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.event.ChartProgressEvent;
+import org.jfree.chart.event.ChartProgressListener;
+
+
+public class svm_train_helper extends JFrame{
+
+	final static int DIALOG_WIDTH = 640;
+	final static int DIALOG_HEIGHT = 480;
+	final static int MIN_DIALOG_WIDTH = DIALOG_WIDTH*3/4;
+	final static int MIN_DIALOG_HEIGHT = DIALOG_HEIGHT;
+	
+	private Dimension dimension;
+	private Dimension minDimension;	
+	private JTabbedPane tabbedPane0;
+	private JLabel label0;
+	private JLabel label1;
+	private JTextField txtField0;
+	private JTextField txtField1;
+	private JLabel label2;
+	private JButton button0;
+	private JButton button1;
+	private JTabbedPane tabbedPane1 ;
+	private JLabel label3;
+	private JLabel label4;
+	private JLabel label5;
+	private JButton button2;
+	private JLabel label6;
+	private JButton button3;
+	private JLabel label7;
+	private JButton button5;
+	private JTextField txtField2;
+	private JTextField txtField3;
+	private JTextField txtField4;
+	private JTextField txtField5;
+	
+	final static String DEFAULT_DIRECTORY = null;
+	private String curr_dir = null;
+	
+	public svm_train_helper(String title){
+		// TODO Auto-generated method stub
+		super(title);
+		dimension = new Dimension(DIALOG_WIDTH, DIALOG_HEIGHT);
+		minDimension = new Dimension(MIN_DIALOG_WIDTH, MIN_DIALOG_HEIGHT);
+		setMinimumSize(minDimension);
+		setPreferredSize(dimension);
+		JPanel pane = makeContentPane();
+		setContentPane(pane);
+		setLocationRelativeTo(null);
+		setDefaultCloseOperation(
+		    DISPOSE_ON_CLOSE);
+		
+		addWindowListener(new WindowAdapter() {
+		    public void windowClosing(WindowEvent we) {
+		    	dispose();
+		    }
+		});
+		pack();
+		setVisible(true);
+	}
+	
+
+	public JPanel makeContentPane(){
+		tabbedPane0 = new JTabbedPane();
+		JPanel contentPanel = new JPanel();
+		contentPanel.setLayout(new BoxLayout(contentPanel,BoxLayout.PAGE_AXIS));
+//		new BoxLayout(contentPanel,BoxLayout.
+		// For the training Tab
+		label0 = new JLabel("<html><font size=+1> Enter fields below and press \"Train\"</html>");
+		label1 = new JLabel("Options (Optional):");
+		txtField0 = new JTextField("-t 0 -c 100");
+		txtField1 = new JTextField("atesting1.train");
+		label2 = new JLabel("Training filepath:");
+		button0 = new JButton("Select file");
+		button1 = new JButton("Train");
+		tabbedPane1 = new JTabbedPane();
+		
+		// For the predict Tab
+		label3 = new JLabel("<html><font size=+1> Enter fields below and press \"Predict\"</html>");;
+		label4 = new JLabel("Options (Optional):");
+		txtField2 = new JTextField();
+		label5 = new JLabel("Test filepath:");
+		txtField3 = new JTextField();
+		button2 = new JButton("Select file");
+		label6 = new JLabel("Model filepath:");
+		txtField4 = new JTextField();
+		button3 = new JButton("Select file");
+		label7 = new JLabel("Output filepath (Optional):");
+		txtField5 = new JTextField();
+		new JButton("Select file");
+		button5 = new JButton("Predict");
+		
+		// The top Panel
+		JComponent topPanel;
+		
+	    
+	    // For the training tab
+	    topPanel = makeTrainingTab();
+	    tabbedPane0.addTab("<html><font size=+1>Train</font></html>", null, topPanel,
+                "<html><font size=+1>Train</font></html>");
+	    JLabel l1 = new JLabel("<html><font size=+1>Train</font></html>");
+	    l1.setPreferredSize(new Dimension(MIN_DIALOG_WIDTH*2/5,30));
+	    l1.setHorizontalAlignment(SwingConstants.CENTER);
+	    tabbedPane0.setTabComponentAt(0, l1);
+//	    tabbedPane0.setPreferredSize(dimension);
+	    
+	    // For the predict tab
+	    topPanel = makePredictTab();
+	    tabbedPane0.addTab("<html><font size=+1>Predict</font></html>", null, topPanel,
+                "<html><font size=+1>Predict</font></html>");
+	    JLabel l2 = new JLabel("<html><font size=+1>Train</font></html>");
+	    l2.setPreferredSize(new Dimension(MIN_DIALOG_WIDTH*2/5,30));
+	    l2.setHorizontalAlignment(SwingConstants.CENTER);
+	    l2.setText("<html><font size=+1>Predict</font></html>");
+	    tabbedPane0.setTabComponentAt(1, l2);
+
+	    contentPanel.add(tabbedPane0);
+	    contentPanel.add(tabbedPane1);
+	    
+	    configMainComponents();
+	    configComponents4Training();
+	    configComponents4Predict();
+	    
+		return contentPanel;
+	}
+	
+    protected JComponent makeTextPanel(String text, final JTabbedPane tabbedPane1 ,boolean enableClosedButton, JButton graphButton) {
+    	
+        JTextArea txtArea = new JTextArea(text);
+	    txtArea.setLineWrap(true);
+	    txtArea.setEditable(false);
+	    JScrollPane scroll = new JScrollPane(txtArea);
+	    scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);	    
+	    Dimension dimen = new Dimension(DIALOG_WIDTH, DIALOG_HEIGHT/2);
+	    scroll.setPreferredSize(dimen);
+//	    txtArea.setMinimumSize(dimen);
+	    scroll.setViewportView(txtArea);
+	    
+		final JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel,BoxLayout.LINE_AXIS));
+		
+	    panel.add(scroll);
+	    JPanel subpanel = new JPanel();
+//	    subpanel.setSize(30, 30);
+//	    subpanel.setPreferredSize(new Dimension(30,30));
+	    subpanel.setLayout(new BoxLayout(subpanel,BoxLayout.PAGE_AXIS));
+	    if(graphButton!= null){
+	    	subpanel.add(graphButton);
+	    }
+	    if(enableClosedButton){
+	    	JButton closeButton = new JButton("Close tab");
+	    	subpanel.add(closeButton);
+	    	closeButton.addActionListener(new ActionListener(){
+				
+				public void actionPerformed(ActionEvent arg0) {
+					// TODO Auto-generated method stub
+					tabbedPane1.remove(panel);
+				}		
+			});
+	    }
+
+			panel.add(subpanel);
+
+        return panel;
+    }
+    
+    protected JComponent makeGraphPanel(final String TRAIN_FILE, final String MODEL_FILE, String text, final JTabbedPane tabbedPane1 ,boolean enableClosedButton) throws IOException {
+	    final JButton showGraphButton = new JButton("Show \ngraph");
+//	    showGraphButton.setVisible(true);
+	    
+		showGraphButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				showGraph(TRAIN_FILE, MODEL_FILE, showGraphButton);
+			}
+		});
+	    
+        return makeTextPanel(text, tabbedPane1, enableClosedButton, showGraphButton);
+    }
+    protected JComponent makeTrainingTab() {
+    	
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+	    
+		final JPanel panel = new JPanel(new GridBagLayout());
+//		panel.setSize(minDimension);
+	    // Line 0
+	    gbc.gridy = 0;
+	    // JLabel - Title (0,0)
+	    gbc.gridx = 0;
+	    gbc.gridwidth = 3;
+
+	    panel.add(label0,gbc);
+
+	    // Line 1
+	    gbc.gridy = 1;
+	    // Add a line of space in between
+	    panel.add(new JLabel("\n"),gbc);
+	    
+	    // Line 2
+	    gbc.gridy = 2;
+	    // JLabel - Options (0,2)
+	    gbc.gridx = 0;
+	    gbc.gridwidth = 1;
+	    panel.add(label1, gbc);
+	    
+	    // JTextField - TextField for options (1,2)
+	    gbc.gridwidth = 2;
+	    gbc.weightx = 1;
+	    gbc.gridx = 1;
+	    panel.add(txtField0,gbc);
+	    // gridwidth back to 1
+	    gbc.gridwidth = 1;
+	    // Line 3
+	    gbc.gridy = 3;
+	    // JLabel - filepath (0,3)
+	    gbc.weightx = 0;
+	    gbc.gridx = 0;
+	    panel.add(label2, gbc);
+	    
+	    // JTextField - TextField for filepath(1,3)
+	    gbc.weightx = 1;
+	    gbc.gridx = 1;
+	    panel.add(txtField1,gbc);
+	    
+	    // JButton - Select file button (2,3)
+	    gbc.weightx = 0;
+	    gbc.gridx = 2;
+	    panel.add(button0,gbc);   
+	    
+	    // Line 4
+	    gbc.gridy = 4;
+	    gbc.gridx = 0;
+	    gbc.gridwidth = 3;
+	    // JButton - Train button (0,5)
+	    panel.add(button1,gbc);
+        return panel;
+    }
+
+	protected JComponent makePredictTab() {
+		
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+	    
+		final JPanel panel = new JPanel(new GridBagLayout());
+	//	panel.setSize(minDimension);
+	    // Line 0
+	    gbc.gridy = 0;
+	    // JLabel - Title (0,0)
+	    gbc.gridx = 0;
+	    gbc.gridwidth = 3;
+	
+	    panel.add(label3,gbc);
+	    
+	    // Line 1
+	    gbc.gridy = 1;
+	    // Add a line of space in between
+	    panel.add(new JLabel("\n"),gbc);
+	    
+	    // Line 2
+	    gbc.gridy = 2;
+	    // JLabel - Options (0,2)
+	    gbc.gridx = 0;
+	    gbc.gridwidth = 1;
+	    panel.add(label4, gbc);
+	    
+	    // JTextField - TextField for options (1,2)
+	    gbc.gridwidth = 2;
+	    gbc.weightx = 1;
+	    gbc.gridx = 1;
+	    panel.add(txtField2,gbc);
+	    // gridwidth back to 1
+	    gbc.gridwidth = 1;
+	    
+	    
+	    // Line 3
+	    gbc.gridy = 3;
+	    // JLabel - filepath (0,3)
+	    gbc.weightx = 0;
+	    gbc.gridx = 0;
+	    panel.add(label5, gbc);
+	    
+	    // JTextField - TextField for filepath(1,3)
+	    gbc.weightx = 1;
+	    gbc.gridx = 1;
+	    panel.add(txtField3,gbc);
+	    
+	    // JButton - Predict button (2,3)
+	    gbc.weightx = 0;
+	    gbc.gridx = 2;
+	    panel.add(button2,gbc);   
+	    
+	    // Line 4
+	    gbc.gridy = 4;
+	    // JLabel - filepath (0,3)
+	    gbc.weightx = 0;
+	    gbc.gridx = 0;
+	    panel.add(label6, gbc);
+	    
+	    // JTextField - TextField for filepath(1,3)
+	    gbc.weightx = 1;
+	    gbc.gridx = 1;
+	    panel.add(txtField4,gbc);
+	    
+	    // JButton - Predict button (2,3)
+	    gbc.weightx = 0;
+	    gbc.gridx = 2;
+	    panel.add(button3,gbc); 
+	    
+	    // Line 5
+	    gbc.gridy = 5;
+	    gbc.gridx = 0;
+	    
+	 // JLabel - filepath (0,3)
+	    gbc.weightx = 0;
+	    gbc.gridx = 0;
+	    panel.add(label7, gbc);
+	    
+	    // JTextField - TextField for filepath(1,3)
+	    gbc.weightx = 1;
+	    gbc.gridx = 1;
+	    gbc.gridwidth=2;
+	    panel.add(txtField5,gbc);
+	    
+	    // JButton - Predict button (2,3)
+	    gbc.weightx = 0;
+	    gbc.gridx = 2;
+//	    panel.add(button4,gbc); 
+	    
+	    // Line 6
+	    gbc.gridy = 6;
+	    gbc.gridx = 0;
+	    gbc.gridwidth = 3;
+	    // JButton - Predict button (0,5)
+	    panel.add(button5,gbc);
+	    return panel;
+	}
+    
+	private void configMainComponents(){
+		final JComponent[] panel1 = new JComponent[2];
+	    final String[] panel1Titles = new String[2];
+	    panel1[0] = makeTextPanel(svm_train.help().split("\n", 2)[1], tabbedPane1,false,null);
+	    panel1[1] = makeTextPanel(svm_predict.help().split("\n", 2)[1], tabbedPane1,false,null);
+	    panel1Titles[0] = "Options for the Train \"Options\" field";
+	    panel1Titles[1] = "Options for the Predict \"Options\" field";
+	    final String paneHint = "for the above \"Options\" field";
+	    
+	    
+	    tabbedPane1.addTab(panel1Titles[0], null, panel1[0], paneHint);
+	    tabbedPane1.setTabComponentAt(0, new JLabel(panel1Titles[0]));
+	    tabbedPane1.setPreferredSize(minDimension);
+	    tabbedPane0.addChangeListener(new ChangeListener(){
+			public void stateChanged(ChangeEvent arg0) {
+				// TODO Auto-generated method stub
+				JTabbedPane sourceTabbedPane = (JTabbedPane) arg0.getSource();
+				int index = sourceTabbedPane.getSelectedIndex();
+
+				tabbedPane1.setComponentAt(0, panel1[index]);
+				tabbedPane1.setTabComponentAt(0, new JLabel(panel1Titles[index]));
+				tabbedPane1.repaint();
+			}
+		});
+	}
+	private void configComponents4Training(){
+		
+		
+		// Components for the training tab
+		// Button 0 - Select file
+		button0.addActionListener(new ActionListener(){
+
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+				File f = openFileChooser(curr_dir, "Train file (.train)", "train");
+				if(f!=null){
+					String absPath = f.getAbsolutePath();
+					txtField1.setText(absPath);
+					curr_dir = absPath. substring(0,absPath.lastIndexOf(File.separator));
+				}
+			}
+	    	
+	    });
+		button1.addActionListener(new ActionListener(){
+			
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				button1.setEnabled(false);
+				new Thread(){
+					public void run(){
+						button1.setText("Training...");
+						
+						String[] args0 = txtField0.getText().split(" ");
+						
+						// If the options field is empty, size of args0 will be 0
+						if(txtField0.getText().trim().isEmpty())
+							args0 = new String[0];
+						
+						// args size will be args0 size + 1
+						String[] args = new String[args0.length + 1];
+						for(int i=0; i<args0.length; i++){
+							args[i] = args0[i];		
+						}
+						
+						args[args.length-1] = txtField1.getText();
+						String results = "Train File: "+args[args.length-1]+"\n";
+						String filename = null;
+						JComponent panel2;
+						try {
+							filename = svm_train.main2(args);
+							results += "Model File: "+filename+"\n";
+							txtField4.setText(filename);
+							if(txtField0.getText().trim().isEmpty())
+								results += "Arguments: null";
+							else
+								results += "Arguments: "+txtField0.getText();
+							//Skip 2 lines
+							results+= "\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n";
+		
+							BufferedReader br = new BufferedReader(new FileReader(filename));
+							String line;
+							while((line = br.readLine()) != null)
+								results+=line+"\n";
+							panel2 = makeGraphPanel(args[args.length-1],filename,results, tabbedPane1, true);			
+							br.close();
+							
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							results = "Check the file name\n"+e.toString();
+							panel2 = makeTextPanel(results , tabbedPane1, true, null);
+						} catch (Exception e){
+							results = "Check the fields\n"+e.toString();
+							panel2 = makeTextPanel(results , tabbedPane1, true, null);
+						}	// end try...catch
+		
+						// Add the created panel to the tabbedpane
+					    tabbedPane1.addTab("Results for "+new File(args[args.length-1]).getName(), null, panel2,
+						          "Results");
+					    tabbedPane1.setSelectedIndex(tabbedPane1.getTabCount()-1);
+					    button1.setEnabled(true);
+					    button1.setText("Train");
+					}
+				}.start();
+			}
+		});
+		
+		
+		
+	}
+	// Config componentes for the Predict tab
+	private void configComponents4Predict(){
+		
+		button2.addActionListener(new ActionListener(){
+
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+				File f = openFileChooser(null, "Test file (.test)", "test");
+				if(f!=null){
+					String absPath = f.getAbsolutePath();
+					txtField3.setText(absPath);
+				}
+			}
+	    	
+	    });
+		button3.addActionListener(new ActionListener(){
+
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+				File f = openFileChooser(null, "Model file (.model)", "model");
+				if(f!=null){
+					String absPath = f.getAbsolutePath();
+					txtField4.setText(absPath);
+				}
+
+			}
+	    	
+	    });
+		
+		button5.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				button5.setEnabled(false);
+				new Thread(){
+					public void run(){
+						button5.setText("Predicting...");
+						String[] args0 = txtField2.getText().split(" ");
+						
+						// If the options field is empty, size of args0 will be 0
+						if(txtField2.getText().trim().isEmpty())
+							args0 = new String[0];
+						
+						// args size will be args0 size + 1
+						String[] args = new String[args0.length + 3];
+						for(int i=0; i<args0.length; i++){
+							args[i] = args0[i];		
+						}
+						
+						boolean hasError = false;
+						args[args.length-3] = txtField3.getText();
+						args[args.length-2] = txtField4.getText();
+						
+						if(txtField5.getText().trim().isEmpty()){
+							StringBuilder b = new StringBuilder(args[args.length-2]);
+							
+							if(b.lastIndexOf(".train.model") == b.length()-12){
+								b.replace(args[args.length-2].lastIndexOf(".train.model"), args[args.length-2].lastIndexOf(".train.model")+12, ".out");
+								args[args.length-1] = b.toString();
+							} else
+								args[args.length-1] = args[args.length-2]+".out";
+						} else{
+							args[args.length-1] = txtField5.getText();
+						}
+						String results = "Test File: "+args[args.length-3]+"\n";
+						try {
+							svm_predict.main2(args);
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+							results = "Check the file names\n"+e1.toString();
+							hasError = true;
+						} catch (Exception e){
+							results = "Check the fields\n"+e.toString();
+							hasError = true;
+						}	// end try...catch
+		
+						String line;
+						if(! hasError){
+							try {
+								results += "Model File: "+args[args.length-2] +"\n";
+								results += "Output File: "+args[args.length-1] +"\n";
+								if(txtField2.getText().trim().isEmpty())
+									results += "Arguments: null";
+								else
+									results += "Arguments: "+txtField2.getText();
+								//Skip 2 lines
+								results+= "\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n";
+								BufferedReader br1 = new BufferedReader(new FileReader(args[args.length-3]));
+								BufferedReader br2 = new BufferedReader(new FileReader(args[args.length-1]));
+									results+="Actual vs. Predicted\n";
+								while((line = br1.readLine()) != null){
+									results+=line+"\t";
+									results+=br2.readLine()+"\n";
+								}
+								br1.close();
+								br2.close();
+							} catch (FileNotFoundException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+								results = e1.toString();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+								results = e.toString();
+							}
+		
+						}	// end if
+						JComponent panel2 = makeTextPanel(results, tabbedPane1, true, null);
+					    tabbedPane1.addTab("Results for "+new File(args[args.length-1]).getName(), null, panel2,
+						          "Results");
+					    tabbedPane1.setSelectedIndex(tabbedPane1.getTabCount()-1);
+					    button5.setEnabled(true);
+					    button5.setText("Predict");
+					}
+				}.start();
+			}
+		});
+	}
+	
+	private String getFolderPath(File f) {
+		// TODO Auto-generated method stub
+		  if(f==null)
+			   return null;
+		  String absPath = f.getAbsolutePath();
+		  return absPath.substring(0,absPath.lastIndexOf(File.separator));
+	}
+
+	// Variables used for plotting graph only
+	private int total_dots = 1;
+	private int dots_drawn = 0;
+	private void showGraph(final String TRAIN_FILE, final String MODEL_FILE, final JButton showGraphButton){
+		if(showGraphButton!=null){
+			showGraphButton.setEnabled(false);
+			showGraphButton.setText("Showing...");
+		}
+
+		total_dots = 1;
+		dots_drawn = 0;
+		final Thread b = new Thread(){
+			public void run(){
+				double[] xymm = null;
+				svm_model sm = null;
+				ArrayList<XDATA> data_list = null;
+				plot_predictions pp = null;
+				try {
+					sm = plot_predictions.loadModel(MODEL_FILE);
+					pp = new plot_predictions(sm);
+					pp.readTrainData(TRAIN_FILE);
+					xymm = pp.getBounds(2);
+					data_list = pp.getTrainingData();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				System.out.println("x max: "+xymm[0]+"\nx min: "+xymm[1]+"\ny max: "+xymm[2]+"\ny min: "+xymm[3]);
+				
+				// For the loading dialog
+				
+				final plot_predictions.MyInternalFrame in_frame = pp. new MyInternalFrame(640,480);
+				
+				final Thread a = new Thread(){
+					public void run(){
+						while(dots_drawn < total_dots){
+							
+							try {
+								Thread.sleep(100);
+								in_frame.getBar().setValue(100*dots_drawn/total_dots);
+								in_frame.getBar().revalidate();
+								in_frame.getBar().repaint();
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								in_frame.dispose();
+							}
+						}
+					}
+				};
+				a.start();
+
+				
+				int[] num_label = sm.label;
+				String[] str_label = new String[num_label.length];
+				for(int i=0; i<str_label.length; i++)
+					str_label[i] = plot_predictions.itoa(num_label[i]);
+				final svm_plot_helper demo = new svm_plot_helper("Sample Plot", str_label);
+				
+				final JFrame dia2 = new JFrame();
+				dia2.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				dia2.setLayout(new BorderLayout());
+				ChartPanel cp = demo.getChartPanel();
+				dia2.add(in_frame, BorderLayout.CENTER);
+				dia2.add(cp, BorderLayout.CENTER);
+
+				in_frame.getButton().addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent arg0) {
+						// TODO Auto-generated method stub
+						System.err.println("Program aborted");
+						a.interrupt();
+						dia2.dispose();
+					}
+				});
+				dia2.pack();
+				cp.setVisible(false);
+				in_frame.setVisible(true);
+				dia2.setVisible(true);
+				
+				demo.adjustAxis(xymm[1],xymm[0],xymm[3],xymm[2]);
+				Shape shapeCir  = new Ellipse2D.Double(-2.5,-2.5,5,5);
+				    				
+			    Shape shapeCirStroke = new BasicStroke(0.1f).createStrokedShape(shapeCir);
+
+				Shape shapeRect  = new Rectangle2D.Double(-1.5,-1.5,3,3);
+				
+				demo.setDotColor(svm_plot_helper.SV, new Color(0,0,0));
+				
+				demo.setDotShape(svm_plot_helper.SV, shapeCir);
+				Color color[][] = new Color[5][2];
+				color[0][0] = new Color(0,0,255);
+				color[0][1] = new Color(0,0,255,20);
+				color[1][0] = new Color(255,0,0);
+				color[1][1] = new Color(255,0,0,20);
+				color[2][0] = new Color(0,255,0);
+				color[2][1] = new Color(0,255,0,20);
+				color[3][0] = new Color(255,177,18);
+				color[3][1] = new Color(255,177,18,20);
+				color[4][0] = new Color(249,44,255);
+				color[4][1] = new Color(249,44,255,20);
+				
+				for(int i=0; i<str_label.length; i++){
+					demo.setDotColor(str_label[i], svm_plot_helper.DATA, color[i%color.length][0]);
+					demo.setDotColor(str_label[i], svm_plot_helper.AREA, color[i%color.length][1]);
+				}
+				
+
+				demo.setDotShape(svm_plot_helper.SV, shapeCirStroke);
+				for(int i=0; i<str_label.length; i++){
+					demo.setDotShape(str_label[i], svm_plot_helper.AREA, shapeRect);
+					demo.setDotShape(str_label[i], svm_plot_helper.DATA, shapeCir);
+				}
+
+				total_dots -=1;
+				dots_drawn = 0;
+				
+				for(int i=0; i<data_list.size(); i++){
+					XDATA train_data = data_list.get(i);
+					demo.addData(train_data.label, svm_plot_helper.DATA,train_data.node[0].value, train_data.node[1].value);
+					dots_drawn ++;
+				}
+				
+				double[][] dots = pp.generateDots(300, 300);
+				for(int i=0; i<dots.length; i++){
+					double results = pp.predict(dots[i]);
+					demo.addData(plot_predictions.itoa((int)results),svm_plot_helper.AREA, pp.getNode()[0].value, pp.getNode()[1].value);
+					dots_drawn ++;
+				}
+				
+				
+				double[][] SVs = pp.getSV();
+				for(int i=0; i<SVs.length; i++){
+					demo.addData(svm_plot_helper.SV, SVs[i][0], SVs[i][1]);
+					dots_drawn ++;
+				}
+
+				
+				
+			    ChartProgressListener chartprogress = new ChartProgressListener(){
+
+			    	private boolean first_time = true;
+					public void chartProgress(ChartProgressEvent arg0) {
+						// TODO Auto-generated method stub
+						if(first_time && arg0.getType() == ChartProgressEvent.DRAWING_FINISHED){
+							first_time = false;
+							in_frame.dispose();
+							System.out.println("Done plotting graph");
+							if(showGraphButton!=null){
+								showGraphButton.setEnabled(true);
+								showGraphButton.setText("Show Graph");
+							}
+						}
+					}
+			    };
+
+			    in_frame.getButton().setEnabled(false);
+			    in_frame.getLabel().setText("<html><font size=+1>Almost done...</font></html>");
+
+			    demo.addProgressListener(chartprogress);
+			    
+			    cp.setVisible(true);
+
+			}
+		};
+		b.start();
+	}
+	private File openFileChooser(String directory, String filetype, String extension){
+
+	      final JFileChooser chooser;
+	      System.out.println(curr_dir);
+	      if(directory == null){
+	    	  if(curr_dir == null)
+	    		  chooser = new JFileChooser(DEFAULT_DIRECTORY);
+	    	  else chooser = new JFileChooser(curr_dir);
+	      }
+	      else
+	    	  chooser = new JFileChooser(directory);
+	      
+	      FileNameExtensionFilter filter = new FileNameExtensionFilter( filetype, extension);
+	    	    chooser.setFileFilter(filter);
+//	    	    chooser.addChoosableFileFilter(filter);
+	  	      if(directory == null){
+		    	  if(curr_dir == null){
+		    		  if(DEFAULT_DIRECTORY == null)
+		    			  chooser.setCurrentDirectory(new File("."));
+		    		  else
+		    			  chooser.setCurrentDirectory(new File(DEFAULT_DIRECTORY));
+
+		    	  }else chooser.setCurrentDirectory(new File(curr_dir));
+		      }
+		      else
+		    	  chooser.setCurrentDirectory(new File(directory));
+	    	    
+	      int returnVal = chooser.showOpenDialog(null);
+	  	  if(returnVal == JFileChooser.APPROVE_OPTION) {
+	  		  File f = chooser.getSelectedFile();
+	  		  curr_dir = getFolderPath(f);
+	  		  return f;
+	  	  }
+	  	
+  	      return null;
+	   }
+}

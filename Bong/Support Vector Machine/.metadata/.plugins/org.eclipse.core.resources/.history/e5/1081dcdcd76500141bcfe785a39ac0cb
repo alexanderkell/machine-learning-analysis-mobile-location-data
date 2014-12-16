@@ -1,0 +1,91 @@
+import java.awt.EventQueue;
+import java.io.IOException;
+import java.util.StringTokenizer;
+
+import javax.swing.JFrame;
+
+import libsvm.svm;
+import libsvm.svm_model;
+import libsvm.svm_node;
+import libsvm.svm_parameter;
+
+
+public class plot_predictions {
+	private svm_model model;
+	private svm_node[] x;
+	private static svm_plot_helper demo;
+	
+	public plot_predictions(svm_model model){
+		setModel(model);
+	}
+	
+	public void setModel(svm_model model){
+		this.model = model;
+	}
+	
+	public double predict(String line){
+		int m = 2;
+		x = new svm_node[m];
+		
+		StringTokenizer st = new StringTokenizer(line," \t\n\r\f:");
+		for(int j=0;j<m;j++)
+		{
+			x[j] = new svm_node();
+			x[j].index = atoi(st.nextToken());
+			x[j].value = atof(st.nextToken());
+		}
+
+		return svm.svm_predict(model,x);
+	}
+	
+	public svm_node[] getNode(){
+		return x;
+	}
+	
+	
+	private static double atof(String nextToken) {
+		// TODO Auto-generated method stub
+		return Double.parseDouble(nextToken);
+	}
+
+	private static int atoi(String nextToken) {
+		// TODO Auto-generated method stub
+		return Integer.parseInt(nextToken);
+	}
+
+
+	
+	
+    public void initalisePlot(final String title) {
+        EventQueue.invokeLater(new Runnable() {
+
+            public void run() {
+                
+                demo.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                demo.pack();
+                demo.setLocationRelativeTo(null);
+                demo.setVisible(true);
+            }
+        });
+    }
+
+	public static svm_model loadModel(String model_file) throws IOException{
+		svm_model model = svm.svm_load_model(model_file);
+		if (model == null)
+		{
+			System.err.print("can't open model file "+model_file+"\n");
+			System.exit(1);
+		}
+		return model;
+	}
+	public static void main(String args[]) throws IOException{
+		
+		svm_model sm = loadModel("C:/Users/testuser/SkyDrive/Documents/4th year project files/Programs/libsvm-3.18/java/atesting1.train.model");
+		demo = new svm_plot_helper("Sample plot");
+		plot_predictions pp = new plot_predictions(sm);
+		pp.initalisePlot("Sample plot");
+		double results = pp.predict("1:0.9 2:1");
+		demo.addData(results, 1, 1);
+		
+	}
+}

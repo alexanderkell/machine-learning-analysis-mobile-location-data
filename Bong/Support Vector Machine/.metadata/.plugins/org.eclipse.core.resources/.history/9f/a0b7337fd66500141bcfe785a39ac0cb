@@ -1,0 +1,48 @@
+import java.util.StringTokenizer;
+
+import libsvm.svm;
+import libsvm.svm_model;
+import libsvm.svm_node;
+import libsvm.svm_parameter;
+
+
+public class plot_predictions {
+	private svm_model model;
+	public void setModel(svm_model model){
+		this.model = model;
+	}
+	public void predict(String line){
+		int m = 2;
+		svm_node[] x = new svm_node[m];
+		
+		StringTokenizer st = new StringTokenizer(line," \t\n\r\f:");
+		for(int j=0;j<m;j++)
+		{
+			x[j] = new svm_node();
+			x[j].index = atoi(st.nextToken());
+			x[j].value = atof(st.nextToken());
+		}
+
+		double v = svm.svm_predict(model,x);
+	}
+	
+	
+	
+	
+	private static double atof(String nextToken) {
+		// TODO Auto-generated method stub
+		return Double.parseDouble(nextToken);
+	}
+
+	private static int atoi(String nextToken) {
+		// TODO Auto-generated method stub
+		return Integer.parseInt(nextToken);
+	}
+
+
+
+
+	public static void main(String args[]){
+		
+	}
+}

@@ -1,0 +1,148 @@
+import java.awt.EventQueue;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
+import javax.swing.JFrame;
+
+import libsvm.svm;
+import libsvm.svm_model;
+import libsvm.svm_node;
+import libsvm.svm_parameter;
+
+
+public class plot_predictions {
+	private svm_model model;
+	private svm_node[] x;
+	private static svm_plot_helper demo;
+	
+	public plot_predictions(svm_model model){
+		setModel(model);
+	}
+	
+	public void setModel(svm_model model){
+		this.model = model;
+	}
+	
+	public double predict(String line){
+		int m = 2;
+		x = new svm_node[m];
+		
+		StringTokenizer st = new StringTokenizer(line," \t\n\r\f:");
+		for(int j=0;j<m;j++){
+			x[j] = new svm_node();
+			x[j].index = atoi(st.nextToken());
+			x[j].value = atof(st.nextToken());
+		}
+
+		return svm.svm_predict(model,x);
+	}
+	
+	public svm_node[] getNode(){
+		return x;
+	}
+	
+	
+	private static double atof(String nextToken) {
+		// TODO Auto-generated method stub
+		return Double.parseDouble(nextToken);
+	}
+
+	private static int atoi(String nextToken) {
+		// TODO Auto-generated method stub
+		return Integer.parseInt(nextToken);
+	}
+
+
+	
+	
+    public void initalisePlot(final String title) {
+    	demo = new svm_plot_helper(title);
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                
+                demo.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                demo.pack();
+                demo.setLocationRelativeTo(null);
+                demo.setVisible(true);
+            }
+        });
+    }
+
+	public static svm_model loadModel(String model_file) throws IOException{
+		svm_model model = svm.svm_load_model(model_file);
+		if (model == null)
+		{
+			System.err.print("can't open model file "+model_file+"\n");
+			System.exit(1);
+		}
+		return model;
+	}
+	
+	public static double[] findBounds(String input_file_name)throws IOException{
+
+			BufferedReader fp = new BufferedReader(new FileReader(input_file_name));
+			int max_index = 0;
+
+			double [] xymaxmin = new double[4]; // 0:xmax, 1:xmin, 2:ymax 3:ymin
+			String line;
+			if((line = fp.readLine())!=null){
+				StringTokenizer st = new StringTokenizer(line," \t\n\r\f:");
+				st.nextToken()
+
+				int m = 2;
+				svm_node[] x = new svm_node[m];
+				
+				for(int j=0;j<m;j++)
+				{
+					x[j] = new svm_node();
+					x[j].index = atoi(st.nextToken());
+					x[j].value = atof(st.nextToken());
+				}
+				xymaxmin[0] = xymaxmin[1] = x[0].value;	//set xmax and xmin 
+				xymaxmin[2] = xymaxmin[3] = x[1].value;	//set ymax and ymin
+			}
+			
+			while(true)
+			{
+				line = fp.readLine();
+				if(line == null) break;
+				
+				StringTokenizer st = new StringTokenizer(line," \t\n\r\f:");
+				st.nextToken()
+
+				int m = 2;
+				svm_node[] x = new svm_node[m];
+				
+				for(int j=0;j<m;j++)
+				{
+					x[j] = new svm_node();
+					x[j].index = atoi(st.nextToken());
+					x[j].value = atof(st.nextToken());
+					
+				}
+				if(x[0].value > xymaxmin[0])	xymaxmin[0] = x[0].value;
+				else if(x[0].value < xymaxmin[1])	xymaxmin[1] = x[0].value;
+				
+				if(x[1].value > xymaxmin[2])	xymaxmin[2] = x[1].value;
+				else if(x[1].value < xymaxmin[3])	xymaxmin[3] = x[1].value;
+			}
+			return xymaxmin;
+	}
+	public static void main(String args[]) throws IOException{
+		String MODEL_FILE = "C:/Users/testuser/SkyDrive/Documents/4th year project files/Programs/libsvm-3.18/java/atesting1.train.model";
+		String TRAIN_FILE = "C:/Users/testuser/SkyDrive/Documents/4th year project files/Programs/libsvm-3.18/java/atesting1.train";
+		
+		double[] xymm = findBounds(TRAIN_FILE);
+		System.out.println("x max: "+xymm[0]+"\nx min: "+xymm[1]+"\ny max: "+xymm[2]+"\ny min"+xymm[3]);
+		svm_model sm = loadModel(MODEL_FILE);
+		plot_predictions pp = new plot_predictions(sm);
+		pp.initalisePlot("Sample plot");
+		
+		double results = pp.predict("1:1 2:1");
+		demo.addData(results, pp.getNode()[0].value, pp.getNode()[1].value);
+		
+	}
+}

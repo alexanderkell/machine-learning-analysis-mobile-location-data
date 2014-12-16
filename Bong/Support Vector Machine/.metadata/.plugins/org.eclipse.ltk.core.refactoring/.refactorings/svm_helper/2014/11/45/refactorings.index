@@ -1,0 +1,28 @@
+1415226570164	Rename local variable 'c'
+1415282747462	Rename field 'current_directory'
+1415290288601	Copy compilation unit
+1415290799860	Rename field 'series'
+1415290809586	Rename field 'added'
+1415290816477	Rename field 'negative'
+1415291627375	Rename method 'createSampleData'
+1415291642485	Rename method 'createSeriesData'
+1415304236971	Delete element
+1415314215909	Copy compilation unit
+1415374256369	Copy compilation unit
+1415382909414	Rename local variable 'closeButton2'
+1415402802478	Rename field 'SIZE'
+1415445452864	Rename local variable 's'
+1415454406795	Copy compilation unit
+1415457549739	Delete element
+1415457877707	Rename field 'WIDTH'
+1415457884896	Rename field 'HEIGHT'
+1415459502474	Copy compilation unit
+1415459639648	Copy compilation unit
+1415459731365	Delete element
+1415460123320	Copy compilation unit
+1415465359823	Rename method 'findBounds'
+1415465888969	Rename local variable 'data'
+1415465914465	Rename type 'xDATA'
+1415467065608	Rename method 'findBounds'
+1415471471135	Copy compilation unit
+1415481420259	Rename local variable 'e1'

@@ -1,0 +1,703 @@
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import org.jfree.chart.event.ChartProgressEvent;
+
+import exit_exception.ExitTrappedException;
+
+
+public class svm_train_helper extends JFrame{
+
+	final static int DIALOG_WIDTH = 640;
+	final static int DIALOG_HEIGHT = 480;
+	final static int MIN_DIALOG_WIDTH = DIALOG_WIDTH*3/4;
+	final static int MIN_DIALOG_HEIGHT = DIALOG_HEIGHT;
+	
+	private Dimension dimension;
+	private Dimension minDimension;	
+	private JTabbedPane tabbedPane0;
+	private JLabel label0;
+	private JLabel label1;
+	private JTextField txtField0;
+	private JTextField txtField1;
+	private JLabel label2;
+	private JButton button0;
+	private JButton button1;
+	private JTabbedPane tabbedPane1 ;
+	private JLabel label3;
+	private JLabel label4;
+	private JLabel label5;
+	private JButton button2;
+	private JLabel label6;
+	private JButton button3;
+	private JLabel label7;
+	private JButton button5;
+	private JTextField txtField2;
+	private JTextField txtField3;
+	private JTextField txtField4;
+	private JTextField txtField5;
+	
+	final static String DEFAULT_DIRECTORY = null;
+	private String curr_dir = null;
+	private JLabel[] tabbedpane0_title;
+	
+	public svm_train_helper(String title){
+		// TODO Auto-generated method stub
+		super(title);
+		dimension = new Dimension(DIALOG_WIDTH, DIALOG_HEIGHT);
+		minDimension = new Dimension(MIN_DIALOG_WIDTH, MIN_DIALOG_HEIGHT);
+		setMinimumSize(minDimension);
+		setPreferredSize(dimension);
+		JPanel pane = makeContentPane();
+		setContentPane(pane);
+		setLocationRelativeTo(null);
+		setDefaultCloseOperation(
+		    DISPOSE_ON_CLOSE);
+		
+		addWindowListener(new WindowAdapter() {
+			@Override
+		    public void windowClosing(WindowEvent we) {
+		    	dispose();
+		    }
+		});
+		pack();
+		setVisible(true);
+	}
+	
+
+	public JPanel makeContentPane(){
+		tabbedPane0 = new JTabbedPane();
+		
+		// Panel for the window
+		JPanel contentPanel = new JPanel();
+		// Set layout
+		contentPanel.setLayout(new BoxLayout(contentPanel,BoxLayout.PAGE_AXIS));
+		// For the training Tab
+		label0 = new JLabel("<html><font size=+1> Enter fields below and press \"Train\"</html>");
+		label1 = new JLabel("Options (Optional):");
+		txtField0 = new JTextField("-t 0 -c 100");
+		txtField1 = new JTextField("atesting1.train");
+		label2 = new JLabel("Training filepath:");
+		button0 = new JButton("Select file");
+		button1 = new JButton("Train");
+		tabbedPane1 = new JTabbedPane();
+		
+		// For the predict Tab
+		label3 = new JLabel("<html><font size=+1> Enter fields below and press \"Predict\"</html>");;
+		label4 = new JLabel("Options (Optional):");
+		txtField2 = new JTextField();
+		label5 = new JLabel("Test filepath:");
+		txtField3 = new JTextField();
+		button2 = new JButton("Select file");
+		label6 = new JLabel("Model filepath:");
+		txtField4 = new JTextField();
+		button3 = new JButton("Select file");
+		label7 = new JLabel("<html>Output filepath<br> (Optional):</html>");
+		txtField5 = new JTextField();
+		new JButton("Select file");
+		button5 = new JButton("Predict");
+		
+		// The top Panel
+		JPanel top_panel;
+		
+		tabbedpane0_title = new JLabel[2];
+	    tabbedpane0_title[0] = new JLabel("<html><font size=+1>Train</font></html>");
+	    tabbedpane0_title[1] = new JLabel("<html><font size=+1>Predict</font></html>");
+
+	    for(int i=0; i<tabbedpane0_title.length; i++){
+	    	tabbedpane0_title[i].setPreferredSize(new Dimension(80,25));
+		    tabbedpane0_title[i].setHorizontalAlignment(SwingConstants.CENTER);
+	    }
+	    // For the training tab
+	    top_panel = new JPanel(new BorderLayout());
+	    top_panel.add(makeTrainingTab(), BorderLayout.NORTH);
+	    
+	    tabbedPane0.addTab("<html><font size=+1>Train</font></html>", null, top_panel,
+                "<html><font size=+1>Train</font></html>");
+	    tabbedPane0.setTabComponentAt(0, tabbedpane0_title[0]);
+
+	    
+	    // For the predict tab
+	    // Code below reuses the "top_panel"
+	    top_panel = new JPanel(new BorderLayout());
+	    top_panel.add(makePredictTab(), BorderLayout.NORTH);
+	    tabbedPane0.addTab("<html><font size=+1>Predict</font></html>", null, top_panel,
+                "<html><font size=+1>Predict</font></html>");
+	    tabbedPane0.setTabComponentAt(1, tabbedpane0_title[1]);
+
+	    // Add the top tab pane to the contentPanel
+	    contentPanel.add(tabbedPane0);
+	    // Add vertical blank space
+	    contentPanel.add(Box.createVerticalStrut(10));
+	    // Add the bottom tab pane to the contentPanel
+	    contentPanel.add(tabbedPane1);
+	    
+	    configMainComponents();
+	    configComponents4Training();
+	    configComponents4Predict();
+	    
+		return contentPanel;
+	}
+	
+    protected JComponent makeTextPanel(String text, final JTabbedPane tabbedPane1 ,boolean enableClosedButton, JButton graphButton) {
+    	
+        JTextArea txtArea = new JTextArea(text);
+	    txtArea.setLineWrap(true);
+	    txtArea.setEditable(false);
+	    JScrollPane scroll = new JScrollPane(txtArea);
+	    
+	    Dimension dimen = new Dimension(DIALOG_WIDTH, DIALOG_HEIGHT/2);
+	    scroll.setPreferredSize(dimen);
+	    scroll.setViewportView(txtArea);
+	    
+		final JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel,BoxLayout.LINE_AXIS));
+		
+	    panel.add(scroll);
+	    JPanel subpanel = new JPanel();
+//	    subpanel.setSize(30, 30);
+//	    subpanel.setPreferredSize(new Dimension(30,30));
+	    subpanel.setLayout(new BoxLayout(subpanel,BoxLayout.PAGE_AXIS));
+	    
+	    if(graphButton!= null){
+	    	subpanel.add(graphButton);
+	    	subpanel.add(new JLabel(" "));
+	    }
+	    
+	    if(enableClosedButton){
+	    	JButton closeButton = new JButton("Close tab");
+	    	subpanel.add(closeButton);
+	    	closeButton.addActionListener(new ActionListener(){
+	    		@Override
+				public void actionPerformed(ActionEvent arg0) {
+					// TODO Auto-generated method stub
+					tabbedPane1.remove(panel);
+				}		
+			});
+	    }
+
+			panel.add(subpanel);
+
+        return panel;
+    }
+    
+    protected JComponent makeGraphPanel(final String TRAIN_FILE, final String MODEL_FILE, String text, final JTabbedPane tabbedPane1 ,boolean enableClosedButton) throws IOException {
+	    final JButton showGraphButton = new JButton("Show graph");
+	    showGraphButton.setToolTipText("Show a graph for the first 2 dimensions");
+		showGraphButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				plot_predictions.CustomChartProgressListener cpl = new plot_predictions.CustomChartProgressListener(){
+			    	private boolean first_time = true;
+			    	@Override
+					public void chartProgress(ChartProgressEvent arg0) {
+						// TODO Auto-generated method stub
+
+						if(first_time && arg0.getType() == ChartProgressEvent.DRAWING_FINISHED){
+							first_time = false;
+							showGraphButton.setEnabled(true);
+							showGraphButton.setText("Show graph");
+							System.out.println("Done plotting graph");
+						}
+					}
+			    	@Override
+					public void onAbort(){
+						showGraphButton.setEnabled(true);
+						showGraphButton.setText("Show graph");
+					}
+				};
+				showGraphButton.setEnabled(false);
+				showGraphButton.setText("Showing...");
+				plot_predictions.plot_graph(TRAIN_FILE, MODEL_FILE, cpl);
+			}
+		});
+	    
+        return makeTextPanel(text, tabbedPane1, enableClosedButton, showGraphButton);
+    }
+    protected JComponent makeTrainingTab() {
+    	
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+	    
+		final JPanel panel = new JPanel(new GridBagLayout());
+//		panel.setSize(minDimension);
+	    // Line 0
+	    gbc.gridy = 0;
+	    // JLabel - Title (0,0)
+	    gbc.gridx = 0;
+	    gbc.gridwidth = 3;
+
+	    panel.add(label0,gbc);
+
+	    // Line 1
+	    gbc.gridy = 1;
+	    // Add a line of space in between
+	    panel.add(new JLabel("\n"),gbc);
+	    
+	    // Line 2
+	    gbc.gridy = 2;
+	    // JLabel - Options (0,2)
+	    gbc.gridx = 0;
+	    gbc.gridwidth = 1;
+	    panel.add(label1, gbc);
+	    
+	    // JTextField - TextField for options (1,2)
+	    gbc.gridwidth = 2;
+	    gbc.weightx = 1;
+	    gbc.gridx = 1;
+	    panel.add(txtField0,gbc);
+	    // gridwidth back to 1
+	    gbc.gridwidth = 1;
+	    // Line 3
+	    gbc.gridy = 3;
+	    // JLabel - filepath (0,3)
+	    gbc.weightx = 0;
+	    gbc.gridx = 0;
+	    panel.add(label2, gbc);
+	    
+	    // JTextField - TextField for filepath(1,3)
+	    gbc.weightx = 1;
+	    gbc.gridx = 1;
+	    panel.add(txtField1,gbc);
+	    
+	    // JButton - Select file button (2,3)
+	    gbc.weightx = 0;
+	    gbc.gridx = 2;
+	    panel.add(button0,gbc);   
+	    
+	    // Line 4
+	    gbc.gridy = 4;
+	    gbc.gridx = 0;
+	    gbc.gridwidth = 3;
+	    // JButton - Train button (0,5)
+	    panel.add(button1,gbc);
+        return panel;
+    }
+
+	protected JComponent makePredictTab() {
+		
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+	    
+		final JPanel panel = new JPanel(new GridBagLayout());
+	//	panel.setSize(minDimension);
+	    // Line 0
+	    gbc.gridy = 0;
+	    // JLabel - Title (0,0)
+	    gbc.gridx = 0;
+	    gbc.gridwidth = 3;
+	
+	    panel.add(label3,gbc);
+	    
+	    // Line 1
+	    gbc.gridy = 1;
+	    // Add a line of space in between
+	    panel.add(new JLabel("\n"),gbc);
+	    
+	    // Line 2
+	    gbc.gridy = 2;
+	    // JLabel - Options (0,2)
+	    gbc.gridx = 0;
+	    gbc.gridwidth = 1;
+	    panel.add(label4, gbc);
+	    
+	    // JTextField - TextField for options (1,2)
+	    gbc.gridwidth = 2;
+	    gbc.weightx = 1;
+	    gbc.gridx = 1;
+	    panel.add(txtField2,gbc);
+	    // gridwidth back to 1
+	    gbc.gridwidth = 1;
+	    
+	    
+	    // Line 3
+	    gbc.gridy = 3;
+	    // JLabel - filepath (0,3)
+	    gbc.weightx = 0;
+	    gbc.gridx = 0;
+	    panel.add(label5, gbc);
+	    
+	    // JTextField - TextField for filepath(1,3)
+	    gbc.weightx = 1;
+	    gbc.gridx = 1;
+	    panel.add(txtField3,gbc);
+	    
+	    // JButton - Predict button (2,3)
+	    gbc.weightx = 0;
+	    gbc.gridx = 2;
+	    panel.add(button2,gbc);   
+	    
+	    // Line 4
+	    gbc.gridy = 4;
+	    // JLabel - filepath (0,3)
+	    gbc.weightx = 0;
+	    gbc.gridx = 0;
+	    panel.add(label6, gbc);
+	    
+	    // JTextField - TextField for filepath(1,3)
+	    gbc.weightx = 1;
+	    gbc.gridx = 1;
+	    panel.add(txtField4,gbc);
+	    
+	    // JButton - Predict button (2,3)
+	    gbc.weightx = 0;
+	    gbc.gridx = 2;
+	    panel.add(button3,gbc); 
+	    
+	    // Line 5
+	    gbc.gridy = 5;
+	    gbc.gridx = 0;
+	    
+	 // JLabel - filepath (0,3)
+	    gbc.weightx = 0;
+	    gbc.gridx = 0;
+	    panel.add(label7, gbc);
+	    
+	    // JTextField - TextField for filepath(1,3)
+	    gbc.weightx = 1;
+	    gbc.gridx = 1;
+	    gbc.gridwidth=2;
+	    panel.add(txtField5,gbc);
+	    
+	    // JButton - Predict button (2,3)
+	    gbc.weightx = 0;
+	    gbc.gridx = 2;
+//	    panel.add(button4,gbc); 
+	    
+	    // Line 6
+	    gbc.gridy = 6;
+	    gbc.gridx = 0;
+	    gbc.gridwidth = 3;
+	    // JButton - Predict button (0,5)
+	    panel.add(button5,gbc);
+	    return panel;
+	}
+    
+	private void configMainComponents(){
+		final JComponent[] panel1 = new JComponent[2];
+	    final String[] panel1Titles = new String[2];
+	    panel1[0] = makeTextPanel(svm_train.help().split("\n", 2)[1], tabbedPane1,false,null);
+	    panel1[1] = makeTextPanel(svm_predict.help().split("\n", 2)[1], tabbedPane1,false,null);
+	    panel1Titles[0] = "Options for the Train \"Options\" field";
+	    panel1Titles[1] = "Options for the Predict \"Options\" field";
+	    final String paneHint = "for the above \"Options\" field";
+	    
+	    
+	    tabbedPane1.addTab(panel1Titles[0], null, panel1[0], paneHint);
+	    tabbedPane1.setTabComponentAt(0, new JLabel(panel1Titles[0]));
+	    tabbedPane1.setPreferredSize(minDimension);
+	    tabbedPane0.addChangeListener(new ChangeListener(){
+	    	@Override
+			public void stateChanged(ChangeEvent arg0) {
+				// TODO Auto-generated method stub
+				JTabbedPane sourceTabbedPane = (JTabbedPane) arg0.getSource();
+				int index = sourceTabbedPane.getSelectedIndex();
+
+				// Update the first tab in tabbedPane1
+				tabbedPane1.setComponentAt(0, panel1[index]);
+				tabbedPane1.setTabComponentAt(0, new JLabel(panel1Titles[index]));
+//				tabbedPane1.repaint();
+				
+			}
+		});
+		
+	}
+	private void configComponents4Training(){
+		
+		
+		// Components for the training tab
+		// Button 0 - Select file
+		button0.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+				File f = openFileChooser(curr_dir, "Train file (.train)", "train");
+				if(f!=null){
+					String absPath = f.getAbsolutePath();
+					txtField1.setText(absPath);
+					curr_dir = absPath. substring(0,absPath.lastIndexOf(File.separator));
+				}
+			}
+	    	
+	    });
+		button1.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				button1.setEnabled(false);
+				new Thread(){
+					@Override
+					public void run(){
+						button1.setText("Training...");
+						
+						String[] args0 = txtField0.getText().split(" ");
+						
+						// If the options field is empty, size of args0 will be 0
+						if(txtField0.getText().trim().isEmpty())
+							args0 = new String[0];
+						
+						// args size will be args0 size + 1
+						String[] args = new String[args0.length + 1];
+						for(int i=0; i<args0.length; i++){
+							args[i] = args0[i];		
+						}
+						
+						args[args.length-1] = txtField1.getText();
+						String results = "Train File: "+args[args.length-1]+"\n";
+						String filename = null;
+						JComponent panel2;
+					    ExitTrappedException.forbidSystemExitCall() ;
+
+						try {
+							filename = svm_train.main2(args);
+							results += "Model File: "+filename+"\n";
+							txtField4.setText(filename);
+							if(txtField0.getText().trim().isEmpty())
+								results += "Arguments: null";
+							else
+								results += "Arguments: "+txtField0.getText();
+							//Skip 2 lines
+							results+= "\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n";
+		
+							BufferedReader br = new BufferedReader(new FileReader(filename));
+							String line;
+							while((line = br.readLine()) != null)
+								results+=line+"\n";
+							panel2 = makeGraphPanel(args[args.length-1],filename,results, tabbedPane1, true);			
+							br.close();
+							
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							results = "Check the file name\n"+e.toString();
+							panel2 = makeTextPanel(results , tabbedPane1, true, null);
+						} catch (ExitTrappedException e){
+							results = "Check the console";
+							panel2 = makeTextPanel(results , tabbedPane1, true, null);
+						} catch (Exception e){
+							results = "Check the fields\n"+e.toString();
+							panel2 = makeTextPanel(results , tabbedPane1, true, null);
+						} 	// end try...catch
+						finally {
+					    	ExitTrappedException.enableSystemExitCall() ;
+					    }
+						// Add the created panel to the tabbedpane
+					    tabbedPane1.addTab("Results for "+new File(args[args.length-1]).getName(), null, panel2,
+						          "Results");
+					    tabbedPane1.setSelectedIndex(tabbedPane1.getTabCount()-1);
+					    button1.setEnabled(true);
+					    button1.setText("Train");
+					}
+				}.start();
+			}
+		});
+		
+		
+		
+	}
+	// Config componentes for the Predict tab
+	private void configComponents4Predict(){
+		
+		button2.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+				File f = openFileChooser(null, "Test file (.test)", "test");
+				if(f!=null){
+					String absPath = f.getAbsolutePath();
+					txtField3.setText(absPath);
+				}
+			}
+	    	
+	    });
+		button3.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+				File f = openFileChooser(null, "Model file (.model)", "model");
+				if(f!=null){
+					String absPath = f.getAbsolutePath();
+					txtField4.setText(absPath);
+				}
+
+			}
+	    	
+	    });
+		
+		button5.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				button5.setEnabled(false);
+				new Thread(){
+					@Override
+					public void run(){
+						button5.setText("Predicting...");
+						String[] args0 = txtField2.getText().split(" ");
+						
+						// If the options field is empty, size of args0 will be 0
+						if(txtField2.getText().trim().isEmpty())
+							args0 = new String[0];
+						
+						// args size will be args0 size + 1
+						String[] args = new String[args0.length + 3];
+						for(int i=0; i<args0.length; i++){
+							args[i] = args0[i];		
+						}
+						
+						boolean hasError = false;
+						args[args.length-3] = txtField3.getText();
+						args[args.length-2] = txtField4.getText();
+						
+						if(txtField5.getText().trim().isEmpty()){
+							StringBuilder b = new StringBuilder(args[args.length-2]);
+							
+							if(b.lastIndexOf(".train.model") == b.length()-12){
+								b.replace(args[args.length-2].lastIndexOf(".train.model"), args[args.length-2].lastIndexOf(".train.model")+12, ".out");
+								args[args.length-1] = b.toString();
+							} else
+								args[args.length-1] = args[args.length-2]+".out";
+						} else{
+							args[args.length-1] = txtField5.getText();
+						}
+						String results = "Test File: "+args[args.length-3]+"\n";
+						ExitTrappedException.forbidSystemExitCall() ;
+
+						try {
+							svm_predict.main2(args);
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+							results = "Check the file names\n"+e1.toString();
+							hasError = true;
+						} catch (ExitTrappedException e){
+							results = "Check the console";
+							hasError = true;
+						} catch (Exception e){
+							results = "Check the fields\n"+e.toString();
+							hasError = true;
+						}	// end try...catch
+		
+						finally {
+					    	ExitTrappedException.enableSystemExitCall() ;
+					    }
+						
+						String line;
+						if(! hasError){
+							try {
+								results += "Model File: "+args[args.length-2] +"\n";
+								results += "Output File: "+args[args.length-1] +"\n";
+								if(txtField2.getText().trim().isEmpty())
+									results += "Arguments: null";
+								else
+									results += "Arguments: "+txtField2.getText();
+								//Skip 2 lines
+								results+= "\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n";
+								BufferedReader br1 = new BufferedReader(new FileReader(args[args.length-3]));
+								BufferedReader br2 = new BufferedReader(new FileReader(args[args.length-1]));
+									results+="Actual vs. Predicted\n";
+								while((line = br1.readLine()) != null){
+									results+=line+"\t";
+									results+=br2.readLine()+"\n";
+								}
+								br1.close();
+								br2.close();
+							} catch (FileNotFoundException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+								results = e1.toString();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+								results = e.toString();
+							}
+		
+						}	// end if
+						JComponent panel2 = makeTextPanel(results, tabbedPane1, true, null);
+					    tabbedPane1.addTab("Results for "+new File(args[args.length-1]).getName(), null, panel2,
+						          "Results");
+					    tabbedPane1.setSelectedIndex(tabbedPane1.getTabCount()-1);
+					    button5.setEnabled(true);
+					    button5.setText("Predict");
+					}
+				}.start();
+			}
+		});
+	}
+	
+	private String getFolderPath(File f) {
+		// TODO Auto-generated method stub
+		  if(f==null)
+			   return null;
+		  String absPath = f.getAbsolutePath();
+		  return absPath.substring(0,absPath.lastIndexOf(File.separator));
+	}
+
+	private File openFileChooser(String directory, String filetype, String extension){
+
+	      final JFileChooser chooser;
+	      System.out.println(curr_dir);
+	      if(directory == null){
+	    	  if(curr_dir == null)
+	    		  chooser = new JFileChooser(DEFAULT_DIRECTORY);
+	    	  else chooser = new JFileChooser(curr_dir);
+	      }
+	      else
+	    	  chooser = new JFileChooser(directory);
+	      
+	      FileNameExtensionFilter filter = new FileNameExtensionFilter( filetype, extension);
+	    	    chooser.setFileFilter(filter);
+//	    	    chooser.addChoosableFileFilter(filter);
+	  	      if(directory == null){
+		    	  if(curr_dir == null){
+		    		  if(DEFAULT_DIRECTORY == null)
+		    			  chooser.setCurrentDirectory(new File("."));
+		    		  else
+		    			  chooser.setCurrentDirectory(new File(DEFAULT_DIRECTORY));
+
+		    	  }else chooser.setCurrentDirectory(new File(curr_dir));
+		      }
+		      else
+		    	  chooser.setCurrentDirectory(new File(directory));
+	    	    
+	      int returnVal = chooser.showOpenDialog(null);
+	  	  if(returnVal == JFileChooser.APPROVE_OPTION) {
+	  		  File f = chooser.getSelectedFile();
+	  		  curr_dir = getFolderPath(f);
+	  		  return f;
+	  	  }
+	  	
+  	      return null;
+	   }
+}

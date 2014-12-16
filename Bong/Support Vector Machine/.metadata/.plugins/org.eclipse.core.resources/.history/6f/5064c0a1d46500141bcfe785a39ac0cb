@@ -1,0 +1,27 @@
+import libsvm.svm;
+import libsvm.svm_node;
+import libsvm.svm_parameter;
+
+
+public class plot_predictions {
+	
+	public static void predict(){
+		int m = 2;
+		svm_node[] x = new svm_node[m];
+		for(int j=0;j<m;j++)
+		{
+			x[j] = new svm_node();
+			x[j].index = atoi(st.nextToken());
+			x[j].value = atof(st.nextToken());
+		}
+
+		double v = svm.svm_predict(model,x);
+	}
+	
+	
+	
+	
+	public static void main(String args[]){
+		
+	}
+}

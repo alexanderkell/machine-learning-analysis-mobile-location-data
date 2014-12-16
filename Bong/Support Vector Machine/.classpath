@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path=""/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/jfreechart-1.0.1/lib/jcommon-1.0.0.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/jfreechart-1.0.1/lib/jfreechart-1.0.1.jar"/>
+	<classpathentry kind="output" path=""/>
+</classpath>

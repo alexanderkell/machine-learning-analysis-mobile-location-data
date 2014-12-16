@@ -1,0 +1,284 @@
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.EventQueue;
+import java.awt.FlowLayout;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+
+import libsvm.svm;
+import libsvm.svm_model;
+import libsvm.svm_node;
+import libsvm.svm_parameter;
+
+
+public class plot_predictions {
+	private svm_model model;
+	private svm_node[] x;
+	private static int dots_drawn;
+	private static int total_dots = 1;
+	private static svm_plot_helper demo;
+	
+	public plot_predictions(svm_model model){
+		setModel(model);
+	}
+	
+	public void setModel(svm_model model){
+		this.model = model;
+	}
+	
+	public double predict(double[] point){
+		
+		x = new svm_node[point.length];
+		for(int j=0;j<point.length;j++){
+			x[j] = new svm_node();
+			x[j].index = j+1;
+			x[j].value = point[j];
+		}
+
+		return svm.svm_predict(model,x);
+	}
+	
+	public double predict(String line){
+		int m = 2;
+		x = new svm_node[m];
+		
+		StringTokenizer st = new StringTokenizer(line," \t\n\r\f:");
+		for(int j=0;j<m;j++){
+			x[j] = new svm_node();
+			x[j].index = atoi(st.nextToken());
+			x[j].value = atof(st.nextToken());
+		}
+
+		return svm.svm_predict(model,x);
+	}
+	
+	public svm_node[] getNode(){
+		return x;
+	}
+	
+	
+	private static double atof(String nextToken) {
+		// TODO Auto-generated method stub
+		return Double.parseDouble(nextToken);
+	}
+
+	private static int atoi(String nextToken) {
+		// TODO Auto-generated method stub
+		return Integer.parseInt(nextToken);
+	}
+
+
+	
+	
+    public void NewPlot(final String title) {
+    	demo = new svm_plot_helper(title);
+    }
+    public void initalisePlot(){
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                
+                demo.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                demo.pack();
+                demo.setLocationRelativeTo(null);
+                demo.setVisible(true);
+            }
+        });
+    }
+
+	public static svm_model loadModel(String model_file) throws IOException{
+		svm_model model = svm.svm_load_model(model_file);
+		if (model == null)
+		{
+			System.err.print("can't open model file "+model_file+"\n");
+			System.exit(1);
+		}
+		return model;
+	}
+	
+	public static double[] findBounds(String input_file_name)throws IOException{
+
+			BufferedReader fp = new BufferedReader(new FileReader(input_file_name));
+			int max_index = 0;
+
+			double [] xymaxmin = new double[4]; // 0:xmax, 1:xmin, 2:ymax 3:ymin
+			String line;
+			if((line = fp.readLine())!=null){
+				StringTokenizer st = new StringTokenizer(line," \t\n\r\f:");
+				st.nextToken();
+
+				int m = 2;
+				svm_node[] x = new svm_node[m];
+				
+				for(int j=0;j<m;j++)
+				{
+					x[j] = new svm_node();
+					x[j].index = atoi(st.nextToken());
+					x[j].value = atof(st.nextToken());
+				}
+				xymaxmin[0] = xymaxmin[1] = x[0].value;	//set xmax and xmin 
+				xymaxmin[2] = xymaxmin[3] = x[1].value;	//set ymax and ymin
+			}
+			
+			while(true)
+			{
+				line = fp.readLine();
+				if(line == null) break;
+				
+				StringTokenizer st = new StringTokenizer(line," \t\n\r\f:");
+				st.nextToken();
+
+				int m = 2;
+				svm_node[] x = new svm_node[m];
+				
+				for(int j=0;j<m;j++)
+				{
+					x[j] = new svm_node();
+					x[j].index = atoi(st.nextToken());
+					x[j].value = atof(st.nextToken());
+					
+				}
+				if(x[0].value > xymaxmin[0])	xymaxmin[0] = x[0].value;
+				else if(x[0].value < xymaxmin[1])	xymaxmin[1] = x[0].value;
+				
+				if(x[1].value > xymaxmin[2])	xymaxmin[2] = x[1].value;
+				else if(x[1].value < xymaxmin[3])	xymaxmin[3] = x[1].value;
+			}
+			return xymaxmin;
+	}
+	
+	// return type
+	// [no.of dots][xy]
+	public static double[][] generateDots(double[] xymaxmin, int x_dimen, int y_dimen){
+		total_dots = x_dimen*y_dimen;
+//		dots_drawn = 0;
+		double xmax = xymaxmin[0];
+		double xmin = xymaxmin[1];
+		double ymax = xymaxmin[2];
+		double ymin = xymaxmin[3];
+		
+		double xinc = (xmax-xmin)/(double)x_dimen;
+		double yinc = (ymax-ymin)/(double)y_dimen;
+		
+		double xcur = xmin;
+		double ycur = ymax;
+		
+		double[][] result = new double[x_dimen*y_dimen][2];
+		for(int i=0; i<x_dimen; i++){
+			for(int j=0; j<y_dimen; j++){
+				result[i*y_dimen +j ][0] = xcur;
+				result[i*y_dimen +j ][1] = ycur;
+				ycur-=yinc;	//increment y
+//				dots_drawn++;
+			}
+			xcur+=xinc;	//increment x
+			ycur = ymax;	//reset y
+		}
+		return result;
+	}
+	
+	
+	public static void main(String args[]) throws IOException{
+		String MODEL_FILE = "C:/Users/testuser/SkyDrive/Documents/4th year project files/Programs/libsvm-3.18/java/atesting1.train.model";
+		String TRAIN_FILE = "C:/Users/testuser/SkyDrive/Documents/4th year project files/Programs/libsvm-3.18/java/atesting1.train";
+		
+		double[] xymm = findBounds(TRAIN_FILE);
+		System.out.println("x max: "+xymm[0]+"\nx min: "+xymm[1]+"\ny max: "+xymm[2]+"\ny min: "+xymm[3]);
+		svm_model sm = loadModel(MODEL_FILE);
+		
+		JDialog dia = new JDialog();
+		
+		JPanel pan = new JPanel();
+		dia.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+		pan.setLayout(new BoxLayout(pan, BoxLayout.PAGE_AXIS));
+		dia.add(pan);
+		JLabel lab = new JLabel("Drawing graph. Please wait...");
+		pan.add(lab);
+		lab.setAlignmentX(Component.CENTER_ALIGNMENT);
+		final JProgressBar pr = new JProgressBar(0, 100);
+		pr.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		pan.add(pr);
+		
+		JButton but = new JButton("Abort");
+		but.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		pan.add(but);
+//		but.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		
+		but.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				System.err.println("Program aborted");
+				System.exit(0);
+			}
+		});
+		dia.setLocationRelativeTo(null);
+		dia.pack();
+		dia.setVisible(true);
+
+		Thread a = new Thread(){
+			public void run(){
+				while(dots_drawn <= total_dots){
+					
+					try {
+						Thread.sleep(250);
+						pr.setValue(100*dots_drawn/total_dots);
+						pr.revalidate();
+						pr.repaint();
+//						System.out.println("Bello: "+dots_drawn+" / "+total_dots);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+		a.start();
+		plot_predictions pp = new plot_predictions(sm);
+		pp.NewPlot("Sample plot");
+		demo.adjustAxis(xymm[1],xymm[0],xymm[3],xymm[2]);
+		Shape shapeCir  = new Ellipse2D.Double(0,0,7,7);
+		Shape shapeRect  = new Rectangle2D.Double(0,0,2,2);
+		demo.setDotColor(svm_plot_helper.NEGATIVE, new Color(132,132,255));
+		demo.setDotColor(svm_plot_helper.POSITIVE, new Color(255,132,132));
+		demo.setDotColor(svm_plot_helper.NEGTRAIN, new Color(0,0,255));
+		demo.setDotColor(svm_plot_helper.POSTRAIN, new Color(255,0,0));
+
+		demo.setDotShape(svm_plot_helper.NEGATIVE, shapeRect);
+		demo.setDotShape(svm_plot_helper.POSITIVE, shapeRect);
+		demo.setDotShape(svm_plot_helper.NEGTRAIN, shapeCir);
+		demo.setDotShape(svm_plot_helper.POSTRAIN, shapeCir);
+		double[][] dots = generateDots(xymm, 300, 300);
+		dots_drawn = 0;
+		
+		
+		for(int i=0; i<dots.length; i++){
+			double results = pp.predict(dots[i]);
+			demo.addData(results, pp.getNode()[0].value, pp.getNode()[1].value);
+			dots_drawn ++;
+		}
+//		pp.initalisePlot();
+		demo.setVisible();
+		dia.setVisible(false);
+//		demo.getChartPanel();
+		dots_drawn++;
+	}
+}

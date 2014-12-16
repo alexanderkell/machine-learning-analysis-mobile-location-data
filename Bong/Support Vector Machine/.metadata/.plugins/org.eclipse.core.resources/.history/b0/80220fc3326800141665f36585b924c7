@@ -1,0 +1,431 @@
+import java.awt.BasicStroke;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.event.ChartProgressEvent;
+import org.jfree.chart.event.ChartProgressListener;
+
+import libsvm.svm;
+import libsvm.svm_model;
+import libsvm.svm_node;
+
+
+public class plot_predictions {
+	private svm_model model;
+	private svm_node[] x;
+	private static int dots_drawn;
+	private static int total_dots = 1;
+	private static String MODEL_FILE;
+	private static String TRAIN_FILE;
+	
+	
+	public plot_predictions(svm_model model){
+		setModel(model);
+	}
+	
+	public void setModel(svm_model model){
+		this.model = model;
+	}
+	
+	public double predict(double[] point){
+		
+		x = new svm_node[point.length];
+		for(int j=0;j<point.length;j++){
+			x[j] = new svm_node();
+			x[j].index = j+1;
+			x[j].value = point[j];
+		}
+
+		return svm.svm_predict(model,x);
+	}
+	public int getTotalDots(){
+		return total_dots;
+	}
+	// Method for predicting a single point
+	public double predict(String line){
+		int m = 2;
+		x = new svm_node[m];
+		
+		StringTokenizer st = new StringTokenizer(line," \t\n\r\f:");
+		for(int j=0;j<m;j++){
+			x[j] = new svm_node();
+			x[j].index = atoi(st.nextToken());
+			x[j].value = atof(st.nextToken());
+		}
+
+		return svm.svm_predict(model,x);
+	}
+	
+	public svm_node[] getNode(){
+		return x;
+	}
+	
+	
+	private static double atof(String nextToken) {
+		// TODO Auto-generated method stub
+		return Double.parseDouble(nextToken);
+	}
+
+	private static int atoi(String nextToken) {
+		// TODO Auto-generated method stub
+		return Integer.parseInt(nextToken);
+	}
+
+	
+	public static svm_model loadModel(String model_file) throws IOException{
+		svm_model model = svm.svm_load_model(model_file);
+		if (model == null)
+		{
+			System.err.print("can't open model file "+model_file+"\n");
+			System.exit(1);
+		}
+		return model;
+	}
+	
+	private ArrayList<XDATA> al = null;
+	private double [] xymaxmin = null; // 0:xmax, 1:xmin, 2:ymax 3:ymin
+
+	public void readTrainData(String input_file_name)throws IOException{
+		BufferedReader fp = new BufferedReader(new FileReader(input_file_name));
+		al = new ArrayList<XDATA>();
+		xymaxmin = new double[4];
+		
+		boolean first_line = false;
+		String line;
+		
+		while((line = fp.readLine()) !=null)
+		{	
+			//The + sign is exclusively for int to String and String to int conversion
+
+			StringTokenizer st = new StringTokenizer(line," \t\n\r\f:+"); 
+			XDATA data = new XDATA();
+			al.add(data);
+			data.label = st.nextToken();
+			
+			int m = 2;
+			svm_node[] x = new svm_node[m];
+			data.node = x;
+			
+			for(int j=0;j<m;j++)
+			{
+				x[j] = new svm_node();
+				try{
+					x[j].index = atoi(st.nextToken());
+					x[j].value = atof(st.nextToken());
+				} catch (java.util.NoSuchElementException e){
+					x[j].value = 0;
+				}
+				
+			}
+			if(!first_line){
+				xymaxmin[0] = xymaxmin[1] = x[0].value;	//set xmax and xmin 
+				xymaxmin[2] = xymaxmin[3] = x[1].value;	//set ymax and ymin
+				first_line = true;
+				continue;
+			}
+			
+			// Find Bounds
+			if(x[0].value > xymaxmin[0])	xymaxmin[0] = x[0].value;
+			else if(x[0].value < xymaxmin[1])	xymaxmin[1] = x[0].value;
+			
+			if(x[1].value > xymaxmin[2])	xymaxmin[2] = x[1].value;
+			else if(x[1].value < xymaxmin[3])	xymaxmin[3] = x[1].value;
+			
+		}
+		fp.close();
+		total_dots+=al.size();
+	}
+	public ArrayList<XDATA> getTrainingData(){
+		if(al == null)
+			throw new NullPointerException("Read training data first, see readTrainData(String input_file_name)");
+		return al;
+	}
+	public double[] getBounds(double percent_ext)throws IOException{
+		if(xymaxmin == null)
+			throw new NullPointerException("Read training data first, see readTrainData(String input_file_name)");
+
+		double[] extension = {percent_ext/100*(xymaxmin[0]-xymaxmin[1]), percent_ext/100*(xymaxmin[2]-xymaxmin[3])};
+		
+		// Adjust the bounds
+		xymaxmin[0] +=extension[0];
+		xymaxmin[1] -=extension[0];
+		xymaxmin[2] +=extension[1];
+		xymaxmin[3] -=extension[1];
+		return xymaxmin;
+	}
+	
+	/** Generate dots
+	 * 
+	 * @param x_dimen Number of dots in the x axis
+	 * @param y_dimen Number of dots in the y axis
+	 * @return
+	 */
+	public double[][] generateDots(int x_dimen, int y_dimen){
+		if(xymaxmin == null)
+			throw new NullPointerException("Read training data first, see readTrainData(String input_file_name)");
+		total_dots += x_dimen*y_dimen;
+		double xmax = xymaxmin[0];
+		double xmin = xymaxmin[1];
+		double ymax = xymaxmin[2];
+		double ymin = xymaxmin[3];
+		
+		double xinc = (xmax-xmin)/(double)x_dimen;
+		double yinc = (ymax-ymin)/(double)y_dimen;
+		
+		double xcur = xmin;
+		double ycur = ymax;
+		
+		double[][] result = new double[x_dimen*y_dimen][2];
+		for(int i=0; i<x_dimen; i++){
+			for(int j=0; j<y_dimen; j++){
+				result[i*y_dimen +j ][0] = xcur;
+				result[i*y_dimen +j ][1] = ycur;
+				ycur-=yinc;	//increment y
+			}
+			xcur+=xinc;	//increment x
+			ycur = ymax;	//reset y
+		}
+		return result;
+	}
+	
+	public double[][] getSV(){
+		svm_node[][] node = model.SV;
+		int m=2;
+		double[][] resultSV = new double[node.length][m];
+		for(int i=0;i<node.length;i++)
+		{
+			for(int j=0;j<m;j++)
+			resultSV[i][j] = node[i][j].value;
+			
+		}
+		total_dots += node.length;
+		return resultSV;
+	}
+	public static void main(String args[]) throws IOException{
+		final String DEFAULT_MODEL_FILE = "C:/Users/testuser/SkyDrive/Documents/4th year project files/Programs/libsvm-3.18/java/atesting1.train.model";
+		final String DEFAULT_TRAIN_FILE = "C:/Users/testuser/SkyDrive/Documents/4th year project files/Programs/libsvm-3.18/java/atesting1.train";
+		
+		MODEL_FILE = DEFAULT_MODEL_FILE;
+		TRAIN_FILE = DEFAULT_TRAIN_FILE;
+		
+		if(args.length>=2){
+			TRAIN_FILE = args[0];
+			MODEL_FILE = args[1];
+		}
+
+		// For the loading dialog
+		final JFrame dia= new JFrame();
+		dia.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+		dia.setLayout(new BorderLayout());
+		JPanel pan = new JPanel();
+		pan.setLayout(new BoxLayout(pan, BoxLayout.PAGE_AXIS));
+//		dia.add(pan, BorderLayout.CENTER);
+		final JLabel lab = new JLabel("<html><font size=+1>Creating plot...</font></html>");
+//		pan.add(lab);
+//		pan.add(new JLabel("<html><br></html>"));
+		lab.setAlignmentX(Component.CENTER_ALIGNMENT);
+		final JProgressBar pr = new JProgressBar(0, 100);
+		pr.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+//		pan.add(pr);
+		
+		final JButton but = new JButton("<html>Abort</html>");
+		but.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+//		pan.add(but);
+		
+
+		
+		dia.setUndecorated(true);
+		dia.getRootPane().setBorder( BorderFactory.createLineBorder(Color.BLACK) );
+		dia.setLocationRelativeTo(null);
+		dia.setAlwaysOnTop(true);
+
+/*		
+		final Thread a = new Thread(){
+			public void run(){
+				while(dots_drawn < total_dots){
+					
+					try {
+						Thread.sleep(100);
+						pr.setValue(100*dots_drawn/total_dots);
+						pr.revalidate();
+						pr.repaint();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						dia.dispose();
+					}
+				}
+			}
+		};
+		a.start();
+*/		final Thread b = new Thread(){
+			public void run(){
+				double[] xymm = null;
+				svm_model sm = null;
+				ArrayList<XDATA> data_list = null;
+				plot_predictions pp = null;
+				try {
+					sm = loadModel(MODEL_FILE);
+					pp = new plot_predictions(sm);
+					pp.readTrainData(TRAIN_FILE);
+					xymm = pp.getBounds(2);
+					data_list = pp.getTrainingData();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				System.out.println("x max: "+xymm[0]+"\nx min: "+xymm[1]+"\ny max: "+xymm[2]+"\ny min: "+xymm[3]);
+				
+
+				
+				int[] num_label = sm.label;
+				String[] str_label = new String[num_label.length];
+				for(int i=0; i<str_label.length; i++)
+					str_label[i] = itoa(num_label[i]);
+				final svm_plot_helper demo = new svm_plot_helper("Sample Plot", str_label);
+				
+				final JFrame dia2= new JFrame();
+				JPanel pan = new JPanel(new BorderLayout());
+				ChartPanel cp = demo.getChartPanel();
+				System.out.println("Line 314: "+cp.getPreferredSize());
+				pan.add(cp, BorderLayout.CENTER);
+//				pan.setPreferredSize(cp.getPreferredSize());
+				dia2.add(cp);
+				dia2.pack();
+				cp.setVisible(false);
+				dia2.setVisible(true);
+				
+				demo.adjustAxis(xymm[1],xymm[0],xymm[3],xymm[2]);
+				Shape shapeCir  = new Ellipse2D.Double(-2.5,-2.5,5,5);
+				    				
+			    Shape shapeCirStroke = new BasicStroke(0.1f).createStrokedShape(shapeCir);
+
+				Shape shapeRect  = new Rectangle2D.Double(-1.5,-1.5,3,3);
+				
+				demo.setDotColor(svm_plot_helper.SV, new Color(0,0,0));
+				
+				demo.setDotShape(svm_plot_helper.SV, shapeCir);
+				Color color[][] = new Color[5][2];
+				color[0][0] = new Color(0,0,255);
+				color[0][1] = new Color(0,0,255,20);
+				color[1][0] = new Color(255,0,0);
+				color[1][1] = new Color(255,0,0,20);
+				color[2][0] = new Color(0,255,0);
+				color[2][1] = new Color(0,255,0,20);
+				color[3][0] = new Color(255,177,18);
+				color[3][1] = new Color(255,177,18,20);
+				color[4][0] = new Color(249,44,255);
+				color[4][1] = new Color(249,44,255,20);
+				
+				for(int i=0; i<str_label.length; i++){
+					demo.setDotColor(str_label[i], svm_plot_helper.DATA, color[i%color.length][0]);
+					demo.setDotColor(str_label[i], svm_plot_helper.AREA, color[i%color.length][1]);
+				}
+				
+
+				demo.setDotShape(svm_plot_helper.SV, shapeCirStroke);
+				for(int i=0; i<str_label.length; i++){
+					demo.setDotShape(str_label[i], svm_plot_helper.AREA, shapeRect);
+					demo.setDotShape(str_label[i], svm_plot_helper.DATA, shapeCir);
+				}
+
+				total_dots -=1;
+				dots_drawn = 0;
+				
+				for(int i=0; i<data_list.size(); i++){
+					XDATA train_data = data_list.get(i);
+//					System.out.println(train_data.label+" "+train_data.node[0].value+" "+train_data.node[1].value);
+					demo.addData(train_data.label, svm_plot_helper.DATA,train_data.node[0].value, train_data.node[1].value);
+					dots_drawn ++;
+				}
+				
+				double[][] dots = pp.generateDots(300, 300);
+				for(int i=0; i<dots.length; i++){
+					double results = pp.predict(dots[i]);
+					demo.addData(itoa((int)results),svm_plot_helper.AREA, pp.getNode()[0].value, pp.getNode()[1].value);
+					dots_drawn ++;
+				}
+				
+				
+				double[][] SVs = pp.getSV();
+				for(int i=0; i<SVs.length; i++){
+					demo.addData(svm_plot_helper.SV, SVs[i][0], SVs[i][1]);
+					dots_drawn ++;
+				}
+
+				
+				
+			    ChartProgressListener chartprogress = new ChartProgressListener(){
+
+					public void chartProgress(ChartProgressEvent arg0) {
+						// TODO Auto-generated method stub
+						
+
+						if(arg0.getType() == ChartProgressEvent.DRAWING_FINISHED){
+							dia.dispose();
+							System.out.println("Done");
+						}
+					}
+			    };
+
+
+			    demo.addProgressListener(chartprogress);
+//			    but.setEnabled(false);
+			    lab.setText("<html><font size=+1>Almost done...</font></html>");
+			    demo.setSize(svm_plot_helper.CHART_WIDTH,svm_plot_helper.CHART_HEIGHT);
+			    demo.setLocationRelativeTo(dia);
+			    
+//			    demo.showDialog(JFrame.DISPOSE_ON_CLOSE);
+//				demo.getChartPanel();
+			}
+		};
+		b.start();
+		but.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				System.err.println("Program aborted");
+				a.interrupt();
+				b.stop();
+			}
+		});
+		
+	}
+
+	static String itoa(int num_label) {
+		// TODO Auto-generated method stub
+		return String.valueOf(num_label);
+	}
+	static String itoa(double num_label) {
+		// TODO Auto-generated method stub
+		return String.valueOf(num_label);
+	}
+}
+
+class XDATA{
+	public String label;
+	public svm_node[] node;
+}

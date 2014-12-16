@@ -1,0 +1,208 @@
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.Shape;
+import javax.swing.JFrame;
+import org.jfree.chart.*;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.NumberTickUnit;
+import org.jfree.chart.event.ChartProgressEvent;
+import org.jfree.chart.event.ChartProgressListener;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+
+/**
+ * @see http://stackoverflow.com/a/13794076/230513
+ * @see http://stackoverflow.com/questions/8430747
+ * @see http://stackoverflow.com/questions/8048652
+ * @see http://stackoverflow.com/questions/7231824
+ * @see http://stackoverflow.com/questions/7205742
+ * @see http://stackoverflow.com/questions/7208657
+ * @see http://stackoverflow.com/questions/7071057
+ * @see http://stackoverflow.com/questions/8736553
+ */
+public class svm_plot_helper extends JFrame {
+
+	public static final String SV = "SVECTOR";
+	public static final boolean AREA = false;
+	public static final boolean DATA = true;
+	
+    private static final int SIZE = 600;
+    private static final String title = "Scatter Add Demo";
+	private XYPlot xyPlot;
+	private final XYSeries[] series;
+	
+	private ChartPanel chartPanel;
+	private JFreeChart jfreechart;
+	private XYSeriesCollection xySeriesCollection;
+	private String[] str_labels;
+
+    public svm_plot_helper(String s, String[] str_labels) {
+        super(s);
+        this.str_labels = str_labels;
+
+        
+        series = new XYSeries[str_labels.length*2+1];
+        series[0] = new XYSeries("SV");
+        
+        for(int i=0; i<str_labels.length; i++){
+        	series[i+1] = new XYSeries(str_labels[i]+" data");
+        	series[str_labels.length+i+1] = new XYSeries(str_labels[i]+" area");
+        }
+        
+        chartPanel = createDemoPanel(s);
+        chartPanel.setPreferredSize(new Dimension(SIZE, SIZE));
+    }
+
+    public void showDialog(int close_option){
+        JFrame aa = new JFrame(title);
+        
+        aa.setDefaultCloseOperation(close_option);
+        aa.setLayout(new BorderLayout());
+        
+        aa.add(chartPanel, BorderLayout.CENTER);
+        
+        aa.pack();
+        aa.setVisible(true);
+    }
+    public ChartPanel getChartPanel(){
+    	return chartPanel;
+    }
+    private ChartPanel createDemoPanel(final String title) {
+ 
+        jfreechart = ChartFactory.createScatterPlot(
+            title, "X1", "X2", createSeries(),
+            PlotOrientation.VERTICAL, true, true, false);
+        xyPlot = (XYPlot) jfreechart.getPlot();
+        xyPlot.setDomainCrosshairVisible(true);
+        xyPlot.setRangeCrosshairVisible(true);
+//        XYItemRenderer renderer = xyPlot.getRenderer();
+//       renderer.setSeriesPaint(0, new Color(132,188,255));
+//        adjustAxis((NumberAxis) xyPlot.getDomainAxis(), false);
+//        adjustAxis((NumberAxis) xyPlot.getRangeAxis(), false);
+        xyPlot.setBackgroundPaint(Color.white);
+
+        return new ChartPanel(jfreechart);
+    }
+
+    public void addProgressListener(ChartProgressListener chartprogress){
+    	jfreechart.addProgressListener(chartprogress);
+    }
+
+    
+    public void setDotColor(String label, boolean data_Or_Area, Color color){
+    	XYItemRenderer renderer = xyPlot.getRenderer();
+    	if(label.equals(SV)){
+    		renderer.setSeriesPaint(0, color);
+    		return;
+    	}
+    	for(int i=0; i<str_labels.length; i++){
+    		if(str_labels[i].equals(label)){
+    			if(data_Or_Area == DATA)	//true
+    				renderer.setSeriesPaint(i+1, color);
+    			else if (data_Or_Area == AREA)	//false
+    				renderer.setSeriesPaint(str_labels.length+i+1, color);
+    			return;
+    		}
+    	}
+    }
+    public void setDotColor(String label, Color color){
+    	XYItemRenderer renderer = xyPlot.getRenderer();
+    	if(label.equals(SV)){
+    		renderer.setSeriesPaint(0, color);
+    		return;
+    	}
+    }
+    
+    public void setDotShape(String label, boolean data_Or_Area, Shape shape){
+    	XYItemRenderer renderer = xyPlot.getRenderer();
+    	if(label.equals(SV)){
+    		renderer.setSeriesShape(0, shape);
+    		return;
+    	}
+    	
+    	for(int i=0; i<str_labels.length; i++){
+    		if(str_labels[i].equals(label)){
+    			if(data_Or_Area == DATA)	//true
+    				renderer.setSeriesShape(i+1, shape);
+    			else if (data_Or_Area == AREA)	//false
+    				renderer.setSeriesShape(str_labels.length+i+1, shape);
+    			return;
+    		}
+    	}
+    }
+    
+    public void setDotShape(String label, Shape shape){
+    	XYItemRenderer renderer = xyPlot.getRenderer();
+    	if(label.equals(SV)){
+    		renderer.setSeriesShape(0, shape);
+    		return;
+    	}
+    }
+ 
+    public void adjustAxis(double minX, double maxX, double minY, double maxY){
+    	xyPlot.getDomainAxis().setRange(minX, maxX);
+    	xyPlot.getRangeAxis().setRange(minY, maxY);
+    }
+
+    @SuppressWarnings("unused")
+	private void adjustAxis(NumberAxis axis, boolean vertical) {
+        axis.setRange(-6.0, 6.0);
+        axis.setTickUnit(new NumberTickUnit(0.5));
+        axis.setVerticalTickLabels(vertical);
+    }
+
+    private XYDataset createSeries() {
+        xySeriesCollection = new XYSeriesCollection();
+        for(int i=0; i<series.length; i++)
+        	xySeriesCollection.addSeries(series[i]);
+		return xySeriesCollection;
+    }
+   
+
+    public void addData(String label, boolean data_Or_Area, double x, double y){
+    	if(label.equals(SV)){
+    		this.series[0].add(x,y);
+    		return;
+    	}
+    	for(int i=0; i<str_labels.length; i++){
+    		if(str_labels[i].equals(label)){
+    			if(data_Or_Area == DATA)	//true
+    				this.series[i+1].add(x,y);
+    			else if (data_Or_Area == AREA)	//false
+    				this.series[str_labels.length+i+1].add(x,y);
+    			return;
+    		}
+    	}
+    }
+    
+    public void addData(String label, double x, double y){
+    	if(label.equals(SV)){
+    		this.series[0].add(x,y);
+    		return;
+    	}    	
+    }
+    
+
+    public static void main(String args[]) {
+        EventQueue.invokeLater(new Runnable() {
+
+            public void run() {
+                svm_plot_helper demo = new svm_plot_helper(title, new String[]{"-1","1"});
+
+                demo.addProgressListener(new ChartProgressListener(){
+					public void chartProgress(ChartProgressEvent arg0) {
+						// TODO Auto-generated method stub
+						if(arg0.getType() == ChartProgressEvent.DRAWING_FINISHED)
+							System.out.println("Ploting finished");
+					}
+                });
+            }
+        });
+    }
+}

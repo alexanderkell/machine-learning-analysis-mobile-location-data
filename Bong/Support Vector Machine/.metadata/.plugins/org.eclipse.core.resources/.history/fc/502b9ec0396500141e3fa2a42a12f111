@@ -1,0 +1,333 @@
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+
+public class svm_train_helper extends JDialog{
+
+	final static int DIALOG_WIDTH = 640;
+	final static int DIALOG_HEIGHT = 480;
+	
+	private Dimension dimension;
+	private Dimension minDimension;
+	private String filePath = null;
+	
+	public svm_train_helper(JFrame frame, String title){
+		// TODO Auto-generated method stub
+		super(frame, title);
+		dimension = new Dimension(DIALOG_WIDTH, DIALOG_HEIGHT);
+		minDimension = new Dimension(DIALOG_WIDTH*3/4, DIALOG_HEIGHT);
+		setMinimumSize(minDimension);
+		setPreferredSize(dimension);
+		setLayout(new FlowLayout());
+		JPanel pane = makeContentPane();
+		setContentPane(pane);
+		setDefaultCloseOperation(
+		    DISPOSE_ON_CLOSE);
+		
+		addWindowListener(new WindowAdapter() {
+		    public void windowClosing(WindowEvent we) {
+//		        setLabel("Thwarted user attempt to close window.");
+		    	setVisible(false);
+		    	dispose();
+		    	exit();
+		    }
+		});
+		pack();
+		setVisible(true);
+	}
+	
+	private void exit(){
+		System.exit(0);
+	}
+
+	public JPanel makeContentPane(){
+		final JTabbedPane tabbedPane0 = new JTabbedPane();
+		JPanel contentPanel = new JPanel(new GridBagLayout());
+		JLabel label0 = new JLabel("<html><font size=+1> Enter fields below and press \"Train\"</html>");
+		JLabel label1 = new JLabel("Options (Optional):");
+		final JTextField txtField0 = new JTextField("-t 0 -c 100");
+		final JTextField txtField1 = new JTextField("atesting1.train");
+		JLabel label2 = new JLabel("Filepath:");
+		JButton button0 = new JButton("Select file");
+		final JButton button1 = new JButton("Train");
+		final JTabbedPane tabbedPane1 = new JTabbedPane();
+		
+		
+	    GridBagConstraints c = new GridBagConstraints();
+	    c.fill = GridBagConstraints.HORIZONTAL;
+	    
+	    // positions are in the format of (x,y) - column x, row y
+	    
+	    // Line 0
+	    c.gridy = 0;
+	    // JLabel - Title (0,0)
+	    c.gridx = 0;
+	    c.gridwidth = 2;
+	    contentPanel.add(label0, c);
+	    
+	    
+	    // Line 1
+	    c.gridy = 1;
+	    // Add a line of space in between
+	    contentPanel.add(new JLabel("\n"),c);
+	    
+	    // Line 2
+	    c.gridy = 2;
+	    // JLabel - Options (0,2)
+	    c.gridx = 0;
+	    c.gridwidth = 1;
+	    contentPanel.add(label1, c);
+	    
+	    // JTextField - TextField for options (1,2)
+	    c.gridwidth = 2;
+	    c.weightx = 1;
+	    c.gridx = 1;
+	    contentPanel.add(txtField0,c);
+	    // gridwidth back to 1
+	    c.gridwidth = 1;
+	    // Line 3
+	    c.gridy = 3;
+	    // JLabel - filepath (0,3)
+	    c.weightx = 0;
+	    c.gridx = 0;
+	    contentPanel.add(label2, c);
+	    
+	    // JTextField - TextField for filepath(1,3)
+	    c.weightx = 1;
+	    c.gridx = 1;
+	    contentPanel.add(txtField1,c);
+	    
+	    // JButton - Train button (2,3)
+	    c.weightx = 0;
+	    c.gridx = 2;
+	    
+	    button0.addActionListener(new ActionListener(){
+
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+				File f = openFileChooser(filePath);
+				if(f!=null){
+					String absPath = f.getAbsolutePath();
+					txtField1.setText(absPath);
+					f.getAbsolutePath();
+					filePath = absPath.
+		    	    	     substring(0,absPath.lastIndexOf(File.separator));
+				}
+			}
+	    	
+	    });
+	    contentPanel.add(button0,c);   
+	    
+	    // Line 4
+	    c.gridy = 4;
+	    c.gridx = 0;
+	    c.gridwidth = 3;
+	    // JButton - Train button (0,5)
+	    contentPanel.add(button1,c);
+	    
+	    // Line 5
+	    c.gridy = 5;
+	    
+	    // Add a line of space in between
+	    contentPanel.add(new JLabel("\n"),c);
+	    
+	    // Line 6
+	    c.gridy = 6;
+	    
+	    JComponent panel1 = makeTextPanel(svm_train.help().split("\n", 2)[1], tabbedPane1,false);
+	    
+	    tabbedPane1.addTab("Options for the \"Options\" field", null, panel1,
+	                      "for the \"Options\" field above");
+
+	    
+//	    System.out.println(panel2.getComponentCount());
+	    contentPanel.add(tabbedPane1,c);
+	    
+	    
+	    button1.addActionListener(new ActionListener(){
+
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+				String[] args0 = txtField0.getText().split(" ");
+				
+				// If the options field is empty, size of args0 will be 0
+				if(txtField0.getText().trim().isEmpty())
+					args0 = new String[0];
+				
+				// args size will be args0 size + 1
+				String[] args = new String[args0.length + 1];
+				for(int i=0; i<args0.length; i++){
+					args[i] = args0[i];		
+				}
+				
+				boolean hasError = false;
+				args[args.length-1] = txtField1.getText();
+				String results = "Input File: "+args[args.length-1]+"\n";
+				String filename = null;
+				try {
+					filename = svm_train.main2(args);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+					results = "Check the file name\n"+e1.toString();
+					hasError = true;
+				} catch (Exception e){
+					results = "Check the options field\n"+e.toString();
+					hasError = true;
+				}
+				
+				BufferedReader br;
+				String line;
+				if(! hasError){
+					try {
+						results += "Output File: "+filename+"\n";
+						if(txtField0.getText().trim().isEmpty())
+							results += "Arguments: null";
+						else
+							results += "Arguments: "+txtField0.getText();
+						//Skip 2 lines
+						results+= "\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n";
+						br = new BufferedReader(new FileReader(filename));
+						while((line = br.readLine()) != null)
+							results+=line+"\n";
+					} catch (FileNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+						results = e1.toString();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						results = e.toString();
+					}
+				}
+				
+				JComponent panel2 = makeTextPanel(results, tabbedPane1, true);
+			    tabbedPane1.addTab("Results for "+new File(args[args.length-1]).getName(), null, panel2,
+				          "Results");
+			    tabbedPane1.setSelectedIndex(tabbedPane1.getTabCount()-1);
+			}
+	    	
+	    });
+	    
+		return contentPanel;
+	}
+	
+    protected JComponent makeTextPanel(String text, final JTabbedPane tabbedPane1 ,boolean enableClosedButton) {
+    	
+        JTextArea txtArea = new JTextArea(text);
+	    txtArea.setLineWrap(true);
+	    txtArea.setEditable(false);
+	    JScrollPane scroll = new JScrollPane (txtArea);
+	    scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);	    
+	    Dimension dimen = new Dimension(DIALOG_WIDTH, DIALOG_HEIGHT/2);
+	    scroll.setMinimumSize(dimen);
+	    
+	    
+		final JPanel panel = new JPanel(new GridBagLayout());
+	    GridBagConstraints d = new GridBagConstraints();
+	    d.fill = GridBagConstraints.HORIZONTAL;
+	    d.weightx=1;
+	    d.weighty=1;
+	    d.gridy=0;
+	    panel.add(scroll, d);
+	    if(enableClosedButton){
+		    d.weightx=0;
+		    d.weighty=0;
+		    d.gridy=1;
+		    JButton closeButton = new JButton("Close");
+			panel.add(closeButton,d);
+			closeButton.addActionListener(new ActionListener(){
+				
+				public void actionPerformed(ActionEvent arg0) {
+					// TODO Auto-generated method stub
+					tabbedPane1.remove(panel);
+				}		
+			});
+	    }
+	    panel.setMinimumSize(dimen);
+        return panel;
+    }
+    
+protected JComponent makeTab(String text, final JTabbedPane tabbedPane1 ,boolean enableClosedButton) {
+    	
+        JTextArea txtArea = new JTextArea(text);
+	    txtArea.setLineWrap(true);
+	    txtArea.setEditable(false);
+	    JScrollPane scroll = new JScrollPane (txtArea);
+	    scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);	    
+	    Dimension dimen = new Dimension(DIALOG_WIDTH, DIALOG_HEIGHT/2);
+	    scroll.setMinimumSize(dimen);
+	    
+	    
+		final JPanel panel = new JPanel(new GridBagLayout());
+	    GridBagConstraints d = new GridBagConstraints();
+	    d.fill = GridBagConstraints.HORIZONTAL;
+	    d.weightx=1;
+	    d.weighty=1;
+	    d.gridy=0;
+	    panel.add(scroll, d);
+	    if(enableClosedButton){
+		    d.weightx=0;
+		    d.weighty=0;
+		    d.gridy=1;
+		    JButton closeButton = new JButton("Close");
+			panel.add(closeButton,d);
+			closeButton.addActionListener(new ActionListener(){
+				
+				public void actionPerformed(ActionEvent arg0) {
+					// TODO Auto-generated method stub
+					tabbedPane1.remove(panel);
+				}		
+			});
+	    }
+	    panel.setMinimumSize(dimen);
+        return panel;
+    }
+    
+	   private File openFileChooser(String directory){
+
+	      final JFileChooser chooser;
+	      if(directory == null)
+	    	  chooser = new JFileChooser();
+	      else
+	    	  chooser = new JFileChooser(directory);
+	      
+	      FileNameExtensionFilter filter = new FileNameExtensionFilter( "Train file (.train)", "train");
+	    	    chooser.setFileFilter(filter);
+//	    	    chooser.addChoosableFileFilter(filter);
+	    	    chooser.setCurrentDirectory(new File("."));
+	      int returnVal = chooser.showOpenDialog(null);
+	  	  if(returnVal == JFileChooser.APPROVE_OPTION) {
+	  	     return chooser.getSelectedFile();
+	  	  }
+  	      return null;
+	   }
+}

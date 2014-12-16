@@ -1,0 +1,170 @@
+
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.Shape;
+import java.awt.event.ActionEvent;
+import java.util.*;
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import org.jfree.chart.*;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.NumberTickUnit;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.data.xy.XYDataItem;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+
+/**
+ * @see http://stackoverflow.com/a/13794076/230513
+ * @see http://stackoverflow.com/questions/8430747
+ * @see http://stackoverflow.com/questions/8048652
+ * @see http://stackoverflow.com/questions/7231824
+ * @see http://stackoverflow.com/questions/7205742
+ * @see http://stackoverflow.com/questions/7208657
+ * @see http://stackoverflow.com/questions/7071057
+ * @see http://stackoverflow.com/questions/8736553
+ */
+public class svm_plot_helper extends JFrame {
+
+	public static final double NEGATIVE = -1.0;
+	public static final double POSITIVE = 1.0;
+	public static final double NEGTRAIN = -1.1;
+	public static final double POSTRAIN = 1.1;
+	public static final double SVECTORS = 0.1;
+	
+    private static final int N = 8;
+    private static final int SIZE = 600;
+    private static final String title = "Scatter Add Demo";
+//    private static final Random rand = new Random();
+    private final XYSeries neg = new XYSeries("-1 area");
+    private final XYSeries pos = new XYSeries("+1 area");
+	private XYPlot xyPlot;
+	private XYSeries postrain = new XYSeries("+1 data");
+	private XYSeries negtrain = new XYSeries("+1 data");
+	private XYSeries svectors = new XYSeries("SV");
+	
+	private ChartPanel chartPanel;
+
+    public svm_plot_helper(String s) {
+        super(s);
+        chartPanel = createDemoPanel(s);
+
+        chartPanel.setPreferredSize(new Dimension(SIZE, SIZE));
+
+//        this.add(chartPanel, BorderLayout.CENTER);
+/*        JPanel control = new JPanel();
+        control.add(new JButton(new AbstractAction("Move") {
+
+            
+            public void actionPerformed(ActionEvent e) {
+                for (int i = 0; i < N / 2; i++) {
+                    XYDataItem item = neg.remove(0);
+                    if (item != null) {
+                        pos.add(item);
+                    }
+                }
+            }
+        }));
+        this.add(control, BorderLayout.SOUTH);
+*/    }
+
+    public void showDialog(){
+        JFrame aa = new JFrame();
+        aa.setLayout(new BorderLayout());
+        aa.add(chartPanel, BorderLayout.CENTER);
+        aa.pack();
+        aa.setVisible(true);
+    }
+    public ChartPanel getChartPanel(){
+    	return chartPanel;
+    }
+    private ChartPanel createDemoPanel(String title) {
+        JFreeChart jfreechart = ChartFactory.createScatterPlot(
+            title, "X1", "X2", createSeries(),
+            PlotOrientation.VERTICAL, true, true, false);
+        xyPlot = (XYPlot) jfreechart.getPlot();
+        xyPlot.setDomainCrosshairVisible(true);
+        xyPlot.setRangeCrosshairVisible(true);
+//        XYItemRenderer renderer = xyPlot.getRenderer();
+//       renderer.setSeriesPaint(0, new Color(132,188,255));
+//        adjustAxis((NumberAxis) xyPlot.getDomainAxis(), false);
+//        adjustAxis((NumberAxis) xyPlot.getRangeAxis(), false);
+        xyPlot.setBackgroundPaint(Color.white);
+        return new ChartPanel(jfreechart);
+    }
+
+    public void setDotColor(double series, Color color){
+    	XYItemRenderer renderer = xyPlot.getRenderer();
+    	if(series == NEGATIVE)
+        	renderer.setSeriesPaint(0, color);
+    	else if(series == POSITIVE)
+    		renderer.setSeriesPaint(1, color);
+    	else if(series == NEGTRAIN)
+    		renderer.setSeriesPaint(2, color);
+    	else if(series == POSTRAIN)
+    		renderer.setSeriesPaint(3, color);
+    }
+    
+    public void setDotShape(double series, Shape shape){
+    	XYItemRenderer renderer = xyPlot.getRenderer();
+    	if(series == NEGATIVE)
+        	renderer.setSeriesShape(0, shape);
+    	else if(series == POSITIVE)
+    		renderer.setSeriesShape(1, shape);
+    	else if(series == NEGTRAIN)
+    		renderer.setSeriesShape(2, shape);
+    	else if(series == POSTRAIN)
+    		renderer.setSeriesShape(3, shape);
+    	else if(series == SVECTORS)
+    		renderer.setSeriesShape(4, shape);
+    }
+    
+    public void adjustAxis(double minX, double maxX, double minY, double maxY){
+    	xyPlot.getDomainAxis().setRange(minX, maxX);
+    	xyPlot.getRangeAxis().setRange(minY, maxY);
+    }
+
+    private void adjustAxis(NumberAxis axis, boolean vertical) {
+        axis.setRange(-6.0, 6.0);
+        axis.setTickUnit(new NumberTickUnit(0.5));
+        axis.setVerticalTickLabels(vertical);
+    }
+
+    private XYDataset createSeries() {
+        XYSeriesCollection xySeriesCollection = new XYSeriesCollection();
+
+        xySeriesCollection.addSeries(neg);
+        xySeriesCollection.addSeries(pos);
+        xySeriesCollection.addSeries(negtrain);
+        xySeriesCollection.addSeries(postrain);
+        return xySeriesCollection;
+    }
+
+    public void addData(double series, double x, double y){
+    	if(series == NEGATIVE)
+    		neg.add(x,y);
+    	else if(series == POSITIVE)
+    		pos.add(x,y);
+    }
+    public static void main(String args[]) {
+        EventQueue.invokeLater(new Runnable() {
+
+            public void run() {
+                svm_plot_helper demo = new svm_plot_helper(title);
+//                demo.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//                demo.pack();
+//                demo.setLocationRelativeTo(null);
+//                demo.setVisible(true);
+            }
+        });
+    }
+}

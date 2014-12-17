@@ -1,11 +1,11 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Scanner;
- 
+import java.util.*;
+import java.text.*;
+
 public class csvReader{
      //public static void main(String[] args) throws FileNotFoundException{
-	static String fn =new String();
-	
+	static String fn =new String("C:/Users/Thomas/Documents/4th-year-project/Tom/24th Sept ORDERED.csv");
 	public static String fSet(String fname){
 		csvReader.fn=fname;
 		return fn;
@@ -15,7 +15,7 @@ public class csvReader{
 	public static String[][] wd(int opt) throws FileNotFoundException{
 		String filename = new String(fn);//reads file name and hierarchy
 		Scanner scanner = new Scanner(new File(filename));//Get scanner instance
-        scanner.useDelimiter(";|\\n"); //Set the delimiter used in file
+        scanner.useDelimiter(",|\\n"); //Set the delimiter used in file
         int length = 20000; //following will calc length of csv: csvsize.wil("24th Sept.csv");
         String[][] data = new String[8][length];
         for(int x=0; x<5;x++){//intialise the data matrix to avoid null pointer errors
@@ -23,7 +23,7 @@ public class csvReader{
       			data[x][y]="0";
       		}
       	}
-        String ph1n = new String("HT25TW5055273593c875a9898b00");//variables denoting phone ids
+        String ph1n = new String("HT25TW5055273593c875a9898b00");//variables denoting phone IDs
         String ph2n = new String("ZX1B23QBS53771758c578bbd85");
         String ph3n = new String("TA92903URNf067ff16fcf8e045");
         String[][] ph1 = new String[8][length]; //where ph1 is HT25TW5055273593c875a9898b00
@@ -111,6 +111,5 @@ public class csvReader{
         	return null;
         }
 	}
-        
       
 }

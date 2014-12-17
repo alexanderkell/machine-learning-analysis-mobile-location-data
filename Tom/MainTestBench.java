@@ -1,6 +1,6 @@
 import java.io.FileNotFoundException;
-import java.util.Scanner;
-
+import java.util.*;
+import java.text.*;
 
 public class MainTestBench {
 	
@@ -8,13 +8,13 @@ public class MainTestBench {
 	Scanner ui = new Scanner( System.in );//state the scanner
 	int out = 0;
 	String exit = new String();
-		while(out != 1){
+		//while(out != 1){
 			int option = -1;
 			int option2 = 0;
 			String filenom = new String();
 		
 			System.out.println("First Enter the Full Address of the Data File You Wish to Input:");  
-			System.out.println("(for example: 'C:/Users/Thomas/Documents/4th-year-project/Tom/24th Sept.csv')");
+			System.out.println("(for example: 'C:/Users/Thomas/Documents/4th-year-project/Tom/24th Sept ORDERED.csv')");
 			filenom = ui.nextLine();	
 			System.out.println("Set as: " + csvReader.fSet(filenom) + "\n");
 			System.out.println("Select from the following options:\n1. Print Phone 1 Data\n2. Print Phone 2 Data\n3. Print Phone 3 Data\n4. Print Raw Data\n");
@@ -32,7 +32,7 @@ public class MainTestBench {
 			}
 			System.out.print("\n\n\n\n");
 				
-		}
+		//}
 			System.exit(1);
 	}
 }

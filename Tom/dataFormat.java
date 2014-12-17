@@ -6,20 +6,36 @@ public class dataFormat{
 				
 	public static String[][] datcalc (int opt) throws FileNotFoundException, ParseException{
 		double tb = 0;//initialise time between variable
+		double rsx = 0;//initialise relative speed x variable
+		double rsy = 0;//initialise relative speed y variable
+		double rsz = 0;//initialise relative speed z variable
+		double hr = 0;//initialise first hour variable
+		double mn = 0;//initialise first min variable
+		double sc = 0; //initialise first sec variable
+		double hr2 = 0;//initialise second hour variable
+		double mn2 = 0;//initialise second min variable
+		double sc2 = 0;//initialise second sec variable
+		double xco = 0;
+		double yco = 0;
+		double zco = 0;
+		
 		String cd[][]=csvReader.wd(opt);//pull through raw matrix of specific phone
+		cd[5][0]="0";
+		cd[6][0]="0";
 		int length = 0;
 		while (cd[0][length] != null){
 			length++;
 		}
 		
 		
-		System.out.print("\n\n\n\n");		
+		System.out.print("\n\n\n\n");
+		//sets up the date formats to be used for splitting up the different constituent parts of the date
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.ENGLISH);
 		DateFormat hour = new SimpleDateFormat("HH", Locale.ENGLISH);
 		DateFormat min = new SimpleDateFormat("mm", Locale.ENGLISH);
 		DateFormat sec = new SimpleDateFormat("ss", Locale.ENGLISH);
 		
-
+		//works out the time between each reading based on the time
 			for(int y = 0; y<length-1; y++){
 				Date wholedate1 =  df.parse(cd[3][y]); 
 				Date wholedate2 =  df.parse(cd[3][y+1]);
@@ -29,20 +45,41 @@ public class dataFormat{
 	        		System.out.println("Please Put Data in Date and Time Order Before Running!");
 	        		y=length;
 	        	}else{
-				double hr =Double.parseDouble(hour.format(wholedate1));
-				double mn =Double.parseDouble(min.format(wholedate1));
-				double sc =Double.parseDouble(sec.format(wholedate1)); 
-				double hr2 =Double.parseDouble(hour.format(wholedate2));
-				double mn2 =Double.parseDouble(min.format(wholedate2));
-				double sc2 =Double.parseDouble(sec.format(wholedate2));
+				hr =Double.parseDouble(hour.format(wholedate1));
+				mn =Double.parseDouble(min.format(wholedate1));
+				sc =Double.parseDouble(sec.format(wholedate1)); 
+				hr2 =Double.parseDouble(hour.format(wholedate2));
+				mn2 =Double.parseDouble(min.format(wholedate2));
+				sc2 =Double.parseDouble(sec.format(wholedate2));
 				tb = (hr2 - hr)*60*60 + (mn2 - mn)*60 + (sc2 - sc);
 				cd[5][y+1] = String.valueOf(tb);
 				//System.out.println(tb);
 	        }
 				}
 			
+			for (int k = 1; k < length; k++){//working out relative speeds in all directions
+					xco = Double.parseDouble(cd[0][k])-Double.parseDouble(cd[0][k-1]);
+					yco = Double.parseDouble(cd[1][k])-Double.parseDouble(cd[1][k-1]);
+					zco = Double.parseDouble(cd[2][k])-Double.parseDouble(cd[2][k-1]);
+					tb = Double.parseDouble(cd[5][k]);
+					//if(tb!=0){
+						rsx = xco/tb;
+						rsy = yco/tb;
+						rsz = zco/tb;
+						cd[6][k] = String.valueOf(rsx);
+						cd[7][k] = String.valueOf(rsy);
+						cd[8][k] = String.valueOf(rsz);
+					//}else{
+						//cd[6][k] = "0";
+						//cd[7][k] = "0";
+						//cd[8][k] = "0";
+					//}
+					
+				}
+					
+			
 			for (int k = 0; k < length; k++){
-			for (int l = 0; l < 6; l++) {
+			for (int l = 0; l < 9; l++) {
 				System.out.print(cd[l][k] + " ");
 			}
 				System.out.print("\n");

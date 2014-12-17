@@ -4,7 +4,8 @@ import java.util.*;
 import java.text.*;
 
 public class csvReader{
-     //public static void main(String[] args) throws FileNotFoundException{
+     
+	
 	static String fn =new String("C:/Users/Thomas/Documents/4th-year-project/Tom/26th Sept ORDERED.csv");
 	public static String fSet(String fname){
 		csvReader.fn=fname;
@@ -13,6 +14,7 @@ public class csvReader{
 	}
 	
 	public static String[][] wd(int opt) throws FileNotFoundException{
+		int amd = 10;
 		String filename = new String(fn);//reads file name and hierarchy
 		Scanner scanner = new Scanner(new File(filename));//Get scanner instance
         scanner.useDelimiter(",|\\n"); //Set the delimiter used in file
@@ -28,14 +30,14 @@ public class csvReader{
         String ph3n = new String("TA92903URNf067ff16fcf8e045");
         String ph4n = new String("YT910K6675876ded0861342065");
         String ph5n = new String("ZX1B23QFSP48abead89f52e3bb");
-        String[][] ph1 = new String[8][length]; //where ph1 is HT25TW5055273593c875a9898b00
-        String[][] ph2 = new String[8][length]; //where ph2 is ZX1B23QBS53771758c578bbd85
-        String[][] ph3 = new String[8][length];//where ph3 is TA92903URNf067ff16fcf8e045
-        String[][] ph4 = new String[8][length];//where ph3 is YT910K6675876ded0861342065
-        String[][] ph5 = new String[8][length];//where ph3 is ZX1B23QFSP48abead89f52e3bb
+        String[][] ph1 = new String[amd][length]; //where ph1 is HT25TW5055273593c875a9898b00
+        String[][] ph2 = new String[amd][length]; //where ph2 is ZX1B23QBS53771758c578bbd85
+        String[][] ph3 = new String[amd][length];//where ph3 is TA92903URNf067ff16fcf8e045
+        String[][] ph4 = new String[amd][length];//where ph3 is YT910K6675876ded0861342065
+        String[][] ph5 = new String[amd][length];//where ph3 is ZX1B23QFSP48abead89f52e3bb
         int i = 0;//indices of data
         int j = 0;        
-        while (scanner.hasNext()){//while loop for writing data into main data matrix
+        while (scanner.hasNext()){//while loop for writing data into main data matrix of raw data
         	
         	switch (i){//switch statement with case for each cell
         		case 0: data[i][j] = scanner.next();
@@ -83,10 +85,10 @@ public class csvReader{
                 }
             switch(sel){ //switch statement writes individual phone data into individual matrices
             case 1: 
-            	 for(int x=0; x<5;x++){
+            	 for(int x=0; x<5;x++){//writes data into matrix related to the phone
             	 ph1[x][pin1] = data[x][k];
             	}
-            pin1++;
+            pin1++;//next line
             break;
             case 2:
              	for(int x=0; x<5;x++){
@@ -118,7 +120,7 @@ public class csvReader{
               
         scanner.close();
         
-        if(opt==1){
+        if(opt==1){//returns the data based on the phone id 
        return ph1;
         }      	
         if(opt==2){

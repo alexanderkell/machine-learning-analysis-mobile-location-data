@@ -8,14 +8,15 @@ public class csvsize
 	//Get scanner instance
     Scanner scanner = new Scanner(new File(file));
     int length = 0;
-    scanner.useDelimiter(";"); //Set the delimiter used in file
+    scanner.useDelimiter(",|\\n"); //Set the delimiter used in file
 
     while (scanner.hasNext())
     {
         //System.out.print(scanner.next() + "|");
         length++;
     }
-        	
+    
+    length/=5;    	
    	
     scanner.close();
     return length;	

@@ -5,7 +5,7 @@ import java.text.*;
 
 public class csvReader{
      //public static void main(String[] args) throws FileNotFoundException{
-	static String fn =new String("C:/Users/Thomas/Documents/4th-year-project/Tom/24th Sept ORDERED.csv");
+	static String fn =new String("C:/Users/Thomas/Documents/4th-year-project/Tom/26th Sept ORDERED.csv");
 	public static String fSet(String fname){
 		csvReader.fn=fname;
 		return fn;
@@ -26,9 +26,13 @@ public class csvReader{
         String ph1n = new String("HT25TW5055273593c875a9898b00");//variables denoting phone IDs
         String ph2n = new String("ZX1B23QBS53771758c578bbd85");
         String ph3n = new String("TA92903URNf067ff16fcf8e045");
+        String ph4n = new String("YT910K6675876ded0861342065");
+        String ph5n = new String("ZX1B23QFSP48abead89f52e3bb");
         String[][] ph1 = new String[8][length]; //where ph1 is HT25TW5055273593c875a9898b00
         String[][] ph2 = new String[8][length]; //where ph2 is ZX1B23QBS53771758c578bbd85
-        String[][] ph3 = new String[8][length]; //where ph3 is TA92903URNf067ff16fcf8e045
+        String[][] ph3 = new String[8][length];//where ph3 is TA92903URNf067ff16fcf8e045
+        String[][] ph4 = new String[8][length];//where ph3 is YT910K6675876ded0861342065
+        String[][] ph5 = new String[8][length];//where ph3 is ZX1B23QFSP48abead89f52e3bb
         int i = 0;//indices of data
         int j = 0;        
         while (scanner.hasNext()){//while loop for writing data into main data matrix
@@ -56,6 +60,8 @@ public class csvReader{
         int pin1 = 0;
         int pin2 = 0;
         int pin3 = 0;
+        int pin4 = 0;
+        int pin5 = 0;
         String dat = new String();
         int sel = 0;
         for (int k = 0; k < length; k++){
@@ -68,6 +74,12 @@ public class csvReader{
                 }
         	if (dat.contains(ph3n)){
                 sel = 3;
+                }
+        	if (dat.contains(ph4n)){
+                sel = 4;
+                }
+        	if (dat.contains(ph5n)){
+                sel = 5;
                 }
             switch(sel){ //switch statement writes individual phone data into individual matrices
             case 1: 
@@ -88,11 +100,22 @@ public class csvReader{
               	}
             pin3++;
             break;
+            case 4:
+              	for(int x=0; x<5;x++){
+              	 ph4[x][pin4] = data[x][k];
+              	}
+            pin4++;
+            break;
+            case 5:
+              	for(int x=0; x<5;x++){
+              	 ph5[x][pin5] = data[x][k];
+              	}
+            pin5++;
+            break;
             }
         }
         
-        
-      
+              
         scanner.close();
         
         if(opt==1){
@@ -105,6 +128,12 @@ public class csvReader{
             return ph3;
              }
         if(opt==4){
+            return ph4;
+             }
+        if(opt==5){
+            return ph5;
+             }
+        if(opt==6){
             return data;
              }
         else{

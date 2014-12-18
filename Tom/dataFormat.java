@@ -9,6 +9,9 @@ public class dataFormat{
 		double rsx = 0;//initialise relative speed x variable
 		double rsy = 0;//initialise relative speed y variable
 		double rsz = 0;//initialise relative speed z variable
+		double rax = 0;
+		double ray = 0;
+		double raz = 0;
 		double hr = 0;//initialise first hour variable
 		double mn = 0;//initialise first min variable
 		double sc = 0; //initialise first sec variable
@@ -57,33 +60,35 @@ public class dataFormat{
 	        }
 				}
 			
-			for (int k = 1; k < length; k++){//working out relative speeds in all directions
-					xco = Double.parseDouble(cd[0][k])-Double.parseDouble(cd[0][k-1]);
-					yco = Double.parseDouble(cd[1][k])-Double.parseDouble(cd[1][k-1]);
-					zco = Double.parseDouble(cd[2][k])-Double.parseDouble(cd[2][k-1]);
-					tb = Double.parseDouble(cd[5][k]);
-					//if(tb!=0){
+			for (int k = 1; k < length; k++){//working out relative speeds in all directions (velocity)
+						xco = Double.parseDouble(cd[0][k])-Double.parseDouble(cd[0][k-1]);
+						yco = Double.parseDouble(cd[1][k])-Double.parseDouble(cd[1][k-1]);
+						zco = Double.parseDouble(cd[2][k])-Double.parseDouble(cd[2][k-1]);
+						tb = Double.parseDouble(cd[5][k]);
+			
 						rsx = xco/tb;
 						rsy = yco/tb;
 						rsz = zco/tb;
+						rax = xco/(tb*tb);
+						ray = yco/(tb*tb);
+						raz = zco/(tb*tb);
 						cd[6][k] = String.valueOf(rsx);
 						cd[7][k] = String.valueOf(rsy);
 						cd[8][k] = String.valueOf(rsz);
-					//}else{
-						//cd[6][k] = "0";
-						//cd[7][k] = "0";
-						//cd[8][k] = "0";
-					//}
+						cd[9][k] = String.valueOf(rax);
+						cd[10][k] = String.valueOf(ray);
+						cd[11][k] = String.valueOf(raz);
+						
 					
 				}
 					
 			
-			for (int k = 0; k < length; k++){
-			for (int l = 0; l < 9; l++) {
+			/*for (int k = 0; k < length; k++){
+			for (int l = 0; l < 12; l++) {
 				System.out.print(cd[l][k] + " ");
 			}
 				System.out.print("\n");
-			}
+			}*/
 			
 			
 			

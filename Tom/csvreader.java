@@ -14,7 +14,7 @@ public class csvReader{
 	}
 	
 	public static String[][] wd(int opt) throws FileNotFoundException{
-		int amd = 10;
+		int amd = 20;
 		String filename = new String(fn);//reads file name and hierarchy
 		Scanner scanner = new Scanner(new File(filename));//Get scanner instance
         scanner.useDelimiter(",|\\n"); //Set the delimiter used in file

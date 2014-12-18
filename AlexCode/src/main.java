@@ -13,11 +13,11 @@ public class main {
 		}
 */	
 		double[] input = {0, 0, 250, 500, 750, 1000, 1250, 1500, 1750, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500, 7000, 7500, 8000, 8500, 9000, 9500, 10000, 10500, 11000, 11500, 12000};
-
+		
 		double[] output = obj1.butterworth(input, 2000, 2500, 10000);
 		
 		XYPlot plotObj = new XYPlot();
-		plotObj.plot(input, output);
+		plotObj.plot(input, output, "Title", "Heading", "Y-Axis", "X-Axis", "Saved53245");
 		
 		for(int i=0; i<output.length; i++){
 			System.out.println(output[i]);	

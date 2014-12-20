@@ -27,12 +27,6 @@ public class DateTestBench {
 		}
 		
 		
-		scatterGraph chart = new scatterGraph("Plot", "XCo Vs YCo",x,y);
-		chart.pack( );
-		RefineryUtilities.centerFrameOnScreen( chart );
-		chart.setVisible( true );
-		
-		
 	}
 	
 }

@@ -6,7 +6,7 @@ import java.text.*;
 public class csvReader{
      
 	
-	static String fn =new String("C:/Users/Thomas/Documents/4th-year-project/Tom/26th Sept ORDERED.csv");
+	static String fn =new String("/Users/thomas/4th-year-project/Tom/24th Sept ORDERED.csv");
 	public static String fSet(String fname){
 		csvReader.fn=fname;
 		return fn;

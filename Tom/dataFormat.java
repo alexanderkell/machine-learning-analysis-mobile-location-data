@@ -1,6 +1,7 @@
 import java.io.FileNotFoundException;
 import java.util.*;
 import java.text.*;
+import java.lang.Math;
 
 public class dataFormat{
 				
@@ -21,6 +22,10 @@ public class dataFormat{
 		double xco = 0;
 		double yco = 0;
 		double zco = 0;
+		double modspd = 0;
+		double modacc = 0;
+		double p = 2;
+		double sqrt = 0.5;
 		
 		String cd[][]=csvReader.wd(opt);//pull through raw matrix of specific phone
 		cd[5][0]="0";
@@ -65,26 +70,45 @@ public class dataFormat{
 						yco = Double.parseDouble(cd[1][k])-Double.parseDouble(cd[1][k-1]);
 						zco = Double.parseDouble(cd[2][k])-Double.parseDouble(cd[2][k-1]);
 						tb = Double.parseDouble(cd[5][k]);
-			
+						
 						rsx = xco/tb;
 						rsy = yco/tb;
 						rsz = zco/tb;
 						rax = xco/(tb*tb);
 						ray = yco/(tb*tb);
 						raz = zco/(tb*tb);
-						cd[6][k] = String.valueOf(rsx);
-						cd[7][k] = String.valueOf(rsy);
-						cd[8][k] = String.valueOf(rsz);
-						cd[9][k] = String.valueOf(rax);
-						cd[10][k] = String.valueOf(ray);
-						cd[11][k] = String.valueOf(raz);
+						
+						
+						modspd = Math.pow(rsx,p)+Math.pow(rsy,p)+Math.pow(rsz,p);
+						modspd = Math.pow(modspd,sqrt);
+						modacc = Math.pow(rax,p)+Math.pow(ray,p)+Math.pow(raz,p);
+						modacc = Math.pow(modacc,sqrt);
+						if(tb != 0){
+							cd[6][k] = String.valueOf(rsx);
+							cd[7][k] = String.valueOf(rsy);
+							cd[8][k] = String.valueOf(rsz);
+							cd[9][k] = String.valueOf(rax);
+							cd[10][k] = String.valueOf(ray);
+							cd[11][k] = String.valueOf(raz);
+							cd[12][k] = String.valueOf(modspd);
+							cd[13][k] = String.valueOf(modacc);
+						}else{
+							cd[6][k] = String.valueOf(0);
+							cd[7][k] = String.valueOf(0);
+							cd[8][k] = String.valueOf(0);
+							cd[9][k] = String.valueOf(0);
+							cd[10][k] = String.valueOf(0);
+							cd[11][k] = String.valueOf(0);
+							cd[12][k] = String.valueOf(0);
+							cd[13][k] = String.valueOf(0);
+						}
 						
 					
 				}
-					
+				
 			
 			/*for (int k = 0; k < length; k++){
-			for (int l = 0; l < 12; l++) {
+			for (int l = 0; l < 14; l++) {
 				System.out.print(cd[l][k] + " ");
 			}
 				System.out.print("\n");
@@ -99,5 +123,7 @@ public class dataFormat{
 
 		return cd;	
 	}
+	
+	
 
 }

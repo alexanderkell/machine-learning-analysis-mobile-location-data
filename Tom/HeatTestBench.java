@@ -8,7 +8,7 @@ public class HeatTestBench {
 	public static void main(String[] args) throws ParseException, IOException{
 		
 		HeatMapper hm = new HeatMapper();
-		hm.speedHeat(3);
+		hm.speedHeat(1);
 		
 		
 	}

@@ -26,12 +26,12 @@ import org.jfree.chart.ChartUtilities;
 public class scatterGraph extends ApplicationFrame{
    
 	
-	public scatterGraph( double[] xval, double[] yval,  String applicationTitle , String chartTitle, String xlabel, String ylabel, String Name)
+	public scatterGraph( double[] x1, double[] y1, double[] x2, double[] y2, double[] x3, double[] y3,  String applicationTitle , String chartTitle, String xlabel, String ylabel, String Name)
 	{
 		
 		super(applicationTitle);
 		
-		XYDataset dataSet = createDataset(xval, yval); //First create the dataset
+		XYDataset dataSet = createDataset(x1, y1, x2, y2, x3, y3); //First create the dataset
         JFreeChart xylineChart = createChart(dataSet, chartTitle, xlabel, ylabel);
 	      
 		ChartPanel chartPanel = new ChartPanel( xylineChart );
@@ -39,7 +39,12 @@ public class scatterGraph extends ApplicationFrame{
 		final XYPlot plot = xylineChart.getXYPlot( );
 		XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer( );
 		renderer.setSeriesPaint( 0 , Color.RED );
+		renderer.setSeriesPaint( 1 , Color.GREEN );
+		renderer.setSeriesPaint( 2 , Color.YELLOW );
 		renderer.setSeriesStroke( 0 , new BasicStroke( 4.0f ) );
+		renderer.setSeriesStroke( 1 , new BasicStroke( 3.0f ) );
+	    renderer.setSeriesStroke( 2 , new BasicStroke( 2.0f ) );
+		
 		plot.setRenderer( renderer ); 
 		setContentPane( chartPanel ); 
 		
@@ -56,14 +61,25 @@ public class scatterGraph extends ApplicationFrame{
 
 
 	
-	private XYDataset createDataset(double[] x, double[] y ){	//Creates the dataset
-		final XYSeries scatter1 = new XYSeries( "Data" );          
-		for(int i=0; i<x.length; i++){
-			scatter1.add( x[i] , y[i] );    
+	private XYDataset createDataset(double[] x1, double[] y1, double[] x2, double[] y2, double[] x3, double[] y3){	//Creates the dataset
+		final XYSeries scatter1 = new XYSeries("titleOne");          
+		for(int i=0; i<x1.length; i++){
+			scatter1.add( x1[i] , y1[i] );    
 		}
+		final XYSeries scatter2 = new XYSeries("titleTwo");          
+		for(int i=0; i<x2.length; i++){
+			scatter2.add( x2[i] , y2[i] );    
+		}
+		final XYSeries scatter3 = new XYSeries("titleThree");          
+		for(int i=0; i<x3.length; i++){
+			scatter2.add( x3[i] , y3[i] );    
+		}
+		
 		    
 		final XYSeriesCollection dataset = new XYSeriesCollection( );          
-	    dataset.addSeries( scatter1 );  
+	    dataset.addSeries(scatter1);
+	    dataset.addSeries(scatter2);
+	    dataset.addSeries(scatter3); 
 		return dataset;
 	}
 	

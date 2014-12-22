@@ -6,13 +6,10 @@ import Graphing.*;
 public class main {
 	public static void main(String[] args){
 
-		double[] output = obj1.butterworth(input, 2000, 2500, 10000);
-
 		wienerFilter obj2 = new wienerFilter();
-		double input[] = {1,1,1,1,1,1,1,1,2,1,1,1,1,1,2,1,1,1,1,1,1,2,1,1,1,1,2,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,2,1,1,1,1,1,1,2,1,1,1,1,2,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+		double input[] = {1,1,1,1,1,1,1,1,2,1,1,1,1,1,0.5,1,1,1,1,-3,1,2,1,1,1,1,2,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,2,1,1,1,1,1,1,2,1,1,1,1,2,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
 		double reference[] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
 		
-
 		double[] output = obj2.wFilter(input, reference);
 		
 		double in1[] = new double[output.length];
@@ -21,7 +18,7 @@ public class main {
 		}
 				
 		XYPlot plotObj = new XYPlot();
-		plotObj.plot(in1, output, "Title", "Heading", "Y-Axis", "X-Axis", "Saved53245");
+		plotObj.plot(in1, output, in1, reference, in1, input, "Title", "Heading", "Y-Axis", "X-Axis", "Saved53245");
 		
 		
 	}

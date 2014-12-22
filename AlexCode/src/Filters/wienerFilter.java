@@ -4,15 +4,11 @@ public class wienerFilter {
 	
 	public static double[] wFilter(double[] input, double[] reference){
 		
-		double[][] R_w = autocorrelation(input);
-		double[] R_sw= crosscorrelation(input,reference);
-		double[] a = weights(R_w,R_sw);
-		double[] x = output(input, a);
-        for(int m = 0; m<x.length; m++){
-        	System.out.println(x[m]+" ");
-        }
-		System.out.println("Output----");
-
+		double[][] R_w = autocorrelation(input); //Autocorrelation - symmetric Toeplitz matrix
+		double[] R_sw= crosscorrelation(input,reference); //Cross-correlation calcs
+		double[] a = weights(R_w,R_sw); //Calculates weights
+		double[] x = output(input, a);  //Convolutes weights to input
+        
 		return x;
 	}
 	
@@ -21,20 +17,17 @@ public class wienerFilter {
 		
 		double T[][] = new double[input.length][input.length];
 		
-		for(int i=0; i<input.length; i++){
-			for(int j=0; j<input.length; j++){	
+		for(int i=0; i<input.length; i++){ //Adds each point to itself
+			for(int j=0; j<input.length; j++){	//Scrolls through each autoregressive point R[0], R[1], R[2]
 				int pos = j-i;
-				if(j-i<0){
+				if(j-i<0){ //Creates Symmetric Toeplitz Matrix (is pos.)
 					pos = -pos;
 				}
 				for(int k=0; k<(input.length-pos); k++){
-					T[i][j]+=input[k+pos]*input[k];
-				}
-				System.out.printf(T[i][j]+" ");				
+					T[i][j]+=input[k+pos]*input[k]; //Autocorrelation addition of both signals (k scrolls along)
+				}				
 			}
-			System.out.println("");
 		}
-		System.out.println("Autocorrelation----");
 		return T;
 	}
 	
@@ -44,23 +37,20 @@ public class wienerFilter {
 		
 		for(int i=0; i<input.length; i++){
 			for(int k=0; k<input.length-i; k++){
-				v[i]+=input[k]*reference[k+i];
+				v[i]+=input[k]*reference[k+i]; //Crosscorrelation of reference to input signal
 			}
-			System.out.println(v[i]+" ");
 		}
-		System.out.println("Cross-correlation----");
 		return v;
 	}
 	
 	public static double[] weights(double[][] T, double[] v){
 		
-		double a[] = new double[v.length];
+		double a[] = new double[v.length]; //Finds weights by solving simultaneous equations of T and v (Wiener-Hopf Equations)
 		
 		a=solve(T,v);
 		for(int i = 0; i<v.length; i++){
 			System.out.printf(a[i]+", ");
 		}
-
 		return a;
 	}
 	
@@ -105,13 +95,6 @@ public class wienerFilter {
             }
             x[i] = (b[i] - sum) / A[i][i];
         }
-        
-        for(int i=0; i<x.length;i++){
-        	//x_rounded[i] = Math.round(x[i]);
-        	System.out.println(x[i]);
-        }
-		System.out.println("Weights----");
-
         return x;
 	}
 	
@@ -120,7 +103,7 @@ public class wienerFilter {
 		
 		for(int n=0; n<input.length; n++){
 			for(int i=0; i<n; i++){
-				out[n] += weights[i]*input[n-i];
+				out[n] += weights[i]*input[n-i]; //Finds output by multiplying weights to input
 			}
 		}
 		return out;

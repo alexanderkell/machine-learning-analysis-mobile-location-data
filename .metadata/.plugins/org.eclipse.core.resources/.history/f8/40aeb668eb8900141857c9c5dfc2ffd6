@@ -1,0 +1,25 @@
+import Filters.*;
+import Graphing.*;
+
+//import javax.swing.JPanel;
+
+public class main {
+	public static void main(String[] args){
+
+		wienerFilter obj2 = new wienerFilter();
+		double input[] = {1,2,3,4,3,2,1,2,5,4,3,2,-10,2,2,4,3,2,9,4,3,6,3,4,10,2,3,4,3,2,1,1,2,3,4,3,2,1,2,5,4,-10,2,-10,2,2,4,3,2,9,4,3,6,3,4,10,2,8,4,3,2,1,1,2,3,4,3,2,11,2,5,4,3,2,-10,2,2,-8,3,2,9,4,3,6,3,4,10,2,3,4,3,2,1,1,2,3,4,3,8,1,2,5,4,3,2,-10,2,2,4,3,2,9,4,3,6,3,4,10,2,3,4,3,2,1};
+		double reference[] = {1,2,3,4,3,2,1,2,3,4,3,2,1,2,3,4,3,2,1,2,3,4,3,2,1,2,3,4,3,2,1,1,2,3,4,3,2,1,2,3,4,3,2,1,2,3,4,3,2,1,2,3,4,3,2,1,2,3,4,3,2,1,1,2,3,4,3,2,1,2,3,4,3,2,1,2,3,4,3,2,1,2,3,4,3,2,1,2,3,4,3,2,1,1,2,3,4,3,2,1,2,3,4,3,2,1,2,3,4,3,2,1,2,3,4,3,2,1,2,3,4,3,2,1};
+		
+		double[] output = obj2.wFilter(input, reference);
+		
+		double in1[] = new double[output.length];
+		for(int i=0; i<output.length; i++){
+			in1[i] = i+1;
+		}
+				
+		XYPlot plotObj = new XYPlot();
+		plotObj.plot(in1, output, in1, reference, in1, input, "Wiener Filter", "Use of Wiener Filter to remove noise with use of reference signal", "Y-Distance", "X-Distance", "wiener-test");
+		
+		
+	}
+}

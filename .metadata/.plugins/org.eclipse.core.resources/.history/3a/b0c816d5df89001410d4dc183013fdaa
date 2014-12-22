@@ -13,7 +13,6 @@ import org.jfree.data.category.DefaultCategoryDataset;
 	
 public class XYPlot{
 	public static void plot(double[] xval, double[] yval, String Title, String Heading, String xlabel, String ylabel, String Name){
-		
 		scatterGraph chart = new scatterGraph(xval,yval, Title, Heading, xlabel, ylabel, Name);
 		chart.pack( );
 		RefineryUtilities.centerFrameOnScreen( chart );

@@ -6,6 +6,7 @@ import Graphing.*;
 public class main {
 	public static void main(String[] args){
 
+
 		double[] output = obj1.butterworth(input, 2000, 2500, 10000);
 
 		wienerFilter obj2 = new wienerFilter();

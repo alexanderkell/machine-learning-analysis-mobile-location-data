@@ -1,24 +1,31 @@
+package Maths;
 import java.io.FileNotFoundException;
 import java.util.*;
 import java.text.*;
 import java.lang.Math;
+import CSVImport.CSVReaders;
 
-public class dataFormat{
+public class DataFormatOperations{
 				
-	public static String[][] datcalc (int opt) throws FileNotFoundException, ParseException{
-		double tb = 0;//initialise time between variable
-		double rsx = 0;//initialise relative speed x variable
-		double rsy = 0;//initialise relative speed y variable
-		double rsz = 0;//initialise relative speed z variable
+	public String[][] calcData (int opt, String fn) throws FileNotFoundException, ParseException{
+		//initialise all variables
+		//time between variable
+		double tb = 0;
+		//relative speed
+		double rsx = 0;
+		double rsy = 0;
+		double rsz = 0;
+		//relative acceleration
 		double rax = 0;
 		double ray = 0;
 		double raz = 0;
-		double hr = 0;//initialise first hour variable
-		double mn = 0;//initialise first min variable
-		double sc = 0; //initialise first sec variable
-		double hr2 = 0;//initialise second hour variable
-		double mn2 = 0;//initialise second min variable
-		double sc2 = 0;//initialise second sec variable
+		//time variables
+		double hr = 0;
+		double mn = 0;
+		double sc = 0;
+		double hr2 = 0;
+		double mn2 = 0;
+		double sc2 = 0;
 		double xco = 0;
 		double yco = 0;
 		double zco = 0;
@@ -27,7 +34,9 @@ public class dataFormat{
 		double p = 2;
 		double sqrt = 0.5;
 		
-		String cd[][]=csvReader.wd(opt);//pull through raw matrix of specific phone
+		//create CSVReaders Object
+		CSVReaders Read = new CSVReaders(fn); 
+		String cd[][] = Read.myPhone(opt);
 		 
 		int length = 0;
 		while (cd[3][length] != "0" && cd[0][length] != null){

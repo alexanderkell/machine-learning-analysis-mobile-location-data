@@ -1,22 +1,23 @@
+package HeatMap;
 import java.awt.Color;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Arrays;
+import Maths.*;
 
 
 
 public class HeatMapper {
 	
 	
-	public static void speedHeat(int opt) throws ParseException, IOException{
+	public void speedHeat(int opt, String fn) throws ParseException, IOException{
 		int xval = 0;
 		int yval = 0;
-		
+		DataFormatOperations DFO = new DataFormatOperations();
 		double zsp = 0;
 		
-		String[][] newdat = dataFormat.datcalc(opt);
+		String[][] newdat = DFO.calcData(opt, fn);
 		
 		int length = 0;
 		while (newdat[0][length] != null){
@@ -126,11 +127,13 @@ public class HeatMapper {
 	}
 	
 	
-	public static void accHeat(int opt) throws ParseException, IOException{
+	public static void accHeat(int opt, String fn) throws ParseException, IOException{
 		int xval = 0;
 		int yval = 0;
 		double zap = 0;
-		String[][] newdat = dataFormat.datcalc(opt);
+		DataFormatOperations DFO = new DataFormatOperations();
+		
+		String[][] newdat = DFO.calcData(opt, fn);
 		int length = 0;
 		while (newdat[0][length] != null){
 			length++;

@@ -1,12 +1,17 @@
 import java.io.FileNotFoundException;
 import java.text.ParseException;
 
+import Maths.DataFormatOperations;
+
 
 public class DateTestBench {
 
 	public static void main(String[] args) throws FileNotFoundException, ParseException{
 		
-		String[][] newdat = dataFormat.datcalc(1);
+		DataFormatOperations data = new DataFormatOperations();
+		int opt = 1;
+		String fn =  new String("/Users/thomas/4th-year-project/Tom4YP/src/24th Sept ORDERED.csv");
+		String[][] newdat = data.calcData(opt, fn);
 		int length = 0;
 		while (newdat[0][length] != null){
 			length++;

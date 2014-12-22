@@ -1,3 +1,4 @@
+package HeatMap;
 /*  
  *  Copyright 2010 Tom Castle (www.tc33.org)
  *  Licensed under GNU Lesser General Public License

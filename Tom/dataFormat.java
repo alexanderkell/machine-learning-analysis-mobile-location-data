@@ -100,7 +100,7 @@ public class dataFormat{
 						modspd = Math.pow(modspd,sqrt);
 						modacc = Math.pow(rax,p)+Math.pow(ray,p)+Math.pow(raz,p);
 						modacc = Math.pow(modacc,sqrt);
-						System.out.println(modspd);
+
 						if(tb != 0){
 							cd[6][k] = String.valueOf(rsx);
 							cd[7][k] = String.valueOf(rsy);

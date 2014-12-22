@@ -27,9 +27,18 @@ public class HeatMapper {
 		double[] j = new double[length];
 		
 		for(int c = 0; c<length; c++){
-			
-			i[c] = Double.parseDouble(newdat[0][c]);			
-			j[c] = Double.parseDouble(newdat[1][c]);
+			try{
+				i[c] = Double.parseDouble(newdat[0][c]);			
+				
+			}catch(NumberFormatException ie){
+				i[c] = 0;			
+			}
+			try{			
+				j[c] = Double.parseDouble(newdat[1][c]);
+				
+			}catch(NumberFormatException ie){
+				j[c] = 0;			
+			}
 		}
 		
 		Arrays.sort(i);
@@ -38,8 +47,7 @@ public class HeatMapper {
 		int tmx = 0;
 		int tmy = 0;
 		while (i[tmx] < 90){
-			tmx++;
-		//System.out.println(i[tmx]);	
+			tmx++;	
 		}
 		
 		while (i[tmy] < 303){
@@ -47,20 +55,32 @@ public class HeatMapper {
 		}
 		
 		int maxx = (int) i[i.length-1];
+		//System.out.println(maxx);
 		int maxy = (int) j[j.length-1];
+		//System.out.println(maxy);
 		int maxxt = maxx - (int) i[tmx];
 		int maxyt = maxy - (int) j[tmy];
-		
-		double[][] zhs = new double[maxxt+1][maxyt+1];
+		//System.out.println(maxx*maxy);
+		int count = 0;
+		int count0 = 0;
+		double[][] zhs = new double[maxx+1][maxy+1];
 		
 		for(int x=0; x<(length); x++){
+			try{
 			xval = Integer.parseInt(newdat[0][x]);
-			xval -= (int) i[tmx];
+			}catch(NumberFormatException xe){
+				xval = 0;
+			}
+			//xval -= (int) i[tmx];
 			if(xval<0){
 				xval=0;
 			}
+			try{
 			yval = Integer.parseInt(newdat[1][x]);
-			yval -= (int) j[tmy];
+			}catch(NumberFormatException ye){
+				yval = 0;
+			}
+			//yval -= (int) j[tmy];
 			if(yval<0){
 				yval=0;
 			}
@@ -68,16 +88,18 @@ public class HeatMapper {
 				zsp = Double.parseDouble(newdat[12][x]);
 			
 			}else{
-				zsp = 0.001;
+				zsp = 0;
 			}
-			
-			if(zsp !=0){
-				zhs[xval][yval] = zsp;
+			//System.out.println(xval + " " + yval + "   " + zsp);
+			if(zsp==0){
+				count++;
 			}else{
-				zhs[xval][yval] = 0;
+				count0++;
 			}
+				zhs[xval][yval] = zsp;
+	
 			
-		}
+		}//System.out.println(" Non 0: "+count+"     Zero: "+count0);
 		
 		
 		HeatChart map = new HeatChart(zhs);
@@ -86,7 +108,7 @@ public class HeatMapper {
 		map.setTitle("Speed");
 		map.setXAxisLabel("X Co Ordinate");
 		map.setYAxisLabel("Y Co Ordinate");
-		map.setCellWidth(6);
+		map.setCellWidth(3);
 		map.setCellHeight(2);
 		System.setProperty("Axis", "#FF1493");
 		map.setAxisColour(Color.getColor("Axis"));
@@ -149,11 +171,19 @@ public class HeatMapper {
 		HeatChart map = new HeatChart(zha);
 
 		// Step 2: Customise the chart.
-		map.setTitle("Heat Map of Acceleration in Different Positions");
+		map.setTitle("Acceleration");
 		map.setXAxisLabel("X Co Ordinate");
 		map.setYAxisLabel("Y Co Ordinate");
-		map.setCellWidth(2);
+		map.setCellWidth(3);
 		map.setCellHeight(2);
+		System.setProperty("Axis", "#FF1493");
+		map.setAxisColour(Color.getColor("Axis"));
+		map.setShowXAxisValues(false);
+		map.setShowYAxisValues(false);
+		System.setProperty("LowVal", "#AFEEEE");
+		System.setProperty("HighVal", "#191970");
+		map.setHighValueColour(Color.getColor("HighVal"));
+		map.setLowValueColour(Color.getColor("LowVal"));
 		
 		map.saveToFile(new File("acc heat chart.png"));
 		

@@ -48,7 +48,7 @@ public class scatterGraph extends ApplicationFrame{
 		plot.setRenderer( renderer ); 
 		setContentPane( chartPanel ); 
 		
-		int width = 800; /* Width of the image */
+		int width = 640; /* Width of the image */
 		int height = 480; /* Height of the image */ 
 		File XYChart = new File( Name+".jpeg" ); 
 		try {
@@ -62,15 +62,15 @@ public class scatterGraph extends ApplicationFrame{
 
 	
 	private XYDataset createDataset(double[] x1, double[] y1, double[] x2, double[] y2, double[] x3, double[] y3){	//Creates the dataset
-		final XYSeries scatter1 = new XYSeries("Filtered signal");          
+		final XYSeries scatter1 = new XYSeries("titleOne");          
 		for(int i=0; i<x1.length; i++){
 			scatter1.add( x1[i] , y1[i] );    
 		}
-		final XYSeries scatter2 = new XYSeries("Reference Signal");          
+		final XYSeries scatter2 = new XYSeries("titleTwo");          
 		for(int i=0; i<x2.length; i++){
 			scatter2.add( x2[i] , y2[i] );    
 		}
-		final XYSeries scatter3 = new XYSeries("Noisy Signal");          
+		final XYSeries scatter3 = new XYSeries("titleThree");          
 		for(int i=0; i<x3.length; i++){
 			scatter3.add( x3[i] , y3[i] );    
 		}

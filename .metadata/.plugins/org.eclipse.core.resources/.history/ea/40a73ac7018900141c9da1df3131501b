@@ -1,0 +1,58 @@
+package Filters;
+
+public class wienerFilter {
+	
+	public static double[] wFilter(double[] input, double[] reference){
+		
+		double output[] = new double[input.length];
+		
+		
+		return output;
+	}
+	
+	
+	public static double[][] autocorrelation(double[] input){
+		
+		double T[][] = new double[input.length][input.length];
+		
+		for(int i=0; i<input.length; i++){
+			for(int j=0; j<input.length; j++){	
+				int pos = j-i;
+				if(j-i<0){
+					pos = -pos;
+				}
+				for(int k=0; k<(input.length-pos); k++){
+					T[i][j]+=input[k+pos]*input[k];
+				}
+				System.out.printf(T[i][j]+" ");				
+			}
+			System.out.println("");
+		}
+		return T;
+	}
+	
+	public static double[] crosscorrelation(double[] input, double[] reference){
+		
+		double v[] = new double[input.length];
+		
+		for(int i=0; i<input.length; i++){
+			for(int k=0; k<input.length-i; k++){
+				v[i]=input[0]*reference[i];
+			}
+			System.out.println(v[i]+", ");
+		}
+		return v;
+	}
+	
+	public static double[] weights(double[] T, double[] v){
+		
+		double a[] = new double[v.length];
+		
+		//a = v^-1.T;
+		
+		return a;
+	}
+	
+
+	
+}

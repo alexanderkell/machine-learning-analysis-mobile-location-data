@@ -12,18 +12,11 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 	
 public class XYPlot{
-	public static void plot(double[] xval, double[] yval, String Title, String Heading, String xlabel, String ylabel, String Name){
-	
-		double[] gain = new double[xval.length];
-		for(int i=0; i<xval.length; i++){
-			gain[i] = 20*Math.log10(yval[i]/xval[i]);
-		}
-		 
-		scatterGraph chart = new scatterGraph(xval,yval, Title, Heading, xlabel, ylabel, Name);
+	public static void plot(double[] x1, double[] y1, double[] x2, double[] y2, double[] x3, double[] y3, String Title, String Heading, String xlabel, String ylabel, String Name){
+		
+		scatterGraph chart = new scatterGraph(x1,y1,x2,y2,x3,y3, Title, Heading, xlabel, ylabel, Name);
 		chart.pack( );
 		RefineryUtilities.centerFrameOnScreen( chart );
-		chart.setVisible( true );
-		
+		chart.setVisible( true );		
 	}
-
 }  

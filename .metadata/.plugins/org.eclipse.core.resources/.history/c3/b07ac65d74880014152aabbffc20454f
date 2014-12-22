@@ -1,0 +1,19 @@
+package Filters;
+
+public class wienerFilter {
+	public static double[] wienerHopf(double[] input, double[] reference){
+		
+		double T[][] = new double[input.length][input.length];
+		
+		for(int i=0; i<input.length; i++){
+			for(int j=0; j<input.length; j++){
+				T[i][j-i]=input[i]*input[i];
+				System.out.printf(T[i][j-i]+", ");
+			}
+		}
+		double out[] = {1,2,3,4,5};
+		return out;
+	}
+	
+	
+}

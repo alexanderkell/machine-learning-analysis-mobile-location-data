@@ -1,0 +1,15 @@
+package Filters;
+
+public class wienerFilter {
+	public static double[] wienerHopf(double[] input, double[] reference){
+		for(int i=0; i<input.length; i++){
+			for(int j=0; j<input.length; j++){
+				
+			}
+		}
+		double out[] = {1,2,3,4,5};
+		return out;
+	}
+	
+	
+}

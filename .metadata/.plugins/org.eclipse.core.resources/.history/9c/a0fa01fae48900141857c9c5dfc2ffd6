@@ -1,0 +1,107 @@
+package Graphing;
+import java.io.*;
+import java.awt.Color; 
+import java.awt.BasicStroke; 
+
+import org.jfree.chart.ChartPanel; 
+import org.jfree.chart.JFreeChart; 
+import org.jfree.data.xy.XYDataset; 
+import org.jfree.data.xy.XYSeries; 
+import org.jfree.ui.ApplicationFrame; 
+import org.jfree.ui.RefineryUtilities; 
+import org.jfree.chart.plot.XYPlot; 
+import org.jfree.chart.ChartFactory; 
+import org.jfree.chart.plot.PlotOrientation; 
+import org.jfree.data.xy.XYSeriesCollection; 
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.xy.XYSeriesCollection;
+import org.jfree.chart.ChartUtilities; 
+//Need to import JFreeChart library 
+
+
+public class scatterGraph extends ApplicationFrame{
+   
+	
+	public scatterGraph( double[] x1, double[] y1, double[] x2, double[] y2, double[] x3, double[] y3,  String applicationTitle , String chartTitle, String xlabel, String ylabel, String Name)
+	{
+		
+		super(applicationTitle);
+		
+		XYDataset dataSet = createDataset(x1, y1, x2, y2, x3, y3); //First create the dataset
+        JFreeChart xylineChart = createChart(dataSet, chartTitle, xlabel, ylabel);
+	      
+		ChartPanel chartPanel = new ChartPanel( xylineChart );
+		chartPanel.setPreferredSize( new java.awt.Dimension( 560 , 367 ) );
+		final XYPlot plot = xylineChart.getXYPlot( );
+		XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer( );
+		renderer.setSeriesPaint( 0 , Color.RED );
+		renderer.setSeriesPaint( 1 , Color.GREEN );
+		renderer.setSeriesPaint( 2 , Color.YELLOW );
+		renderer.setSeriesStroke( 0 , new BasicStroke( 4.0f ) );
+		renderer.setSeriesStroke( 1 , new BasicStroke( 3.0f ) );
+	     renderer.setSeriesStroke( 2 , new BasicStroke( 2.0f ) );
+		
+		plot.setRenderer( renderer ); 
+		setContentPane( chartPanel ); 
+		
+		int width = 640; /* Width of the image */
+		int height = 480; /* Height of the image */ 
+		File XYChart = new File( Name+".jpeg" ); 
+		try {
+			ChartUtilities.saveChartAsJPEG( XYChart, xylineChart, width, height);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+
+
+	
+	private XYDataset createDataset(double[] x1, double[] y1, double[] x2, double[] y2, double[] x3, double[] y3){	//Creates the dataset
+		final XYSeries scatter1 = new XYSeries("titleOne");          
+		for(int i=0; i<x1.length; i++){
+			scatter1.add( x1[i] , y1[i] );    
+		}
+		final XYSeries scatter2 = new XYSeries("titleTwo");          
+		for(int i=0; i<x2.length; i++){
+			scatter2.add( x2[i] , y2[i] );    
+		}
+		final XYSeries scatter3 = new XYSeries("titleThree");          
+		for(int i=0; i<x3.length; i++){
+			scatter2.add( x3[i] , y3[i] );    
+		}
+		
+		    
+		final XYSeriesCollection dataset = new XYSeriesCollection( );          
+	    dataset.addSeries(scatter1);
+	    dataset.addSeries(scatter2);
+	    dataset.addSeries(scatter3); 
+		return dataset;
+	}
+	
+	
+	private JFreeChart createChart(XYDataset dataset, String title, String xlabel, String ylabel){
+		
+		JFreeChart xylineChart = ChartFactory.createXYLineChart(
+   	         title ,
+   	         ""+xlabel ,
+   	         ""+ylabel ,
+   	         dataset ,
+   	         PlotOrientation.VERTICAL ,
+   	         true , true , false);//Creates the line chart based upon dataSet	
+		
+		return xylineChart;
+		/*
+		scatterGraph chart = new scatterGraph("Browser Usage Statistics", "Which Browser are you using?");
+	      chart.pack( );          
+	      RefineryUtilities.centerFrameOnScreen( chart );          
+	      chart.setVisible( true );
+		*/
+	}
+}
+	
+	

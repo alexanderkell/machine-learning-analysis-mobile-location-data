@@ -7,7 +7,7 @@ import CSVImport.*;
 //tests csvreader
 public class MainTestBench {
 	
-	public static void main(String[] args) throws FileNotFoundException{
+	public static void main(String[] args){
 	Scanner ui = new Scanner( System.in );//state the scanner
 	int out = 0;
 	String exit = new String();

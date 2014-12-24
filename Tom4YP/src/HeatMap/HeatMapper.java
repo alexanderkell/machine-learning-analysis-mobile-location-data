@@ -16,7 +16,7 @@ public class HeatMapper {
 		int yval = 0;
 		DataFormatOperations DFO = new DataFormatOperations(opt, fn);
 		double zsp = 0;
-		String[][] newdat = DFO.calcData();
+		String[][] newdat = DFO.getFull();
 		
 		int length = 0;
 		while (newdat[0][length] != null){
@@ -131,7 +131,7 @@ public class HeatMapper {
 		int yval = 0;
 		double zap = 0;
 		DataFormatOperations DFO = new DataFormatOperations(opt, fn);
-		String[][] newdat = DFO.calcData();
+		String[][] newdat = DFO.getFull();
 		int length = 0;
 		while (newdat[0][length] != null){
 			length++;

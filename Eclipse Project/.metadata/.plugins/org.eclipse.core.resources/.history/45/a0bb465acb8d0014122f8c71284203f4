@@ -1,0 +1,16 @@
+package Filters;
+
+public class kalman {
+	
+	//Transformation matrices
+	private double F[][] = new double[2][2]; //State transition matrix - How time t-1 affects t
+	private double B[] = new double[2]; //Control input matrix - Applies controls to displacement
+	private double H[] = new double[2]; //Unit transformatino matrix
+	
+	//System Estimate matrices
+	private double x[] = new double[2]; //Estimated displacement
+	private double P[] = new double[2]; //Predicted displacement
+	
+	
+	private static double 
+}

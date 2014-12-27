@@ -62,10 +62,15 @@ public class DataFormatOperations{
 		length = 0;
 		int wk = 0;
 		
-		while(cdcalc[0][wk] != null){
-			length++;
-			wk++;
-		}
+		try{
+			while(cdcalc[0][wk] != null){
+				length++;
+				wk++;
+			}
+		}catch(ArrayIndexOutOfBoundsException aiob){
+				
+			
+			}
 		
 		
 		//works out the time between each reading based on the time
@@ -183,11 +188,15 @@ public class DataFormatOperations{
 		this.fn = fn;
 		length = 0;
 		int wk = 0;
-		
-		while(cdcalc[0][wk] != null){
-			length++;
-			wk++;
-		}
+		try{
+			while(cdcalc[0][wk] != null){
+				length++;
+				wk++;
+			}
+		}catch(ArrayIndexOutOfBoundsException aiob){
+				
+			
+			}
 		
 		
 		//works out the time between each reading based on the time
@@ -294,6 +303,21 @@ public class DataFormatOperations{
 				
 	}
 	
+	public int getLength(){
+		length = 0;
+		int wk = 0;
+		try{
+			while(cdcalc[0][wk] != null){
+				length++;
+				wk++;
+			}
+		}catch(ArrayIndexOutOfBoundsException aiob){
+				
+			
+			}
+		return length;
+	}
+	
 	public void setPhone(int opt){
 		this.opt = opt;
 	}
@@ -308,14 +332,23 @@ public class DataFormatOperations{
 	
 	public double[] getXYZValue(int index){
 		double[] val = new double[3];
-		String vals1 = cdcalc[0][index];
-		String vals2 = cdcalc[1][index];
-		String vals3 = cdcalc[2][index];
-		val[0] = Double.parseDouble(vals1);
-		val[1] = Double.parseDouble(vals2);
-		val[2] = Double.parseDouble(vals3);
+		try{
+			
+			String vals1 = cdcalc[0][index];
+			String vals2 = cdcalc[1][index];
+			String vals3 = cdcalc[2][index];
+			val[0] = Double.parseDouble(vals1);
+			val[1] = Double.parseDouble(vals2);
+			val[2] = Double.parseDouble(vals3);
+			
+		}catch(NumberFormatException nfe){
+			val[0] = 0;
+			val[1] = 0;
+			val[2] = 0;
+			
+		}
+		return val;
 		
-	return val;
 	}
 	
 	public String getDateTimeString(int index){

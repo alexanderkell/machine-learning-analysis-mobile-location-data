@@ -7,7 +7,7 @@ public class CSVReaders{
     static String fn =new String("/Users/thomas/4th-year-project/Tom4YP/src/24th Sept ORDERED.csv"); 
     static int amd = 20;
     static int length = CSVReaders.findLength();
-    String[][] data = new String[8][length];
+    String[][] data = new String[amd][length];
 
     public CSVReaders(String fn){
     	try{
@@ -51,6 +51,9 @@ public class CSVReaders{
     			System.out.println("File Not Found, Sorry!");
     		
     		}
+    	for(int rd =0; rd<amd;rd++){
+    		data[rd][0] = "0";
+    	}
     }
     
     public CSVReaders() throws FileNotFoundException{

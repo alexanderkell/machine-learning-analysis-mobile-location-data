@@ -8,7 +8,7 @@ import Maths.*;
 
 
 
-public class HeatMapper {
+public class HeatMapperLarge {
 	
 	
 	public void speedHeat(int opt, String fn) throws ParseException, IOException{
@@ -18,11 +18,7 @@ public class HeatMapper {
 		double zsp = 0;
 		String[][] newdat = DFO.getFull();
 		
-		int length = 0;
-		while (newdat[0][length] != null){
-			length++;
-		}
-		
+		int length = DFO.getLength();
 		
 		double[] i = new double[length];
 		double[] j = new double[length];
@@ -69,6 +65,9 @@ public class HeatMapper {
 		int count0 = 0;
 		double[][] zhs = new double[maxx+1][maxy+1];
 		
+		int xi = 0;
+		int yi = 0;
+		
 		for(int x=0; x<(length); x++){
 			k = DFO.getXYZValue(x);
 			try{
@@ -101,9 +100,23 @@ public class HeatMapper {
 			}else{
 				count0++;
 			}
-				zhs[xval][yval] = zsp;
-	
 			
+			xi= -3;
+			try{
+				while(xi<7){
+						zhs[xval+xi][yval] = zsp-1;
+						zhs[xval+xi][yval-3] = zsp-1;
+						zhs[xval+xi][yval-2] = zsp-1;
+						zhs[xval+xi][yval-1] = zsp-1;
+						zhs[xval+xi][yval+1] = zsp-1;
+						zhs[xval+xi][yval+2] = zsp-1;
+						zhs[xval+xi][yval+3] = zsp-1;
+						xi++;
+				}
+					zhs[xval][yval] = zsp;
+			}catch(ArrayIndexOutOfBoundsException aob){
+				
+			}
 		}//System.out.println(" Non 0: "+count+"     Zero: "+count0);
 		
 		
@@ -113,8 +126,8 @@ public class HeatMapper {
 		map.setTitle("Speed");
 		map.setXAxisLabel("X Co Ordinate");
 		map.setYAxisLabel("Y Co Ordinate");
-		map.setCellWidth(3);
-		map.setCellHeight(2);
+		map.setCellWidth(2);
+		map.setCellHeight(3);
 		System.setProperty("Axis", "#FF1493");
 		map.setAxisColour(Color.getColor("Axis"));
 		map.setShowXAxisValues(false);

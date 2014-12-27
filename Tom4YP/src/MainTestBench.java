@@ -4,7 +4,7 @@ import java.text.*;
 
 import CSVImport.*;
 
-//tests csvreader
+//tests CSVreaders
 public class MainTestBench {
 	
 	public static void main(String[] args){

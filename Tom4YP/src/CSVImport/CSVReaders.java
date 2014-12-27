@@ -160,29 +160,35 @@ public class CSVReaders{
             		}
             		pin1++;//next line
             		break;
+            		
             	case 2:
             		for(int x=0; x<5;x++){
             			ph2[x][pin2] = data[x][k];
             		}
             		pin2++;
             		break;
+            		
             	case 3:
             		for(int x=0; x<5;x++){
             			ph3[x][pin3] = data[x][k];
             		}
             		pin3++;
             		break;
+            		
             	case 4:
             		for(int x=0; x<5;x++){
             			ph4[x][pin4] = data[x][k];
             		}
             		pin4++;
             		break;
+            		
             	case 5:
             		for(int x=0; x<5;x++){
             			ph5[x][pin5] = data[x][k];
             		}
             		pin5++;
+            		break;
+            		
             	case 6:
             		for(int x=0; x<5;x++){
             			ph6[x][pin6] = data[x][k];

@@ -7,9 +7,14 @@ import HeatMap.*;
 public class HeatTestBench {
 	
 	public static void main(String[] args) throws ParseException, IOException{
-		
+		//select the phone
+		int opt = 4;
+		//filename
+		String fn = new String("/Users/thomas/4th-year-project/Tom4YP/src/24th Sept ORDERED.csv");
+		//calls the heatmapper class to print the heatmap
 		HeatMapperLarge hm = new HeatMapperLarge();
-		hm.speedHeat(4, "/Users/thomas/4th-year-project/Tom4YP/src/24th Sept ORDERED.csv");
+		//the int is the 
+		hm.speedHeat(opt, fn);
 		
 		
 	}

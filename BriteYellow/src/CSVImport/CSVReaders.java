@@ -4,7 +4,7 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 public class CSVReaders{
-    static String fn =new String("/Users/thomas/4th-year-project/Tom4YP/src/24th Sept ORDERED.csv"); 
+    static String fn =new String("/Users/thomas/4th-year-project/BriteYellow/src/24th Sept ORDERED.csv"); 
     static int amd = 20;
     static int length = CSVReaders.findLength();
     String[][] data = new String[amd][length];

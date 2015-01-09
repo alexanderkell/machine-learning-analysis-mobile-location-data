@@ -12,6 +12,7 @@ public class ARCalculations {
 	double[] arc = new double[2];
 	double[] xyzarc = new double[6];
 	
+	//constructor imports the data array containing the analysed data
 	public ARCalculations() throws ParseException{
 		DataFormatOperations DFO = new DataFormatOperations(opt,fn);
 		int length = DFO.getLength();
@@ -38,12 +39,12 @@ public class ARCalculations {
 		
 		this.data = data;
 		
-		for (int k = 0; k < length; k++){
+		/*for (int k = 0; k < length; k++){
 		for (int l = 0; l < 4; l++) {
 			System.out.print(data[l][k] + " ");
 		}
 			System.out.print("\n");
-		}
+		}*/
 		
 		
 		
@@ -96,6 +97,7 @@ public class ARCalculations {
 		this.fn = fn;
 	}
 	
+	//class delays the data by a step in the matrix
 	public double[][] delayData(int delay){
 		double [][] deldata = new double[4][length+delay];
 		for(int i=0; i<length; i++){
@@ -114,6 +116,7 @@ public class ARCalculations {
 		return deldata;
 	}
 	
+	//method works out the regression coefficients of each coordinate, coordinate is set by the 'co' variable, order of autoreg is set by 'order', 'lb' sets the amount of look backs through the data
 	public double[] arCoefficients(int lb, int order, int co){
 		
 		double[][] deldata = delayData(order);
@@ -160,6 +163,7 @@ public class ARCalculations {
 		return arc;
 	}
 	
+	//this method puts each coefficient from each coordinate into a matrix
 	public double[] xyzARCoefficients(int lb, int order){
 		double[] temparc = new double[2];
 		

@@ -5,6 +5,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.*;
 
+import javax.swing.Box;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -65,7 +66,7 @@ public class PhoneGraphs {
 	    		1	//Step
 	    		);
 	    final JSpinner spinner1 = new JSpinner(spinnermodel1);	// Spinner 1
-
+	    final JLabel timelabel1 = new JLabel(cd[3][0]);
 	    final SpinnerNumberModel spinnermodel2 = new SpinnerNumberModel(	//SpinnerNumberModel 2 for spinner 2
 	    		cd[0].length,	//Initial value
 	    		1,  //Minimum
@@ -74,7 +75,8 @@ public class PhoneGraphs {
 	    		);
 	    
 	    final JSpinner spinner2 = new JSpinner(spinnermodel2);
-		final JLabel maxpointlabel = new JLabel("/"+String.valueOf(cd[0].length));
+	    final JLabel timelabel2 = new JLabel(cd[3][cd[0].length-1]);
+		final JLabel maxpointlabel = new JLabel("Max:"+String.valueOf(cd[0].length));
 		
 	    // Add the chart to the center of the JFrame
 		frame.add(plot.getChartPanel(), BorderLayout.CENTER);
@@ -90,11 +92,14 @@ public class PhoneGraphs {
 //	    panel.add(Box.createHorizontalStrut(5));	// Horizontal space
 	    
 	    panel.add(spinner1);	// Add spinner 1
+	    panel.add(timelabel1);	// Add timelabel 1
 //	    panel.add(Box.createHorizontalStrut(5));	// Horizontal space
 	    panel.add(new JLabel("to"));	// JLabel for "to"
 //	    panel.add(Box.createHorizontalStrut(5));	// Horizontal space
 
 	    panel.add(spinner2);	// Add spinner 2
+	    panel.add(timelabel2);	// Add timelabel 2
+	    panel.add(Box.createHorizontalStrut(5));
 	    panel.add(maxpointlabel);
 	    
 	    // Configure components
@@ -124,11 +129,15 @@ public class PhoneGraphs {
 						spinnermodel1.setMaximum(cd[0].length);
 						spinnermodel2.setMaximum(cd[0].length);
 						spinner2.setValue(cd[0].length);
+						timelabel1.setText(cd[3][(Integer)spinner1.getValue()-1]);
+						timelabel2.setText(cd[3][(Integer)spinner2.getValue()-1]);
 						maxpointlabel.setText("/"+String.valueOf(cd[0].length));
 						plot.addData(labels[0], cd[0], cd[1]);
 					} else {
 						spinner1.setEnabled(false);
 						spinner2.setEnabled(false);
+						timelabel1.setText("");
+						timelabel2.setText("");
 						maxpointlabel.setEnabled(false);
 						JOptionPane.showMessageDialog(null,index_name+" doesn't contain any data.","Oops :(", JOptionPane.ERROR_MESSAGE);
 					}
@@ -143,6 +152,8 @@ public class PhoneGraphs {
 			public void stateChanged(ChangeEvent arg0) {
 				// TODO Auto-generated method stub
 				spinnermodel2.setMinimum((Integer) spinner1.getValue());
+				timelabel1.setText(cd[3][(Integer)spinner1.getValue()-1]);
+
 				plot.clearData(labels[0]);
 				plot.addData(labels[0], cd[0],cd[1], ((Integer) spinner1.getValue())-1, (Integer) spinner2.getValue()-1);
 				plot.setTitle(combobox.getSelectedItem()+" positions "+spinner1.getValue()+" to "+spinner2.getValue());
@@ -156,6 +167,8 @@ public class PhoneGraphs {
 			public void stateChanged(ChangeEvent arg0) {
 				// TODO Auto-generated method stub
 				spinnermodel1.setMaximum((Integer) spinner2.getValue());
+				timelabel2.setText(cd[3][(Integer)spinner2.getValue()-1]);
+
 				plot.clearData(labels[0]);
 				plot.addData(labels[0], cd[0],cd[1], ((Integer) spinner1.getValue())-1, (Integer) spinner2.getValue()-1);
 				plot.setTitle(combobox.getSelectedItem()+" positions "+spinner1.getValue()+" to "+spinner2.getValue());

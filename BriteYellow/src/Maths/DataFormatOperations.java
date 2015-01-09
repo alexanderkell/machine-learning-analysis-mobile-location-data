@@ -404,7 +404,11 @@ public class DataFormatOperations{
 	public double getTimeBetweenValue(int index){
 		double val = 0;
 		String vals = cdcalc[5][index];
-		val = Double.parseDouble(vals);
+		try{
+			val = Double.parseDouble(vals);
+		}catch(NullPointerException NPE){
+			return 0;
+		}
 	return val;	
 	}
 	

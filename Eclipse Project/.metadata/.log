@@ -125,3 +125,144 @@ Binding(ALT+COMMAND+Q P,
 		[Lorg.eclipse.e4.ui.internal.workbench.Parameter;@5b7b9223,,true),[Lorg.eclipse.core.commands.Parameterization;@db766c1),
 	org.eclipse.ui.defaultAcceleratorConfiguration,
 	org.eclipse.ui.contexts.window,,cocoa,system)
+!SESSION 2014-12-28 10:00:04.964 -----------------------------------------------
+eclipse.buildId=4.3.0.I20130605-2000
+java.version=1.6.0_65
+java.vendor=Apple Inc.
+BootLoader constants: OS=macosx, ARCH=x86_64, WS=cocoa, NL=en_US
+Framework arguments:  -product org.eclipse.epp.package.standard.product -keyring /Users/Alexander/.eclipse_keyring -showlocation
+Command-line arguments:  -os macosx -ws cocoa -arch x86_64 -product org.eclipse.epp.package.standard.product -keyring /Users/Alexander/.eclipse_keyring -showlocation
+
+!ENTRY org.eclipse.core.resources 2 10035 2014-12-28 10:00:17.843
+!MESSAGE The workspace exited with unsaved changes in the previous session; refreshing workspace to recover changes.
+
+!ENTRY org.eclipse.core.net 1 0 2014-12-28 10:01:15.448
+!MESSAGE System property http.nonProxyHosts has been set to local|*.local|169.254/16|*.169.254/16 by an external source. This value will be overwritten using the values from the preferences
+
+!ENTRY org.eclipse.jface 2 0 2014-12-28 10:01:16.158
+!MESSAGE Keybinding conflicts occurred.  They may interfere with normal accelerator operation.
+!SUBENTRY 1 org.eclipse.jface 2 0 2014-12-28 10:01:16.158
+!MESSAGE A conflict occurred for ALT+COMMAND+Q P:
+Binding(ALT+COMMAND+Q P,
+	ParameterizedCommand(Command(org.eclipse.php.ui.explorer,PHP Script Explorer,
+		Shows the Script Explorer,
+		Category(org.eclipse.ui.category.views,Views,Commands for opening views,true),
+		org.eclipse.ui.internal.WorkbenchHandlerServiceHandler@3e554058,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,cocoa,system)
+Binding(ALT+COMMAND+Q P,
+	ParameterizedCommand(Command(org.eclipse.ui.views.showView,Show View,
+		Shows a particular view,
+		Category(org.eclipse.ui.category.views,Views,Commands for opening views,true),
+		org.eclipse.ui.internal.WorkbenchHandlerServiceHandler@4ef37160,
+		[Lorg.eclipse.e4.ui.internal.workbench.Parameter;@50987e1e,,true),[Lorg.eclipse.core.commands.Parameterization;@4b800ce8),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,cocoa,system)
+
+!ENTRY org.eclipse.equinox.p2.core 4 0 2014-12-29 00:10:55.297
+!MESSAGE Provisioning exception
+!STACK 1
+org.eclipse.equinox.p2.core.ProvisionException: No repository found at http://download.eclipse.org/tools/pdt/updates/release.
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.fail(AbstractRepositoryManager.java:395)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:692)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:96)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:92)
+	at org.eclipse.equinox.p2.ui.LoadMetadataRepositoryJob.doLoad(LoadMetadataRepositoryJob.java:117)
+	at org.eclipse.equinox.p2.ui.LoadMetadataRepositoryJob.runModal(LoadMetadataRepositoryJob.java:102)
+	at org.eclipse.equinox.internal.p2.ui.sdk.PreloadingRepositoryHandler$2.runModal(PreloadingRepositoryHandler.java:83)
+	at org.eclipse.equinox.p2.operations.ProvisioningJob.run(ProvisioningJob.java:177)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:53)
+!SUBENTRY 1 org.eclipse.equinox.p2.metadata.repository 4 1000 2014-12-29 00:10:55.299
+!MESSAGE No repository found at http://download.eclipse.org/tools/pdt/updates/release.
+
+!ENTRY org.eclipse.equinox.p2.operations 4 10053 2014-12-29 00:11:53.954
+!MESSAGE Operation details
+!SUBENTRY 1 org.eclipse.equinox.p2.director 4 10053 2014-12-29 00:11:53.954
+!MESSAGE Cannot complete the install because one or more required items could not be found.
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2014-12-29 00:11:53.954
+!MESSAGE Software being installed: Fabric for Eclipse 2.1.0 (com.crashlytics.tools.eclipse.feature.group 2.1.0)
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2014-12-29 00:11:53.954
+!MESSAGE Missing requirement: Fabric for Eclipse 2.1.0 (com.crashlytics.tools.eclipse.feature.group 2.1.0) requires 'com.android.ide.eclipse.adt 20.0.2' but it could not be found
+
+!ENTRY org.eclipse.equinox.p2.operations 4 10053 2014-12-29 00:11:53.958
+!MESSAGE Operation details
+!SUBENTRY 1 org.eclipse.equinox.p2.director 4 10053 2014-12-29 00:11:53.958
+!MESSAGE Cannot complete the install because one or more required items could not be found.
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2014-12-29 00:11:53.958
+!MESSAGE Software being installed: Fabric for Eclipse 2.1.0 (com.crashlytics.tools.eclipse.feature.group 2.1.0)
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2014-12-29 00:11:53.958
+!MESSAGE Missing requirement: Fabric for Eclipse 2.1.0 (com.crashlytics.tools.eclipse.feature.group 2.1.0) requires 'com.android.ide.eclipse.adt 20.0.2' but it could not be found
+
+!ENTRY org.eclipse.equinox.p2.operations 4 10053 2014-12-29 00:11:53.965
+!MESSAGE Operation details
+!SUBENTRY 1 org.eclipse.equinox.p2.director 4 10053 2014-12-29 00:11:53.965
+!MESSAGE Cannot complete the install because one or more required items could not be found.
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2014-12-29 00:11:53.965
+!MESSAGE Software being installed: Fabric for Eclipse 2.1.0 (com.crashlytics.tools.eclipse.feature.group 2.1.0)
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2014-12-29 00:11:53.966
+!MESSAGE Missing requirement: Fabric for Eclipse 2.1.0 (com.crashlytics.tools.eclipse.feature.group 2.1.0) requires 'com.android.ide.eclipse.adt 20.0.2' but it could not be found
+
+!ENTRY org.eclipse.equinox.p2.operations 4 10053 2014-12-29 00:11:53.966
+!MESSAGE Operation details
+!SUBENTRY 1 org.eclipse.equinox.p2.director 4 10053 2014-12-29 00:11:53.966
+!MESSAGE Cannot complete the install because one or more required items could not be found.
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2014-12-29 00:11:53.966
+!MESSAGE Software being installed: Fabric for Eclipse 2.1.0 (com.crashlytics.tools.eclipse.feature.group 2.1.0)
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2014-12-29 00:11:53.966
+!MESSAGE Missing requirement: Fabric for Eclipse 2.1.0 (com.crashlytics.tools.eclipse.feature.group 2.1.0) requires 'com.android.ide.eclipse.adt 20.0.2' but it could not be found
+
+!ENTRY org.eclipse.equinox.preferences 4 4 2014-12-29 00:36:53.626
+!MESSAGE Exception saving preferences to: /Applications/eclipse/p2/org.eclipse.equinox.p2.engine/profileRegistry/epp.package.standard.profile/.data/.settings/org.eclipse.equinox.p2.metadata.repository.prefs.
+!STACK 0
+java.io.FileNotFoundException: /Applications/eclipse/p2/org.eclipse.equinox.p2.engine/profileRegistry/epp.package.standard.profile/.data/.settings/org.eclipse.equinox.p2.metadata.repository.prefs.bak (No such file or directory)
+	at java.io.FileInputStream.open(Native Method)
+	at java.io.FileInputStream.<init>(FileInputStream.java:120)
+	at org.eclipse.core.internal.preferences.SafeFileOutputStream.copy(SafeFileOutputStream.java:83)
+	at org.eclipse.core.internal.preferences.SafeFileOutputStream.<init>(SafeFileOutputStream.java:49)
+	at org.eclipse.core.internal.preferences.EclipsePreferences.write(EclipsePreferences.java:317)
+	at org.eclipse.core.internal.preferences.EclipsePreferences.save(EclipsePreferences.java:1135)
+	at org.eclipse.equinox.internal.p2.engine.ProfilePreferences.doSave(ProfilePreferences.java:137)
+	at org.eclipse.equinox.internal.p2.engine.ProfilePreferences$SaveJob.run(ProfilePreferences.java:49)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:53)
+
+!ENTRY org.eclipse.equinox.p2.engine 2 0 2014-12-29 00:36:53.629
+!MESSAGE Exception saving profile preferences
+!STACK 0
+org.osgi.service.prefs.BackingStoreException: Exception saving preferences to: /Applications/eclipse/p2/org.eclipse.equinox.p2.engine/profileRegistry/epp.package.standard.profile/.data/.settings/org.eclipse.equinox.p2.metadata.repository.prefs.
+	at org.eclipse.core.internal.preferences.EclipsePreferences.write(EclipsePreferences.java:323)
+	at org.eclipse.core.internal.preferences.EclipsePreferences.save(EclipsePreferences.java:1135)
+	at org.eclipse.equinox.internal.p2.engine.ProfilePreferences.doSave(ProfilePreferences.java:137)
+	at org.eclipse.equinox.internal.p2.engine.ProfilePreferences$SaveJob.run(ProfilePreferences.java:49)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:53)
+!SESSION 2014-12-29 00:37:07.087 -----------------------------------------------
+eclipse.buildId=4.3.2.M20140221-1700
+java.version=1.6.0_65
+java.vendor=Apple Inc.
+BootLoader constants: OS=macosx, ARCH=x86_64, WS=cocoa, NL=en_US
+Framework arguments:  -product org.eclipse.epp.package.standard.product -keyring /Users/Alexander/.eclipse_keyring -showlocation
+Command-line arguments:  -os macosx -ws cocoa -arch x86_64 -product org.eclipse.epp.package.standard.product -keyring /Users/Alexander/.eclipse_keyring -showlocation
+
+!ENTRY org.eclipse.core.net 1 0 2014-12-29 00:37:37.305
+!MESSAGE System property http.nonProxyHosts has been set to local|*.local|169.254/16|*.169.254/16 by an external source. This value will be overwritten using the values from the preferences
+
+!ENTRY org.eclipse.jface 2 0 2014-12-29 00:37:37.701
+!MESSAGE Keybinding conflicts occurred.  They may interfere with normal accelerator operation.
+!SUBENTRY 1 org.eclipse.jface 2 0 2014-12-29 00:37:37.701
+!MESSAGE A conflict occurred for ALT+COMMAND+Q P:
+Binding(ALT+COMMAND+Q P,
+	ParameterizedCommand(Command(org.eclipse.php.ui.explorer,PHP Script Explorer,
+		Shows the Script Explorer,
+		Category(org.eclipse.ui.category.views,Views,Commands for opening views,true),
+		org.eclipse.ui.internal.WorkbenchHandlerServiceHandler@dbf2988,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,cocoa,system)
+Binding(ALT+COMMAND+Q P,
+	ParameterizedCommand(Command(org.eclipse.ui.views.showView,Show View,
+		Shows a particular view,
+		Category(org.eclipse.ui.category.views,Views,Commands for opening views,true),
+		org.eclipse.ui.internal.WorkbenchHandlerServiceHandler@13fa6c5,
+		[Lorg.eclipse.e4.ui.internal.workbench.Parameter;@79ddd026,,true),[Lorg.eclipse.core.commands.Parameterization;@518cad4b),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,cocoa,system)

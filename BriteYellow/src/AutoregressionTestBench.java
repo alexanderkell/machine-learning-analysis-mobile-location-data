@@ -10,7 +10,6 @@ public class AutoregressionTestBench {
 		int opt = 1;
 		
 		ARCalculations ARC = new ARCalculations(opt, fn);
-		ARC.delayData(1);
 		
 	}
 	

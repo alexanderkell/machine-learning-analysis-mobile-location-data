@@ -47,136 +47,12 @@ public class DataFormatOperations{
 	private double sqrt = 0.5;
 	
 	//class variables
-	private int opt = 0;
+	private static int opt = 0;
 	private int length = 20000;
-	private String fn = new String("/Users/thomas/4th-year-project/Tom4YP/src/24th Sept ORDERED.csv");
+	private static String fn = new String("/Users/thomas/4th-year-project/Tom4YP/src/24th Sept ORDERED.csv");
 	private String temp = new String();
 	//read in data
 	String cdcalc[][] = new String[20][length];
-	
-	public DataFormatOperations() throws ParseException{
-		
-		CSVReaders Read = new CSVReaders(fn);
-		cdcalc = Read.myPhone(opt);
-		//create constructor object
-		length = 0;
-		int wk = 0;
-		
-		try{
-			while(cdcalc[0][wk] != null){
-				length++;
-				wk++;
-			}
-		}catch(ArrayIndexOutOfBoundsException aiob){
-				
-			
-			}
-		
-		
-		//works out the time between each reading based on the time
-			for(int y = 0; y<length-1; y++){
-				try{
-					
-					Date wholedate1 =  df.parse(cdcalc[3][y]); 
-					Date wholedate2 =  df.parse(cdcalc[3][y+1]);
-					
-					if(wholedate1.compareTo(wholedate2)>0){
-						System.out.println("Please Put Data in Date and Time Order Before Running!");
-						y=length;
-					}else{
-						temp = hour.format(wholedate1);
-						hr =Double.parseDouble(temp);
-						temp = min.format(wholedate1);
-						mn =Double.parseDouble(temp);
-						temp = sec.format(wholedate1);
-						sc =Double.parseDouble(temp); 
-						temp = hour.format(wholedate2);
-						hr2 =Double.parseDouble(temp);
-						temp = min.format(wholedate2);
-						mn2 =Double.parseDouble(temp);
-						temp = sec.format(wholedate2);
-						sc2 =Double.parseDouble(temp);
-						tb = (hr2 - hr)*60*60 + (mn2 - mn)*60 + (sc2 - sc);
-						cdcalc[5][y+1] = String.valueOf(tb);
-					}
-				}catch(ParseException pe){
-					
-				}
-						
-	        }
-			
-			
-			for (int k = 1; k < length; k++){//working out relative speeds in all directions (velocity)
-						
-						try{
-							xco = Double.parseDouble(cdcalc[0][k]) - Double.parseDouble(cdcalc[0][k-1]);
-						} catch (NumberFormatException e) {
-							xco = 0;
-							}
-						try{
-							yco = Double.parseDouble(cdcalc[1][k]) - Double.parseDouble(cdcalc[2][k-1]);
-						} catch (NumberFormatException e) {
-							yco = 0;
-							}
-						try{
-							zco = Double.parseDouble(cdcalc[2][k]) - Double.parseDouble(cdcalc[2][k-1]);
-						} catch (NumberFormatException e) {
-							zco = 0;
-							}
-
-						
-						rsx = xco/tb;
-						rsy = yco/tb;
-						rsz = zco/tb;
-						rax = xco/(tb*tb);
-						ray = yco/(tb*tb);
-						raz = zco/(tb*tb);
-						spdtheta = Math.atan(rsy/rsx);
-						acctheta = Math.atan(ray/rax);
-						
-						modspd = Math.pow(rsx,p)+Math.pow(rsy,p);
-						modspd = Math.pow(modspd,sqrt);
-						modacc = Math.pow(rax,p)+Math.pow(ray,p);
-						modacc = Math.pow(modacc,sqrt);
-						
-
-						if(tb != 0){
-							cdcalc[6][k] = String.valueOf(rsx);
-							cdcalc[7][k] = String.valueOf(rsy);
-							cdcalc[8][k] = String.valueOf(rsz);
-							cdcalc[9][k] = String.valueOf(rax);
-							cdcalc[10][k] = String.valueOf(ray);
-							cdcalc[11][k] = String.valueOf(raz);
-							cdcalc[12][k] = String.valueOf(modspd);
-							cdcalc[13][k] = String.valueOf(modacc);
-							cdcalc[14][k] = String.valueOf(spdtheta);
-							cdcalc[15][k] = String.valueOf(acctheta);
-						}else{
-							cdcalc[6][k] = String.valueOf(0);
-							cdcalc[7][k] = String.valueOf(0);
-							cdcalc[8][k] = String.valueOf(0);
-							cdcalc[9][k] = String.valueOf(0);
-							cdcalc[10][k] = String.valueOf(0);
-							cdcalc[11][k] = String.valueOf(0);
-							cdcalc[12][k] = String.valueOf(0);
-							cdcalc[13][k] = String.valueOf(0);
-							cdcalc[14][k] = String.valueOf(0);
-							cdcalc[15][k] = String.valueOf(0);
-						}
-						
-					
-				}
-				
-			
-			/*for (int k = 0; k < length; k++){
-			for (int l = 0; l < 16; l++) {
-				System.out.print(cdcalc[l][k] + " ");
-			}
-				System.out.print("\n");
-			}*/
-				
-	}
-	
 	
 	public DataFormatOperations(int opt, String fn) throws ParseException{
 		
@@ -300,6 +176,12 @@ public class DataFormatOperations{
 			}
 				System.out.print("\n");
 			}*/
+				
+	}
+	
+	public DataFormatOperations() throws ParseException{
+		
+		this(opt, fn);
 				
 	}
 	

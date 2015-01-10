@@ -16,7 +16,7 @@ public class MainTestBench {
 			int option2 = 0;
 			String fn = new String();
 			System.out.println("First Enter the Full Address of the Data File You Wish to Input:");  
-			System.out.println("(for example: '/Users/thomas/4th-year-project/Tom4YP/src/24th Sept ORDERED.csv')");
+			System.out.println("(for example: '/Users/thomas/4th-year-project/BriteYellow/src/24th Sept ORDERED.csv')");
 			fn = ui.nextLine();
 			CSVReaders Read = new CSVReaders(fn);
 			System.out.println("Set as: " + Read.getFileName() + "\n");

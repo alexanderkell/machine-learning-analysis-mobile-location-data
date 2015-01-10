@@ -78,12 +78,12 @@ public class ARCalculations {
 		
 		this.data = data;
 		
-		/*for (int k = 0; k < length; k++){
+		for (int k = 0; k < length; k++){
 		for (int l = 0; l < 4; l++) {
 			System.out.print(this.data[l][k] + " ");
 		}
 			System.out.print("\n");
-		}*/
+		}
 		
 		
 		
@@ -106,12 +106,14 @@ public class ARCalculations {
 			}
 		}
 		
-		for (int k = 0; k < length+delay; k++){
+		
+		
+		/*for (int k = 0; k < length+delay; k++){
 			for (int l = 0; l < 4; l++) {
 				System.out.print(deldata[l][k] + " ");
 			}
 				System.out.print("\n");
-			}
+			}*/
 		
 		return deldata;
 	}

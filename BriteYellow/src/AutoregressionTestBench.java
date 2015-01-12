@@ -10,7 +10,11 @@ public class AutoregressionTestBench {
 		int opt = 1;
 		
 		ARCalculations ARC = new ARCalculations(opt, fn);
+		double[] xyzarc = ARC.xyzARCoefficients(10,3);
 		
+		for(int i = 0; i<6; i++){
+			System.out.println(xyzarc[i]);
+		}
 	}
 	
 }

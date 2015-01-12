@@ -102,7 +102,7 @@ public class ARCalculations {
 			}
 		}
 		
-		/*for (int k = 0; k < 5; k++){
+		/*for (int k = 0; k < 12; k++){
 			for (int l = 0; l < 4; l++) {
 				System.out.print(deldata[l][k] + " ");
 			}
@@ -134,24 +134,33 @@ public class ARCalculations {
 		int readings = order+lb;
 		double m;
 		double b;
+		double[][] data1 = new double [4][];
+		double[][] revdata = reverseDataOrder();
 		
-		for(int i=order; i<=readings; i++){
+		if(data[3][0] > data[3][1]){
+			data1 = data;
+		}
+		else if(data[3][0] < data[3][1]){
+			data1 = revdata;
+		}
+		
+		for(int i=order; i<readings; i++){
 			xsum += deldata[co][i];
-			ysum += data[co][i];
+			ysum += data1[co][i];
 			x2 = deldata[co][i]*deldata[co][i];
-			y2 = data[co][i]*data[co][i];
-			xy = deldata[co][i]*data[co][i];
+			y2 = data1[co][i]*data1[co][i];
+			xy = deldata[co][i]*data1[co][i];
 			x2sum += x2;
 			y2sum += y2;
 			xysum += xy;
 			
 		}
 		
-		xbar = xsum/readings;
-		ybar = ysum/readings;
-		x2bar = x2sum/readings;
-		y2bar = y2sum/readings;
-		xybar = xysum/readings;
+		xbar = xsum/lb;
+		ybar = ysum/lb;
+		x2bar = x2sum/lb;
+		y2bar = y2sum/lb;
+		xybar = xysum/lb;
 	
 		m = ((xbar*ybar) - xybar)/(xbar*xbar-x2bar);
 		b = ybar - m*xbar;
@@ -180,5 +189,9 @@ public class ARCalculations {
 		
 		return xyzarc;
 	}
+	
+	
 
 }
+
+

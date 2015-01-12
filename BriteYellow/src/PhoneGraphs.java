@@ -22,21 +22,22 @@ import Graphing.PlotHelper;
 public class PhoneGraphs {
 	
 	private static String[][] cd;
+	final static int DEFAULT_PHONE = 1;
 	public static void main(String[] args){
 		Scanner ui = new Scanner( System.in );//state the scanner
 	
 
 		System.out.println("Enter the Full Address of the Data File You Wish to Input:");  
-		System.out.println("(for example: '/Users/thomas/4th-year-project/Tom4YP/src/24th Sept ORDERED.csv')");
+		System.out.println("(for example: '/Users/thomas/4th-year-project/BriteYellow/src/24th Sept ORDERED.csv')");
 		String fn = ui.nextLine();
 		CSVReaders Read = new CSVReaders(fn);
 		System.out.println("Set as: " + Read.getFileName() + "\n");
 		ui.close();
 		
 		// Set default selected phone to phone 1
-		cd = Read.myPhone(1);
-		String[] labels = new String[]{"Phone 1 data"};	//The first series is invisible
-		PlotHelper plot = new PlotHelper("Phone 1 positions", "X", "Y", labels);
+		cd = Read.myPhone(DEFAULT_PHONE);
+		String[] labels = new String[]{"Phone "+String.valueOf(DEFAULT_PHONE)+" data"};	//The first series is invisible
+		PlotHelper plot = new PlotHelper("Phone "+String.valueOf(DEFAULT_PHONE)+" positions", "X", "Y", labels);
 		plot.setAxisRange(0, 1100, 0, 400);
 		plot.setRangeAxisInverted(true);
 		plot.setSeriesPaint(labels[0], Color.RED);
@@ -66,7 +67,8 @@ public class PhoneGraphs {
 	    		1	//Step
 	    		);
 	    final JSpinner spinner1 = new JSpinner(spinnermodel1);	// Spinner 1
-	    final JLabel timelabel1 = new JLabel(cd[3][0]);
+	    
+	    final JComboBox<String> timebox1 = new JComboBox<String>(cd[3]);
 	    final SpinnerNumberModel spinnermodel2 = new SpinnerNumberModel(	//SpinnerNumberModel 2 for spinner 2
 	    		cd[0].length,	//Initial value
 	    		1,  //Minimum
@@ -75,7 +77,9 @@ public class PhoneGraphs {
 	    		);
 	    
 	    final JSpinner spinner2 = new JSpinner(spinnermodel2);
-	    final JLabel timelabel2 = new JLabel(cd[3][cd[0].length-1]);
+	    final JComboBox<String> timebox2 = new JComboBox<String>(cd[3]);
+	    timebox2.setSelectedIndex((Integer)spinner2.getValue() - 1);
+	    
 		final JLabel maxpointlabel = new JLabel("Max:"+String.valueOf(cd[0].length));
 		
 	    // Add the chart to the center of the JFrame
@@ -92,17 +96,48 @@ public class PhoneGraphs {
 //	    panel.add(Box.createHorizontalStrut(5));	// Horizontal space
 	    
 	    panel.add(spinner1);	// Add spinner 1
-	    panel.add(timelabel1);	// Add timelabel 1
+	    panel.add(timebox1);	// Add timelabel 1
 //	    panel.add(Box.createHorizontalStrut(5));	// Horizontal space
 	    panel.add(new JLabel("to"));	// JLabel for "to"
 //	    panel.add(Box.createHorizontalStrut(5));	// Horizontal space
 
 	    panel.add(spinner2);	// Add spinner 2
-	    panel.add(timelabel2);	// Add timelabel 2
+	    panel.add(timebox2);	// Add timelabel 2
 	    panel.add(Box.createHorizontalStrut(5));
 	    panel.add(maxpointlabel);
 	    
 	    // Configure components
+	    
+	    // Item listeners for timebox 1 and 2
+	    final ItemListener itemlistener1 = new ItemListener(){
+	    	private int previous_index = timebox1.getSelectedIndex();
+			@Override
+			public void itemStateChanged(ItemEvent arg0) {
+				// TODO Auto-generated method stub
+				int index = timebox1.getSelectedIndex();
+				if(index <= (Integer)spinnermodel1.getMaximum()-1){
+					spinner1.setValue(timebox1.getSelectedIndex()+1);
+					previous_index = index;
+				}
+				else
+					timebox1.setSelectedIndex(previous_index);
+			}
+		};
+		final ItemListener itemlistener2 = new ItemListener(){
+			private int previous_index = timebox2.getSelectedIndex();
+			@Override
+			public void itemStateChanged(ItemEvent arg0) {
+				// TODO Auto-generated method stub
+				int index = timebox2.getSelectedIndex();
+				if(index >= (Integer)spinnermodel2.getMinimum()-1){
+					spinner2.setValue(timebox2.getSelectedIndex()+1);
+					previous_index = index;
+				}
+				else
+					timebox2.setSelectedIndex(previous_index);
+			}
+		};
+	    
 	    // Add change listener to the combobox
 	    combobox.addItemListener(new ItemListener(){
 	    	private int index;
@@ -124,20 +159,41 @@ public class PhoneGraphs {
 						spinner1.setEnabled(true);
 						spinner2.setEnabled(true);
 						maxpointlabel.setEnabled(true);
+						timebox1.setEnabled(true);
+						timebox2.setEnabled(true);
+						
+						// Set the time comboboxes, we first need to remove
+						// the Item Listeners, modify the items inside the comboboxes,
+						// then add the item listeners back
+						timebox1.removeItemListener(itemlistener1);
+						timebox2.removeItemListener(itemlistener2);
+						// Set the time comboboxes
+						timebox1.removeAllItems();
+						timebox2.removeAllItems();
+						for(String i : cd[3]){
+							timebox1.addItem(i);
+							timebox2.addItem(i);
+						}
+						timebox1.addItemListener(itemlistener1);
+						timebox2.addItemListener(itemlistener2);
+						
+						// Set the spinners
 						spinner2.setValue(1);
 						spinner2.setValue(1);
 						spinnermodel1.setMaximum(cd[0].length);
 						spinnermodel2.setMaximum(cd[0].length);
 						spinner2.setValue(cd[0].length);
-						timelabel1.setText(cd[3][(Integer)spinner1.getValue()-1]);
-						timelabel2.setText(cd[3][(Integer)spinner2.getValue()-1]);
+						
+						timebox1.setSelectedIndex((Integer)spinner1.getValue()-1);
+						timebox2.setSelectedIndex((Integer)spinner2.getValue()-1);
+
 						maxpointlabel.setText("/"+String.valueOf(cd[0].length));
 						plot.addData(labels[0], cd[0], cd[1]);
 					} else {
 						spinner1.setEnabled(false);
 						spinner2.setEnabled(false);
-						timelabel1.setText("");
-						timelabel2.setText("");
+						timebox1.setEnabled(false);
+						timebox2.setEnabled(false);
 						maxpointlabel.setEnabled(false);
 						JOptionPane.showMessageDialog(null,index_name+" doesn't contain any data.","Oops :(", JOptionPane.ERROR_MESSAGE);
 					}
@@ -145,14 +201,14 @@ public class PhoneGraphs {
 			}
 	    	
 	    });
-	    // Add change listener to spinner 1
+	    // Add change listener to spinner 1 and 2
 	    spinner1.addChangeListener(new ChangeListener(){
 
 			@Override
 			public void stateChanged(ChangeEvent arg0) {
 				// TODO Auto-generated method stub
 				spinnermodel2.setMinimum((Integer) spinner1.getValue());
-				timelabel1.setText(cd[3][(Integer)spinner1.getValue()-1]);
+				timebox1.setSelectedIndex((Integer)spinner1.getValue()-1);
 
 				plot.clearData(labels[0]);
 				plot.addData(labels[0], cd[0],cd[1], ((Integer) spinner1.getValue())-1, (Integer) spinner2.getValue()-1);
@@ -167,7 +223,7 @@ public class PhoneGraphs {
 			public void stateChanged(ChangeEvent arg0) {
 				// TODO Auto-generated method stub
 				spinnermodel1.setMaximum((Integer) spinner2.getValue());
-				timelabel2.setText(cd[3][(Integer)spinner2.getValue()-1]);
+				timebox2.setSelectedIndex((Integer)spinner2.getValue()-1);
 
 				plot.clearData(labels[0]);
 				plot.addData(labels[0], cd[0],cd[1], ((Integer) spinner1.getValue())-1, (Integer) spinner2.getValue()-1);
@@ -177,9 +233,13 @@ public class PhoneGraphs {
 	    	
 	    });
 		
+	    timebox1.addItemListener(itemlistener1);
+	    timebox2.addItemListener(itemlistener2);
+	    
 	    // Set title
 		plot.setTitle(combobox.getSelectedItem()+" positions "+spinner1.getValue()+" to "+spinner2.getValue());
 		frame.pack();
 		frame.setVisible(true);
 	}
+	
 }

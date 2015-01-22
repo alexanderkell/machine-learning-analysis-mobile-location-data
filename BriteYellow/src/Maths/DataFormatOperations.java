@@ -185,8 +185,8 @@ public class DataFormatOperations{
 		DataFormatOperations.fn = fn;
 	}
 	
-	public String[][] getFull(){
-		return cdcalc;
+	public PhoneData[] getFull(){
+		return cdcalc2;
 	}
 	
 	public double[] getXYZValue(int index){
@@ -205,10 +205,9 @@ public class DataFormatOperations{
 	}
 		
 	public double getHour(int index){
-		String date = new String();
 		try {
 			Date id =  df.parse(cdcalc2[index].wholedatestring);
-			date = hour.format(id);
+			String date = hour.format(id);
 			hr =Double.parseDouble(date);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
@@ -219,10 +218,9 @@ public class DataFormatOperations{
 	}
 	
 	public double getMin(int index){
-		String date = new String();
 		try {
 			Date id =  df.parse(cdcalc2[index].wholedatestring);
-			date = min.format(id);
+			String date = min.format(id);
 			mn =Double.parseDouble(date);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
@@ -233,10 +231,9 @@ public class DataFormatOperations{
 	}
 	
 	public double getSec(int index){
-		String date = new String();
 		try {
 			Date id =  df.parse(cdcalc2[index].wholedatestring);
-			date = sec.format(id);
+			String date = sec.format(id);
 			sc =Double.parseDouble(date);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
@@ -247,12 +244,16 @@ public class DataFormatOperations{
 	}
 	
 	public double getTimeBetweenValue(int index){
-		
+		if(index<1)
+			throw new IllegalArgumentException("Index must be greater than or equal to 1");
+
 		return cdcalc2[index].tb;
 		
 	}
 	
 	public double[] getXYZSpeedValue(int index){
+		if(index<1)
+			throw new IllegalArgumentException("Speed index must be greater than or equal to 1");
 
 		return new double[]{
 			cdcalc2[index].rsx,
@@ -263,6 +264,9 @@ public class DataFormatOperations{
 	}
 	
 	public double[] getXYZAccelerationValue(int index){
+		if(index<2)
+			throw new IllegalArgumentException("Acceleration index must be greater than or equal to 2");
+
 		return new double[]{
 				cdcalc2[index].rax,
 				cdcalc2[index].ray,
@@ -271,23 +275,32 @@ public class DataFormatOperations{
 	}
 	
 	public double getModSValue(int index){
+		if(index<1)
+			throw new IllegalArgumentException("Speed index must be greater than or equal to 1");
+
 		return cdcalc2[index].modspd;
 		
 	}
 	
 	public double getModAValue(int index){
+		if(index<2)
+			throw new IllegalArgumentException("Acceleration index must be greater than or equal to 2");
+
 		return cdcalc2[index].modacc;
 		
 	}
 	
 	public double getSThetaValue(int index){
+		if(index<1)
+			throw new IllegalArgumentException("Speed index must be greater than or equal to 1");
+
 		return cdcalc2[index].spdtheta;
 		
 	}
 	
 	public double getAThetaValue(int index){
 		if(index<2)
-			throw new IllegalArgumentException("Acceleration index must be greater than 2");
+			throw new IllegalArgumentException("Acceleration index must be greater than or equal to 2");
 		
 		return cdcalc2[index].acctheta;
 		

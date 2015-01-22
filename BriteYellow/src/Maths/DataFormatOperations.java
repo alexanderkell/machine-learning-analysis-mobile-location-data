@@ -185,7 +185,27 @@ public class DataFormatOperations{
 		DataFormatOperations.fn = fn;
 	}
 	
-	public PhoneData[] getFull(){
+	public String[][] getFull(){
+		if(cdcalc[5][0] == null){	// Just to check if the full String is already created, if yes, no need to build full String[][] again
+			// Build the full String[][]
+			for(int i=0; i<cdcalc[0].length; i++){
+				cdcalc[5][i] = String.valueOf(cdcalc2[i].tb);
+				cdcalc[6][i] = String.valueOf(cdcalc2[i].rsx);
+				cdcalc[7][i] = String.valueOf(cdcalc2[i].rsy);
+				cdcalc[8][i] = String.valueOf(cdcalc2[i].rsz);
+				cdcalc[9][i] = String.valueOf(cdcalc2[i].rax);
+				cdcalc[10][i] = String.valueOf(cdcalc2[i].ray);
+				cdcalc[11][i] = String.valueOf(cdcalc2[i].raz);
+				cdcalc[12][i] = String.valueOf(cdcalc2[i].modspd);
+				cdcalc[13][i] = String.valueOf(cdcalc2[i].modacc);
+				cdcalc[14][i] = String.valueOf(cdcalc2[i].spdtheta);
+				cdcalc[15][i] = String.valueOf(cdcalc2[i].acctheta);
+				
+			}
+		}
+		return cdcalc;
+	}
+	public PhoneData[] getFullPhoneData(){
 		return cdcalc2;
 	}
 	
@@ -306,7 +326,7 @@ public class DataFormatOperations{
 		
 	}
 
-	private class PhoneData{
+	public class PhoneData{
 		//position x,y,z
 		double x, y, z;
 		

@@ -54,9 +54,7 @@ public class DataFormatOperations{
 	public DataFormatOperations(int opt, String fn) throws ParseException{
 		
 		CSVReaders Read = new CSVReaders(fn);
-		cdcalc = Read.myPhone(opt);
-		cdcalc2 = new PhoneData[cdcalc[0].length];
-		
+		cdcalc = Read.myPhone(opt);		
 		
 		//create constructor object
 		DataFormatOperations.opt = opt;
@@ -136,11 +134,18 @@ public class DataFormatOperations{
 					cdcalc2[k].rsx = rsx = xco/cdcalc2[k].tb;
 					cdcalc2[k].rsy = rsy = yco/cdcalc2[k].tb;
 					cdcalc2[k].rsz = rsz = zco/cdcalc2[k].tb;
-	
-					cdcalc2[k].spdtheta = Math.atan(rsy/rsx);
-					
-					cdcalc2[k].modspd = Math.sqrt(rsx*rsx + rsy*rsy);
 				}
+				
+				// Calculate the angle
+				// If the person is not moving (zero speed), assume the angle is
+				// as the previous angle
+				if(rsx == 0 && rsy == 0)
+					cdcalc2[k].spdtheta = cdcalc2[k-1].spdtheta;
+				else
+					cdcalc2[k].spdtheta = Math.atan(rsy/rsx);
+				
+				
+				cdcalc2[k].modspd = Math.sqrt(rsx*rsx + rsy*rsy);
 			}
 			
 			//working out relative acceleration in all directions
@@ -159,9 +164,13 @@ public class DataFormatOperations{
 					cdcalc2[l].ray = ray/ cdcalc2[l].tb;
 					cdcalc2[l].raz = raz/ cdcalc2[l].tb;
 				}
-				cdcalc2[l].acctheta = Math.atan(ray/rax);
 				
-				cdcalc2[l].modacc = Math.sqrt(rax*rax + ray*ray);
+				// If the person is not moving (zero speed), assume the angle is
+				// as the previous angle
+				if(rax == 0 && ray == 0)
+					cdcalc2[l].acctheta = cdcalc2[l-1].acctheta;
+				else
+					cdcalc2[l].modacc = Math.sqrt(rax*rax + ray*ray);
 				
 			}
 				

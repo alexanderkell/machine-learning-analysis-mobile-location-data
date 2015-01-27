@@ -53,8 +53,9 @@ public class DataFormatOperations{
 	
 	public DataFormatOperations(int opt, String fn) throws ParseException{
 		
+		//Read and store the phone data
 		CSVReaders Read = new CSVReaders(fn);
-		cdcalc = Read.myPhone(opt);		
+		cdcalc = Read.myPhone(opt);
 		
 		//create constructor object
 		DataFormatOperations.opt = opt;
@@ -170,7 +171,9 @@ public class DataFormatOperations{
 				if(rax == 0 && ray == 0)
 					cdcalc2[l].acctheta = cdcalc2[l-1].acctheta;
 				else
-					cdcalc2[l].modacc = Math.sqrt(rax*rax + ray*ray);
+					cdcalc2[l].acctheta = Math.atan(rsy/rsx);
+				
+				cdcalc2[l].modacc = (cdcalc2[l].modspd - cdcalc2[l-1].modspd) / cdcalc2[l].tb;
 				
 			}
 				
@@ -333,6 +336,13 @@ public class DataFormatOperations{
 		
 		return cdcalc2[index].acctheta;
 		
+	}
+	
+	public boolean isStandingStill(int index){
+		if(index<1)
+			throw new IllegalArgumentException("Index must be greater than or equal to 1");
+		// Return true if the modulus speed is less than 1 point/sec, or false if not
+		return cdcalc2[index].modspd ==0;
 	}
 
 	public class PhoneData{

@@ -14,17 +14,19 @@ import Maths.DataFormatOperations;
 public class ProbabilityList {
 
 	// variable secret codes
-	private final static int POSITION = 10;	//X Y Z position
-	private final static int MODSPD = 11;  // Time travelling at modulus speed
-	private final static int MODACC = 12;  // Modulus acceleration
-	private final static int STHETA = 13;  // Speed theta
-	private final static int ATHETA = 14;  // Acceleration theta
-	private final static int STILL = 15;	//Amount of time standing still
-	private final static int DISAPPEAR = 16;  //Amount of time disappear from the tracking system
+	final static int POSITION = 10;	//X Y Z position
+	final static int MODSPD = 11;  // Time travelling at modulus speed
+	final static int MODACC = 12;  // Modulus acceleration
+	final static int STHETA = 13;  // Speed theta
+	final static int STHETACHANGE = 14;  // Speed theta
+	final static int ATHETA = 15;  // Acceleration theta
+	final static int ATHETACHANGE = 16;  // Acceleration theta
+	final static int STILL = 17;	//Amount of time standing still
+	final static int DISAPPEAR = 18;  //Amount of time disappear from the tracking system
 	
-	private final static int TIME = 90; // Amount of time
-	private final static int DIST = 91;	// Distance travelled
-	private final static int NUMBER = 92; // Number of times occurring
+	final static int TIME = 90; // Amount of time
+	final static int DIST = 91;	// Distance travelled
+	final static int NUMBER = 92; // Number of times occurring
 	
 	private DataFormatOperations dfo;
 	private int length;	// length of the data
@@ -84,6 +86,8 @@ public class ProbabilityList {
 				result += dfo.getTimeBetweenValue(indices.get(i));
 			} else if(result_property == NUMBER){
 				result++;
+			}else if(result_property == STHETACHANGE){
+				result += Math.abs(dfo.getSThetaChange(indices.get(i)));
 			} else
 				throw new IllegalArgumentException("You might be using the wrong argument for \"result_property\".");
 		}
@@ -139,7 +143,11 @@ public class ProbabilityList {
 				value = dfo.getSThetaValue(indices.get(i));
 			else if(compare_property == ATHETA)
 				value = dfo.getAThetaValue(indices.get(i));
-			else if(compare_property == STILL){
+			else if(compare_property == STHETACHANGE){
+				value = dfo.getSThetaChange(indices.get(i));
+			}else if(compare_property == ATHETACHANGE){
+				value = dfo.getAThetaChange(indices.get(i));
+			}else if(compare_property == STILL){
 				if(dfo.isStandingStill(indices.get(i))){
 					if(!was_still)
 						value = 0;
@@ -150,13 +158,13 @@ public class ProbabilityList {
 				} else {
 					was_still = false;
 				}
-			}else if(compare_property == DISAPPEAR)
+			}else if(compare_property == DISAPPEAR){
 				value = dfo.getTimeBetweenValue(indices.get(i));
-			else
+			}else
 				throw new IllegalArgumentException("You might have place the wrong arguments in \"compare_property\"");
 			
-			
-			if( value >= low && value < high ){
+
+			if(( value >= low && value < high ) && ! was_still){
 				result_indices.add(indices.get(i));
 			}
 		}
@@ -237,8 +245,11 @@ public class ProbabilityList {
 			return 1;
 		
 		// If it is related to accleration or difference in speeds, the starting index is 2
-		else if(property == MODACC || property == ATHETA)
+		else if(property == MODACC || property == ATHETA || property == STHETACHANGE)
 			return 2;
+		
+		else if(property == ATHETACHANGE)
+			return 3;
 		
 		// It is is related to positions, the starting index is 0
 		else 
@@ -278,24 +289,7 @@ public class ProbabilityList {
 	}
 	
 	
-	// Ignore the following
-/*	public double getMintb(){
-		int position = 0;
-		double max_speed = dfo.getSThetaValue(2);
-		for(int i=2; i<length; i++){
-			if(max_speed < dfo.getSThetaValue(i)){
-				max_speed = dfo.getSThetaValue(i);
-				position = i;
-			}
-		}
-
-		double[] speeds = dfo.getXYZSpeedValue(position);
-		System.out.println("Speeds are "+speeds[0]+" "+speeds[1]+" "+speeds[2]);
-		System.out.println("Position is "+position);
-		System.out.println("Time is "+dfo.getDateTimeString(position));
-		return max_speed;
-	}
-*/	/** Test bench
+	/** Test bench
 	 * @param args
 	 * @throws ParseException 
 	 */
@@ -303,28 +297,38 @@ public class ProbabilityList {
 		// TODO Auto-generated method stub
 		
 
-		float step = 60f;
-		double xstart = 200, xend = 900, ystart = 0, yend = 375;
+		float step = 60;
+		double xstart = 0, xend = 1100, ystart = 300, yend = 375;
 		int compare_pro = DISAPPEAR;
 		int result_pro = NUMBER;
-		
+//		int result_pro2 = STHETACHANGE;
 		for(int j=1; j<=5; j++){
-		ProbabilityList pl = new ProbabilityList(j, "C:/Users/testuser/SkyDrive/Documents/4th year project files/Programs/BriteYellow/src/24th Sept ORDERED.csv");
-		double denominator = pl.get(60, 960, xstart, xend, ystart, yend, compare_pro, result_pro);
-		double denominator2 = pl.get(60,10000,xstart, xend, ystart, yend, compare_pro, result_pro);
+		ProbabilityList pl = new ProbabilityList(j, "C:/Users/testuser/SkyDrive/Documents/4th year project files/Programs/BriteYellow/src/26th Sept ORDERED.csv");
+		double denominator = pl.get(step,600,xstart, xend, ystart, yend, compare_pro, result_pro);
+		double denominator2 = pl.get(step,100000,xstart, xend, ystart, yend, compare_pro, result_pro);
 //		System.out.println((int) denominator);
+		
+//		System.out.print(denominator2 / denominator);
+/*		System.out.print((float) pl.get(-Math.PI,-Math.PI/360, xstart, xend, ystart, yend, STHETACHANGE, result_pro)+" ");
 
-		for(int i=1; i<16; i++){
-	//		if(i==-1)
-	//			System.out.print((float)pl.get(0, 0.01, xstart, xend, ystart, yend, compare_pro, result_pro)/(float)denominator+" ");
-			if(i==0)
-				System.out.print((float) pl.get(1,step, xstart, xend, ystart, yend, compare_pro, result_pro)/ (float)denominator2+" ");
+		System.out.print((float) pl.get(-Math.PI/360,Math.PI/360, xstart, xend, ystart, yend, compare_pro, result_pro)+" ");
+		System.out.print((float) pl.get(Math.PI/360,10, xstart, xend, ystart, yend, STHETACHANGE, result_pro)+" ");
+		System.out.print((float) pl.get(Math.PI/360,2*Math.PI, xstart, xend, ystart, yend, STHETACHANGE, result_pro)+" ");
+*/
+
+		for(int i=1; i<10; i++){
+/*			if(i==-1)
+				System.out.print((float)pl.get(0, 0.01, xstart, xend, ystart, yend, compare_pro, result_pro)/(float)denominator2+" ");
+			else if(i==0)
+				System.out.print((float) pl.get(0.01,step, xstart, xend, ystart, yend, compare_pro, result_pro)/ (float)denominator2+" ");
 			else
-				System.out.print((float)pl.get(i*step, i*step+step, xstart, xend, ystart, yend, compare_pro, result_pro)/(float)denominator2+" ");
+*/				System.out.print((float)pl.get(i*step, i*step+step, xstart, xend, ystart, yend, compare_pro, result_pro)/*/(float)denominator2*/+" ");
 
 		}
-		System.out.print((float)(1-denominator/denominator2));
+//		System.out.print((float) (1-denominator / denominator2));
+		System.out.print((float) (denominator2 - denominator));
 		System.out.print(";\n");
+//		System.out.println(pl.getTotal(xstart, xend, ystart, yend, DIST)/pl.getTotal(xstart, xend, ystart, yend, TIME));
 		}
 //		System.out.println("Total: "+pl.getSThetaProbability(0,20*step, xstart, xend, ystart, yend)+" ");
 

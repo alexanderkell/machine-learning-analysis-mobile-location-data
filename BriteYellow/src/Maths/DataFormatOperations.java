@@ -283,6 +283,17 @@ public class DataFormatOperations{
 		
 	}
 	
+	// Not to be confused with getModSValue(int index)
+	public double getDistanceBetween(int index){
+		if(index<1)
+			throw new IllegalArgumentException("Index must be greater than or equal to 1");
+		
+		// Calculate different between 2 recorded position
+		double xdiff = cdcalc2[index].x - cdcalc2[index-1].x;
+		double ydiff = cdcalc2[index].y - cdcalc2[index-1].y;
+		return Math.sqrt(xdiff*xdiff + ydiff*ydiff);
+	}
+	
 	public double[] getXYZSpeedValue(int index){
 		if(index<1)
 			throw new IllegalArgumentException("Speed index must be greater than or equal to 1");
@@ -306,6 +317,7 @@ public class DataFormatOperations{
 			};
 	}
 	
+	// Not to be confused with getDistanceBetween(int index)
 	public double getModSValue(int index){
 		if(index<1)
 			throw new IllegalArgumentException("Speed index must be greater than or equal to 1");

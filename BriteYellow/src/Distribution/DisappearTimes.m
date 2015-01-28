@@ -2,6 +2,7 @@
 
 labels = {'1-2' '2-3' '3-4' '4-5' '5-6' '6-7' '7-8' '8-9' '9-10' '10-11' '11-12' '12-13' '13-14' '14-15' '15-16' '>16'};
 
+% In terms of percentage
 % Phone 1 to Phone 5
 % 24/09/2014
 
@@ -38,3 +39,39 @@ figure
         title('Number of times inactive for more than 1 min 26/09/2014')
         legend('Phone 1: Business','Phone 2: Security', 'Phone 3: Shopper', 'Phone 4: Shopper','Phone 5: Business')
         set(gca, 'XTick', 1:16, 'XTickLabel', labels);
+
+% In terms of times
+% vaild range (120,300) to (1000, 375)
+
+labels = {'20-40' '40-60' '60-80' '80-100' '100-120' '120-140' '140-160' '160-180' '180-200' '>200'};
+
+% Phone 1 to Phone 5
+% 24/09/2014
+pro = [14.0 4.0 0.0 2.0 0.0 0.0 0.0 0.0 0.0 1.0;
+       0.0 0.0 2.0 0.0 2.0 0.0 0.0 0.0 0.0 4.0;
+       12.0 3.0 2.0 1.0 2.0 0.0 0.0 0.0 0.0 3.0;
+       8.0 1.0 2.0 0.0 0.0 0.0 0.0 0.0 0.0 3.0;
+       6.0 3.0 2.0 0.0 1.0 1.0 2.0 0.0 0.0 2.0
+       ];
+    figure
+        bar(transpose(pro))
+        xlabel('Inactive time(min)')
+        ylabel('number of times')
+        title('Number of times inactive for more than 20 seconds 24/09/2014')
+        legend('Phone 1: Business','Phone 2: Security', 'Phone 3: Shopper', 'Phone 4: Shopper','Phone 5: Business')
+        set(gca, 'XTick', 1:10, 'XTickLabel', labels);
+        
+  
+  pro = [10.0 1.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 1.0;
+        4.0 1.0 1.0 0.0 0.0 0.0 0.0 0.0 0.0 1.0;
+        4.0 2.0 8.0 0.0 1.0 0.0 0.0 0.0 0.0 3.0;
+        5.0 1.0 1.0 0.0 1.0 1.0 0.0 0.0 0.0 1.0;
+        8.0 3.0 3.0 2.0 2.0 1.0 0.0 1.0 0.0 5.0
+        ];
+  figure
+        bar(transpose(pro))
+        xlabel('Inactive time(min)')
+        ylabel('number of times')
+        title('Number of times inactive for more than 20 seconds 26/09/2014')
+        legend('Phone 1: Business','Phone 2: Security', 'Phone 3: Shopper', 'Phone 4: Shopper','Phone 5: Business')
+        set(gca, 'XTick', 1:10, 'XTickLabel', labels);

@@ -15,6 +15,7 @@ public class DataSorting {
 	String[][] newdat;
 	static int opt = 1;
 	static String fn = new String();
+	static int length;
 	
 	public DataSorting(int opt, String fn) throws ParseException {
 				this.opt = opt;
@@ -24,6 +25,7 @@ public class DataSorting {
 				
 				//gets the full matrix
 				newdat = DFO.getFull();
+				length = DFO.getLength();
 				
 				/*//selects how many lines to print
 				int length = 100;
@@ -43,74 +45,39 @@ public class DataSorting {
 		
 	}
 	
-	public DataSorting(String[][] newdat)
-{
-try{
-		int i = 0;
-		int j = 0;
-		int r = 1;
-		System.out.println("try1");
-		File file = new File("Sort-" + j + ".txt");
-		if (!file.exists())
-		{
-			file.createNewFile();
-		}
-			FileWriter fw = new FileWriter(file.getAbsoluteFile());
-			BufferedWriter bw = new BufferedWriter(fw);	
-			{
-			double temp = Double.parseDouble(newdat[0][j]);
-			//double number = Double.parseDouble(newdat[54]);
+	public String[][] getSort(){
+		int i = 0,r = 0,s = 0;
+		int track = 1;
+		double x;
+		
+		while(i<length){
 			
-			newdat[4][j] =newdat[4][j] +"-"+ r;
-			
-				if(temp > 1000)
-					{
-					r++;
-					}
+			x = Double.parseDouble(newdat[0][i]);
+			if(x>300 && x<850){
+				newdat[16][i] = String.valueOf(track);
 				
-			String content = newdat[0] + "," + newdat[1] + "," + newdat[2] + "," + newdat[3] + "," + newdat[4];
-			System.out.println("try2");
-			if (newdat[0]==null)
-			{
-				j++;
+			}
+			else if(x>850){r=1;s=0;
+			}
+			else if(x<850 && r==1){
+				track++;
+				r=0;
 			}
 			
-				else if(temp < 250 || temp > 1000){
-					if (i == 0 || i % 1000 == 0) {
-						if (i % 1000 == 0) {
-							bw.close();
-							file = new File("Sort-" + j + ".txt");
-						}
-				
-						j++;
-						System.out.println("try3");
-						// if file doesnt exists, then create it
-						if (!file.exists()) {
-							file.createNewFile();
-					}
 			
-					fw = new FileWriter(file.getAbsoluteFile());
-					bw = new BufferedWriter(fw);
-				}
+			else if(x<300){s=1;r=0;
 			}
-			bw.write(content);
-			bw.write(System.getProperty("line.separator"));
-			//bw.close();
-
-			System.out.println(content);
+			else if(x>300 && s==1){
+				track++;
+				s=0;
+			}
+			System.out.println(newdat[16][i]);	
 			i++;
-			}
-			System.out.println("try4");
-			bw.close();
-			
-	}catch (FileNotFoundException e) 
-	{
-		e.printStackTrace();
-	} catch (IOException e) 
-	{
-		e.printStackTrace();
-	} 	
-}
-//System.out.println("Done");
+		}
+		return newdat;
 	}
+
+
+
+}
 

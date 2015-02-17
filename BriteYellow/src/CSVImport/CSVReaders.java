@@ -4,10 +4,11 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 public class CSVReaders{
-    static String fn =new String("C:\\Users\\Fezan\\Documents\\4th-year-project\\BriteYellow\\src\\24th Sept ORDERED.csv"); 
+	final static String DEFAULT_FN = "C:\\Users\\Fezan\\Documents\\4th-year-project\\BriteYellow\\src\\24th Sept ORDERED.csv";
+    private String fn;
     final static int amd = 20;
-    static int length;
-    String[][] data;
+
+    private ArrayList<String[]> phs;
 	private ArrayList<String[]> ph1;
 	private ArrayList<String[]> ph2;
 	private ArrayList<String[]> ph3;
@@ -16,53 +17,44 @@ public class CSVReaders{
 	private ArrayList<String[]> ph6;
 
     public CSVReaders(String fn){
+    	this.fn = fn;
+    	phs = new ArrayList<String[]>();
     	try{
-    	
-    		CSVReaders.fn = fn;
-    		length = CSVReaders.findLength();
-			data = new String[amd][length];
-    		String filename = new String(fn);//reads file name and hierarchy
-    		Scanner scanner = new Scanner(new File(filename));//Get scanner instance
+			
+    		Scanner scanner = new Scanner(new File(fn));//Get scanner instance
     		scanner.useDelimiter(",|\r\n|\n"); //Set the delimiter used in file, the "\r\n" is exclusively for Windows
-    		for(int x=0; x<5;x++){//intialise the data matrix to avoid null pointer errors
-    			for(int y=0; y<length;y++){
-      			data[x][y]="0";
-    			}
-    		}
-        
+
+    		String[] data = new String[amd];
+    		scanner.nextLine();
     		int i = 0;//indices of data
-    		int j = 0;        
+       
     		while (scanner.hasNext()){//while loop for writing data into main data matrix of raw data
     			switch (i){//switch statement with case for each cell
         			case 0:
         			case 1:
         			case 2:
-        			case 3: data[i][j] = scanner.next();
+        			case 3: data[i] = scanner.next();
         			break;
-        			case 4: data[i][j] = scanner.next();
+        			case 4: data[i] = scanner.next();
+        			phs.add(data);
+        			data = new String[amd];
         			i=-1;//goes back to beginning column
-        			j++;//next row
+
         			break;
-       
-        	}	
-        
-
+    			}
     			i++;//i incremented to write into each cell of array
+        	}	
 
-    		}
     		scanner.close();
     		categorise();
     		}catch(FileNotFoundException fnf){
     			System.out.println("File Not Found, Sorry!");
-    		
+    			fnf.printStackTrace();
     		}
-    	for(int rd =0; rd<amd;rd++){
-    		data[rd][0] = "0";
-    	}
     }
     
     public CSVReaders() throws FileNotFoundException{
-		this(fn);
+		this(DEFAULT_FN);
     }
     
     
@@ -70,19 +62,15 @@ public class CSVReaders{
     	return fn;
     }
 	
-   
-    public void setFileName(String fn){
-    	this.fn = fn;
-    	
-    }
+
 	
     private void categorise(){
-    	String ph1n = "HT25TW5055273593c875a9898b00";//variables denoting phone IDs
-        String ph2n = "ZX1B23QBS53771758c578bbd85";
-        String ph3n = "TA92903URNf067ff16fcf8e045";
-        String ph4n = "YT910K6675876ded0861342065";
-        String ph5n = "ZX1B23QFSP48abead89f52e3bb";
-        String ph6n = "8d32435715629c24a4f3a16b";
+    	final String ph1n = "HT25TW5055273593c875a9898b00";//variables denoting phone IDs
+        final String ph2n = "ZX1B23QBS53771758c578bbd85";
+        final String ph3n = "TA92903URNf067ff16fcf8e045";
+        final String ph4n = "YT910K6675876ded0861342065";
+        final String ph5n = "ZX1B23QFSP48abead89f52e3bb";
+        final String ph6n = "8d32435715629c24a4f3a16b";
         ph1 = new ArrayList<String[]>();
         ph2 = new ArrayList<String[]>();
         ph3 = new ArrayList<String[]>();
@@ -90,25 +78,26 @@ public class CSVReaders{
         ph5 = new ArrayList<String[]>();
         ph6 = new ArrayList<String[]>();
         
+        int length = phs.size();
         for (int k = 0; k < length; k++){
-        	String dat = data[4][k];
+        	String dat = phs.get(k)[4];
         	if (dat.contains(ph1n)){//workaround so data can be categorised, if phone id is phone 1 then sel=1
-                ph1.add(extractArrayCol(data,k));
+                ph1.add(phs.get(k));
             }
         	else if (dat.contains(ph2n)){
-                ph2.add(extractArrayCol(data,k));
+        		ph2.add(phs.get(k));
             }
         	else if (dat.contains(ph3n)){
-        		ph3.add(extractArrayCol(data,k));
+        		ph3.add(phs.get(k));
             }
         	else if (dat.contains(ph4n)){
-        		ph4.add(extractArrayCol(data,k));
+        		ph4.add(phs.get(k));
             }
         	else if (dat.contains(ph5n)){
-        		ph5.add(extractArrayCol(data,k));
+        		ph5.add(phs.get(k));
             }
         	else if (dat.contains(ph6n)){
-        		ph6.add(extractArrayCol(data,k));;
+        		ph6.add(phs.get(k));
             }
             
         }
@@ -135,19 +124,18 @@ public class CSVReaders{
             return toArray(ph6);
         }
         if(opt==7){
-            return data;
+            return toArray(phs);
         }
         
         return null;
         
 	}
 	
-	/**
-	 * Method for extracting the column of a 2D array
-	 * @param the 2D array
-	 * @param column of interest
-	 * @return the column of an 2D array
-	 */
+	public int findLength(){
+		
+		return phs.size();
+	}
+	
 	private static String[][] toArray(ArrayList<String[]> list){
 		String[][] result = new String[amd][list.size()];
 		for(int i=0; i<list.size(); i++){
@@ -158,34 +146,6 @@ public class CSVReaders{
 		}
 		return result;
 	}
-	private static String[] extractArrayCol(String[][] array, int col_of_interest){
-		String[] colArray = new String[array.length];
-		for(int row = 0; row < array.length; row++){
-		    colArray[row] = array[row][col_of_interest];
-		}
-		return colArray;
-	}
-	public static int findLength(){
-		try{
-			Scanner scanner = new Scanner(new File(fn));
-			length = 0;
-		    scanner.useDelimiter(",|\\n"); //Set the delimiter used in file
-		    String currentvalue = new String();
-		    while (scanner.hasNext())
-		    {
-		       currentvalue = scanner.next();
-		        length++;
-		    }
-		    length/=5;   
-		    
-		    scanner.close();
-			}catch(FileNotFoundException fnf){
-			System.out.println("File Not Found, Sorry!");
-		}
-		
-		return length;
-	}
-      public static void main(String[] args){
-    	  
-      }
+
+
 }

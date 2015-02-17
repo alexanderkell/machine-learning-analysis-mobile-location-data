@@ -349,6 +349,20 @@ public class DataFormatOperations{
 		return cdcalc2[index].acctheta;
 		
 	}
+	public double getSThetaChange(int index){
+		if(index<2)
+			throw new IllegalArgumentException("Speed theta change index must be greater than or equal to 2");
+
+		return cdcalc2[index].spdtheta - cdcalc2[index-1].spdtheta;
+		
+	}
+	public double getAThetaChange(int index){
+		if(index<3)
+			throw new IllegalArgumentException("Acceleration theta change index must be greater than or equal to 3");
+		
+		return cdcalc2[index].acctheta - cdcalc2[index-1].acctheta;
+		
+	}
 	
 	public boolean isStandingStill(int index){
 		if(index<1)

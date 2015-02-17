@@ -1,0 +1,10 @@
+Amount of time remained still probabilities
+Amount of time remained still (sec)
+Fraction of total no. of times remain static with respect to minimum value
+1-4,4-8,8-12,12-16,16-20,20-24,24-28,28-32,32-40,40-44,44-48,>48
+Phone 1: Business,Phone 2: Security,Phone 3: Shopper,Phone 4: Shopper,Phone 5: Business
+639.7264,4.4823327,66.464,192.3229,289.4095,401.84955,95.256775,NaN,Infinity,Infinity,Infinity,Infinity
+597.91675,55.097404,8.422657,0.0,75.0578,0.0,0.0,Infinity,NaN,NaN,NaN,NaN
+584.2994,39.406815,94.04971,32.996796,233.55655,177.15735,48.382217,Infinity,NaN,NaN,Infinity,Infinity
+0.0,0.0,1112.956,171.93462,3254.1484,13842.168,2301.7788,Infinity,Infinity,NaN,Infinity,Infinity
+670.38055,18.088274,0.0,14.9567585,0.0,335.61664,30.918201,Infinity,Infinity,NaN,NaN,Infinity

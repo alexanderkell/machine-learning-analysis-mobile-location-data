@@ -48,7 +48,6 @@ public class Sorting {
 				if(temp > 850){s=1;t=0;}
 				if(temp<850 && s==1)
 					{
-					System.out.println("s is 1");
 						r++;
 						s=0;
 						u=0;
@@ -57,7 +56,6 @@ public class Sorting {
 				if(temp < 300){t=1;s=0;}				
 				if(temp>300 && t==1)
 					{
-					System.out.println("t is 1");
 						r++;
 						t=0;
 						u=0;

@@ -13,7 +13,7 @@ public class Sorting {
 
     public static void main(String[] args) {
 
-		String csvFile = "C:\\Users\\Fezan\\Documents\\4th-year-project\\BriteYellow\\bin\\shopper1.csv";
+		String csvFile = "C:\\Users\\Fezan\\Documents\\4th-year-project\\BriteYellow\\bin\\security.csv";
 		BufferedReader br = null;
 		String line = "";
 		String cvsSplitBy = ",";
@@ -26,7 +26,7 @@ public class Sorting {
 				int j = 0;
 				int r = 1;
 				int s=0,t=0,u=0;
-				File file = new File("Sort-" + j + ".txt");
+				File file = new File("Security-" + j + ".csv");
 				if (!file.exists()) {
 					file.createNewFile();
 			}
@@ -40,7 +40,10 @@ public class Sorting {
 				
 				double temp = Double.parseDouble(data[0]);
 
-				if (temp>850 && temp<200)u=1;
+				if (temp>300 && temp<850)
+					{
+					u=1;
+					}
 				if(u==1){
 				if(temp > 850){s=1;t=0;}
 				if(temp<850 && s==1)
@@ -50,8 +53,8 @@ public class Sorting {
 						u=0;
 					}
 				
-				if(temp < 200){t=1;s=0;}				
-				if(temp>200 && t==1)
+				if(temp < 300){t=1;s=0;}				
+				if(temp>300 && t==1)
 					{
 						r++;
 						t=0;
@@ -66,7 +69,7 @@ public class Sorting {
 						 	if (i % 1000 == 0) 
 						 		{
 						 			bw.close();
-						 			file = new File("Sort-" + j + ".txt");
+						 			file = new File("Security-" + j + ".csv");
 						 		}
 					
 						 	j++;
@@ -82,7 +85,7 @@ public class Sorting {
 					 	
 					}
 					 
-					 if(temp > 200 && temp < 850)
+					 if(temp > 300 && temp < 850)
 					 	{
 						temp=0;
 						bw.write(content);

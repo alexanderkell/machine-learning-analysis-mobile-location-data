@@ -1,8 +1,10 @@
 package Maths;
 import java.util.*;
 import java.text.*;
+import java.io.IOException;
 import java.lang.Math;
 
+import CSVExport.CSVWriter;
 import CSVImport.CSVReaders;
 
 public class DataFormatOperations{
@@ -43,7 +45,8 @@ public class DataFormatOperations{
 	
 	
 	//class variables
-	private static int opt;
+	private CSVReaders Read;
+	private int opt;
 	private int length;
 	private static String fn = new String("/Users/thomas/4th-year-project/Tom4YP/src/24th Sept ORDERED.csv");
 	private String temp = new String();
@@ -54,11 +57,16 @@ public class DataFormatOperations{
 	public DataFormatOperations(int opt, String fn) throws ParseException{
 		
 		//Read and store the phone data
-		CSVReaders Read = new CSVReaders(fn);
+		Read = new CSVReaders(fn);
+
+		processData(Read, opt);
+				
+	}
+	
+	public void processData(CSVReaders Read, int opt){
 		cdcalc = Read.myPhone(opt);
-		
+		this.opt = opt;
 		//create constructor object
-		DataFormatOperations.opt = opt;
 		DataFormatOperations.fn = fn;
 		length = cdcalc[0].length;
 		
@@ -67,6 +75,7 @@ public class DataFormatOperations{
 		// Store the x,y,z speeds
 		for(int i=0; i<length; i++){
 			cdcalc2[i] = new PhoneData();
+			cdcalc2[i].phone_id = cdcalc[4][i];
 			try{
 				cdcalc2[i].x = Double.parseDouble(cdcalc[0][i]);
 			} catch (NumberFormatException e) {
@@ -129,12 +138,12 @@ public class DataFormatOperations{
 					// If the time difference is 0, assume time difference is 1 second and take distance / 1 second
 					cdcalc2[k].rsx = rsx = xco;
 					cdcalc2[k].rsy = rsy = yco;
-					cdcalc2[k].rsz = rsz = zco;
+					cdcalc2[k].rsz = zco;
 				} else{
 					// Calculate Speeds (distance / time)
 					cdcalc2[k].rsx = rsx = xco/cdcalc2[k].tb;
 					cdcalc2[k].rsy = rsy = yco/cdcalc2[k].tb;
-					cdcalc2[k].rsz = rsz = zco/cdcalc2[k].tb;
+					cdcalc2[k].rsz = zco/cdcalc2[k].tb;
 				}
 				
 				// Calculate the angle
@@ -168,35 +177,65 @@ public class DataFormatOperations{
 				
 				// If the person is not moving (zero speed), assume the angle is
 				// as the previous angle
-				if(rax == 0 && ray == 0)
+				if(rax == 0 && ray == 0){
 					cdcalc2[l].acctheta = cdcalc2[l-1].acctheta;
-				else
-					cdcalc2[l].acctheta = Math.atan(rsy/rsx);
-				
+
+				}else{
+					cdcalc2[l].acctheta = Math.atan(ray/rax);
+				}
 				cdcalc2[l].modacc = (cdcalc2[l].modspd - cdcalc2[l-1].modspd) / cdcalc2[l].tb;
 				
 			}
-				
+	}
+	public int getPhone(){
+		return opt;
 	}
 	
-	public DataFormatOperations() throws ParseException{
-		
-		this(opt, fn);
-				
+	public void changePhone(int opt){
+		processData(Read, opt);
 	}
 	
 	public int getLength(){
 		return length;
 	}
 	
-	public void setPhone(int opt){
-		DataFormatOperations.opt = opt;
-	}
+
 	
 	public void setFileName(String fn){
 		DataFormatOperations.fn = fn;
 	}
 	
+	public void writeToFile() throws IOException{
+//		System.out.println(String.valueOf(cdcalc2[1].wholedate));
+		CSVExport.CSVWriter cw = new CSVExport.CSVWriter(new SimpleDateFormat("dd-MM").format(cdcalc2[1].wholedate)+" phone "+getPhone()+".csv");
+		PhoneData[] pd = getFullPhoneData();
+		cw.write(new String[]{
+			"X", "Y", "Z", "WholeDate","Phone id", "Xspeed", "YSpeed", "ZSpeed", "ModSpd", "STheta", "Xacc", "Yacc", "Zacc", "ModAcc", "ATheta"
+		});
+		DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+		for(int i=0; i<length; i++){
+			PhoneData pdi = pd[i];
+			String[] data = new String[]{
+				cdcalc[0][i],
+				cdcalc[1][i],
+				cdcalc[2][i],
+				cdcalc[3][i],
+				cdcalc[4][i],
+				String.valueOf(pdi.rsx),
+				String.valueOf(pdi.rsy),
+				String.valueOf(pdi.rsz),
+				String.valueOf(pdi.modspd),
+				String.valueOf(pdi.spdtheta),
+				String.valueOf(pdi.rax),
+				String.valueOf(pdi.ray),
+				String.valueOf(pdi.raz),
+				String.valueOf(pdi.modacc),
+				String.valueOf(pdi.acctheta),
+			};
+			cw.write(data);
+		}
+		cw.finish();
+	}
 	public String[][] getFull(){
 		if(cdcalc[5][0] == null){	// Just to check if the full String is already created, if yes, no need to build full String[][] again
 			// Build the full String[][]
@@ -387,5 +426,16 @@ public class DataFormatOperations{
 		
 		//relative accelerations in x,y,z and modulus direction
 		double rax, ray, raz, modacc, acctheta;
+		
+		String phone_id;
+	}
+	
+	
+	public static void main(String args[]) throws ParseException, IOException{
+		DataFormatOperations dfo = new DataFormatOperations(1, "C:\\Users\\testuser\\SkyDrive\\Documents\\4th year project files\\repos\\4th-year-project\\BriteYellow\\src\\26th Sept ORDERED.csv");
+		for (int i = 1; i<=5; i++){
+			dfo.changePhone(i);
+			dfo.writeToFile();
+		}
 	}
 }

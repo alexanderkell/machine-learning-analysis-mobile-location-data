@@ -8,24 +8,22 @@ import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class Sorting {
+public class IDsplitter {
 
 
     public static void main(String[] args) {
-
-		String csvFile = "C:\\Users\\Fezan\\Documents\\4th-year-project\\BriteYellow\\bin\\shopper1.csv";
+    	//double temp=3;
+		String csvFile = "C:\\Users\\Fezan\\Documents\\4th-year-project\\BriteYellow\\src\\24th Sept Ordered.csv";
 		BufferedReader br = null;
 		String line = "";
 		String cvsSplitBy = ",";
-		//String test="";
+		String test="TA92903URNf067ff16fcf8e045";//insert the ID which will separate the files
 		
 		try {
 				FileReader fr = new FileReader(csvFile);
 				br = new BufferedReader(fr);
 				int i = 0;
 				int j = 0;
-				int r = 1;
-				int s=0,t=0,u=0;
 				File file = new File("Sort-" + j + ".txt");
 				if (!file.exists()) {
 					file.createNewFile();
@@ -38,35 +36,15 @@ public class Sorting {
  				// use comma as separator
 				String[] data = line.split(cvsSplitBy);
 				
-				double temp = Double.parseDouble(data[0]);
-
-				if (temp>850 && temp<200)u=1;
-				if(u==1){
-				if(temp > 850){s=1;t=0;}
-				if(temp<850 && s==1)
-					{
-						r++;
-						s=0;
-						u=0;
-					}
-				
-				if(temp < 200){t=1;s=0;}				
-				if(temp>200 && t==1)
-					{
-						r++;
-						t=0;
-						u=0;
-					}
-				}
-				data[4] =data[4] +","+ r;
 				String content = data[0] + "," + data[1] + "," + data[2] + "," + data[3] + "," + data[4];
 
-					 if (i == 0 || i % 1000 == 0)
+					 if (i == 0 || i % 100000 == 0)
 					 	{
-						 	if (i % 1000 == 0) 
+						 	if (i % 100000 == 0) 
 						 		{
 						 			bw.close();
-						 			file = new File("Sort-" + j + ".txt");
+						 			//insert the file name
+						 			file = new File("shopper1.csv");
 						 		}
 					
 						 	j++;
@@ -81,15 +59,12 @@ public class Sorting {
 						 	bw = new BufferedWriter(fw);
 					 	
 					}
-					 
-					 if(temp > 200 && temp < 850)
-					 	{
-						temp=0;
+
+					 if(data[4].equals(test)){
 						bw.write(content);
 						bw.write(System.getProperty("line.separator"));
-					 	}
-	
-				System.out.println(content);
+					 }
+					 
 				i++;
  			}
  			

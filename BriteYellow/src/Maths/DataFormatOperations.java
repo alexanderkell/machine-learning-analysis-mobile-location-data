@@ -554,6 +554,44 @@ public class DataFormatOperations{
 		}
 		
 	}
+	
+	public String[][] getSort(){
+		int i = 0,r = 0,s = 0;
+		int track = 1;
+		double x;
+		
+		String[][] newdat = getFull();
+		while(i<length){
+			
+			x = Double.parseDouble(newdat[0][i]);
+			if(x>200 && x<850){
+				newdat[16][i] = String.valueOf(track);
+				
+			}
+			else if(x>850){r=1;s=0;
+			}
+			else if(x<850 && r==1){
+				track++;
+				r=0;
+			}
+			
+			
+			else if(x<200){s=1;r=0;
+			}
+			else if(x>200 && s==1){
+				track++;
+				s=0;
+			}
+			
+			System.out.println("x = " + newdat[0][i] + ", ID = " + newdat[16][i]);	
+			i++;
+		}
+		return newdat;
+	}
+
+	
+	
+	
 /*	public static void main(String args[]) throws ParseException, IOException{
 		DataFormatOperations dfo = new DataFormatOperations(1, "C:\\Users\\testuser\\SkyDrive\\Documents\\4th year project files\\repos\\4th-year-project\\BriteYellow\\src\\24th Sept ORDERED.csv");
 		for (int i = 1; i<=5; i++){

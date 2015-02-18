@@ -566,7 +566,7 @@ public class DataFormatOperations{
 			x = Double.parseDouble(newdat[0][i]);
 			if(x>200 && x<850){
 				newdat[16][i] = String.valueOf(track);
-				
+				cdcalc2[i].track_no = track;
 			}
 			else if(x>850){r=1;s=0;
 			}

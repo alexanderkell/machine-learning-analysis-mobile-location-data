@@ -151,6 +151,9 @@ public class PlotHelper extends JFrame {
     public void addProgressListener(ChartProgressListener chartprogress){
     	jfreechart.addProgressListener(chartprogress);
     }
+    public XYPlot getXYPlot(){
+    	return xyPlot;
+    }
 
     /**Method for setting chart title
      * 

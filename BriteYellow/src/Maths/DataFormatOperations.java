@@ -1,8 +1,17 @@
 package Maths;
 import java.util.*;
 import java.text.*;
+import java.awt.BorderLayout;
+import java.awt.Image;
 import java.io.IOException;
 import java.lang.Math;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.plot.XYPlot;
 
 import CSVExport.CSVWriter;
 import CSVImport.CSVReaders;
@@ -463,17 +472,33 @@ public class DataFormatOperations{
 	 * @param row
 	 * @param col
 	 */
-	public static void plotTrack(String[][] track_info, int row, int col, float timescaler){
+	public static void plotTrack1(String[][] track_info, int row, int col, float timescaler){
+		Image im = new ImageIcon("map.jpg").getImage(); 
+		
 		String[] label = new String[]{
 			"Phone data"
 		};
 		PlotHelper plot = new PlotHelper(COLUMNS[row]+" vs "+COLUMNS[col], COLUMNS[row], COLUMNS[col], label);
-		plot.setAxisRange(0, 1100, 0, 375);
+		plot.setAxisRange(0, 1100, 0, 500);
 		plot.setRangeAxisInverted(true);
-		plot.showDialog();
+		XYPlot xyplot = plot.getXYPlot();
+		// Clear background paint
+		xyplot.setBackgroundPaint(null);
+		// Set background image to the map
+		xyplot.setBackgroundImage(im);
 		
-		for(int i = 0; i<track_info.length; i++){
-			
+		ChartPanel cpanel = plot.getChartPanel();
+		JFrame frame = new JFrame();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLayout(new BorderLayout());
+		frame.add(cpanel, BorderLayout.CENTER);
+		JLabel jlabel = new JLabel();
+		frame.add(jlabel, BorderLayout.SOUTH);
+		frame.pack();
+		frame.setVisible(true);
+		
+		for(int i = 0; i<track_info[0].length; i++){
+			jlabel.setText("<html>"+track_info[i][3] + "<br> Point "+(i+1)+"</html>");
 			  try{
 				  int tb = (int) (timescaler*1000*(int) Double.parseDouble(track_info[i][5]));
 					Thread.sleep(tb);
@@ -485,19 +510,36 @@ public class DataFormatOperations{
 				}
 			 
 			plot.addData(label[0], Double.parseDouble(track_info[i][row]), Double.parseDouble(track_info[i][col]));
-			}
 		}
+		
+	}
 	public static void plotTrack2(String[][] track_info, int row, int col, float timescaler){
+		Image im = new ImageIcon("map.jpg").getImage(); 
+		
 		String[] label = new String[]{
 			"Phone data"
 		};
 		PlotHelper plot = new PlotHelper(COLUMNS[row]+" vs "+COLUMNS[col], COLUMNS[row], COLUMNS[col], label);
-		plot.setAxisRange(0, 1100, 0, 400);
+		plot.setAxisRange(0, 1100, 0, 500);
 		plot.setRangeAxisInverted(true);
-		plot.showDialog();
+		XYPlot xyplot = plot.getXYPlot();
+		// Clear background paint
+		xyplot.setBackgroundPaint(null);
+		// Set background image to the map
+		xyplot.setBackgroundImage(im);
+		
+		ChartPanel cpanel = plot.getChartPanel();
+		JFrame frame = new JFrame();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLayout(new BorderLayout());
+		frame.add(cpanel, BorderLayout.CENTER);
+		JLabel jlabel = new JLabel();
+		frame.add(jlabel, BorderLayout.SOUTH);
+		frame.pack();
+		frame.setVisible(true);
 		
 		for(int i = 0; i<track_info[0].length; i++){
-			
+			jlabel.setText("<html>"+track_info[3][i] + "<br> Point "+(i+1)+"</html>");
 			  try{
 				  int tb = (int) (timescaler*1000*(int) Double.parseDouble(track_info[5][i]));
 					Thread.sleep(tb);

@@ -106,6 +106,7 @@ public class PlotHelper extends JFrame {
 			}
         	
         });
+
 /*        
         chartPanel.addPropertyChangeListener(new PropertyChangeListener(){
         	public void propertyChange(PropertyChangeEvent e) {
@@ -118,6 +119,10 @@ public class PlotHelper extends JFrame {
         setVisible(true);
         
     }
+    public void showDialog(){
+    	showDialog(JFrame.EXIT_ON_CLOSE);
+    }
+    
     /** Method for getting chart panel if you want to integrate the chart
      *  into your own dialog
      *  
@@ -303,6 +308,52 @@ public class PlotHelper extends JFrame {
     		}
     	}
     }
+    
+    
+    /** Method for adding a single point to a series
+     *  
+     *  @param label
+     *  Label for the series you want to add data
+     *  @param x x coordinate
+     *  @param y y coordinate
+     */
+    public void addData(String label, double x, double y){
+
+    	for(int i=0; i<str_labels.length; i++){
+    		if(str_labels[i].equals(label)){
+    			series[i].add(x,y);
+    			break;
+    		}
+    	}
+    }
+    
+    /** Method for adding data
+     *  
+     *  @param label
+     *  Label for the series you want to add data
+     *  @param x x array
+     *  @param y y array
+     *
+     *	x array length must be the same as y array length
+     */
+    public void addData(String label, double[] x, double[] y){
+    	if (x.length != y.length)
+    		throw new ArrayIndexOutOfBoundsException("x array length differs for y array length");
+
+    	addData(label, x, y, 0, x.length-1);
+    }
+    public void addData(String label, double[] x, double[] y, int lowerlimit, int higherlimit){
+    	for(int i=0; i<str_labels.length; i++){
+    		if(str_labels[i].equals(label)){
+    			for(int j=lowerlimit; j<=higherlimit; j++)
+    				series[i].add(x[j],y[j]);
+    			break;
+    		}
+    	}
+    }
+    
+    
+    
     
     /** Method for adding data
      *  

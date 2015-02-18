@@ -25,7 +25,7 @@ public class CSVReaders{
     		scanner.useDelimiter(",|\r\n|\n"); //Set the delimiter used in file, the "\r\n" is exclusively for Windows
 
     		String[] data = new String[amd];
-    		scanner.nextLine();
+    		scanner.nextLine();	//Skip the first line
     		int i = 0;//indices of data
        
     		while (scanner.hasNext()){//while loop for writing data into main data matrix of raw data

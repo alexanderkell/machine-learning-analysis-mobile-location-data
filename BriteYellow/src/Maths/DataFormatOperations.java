@@ -6,8 +6,13 @@ import java.lang.Math;
 
 import CSVExport.CSVWriter;
 import CSVImport.CSVReaders;
+import Graphing.PlotHelper;
 
 public class DataFormatOperations{
+	
+	final static String[] COLUMNS = {		
+		"X", "Y", "Z", "WholeDate","Phone id", "Time Between values", "Xspeed", "YSpeed", "ZSpeed", "ModSpd", "STheta", "Xacc", "Yacc", "Zacc", "ModAcc", "ATheta"	
+	};
 	
 	//initialise all variables
 	//time between variable
@@ -209,9 +214,7 @@ public class DataFormatOperations{
 //		System.out.println(String.valueOf(cdcalc2[1].wholedate));
 		CSVExport.CSVWriter cw = new CSVExport.CSVWriter(new SimpleDateFormat("dd-MM").format(cdcalc2[1].wholedate)+" phone "+getPhone()+".csv");
 		PhoneData[] pd = getFullPhoneData();
-		cw.write(new String[]{
-			"X", "Y", "Z", "WholeDate","Phone id", "Xspeed", "YSpeed", "ZSpeed", "ModSpd", "STheta", "Xacc", "Yacc", "Zacc", "ModAcc", "ATheta"
-		});
+		cw.write(COLUMNS);
 		DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 		for(int i=0; i<length; i++){
 			PhoneData pdi = pd[i];
@@ -221,6 +224,7 @@ public class DataFormatOperations{
 				cdcalc[2][i],
 				cdcalc[3][i],
 				cdcalc[4][i],
+				String.valueOf(pdi.tb),
 				String.valueOf(pdi.rsx),
 				String.valueOf(pdi.rsy),
 				String.valueOf(pdi.rsz),
@@ -428,14 +432,96 @@ public class DataFormatOperations{
 		double rax, ray, raz, modacc, acctheta;
 		
 		String phone_id;
+		
+		int track_no;
+	}
+	
+	/**Set the track number for a point
+	 * 
+	 * @param index
+	 */
+	public void setTrackNo(int index, int track_no){
+		cdcalc2[index].track_no = track_no;
 	}
 	
 	
-	public static void main(String args[]) throws ParseException, IOException{
-		DataFormatOperations dfo = new DataFormatOperations(1, "C:\\Users\\testuser\\SkyDrive\\Documents\\4th year project files\\repos\\4th-year-project\\BriteYellow\\src\\26th Sept ORDERED.csv");
+/*	public void plotTrackTest(){
+		String[] label = new String[]{
+			"Phone data"
+		};
+		PlotHelper plot = new PlotHelper(COLUMNS[0]+" vs "+COLUMNS[1], COLUMNS[0], COLUMNS[1], label);
+		plot.showDialog();
+		for(int i = 0; i<cdcalc2.length; i++){
+			Thread.sleep(arg0)
+			plot.addData(label[0], cdcalc2[i].x, cdcalc2[i].y);
+		}
+	}
+*/	
+	/**Plot the track
+	 * 
+	 * @param track_info
+	 * @param row
+	 * @param col
+	 */
+	public static void plotTrack(String[][] track_info, int row, int col, float timescaler){
+		String[] label = new String[]{
+			"Phone data"
+		};
+		PlotHelper plot = new PlotHelper(COLUMNS[row]+" vs "+COLUMNS[col], COLUMNS[row], COLUMNS[col], label);
+		plot.setAxisRange(0, 1100, 0, 375);
+		plot.setRangeAxisInverted(true);
+		plot.showDialog();
+		
+		for(int i = 0; i<track_info.length; i++){
+			
+			  try{
+				  int tb = (int) (timescaler*1000*(int) Double.parseDouble(track_info[i][5]));
+					Thread.sleep(tb);
+			  } catch (NumberFormatException e){
+					System.out.println(e.toString());
+				} catch (InterruptedException e){
+					System.err.println("User Aborted");
+					return;
+				}
+			 
+			plot.addData(label[0], Double.parseDouble(track_info[i][row]), Double.parseDouble(track_info[i][col]));
+			}
+		}
+	public static void plotTrack2(String[][] track_info, int row, int col, float timescaler){
+		String[] label = new String[]{
+			"Phone data"
+		};
+		PlotHelper plot = new PlotHelper(COLUMNS[row]+" vs "+COLUMNS[col], COLUMNS[row], COLUMNS[col], label);
+		plot.setAxisRange(0, 1100, 0, 400);
+		plot.setRangeAxisInverted(true);
+		plot.showDialog();
+		
+		for(int i = 0; i<track_info[0].length; i++){
+			
+			  try{
+				  int tb = (int) (timescaler*1000*(int) Double.parseDouble(track_info[5][i]));
+					Thread.sleep(tb);
+			  } catch (NumberFormatException e){
+					System.out.println(e.toString());
+				} catch (InterruptedException e){
+					System.err.println("User Aborted");
+					return;
+				}
+			 
+			plot.addData(label[0], Double.parseDouble(track_info[row][i]), Double.parseDouble(track_info[col][i]));
+		}
+		
+	}
+/*	public static void main(String args[]) throws ParseException, IOException{
+		DataFormatOperations dfo = new DataFormatOperations(1, "C:\\Users\\testuser\\SkyDrive\\Documents\\4th year project files\\repos\\4th-year-project\\BriteYellow\\src\\24th Sept ORDERED.csv");
 		for (int i = 1; i<=5; i++){
 			dfo.changePhone(i);
 			dfo.writeToFile();
 		}
+	}
+	*/
+	public static void main(String args[]) throws ParseException, IOException{
+		DataFormatOperations dfo = new DataFormatOperations(1, "C:\\Users\\testuser\\SkyDrive\\Documents\\4th year project files\\repos\\4th-year-project\\BriteYellow\\src\\24th Sept ORDERED.csv");
+		plotTrack2(dfo.getFull(), 0, 1, 0.1f);
 	}
 }

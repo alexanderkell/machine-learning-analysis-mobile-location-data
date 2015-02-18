@@ -602,6 +602,14 @@ public class DataFormatOperations{
 	*/
 	public static void main(String args[]) throws ParseException, IOException{
 		DataFormatOperations dfo = new DataFormatOperations(1, "C:\\Users\\testuser\\SkyDrive\\Documents\\4th year project files\\repos\\4th-year-project\\BriteYellow\\src\\24th Sept ORDERED.csv");
-		plotTrack2(dfo.getFull(), 0, 1, 0.1f);
+		String[][] result = dfo.getSort();
+		System.out.println(result.length-1);
+		for(int i=0; i<result[0].length; i++){
+			for(int j=0; j<result.length; j++){
+				System.out.print(result[j][i]+"\t");
+			}
+			System.out.print("\n");
+		}
+//		plotTrack2(dfo.getFull(), 0, 1, 0.1f);
 	}
 }

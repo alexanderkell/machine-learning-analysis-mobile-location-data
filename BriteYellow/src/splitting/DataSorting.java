@@ -53,7 +53,7 @@ public class DataSorting {
 		while(i<length){
 			
 			x = Double.parseDouble(newdat[0][i]);
-			if(x>300 && x<850){
+			if(x>200 && x<850){
 				newdat[16][i] = String.valueOf(track);
 				
 			}
@@ -65,13 +65,14 @@ public class DataSorting {
 			}
 			
 			
-			else if(x<300){s=1;r=0;
+			else if(x<200){s=1;r=0;
 			}
-			else if(x>300 && s==1){
+			else if(x>200 && s==1){
 				track++;
 				s=0;
 			}
-			System.out.println(newdat[16][i]);	
+			
+			System.out.println("x = " + newdat[0][i] + ", ID = " + newdat[16][i]);	
 			i++;
 		}
 		return newdat;

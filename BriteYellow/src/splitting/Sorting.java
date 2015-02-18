@@ -25,8 +25,8 @@ public class Sorting {
 				int i = 0;
 				int j = 0;
 				int r = 1;
-				int s=0,t=0,u=0;
-				File file = new File("Security-" + j + ".csv");
+				int s=0,t=0,u=0,l=0;
+				File file = new File("Security-" + r + ".csv");
 				if (!file.exists()) {
 					file.createNewFile();
 			}
@@ -40,37 +40,40 @@ public class Sorting {
 				
 				double temp = Double.parseDouble(data[0]);
 
-				if (temp>300 && temp<850)
+				if (temp>250 && temp<900)
 					{
 					u=1;
 					}
 				if(u==1){
-				if(temp > 850){s=1;t=0;}
-				if(temp<850 && s==1)
+				if(temp > 900){s=1;t=0;}
+				if(temp<900 && s==1)
 					{
 						r++;
+						l=l+2;
 						s=0;
 						u=0;
 					}
 				
-				if(temp < 300){t=1;s=0;}				
-				if(temp>300 && t==1)
+				if(temp < 250){t=1;s=0;}				
+				if(temp>250 && t==1)
 					{
 						r++;
+						l=l+2;
 						t=0;
 						u=0;
 					}
 				}
 				data[4] =data[4] +","+ r;
 				String content = data[0] + "," + data[1] + "," + data[2] + "," + data[3] + "," + data[4];
-
-					 if (i == 0 || i % 1000 == 0)
-					 	{
-						 	if (i % 1000 == 0) 
-						 		{
+				if(l==r)
+				{l=l-1;
+					 //if (i == 0 || i % 1000 == 0)
+					 //	{
+						 	//if (i % 1000 == 0) 
+						 	//	{
 						 			bw.close();
-						 			file = new File("Security-" + j + ".csv");
-						 		}
+						 			file = new File("Security-" + r + ".csv");
+						 		//}
 					
 						 	j++;
 					
@@ -85,7 +88,7 @@ public class Sorting {
 					 	
 					}
 					 
-					 if(temp > 300 && temp < 850)
+					 if(temp > 250 && temp < 900)
 					 	{
 						temp=0;
 						bw.write(content);

@@ -28,8 +28,10 @@ public class main {
 		DataSorting split = new DataSorting(phoneOpt, filePath);
 		String[][] split1 = split.getSort();
 		
+		String[][] split2 = TrackSelect.selecter(split1, 1);
+		
 		//Print data
-		DataFormatOperations.plotTrack2(split1, 0, 1, 0.1f);
+		DataFormatOperations.plotTrack2(split2, 0, 1, 0.1f);
 		
 		
 	}

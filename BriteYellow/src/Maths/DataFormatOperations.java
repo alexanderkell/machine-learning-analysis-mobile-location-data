@@ -73,12 +73,13 @@ public class DataFormatOperations{
 		//Read and store the phone data
 		Read = new CSVReaders(fn);
 
-		processData(Read, opt);
+		cdcalc = Read.myPhone(opt);
+		processData(opt);
 				
 	}
 	
-	public void processData(CSVReaders Read, int opt){
-		cdcalc = Read.myPhone(opt);
+	public void processData(int opt){
+		
 		this.opt = opt;
 		//create constructor object
 		DataFormatOperations.fn = fn;
@@ -206,7 +207,8 @@ public class DataFormatOperations{
 	}
 	
 	public void changePhone(int opt){
-		processData(Read, opt);
+		cdcalc = Read.myPhone(opt);
+		processData(opt);
 	}
 	
 	public int getLength(){
@@ -522,6 +524,7 @@ public class DataFormatOperations{
 		PlotHelper plot = new PlotHelper(COLUMNS[row]+" vs "+COLUMNS[col], COLUMNS[row], COLUMNS[col], label);
 		plot.setAxisRange(0, 1100, 0, 500);
 		plot.setRangeAxisInverted(true);
+		plot.setSeriesLinesVisble(label[0], true);
 		XYPlot xyplot = plot.getXYPlot();
 		// Clear background paint
 		xyplot.setBackgroundPaint(null);
@@ -539,7 +542,7 @@ public class DataFormatOperations{
 		frame.setVisible(true);
 		
 		for(int i = 0; i<track_info[0].length; i++){
-			jlabel.setText("<html>"+track_info[3][i] + "<br> Point "+(i+1)+"</html>");
+			jlabel.setText("<html>"+track_info[3][i] + "<br> Point "+(i+1)+" / "+track_info[0].length+"</html>");
 			  try{
 				  int tb = (int) (timescaler*1000*(int) Double.parseDouble(track_info[5][i]));
 					Thread.sleep(tb);
@@ -583,7 +586,7 @@ public class DataFormatOperations{
 				s=0;
 			}
 			
-			System.out.println("x = " + newdat[0][i] + ", ID = " + newdat[16][i]);	
+//			System.out.println("x = " + newdat[0][i] + ", ID = " + newdat[16][i]);	
 			i++;
 		}
 		return newdat;

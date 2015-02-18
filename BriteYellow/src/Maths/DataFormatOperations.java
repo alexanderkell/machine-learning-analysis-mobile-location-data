@@ -2,13 +2,16 @@ package Maths;
 import java.util.*;
 import java.text.*;
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.io.IOException;
 import java.lang.Math;
 
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.plot.XYPlot;
@@ -348,6 +351,18 @@ public class DataFormatOperations{
 		return Math.sqrt(xdiff*xdiff + ydiff*ydiff);
 	}
 	
+	public double[] getXYZDistanceBetween(int index){
+		if(index<1)
+			throw new IllegalArgumentException("Index must be greater than or equal to 1");
+		
+		// Calculate different between 2 recorded position
+		double xdiff = cdcalc2[index].x - cdcalc2[index-1].x;
+		double ydiff = cdcalc2[index].y - cdcalc2[index-1].y;
+		double zdiff = cdcalc2[index].z - cdcalc2[index-1].z;
+		return new double[]{
+			xdiff, ydiff, zdiff
+			};
+	}
 	public double[] getXYZSpeedValue(int index){
 		if(index<1)
 			throw new IllegalArgumentException("Speed index must be greater than or equal to 1");
@@ -536,13 +551,19 @@ public class DataFormatOperations{
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new BorderLayout());
 		frame.add(cpanel, BorderLayout.CENTER);
-		JLabel jlabel = new JLabel();
-		frame.add(jlabel, BorderLayout.SOUTH);
+		JLabel jlabel1 = new JLabel();
+		jlabel1.setText("Playing at "+(1/timescaler)+"X speed");
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+		frame.add(panel, BorderLayout.SOUTH);
+		JLabel jlabel2 = new JLabel();
+		panel.add(jlabel1);
+		panel.add(jlabel2);
 		frame.pack();
 		frame.setVisible(true);
 		
 		for(int i = 0; i<track_info[0].length; i++){
-			jlabel.setText("<html>"+track_info[3][i] + "<br> Point "+(i+1)+" / "+track_info[0].length+"</html>");
+			jlabel2.setText("<html><p>"+track_info[3][i] + "&nbsp;&nbsp; Point "+(i+1)+" / "+track_info[0].length+"</p></html>");
 			  try{
 				  int tb = (int) (timescaler*1000*(int) Double.parseDouble(track_info[5][i]));
 					Thread.sleep(tb);
@@ -555,6 +576,7 @@ public class DataFormatOperations{
 			 
 			plot.addData(label[0], Double.parseDouble(track_info[row][i]), Double.parseDouble(track_info[col][i]));
 		}
+		jlabel1.setText("Stopped");
 		
 	}
 	

@@ -1,52 +1,36 @@
 package splitting;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.ParseException;
-
-import Maths.DataFormatOperations;
-
-
 public class TrackSelect
 {
 	String[][] newdat;
-	String[][] newerdat;
-	static String fn = new String();
+
+	String[][] fn;
 	static int opt = 1;
 	static int select=1;
 	static int length;
-	
-	public TrackSelect(int opt, String fn,int select) throws ParseException
-	{
-		DataFormatOperations DFO = new DataFormatOperations(this.opt,this.fn);
-		
-		newdat = DFO.getFull();
-		length = DFO.getLength();
-			
-	}
-	
-	public TrackSelect() throws ParseException
-	{
-		this(opt, fn,select);
-	}
 
-	public String[][] selecter()
+	public static String[][] selecter(String[][] fn,int select)
 	{
-		int i = 0;
+		int i = 0,r=0;
 		double x;
-	
-	while(i<length)
+		x = Double.parseDouble(fn[16][i]);
+		while(i<fn[0].length){
+			if(x==select)
+				{r++;}
+			i++;
+		}
+		
+		String[][] newerdat = new String[20][r];
+		
+		int counter = 0;
+	while(i<fn[0].length)
 		{		
-			x = Double.parseDouble(newdat[16][i]);
 
 			if(x==select)
-			{				
-			newerdat = newdat;		
+			{
+				for(int k =0; k<20; k++){
+					newerdat[k][counter++] = fn[k][i];
+				}	
 			}	
 		}
 		return newerdat;

@@ -22,13 +22,10 @@ import Graphing.PlotHelper;
 
 public class DataFormatOperations{
 	
-<<<<<<< HEAD
+
 	public final static String[] COLUMNS = {		
 		"X", "Y", "Z", "WholeDate","Phone id", "Time Between values", "Xspeed", "YSpeed", "ZSpeed", "ModSpd", "STheta", "Xacc", "Yacc", "Zacc", "ModAcc", "ATheta"	
-=======
-	final static String[] COLUMNS = {		
-		"X", "Y", "Z", "WholeDate","Phone id", "Time Between values", "Xspeed", "YSpeed", "ZSpeed", "ModSpd", "STheta", "Xacc", "Yacc", "Zacc", "ModAcc", "ATheta", "Track"
->>>>>>> 533458e48a93e6fbdf62fbca99f73191cd9e2451
+
 	};
 	public final static int X = 0;
 	public final static int Y = 1;
@@ -234,14 +231,10 @@ public class DataFormatOperations{
 				}
 				cdcalc2[l].modacc = (cdcalc2[l].modspd - cdcalc2[l-1].modspd) / cdcalc2[l].tb;
 				
-<<<<<<< HEAD
+
 			}
 			
 			getSort();
-=======
-			
-		}
->>>>>>> 533458e48a93e6fbdf62fbca99f73191cd9e2451
 	}
 	public int getPhone(){
 		return opt;
@@ -499,7 +492,7 @@ public class DataFormatOperations{
 	}
 	
 	
-<<<<<<< HEAD
+
 
 	public void getSort(){
 		int i = 0,r = 0,s = 0;
@@ -511,6 +504,7 @@ public class DataFormatOperations{
 			x = cdcalc2[i].x;
 			if(x>200 && x<850){
 				cdcalc2[i].track_no = track;
+				cdcalc[16][i] = String.valueOf(track);
 			}
 			else if(x>850){
 				r=1;
@@ -535,19 +529,8 @@ public class DataFormatOperations{
 			
 			//System.out.println("x = " + newdat[0][i] + ", ID = " + newdat[16][i]);	
 			i++;
-=======
-/*	public void plotTrackTest(){
-		String[] label = new String[]{
-			"Phone data"
-		};
-		PlotHelper plot = new PlotHelper(COLUMNS[0]+" vs "+COLUMNS[1], COLUMNS[0], COLUMNS[1], label);
-		plot.showDialog();
-		for(int i = 0; i<cdcalc2.length; i++){
-			Thread.sleep(arg0)
-			plot.addData(label[0], cdcalc2[i].x, cdcalc2[i].y);
 		}
 	}
-*/	
 	/**Plot the track
 	 * 
 	 * @param track_info
@@ -640,89 +623,38 @@ public class DataFormatOperations{
 				}
 			 
 			plot.addData(label[0], Double.parseDouble(track_info[row][i]), Double.parseDouble(track_info[col][i]));
->>>>>>> 533458e48a93e6fbdf62fbca99f73191cd9e2451
+
 		}
 		jlabel1.setText("Stopped");
 		
 	}
 	
-	public static void plotTrack2(PhoneData[] track_info, int row, int col, float timescaler){
-		Image im = new ImageIcon("map.jpg").getImage(); 
+
+
+	
+	public class PhoneData{
+		//position x,y,z
+		public double x, y, z;
 		
-		String[] label = new String[]{
-			"Phone data"
-		};
-		PlotHelper plot = new PlotHelper(COLUMNS[row]+" vs "+COLUMNS[col], COLUMNS[row], COLUMNS[col], label);
-		plot.setAxisRange(0, 1100, 0, 500);
-		plot.setRangeAxisInverted(true);
-		plot.setSeriesLinesVisble(label[0], true);
-		XYPlot xyplot = plot.getXYPlot();
-		// Clear background paint
-		xyplot.setBackgroundPaint(null);
-		// Set background image to the map
-		xyplot.setBackgroundImage(im);
+		//whole date in Data and String format
+		public Date wholedate;
+		public String wholedatestring;
 		
-		ChartPanel cpanel = plot.getChartPanel();
-		JFrame frame = new JFrame();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLayout(new BorderLayout());
-		frame.add(cpanel, BorderLayout.CENTER);
-		JLabel jlabel1 = new JLabel();
-		jlabel1.setText("Playing at "+(1/timescaler)+"X speed");
-		JPanel panel = new JPanel();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-		frame.add(panel, BorderLayout.SOUTH);
-		JLabel jlabel2 = new JLabel();
-		panel.add(jlabel1);
-		panel.add(jlabel2);
-		frame.pack();
-		frame.setVisible(true);
+		//time between current position and the previous position
+		public double tb;
 		
-		for(int i = 0; i<track_info.length; i++){
-			jlabel2.setText("<html><p>"+track_info[i].wholedatestring + "&nbsp;&nbsp; Point "+(i+1)+" / "+track_info.length+"</p></html>");
-			  try{
-				  int tb = (int) (timescaler*1000*(int) track_info[i].tb);
-					Thread.sleep(tb);
-			  } catch (NumberFormatException e){
-					System.out.println(e.toString());
-				} catch (InterruptedException e){
-					System.err.println("User Aborted");
-					return;
-				}
-			
-			  
-			  Double r;
-			  try{
-				  r = getAttributeDouble(track_info[i], row);
-			  } catch (IllegalArgumentException e){
-				  try{
-					  r = (double) getAttributeInt(track_info[i], row);
-				  } catch (IllegalArgumentException f){
-					  throw new IllegalArgumentException(
-						 "It is not possible to plot graph with the attribute you have defined (2nd argument)"
-						);
-				  }
-			  }
-			  Double c;
-			  try{
-				  c = getAttributeDouble(track_info[i], col);
-			  } catch (IllegalArgumentException e){
-				  try{
-					  c = (double) getAttributeInt(track_info[i], col);
-				  } catch (IllegalArgumentException f){
-					  throw new IllegalArgumentException(
-						"It is not possible to plot graph with the attribute you have defined (3rd argument)"
-					  );
-				  }
-			  }
-			 plot.addData(label[0], r, c);
-		}
-		jlabel1.setText("Stopped");
+		//relative speeds in x,y,z and modulus direction, and angle
+		public double rsx, rsy, rsz, modspd, spdtheta;
 		
+		//relative accelerations in x,y,z and modulus direction
+		public double rax, ray, raz, modacc, acctheta;
+		
+		public String phone_id;
+		
+		public int track_no;
 	}
-<<<<<<< HEAD
 /*	public void getSort(){
-=======
+
 	
 	public static double getAttributeDouble(PhoneData p, int attribute){
 		if(attribute == X)

@@ -12,7 +12,7 @@ public class DateTestBench {
 		int opt = 7;
 		
 		//this is the filename
-		String fn =  new String("/Users/thomas/4th-year-project/Tom4YP/src/24th Sept ORDERED.csv");
+		String fn =  new String("/Users/thomas/4th-year-project/BriteYellow/src/24th Sept ORDERED.csv");
 		
 		//create an instance of the DataFormatOperations class
 		DataFormatOperations data = new DataFormatOperations(opt, fn);
@@ -25,7 +25,7 @@ public class DateTestBench {
 		
 		//prints the array
 		for (int k = 0; k < length; k++){
-		for (int l = 0; l < 16; l++) {
+		for (int l = 0; l < 17; l++) {
 			System.out.print(newdat[l][k] + " ");
 		}
 			System.out.print("\n");

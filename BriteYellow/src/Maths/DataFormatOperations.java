@@ -94,14 +94,19 @@ public class DataFormatOperations{
 		Read = new CSVReaders(fn);
 
 		cdcalc = Read.myPhone(opt);
-		processData();
-				
+		processData1();
+		processData2();
 	}
 	public void reanalyse(String[][] cdcalc){
 		this.cdcalc = cdcalc;
-		processData();
+		processData1();
+		processData2();
 	}
-	public void processData(){
+	public void reanalyse(PhoneData[] cdcalc2){
+		this.cdcalc2 = cdcalc2;
+		processData2();
+	}
+	public void processData1(){
 		
 //		this.opt = opt;
 		//create constructor object
@@ -136,6 +141,8 @@ public class DataFormatOperations{
 			}
 		}
 		
+	}
+	public void processData2(){
 		
 		//works out the time between each reading based on the time
 			for(int y = 0; y<length-1; y++){
@@ -222,7 +229,8 @@ public class DataFormatOperations{
 				}
 				cdcalc2[l].modacc = (cdcalc2[l].modspd - cdcalc2[l-1].modspd) / cdcalc2[l].tb;
 				
-			}
+			
+		}
 	}
 	public int getPhone(){
 		return opt;
@@ -230,7 +238,8 @@ public class DataFormatOperations{
 	
 	public void changePhone(int opt){
 		cdcalc = Read.myPhone(opt);
-		processData();
+		processData1();
+		processData2();
 	}
 	
 	public int getLength(){

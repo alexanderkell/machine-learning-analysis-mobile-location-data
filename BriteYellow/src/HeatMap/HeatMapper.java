@@ -18,11 +18,7 @@ public class HeatMapper {
 		double zsp = 0;
 		String[][] newdat = DFO.getFull();
 		
-		int length = 0;
-		while (newdat[0][length] != null){
-			length++;
-		}
-		
+		int length = DFO.getLength();
 		
 		double[] i = new double[length];
 		double[] j = new double[length];
@@ -69,7 +65,7 @@ public class HeatMapper {
 		int count0 = 0;
 		double[][] zhs = new double[maxx+1][maxy+1];
 		
-		for(int x=0; x<(length); x++){
+		for(int x=1; x<(length); x++){
 			k = DFO.getXYZValue(x);
 			try{
 			xval = (int) k[0];
@@ -138,11 +134,7 @@ public class HeatMapper {
 		double zsp = 0;
 		String[][] newdat = DFO.getFull();
 		
-		int length = 0;
-		while (newdat[0][length] != null){
-			length++;
-		}
-		
+		int length = DFO.getLength();
 		
 		double[] i = new double[length];
 		double[] j = new double[length];
@@ -189,7 +181,7 @@ public class HeatMapper {
 		int count0 = 0;
 		double[][] zhs = new double[maxx+1][maxy+1];
 		
-		for(int x=0; x<(length); x++){
+		for(int x=1; x<(length); x++){
 			k = DFO.getXYZValue(x);
 			try{
 			xval = (int) k[0];

@@ -68,7 +68,7 @@ public class HeatMapperLarge {
 		int xi = 0;
 		int yi = 0;
 		
-		for(int x=0; x<(length); x++){
+		for(int x=1; x<(length); x++){
 			k = DFO.getXYZValue(x);
 			try{
 			xval = (int) k[0];
@@ -104,13 +104,9 @@ public class HeatMapperLarge {
 			xi= -3;
 			try{
 				while(xi<7){
-						zhs[xval+xi][yval] = zsp-1;
-						zhs[xval+xi][yval-3] = zsp-1;
-						zhs[xval+xi][yval-2] = zsp-1;
-						zhs[xval+xi][yval-1] = zsp-1;
-						zhs[xval+xi][yval+1] = zsp-1;
-						zhs[xval+xi][yval+2] = zsp-1;
-						zhs[xval+xi][yval+3] = zsp-1;
+					for(int ys = -3; ys<7; ys++){
+						zhs[xval+xi][yval+ys] = zsp;
+					}	
 						xi++;
 				}
 					zhs[xval][yval] = zsp;
@@ -237,13 +233,9 @@ public class HeatMapperLarge {
 			xi= -3;
 			try{
 				while(xi<7){
-						zhs[xval+xi][yval] = zsp-1;
-						zhs[xval+xi][yval-3] = zsp-1;
-						zhs[xval+xi][yval-2] = zsp-1;
-						zhs[xval+xi][yval-1] = zsp-1;
-						zhs[xval+xi][yval+1] = zsp-1;
-						zhs[xval+xi][yval+2] = zsp-1;
-						zhs[xval+xi][yval+3] = zsp-1;
+					for(int ys = -3; ys<7; ys++){
+						zhs[xval+xi][yval+ys] = zsp;
+					}	
 						xi++;
 				}
 					zhs[xval][yval] = zsp;

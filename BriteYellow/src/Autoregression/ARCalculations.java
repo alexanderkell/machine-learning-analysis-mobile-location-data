@@ -27,7 +27,7 @@ public class ARCalculations {
 		double[] xyz = new double[3]; 
 		double tbm1 = 0;
 		double tb = 0;
-		for(int i=0; i<length; i++){
+		for(int i=1; i<length; i++){
 			xyz = DFO.getXYZValue(i);
 			
 			for(int h=0; h<3; h++){

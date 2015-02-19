@@ -1,5 +1,7 @@
 package splitting;
 
+import Maths.DataFormatOperations.PhoneData;
+
 public class TrackSelect
 {
 	String[][] newdat;
@@ -16,6 +18,7 @@ public class TrackSelect
 		int start = -1;
 		
 		for(int i = 0; i<fn[0].length; i++){
+			System.out.print(fn[16][i]);
 			if(fn[16][i] != null){
 				x = Double.parseDouble(fn[16][i]);
 				if(x==select){
@@ -25,7 +28,7 @@ public class TrackSelect
 					r++;
 				}
 			}
-			i++;
+
 		}
 		
 		String[][] newerdat = new String[20][r];
@@ -38,6 +41,50 @@ public class TrackSelect
 				newerdat[k][i] = fn[k][start+i];
 			}	
 		
+		}
+		return newerdat;
+		
+	}
+	
+	public static int getTotalTracks(String[][] fn){
+		for(int i = fn[0].length-1; i>=0; i--){
+			if(fn[16][i]!=null)
+				return Integer.parseInt(fn[16][i]);
+		}
+		return 0;
+	}
+	
+	public static int getTotalTracks(PhoneData[] fn){
+		for(int i = fn.length-1; i>=0; i--){
+			if(fn[i].track_no!=-1)
+				return fn[i].track_no;
+		}
+		return 0;
+	}
+	public static PhoneData[] selecter(PhoneData[] fn,int select)
+	{
+		int r=0;
+		double x;
+		int start = -1;
+		
+		for(int i = 0; i<fn.length; i++){
+			
+				x = fn[i].track_no;
+				if(x==select){
+					if(start== -1){
+						start = i;
+					}
+					r++;
+				}
+			
+		}
+		
+		PhoneData[] newerdat = new PhoneData[r];
+		
+
+		for(int i = 0; i<r; i++){		
+			newerdat[i] = fn[start+i];
+			
 		}
 		return newerdat;
 		

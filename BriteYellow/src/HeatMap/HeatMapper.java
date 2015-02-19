@@ -14,7 +14,7 @@ public class HeatMapper {
 	public void speedHeat(int opt, String fn) throws ParseException, IOException{
 		int xval = 0;
 		int yval = 0;
-		DataFormatOperations DFO = new DataFormatOperations(opt, fn);
+		DataGetter DFO = new DataGetter(opt, fn);
 		double zsp = 0;
 		String[][] newdat = DFO.getFull();
 		
@@ -130,7 +130,7 @@ public class HeatMapper {
 	public void AccHeat(int opt, String fn) throws ParseException, IOException{
 		int xval = 0;
 		int yval = 0;
-		DataFormatOperations DFO = new DataFormatOperations(opt, fn);
+		DataGetter DFO = new DataGetter(opt, fn);
 		double zsp = 0;
 		String[][] newdat = DFO.getFull();
 		

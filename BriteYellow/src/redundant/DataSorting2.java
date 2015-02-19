@@ -1,4 +1,4 @@
-package splitting;
+package redundant;
 
 import java.text.ParseException;
 

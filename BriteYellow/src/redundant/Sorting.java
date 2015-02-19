@@ -1,4 +1,4 @@
-package splitting;
+package redundant;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

@@ -1,4 +1,4 @@
-package Maths;
+package redundant;
 
 public class CodeDumpBU {
 	

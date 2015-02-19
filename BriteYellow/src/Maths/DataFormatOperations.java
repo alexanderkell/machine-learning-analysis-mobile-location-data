@@ -236,6 +236,67 @@ public class DataFormatOperations{
 			
 			getSort();
 	}
+	
+	public class PhoneData{
+		//position x,y,z
+		public double x, y, z;
+		
+		//whole date in Data and String format
+		public Date wholedate;
+		public String wholedatestring;
+		
+		//time between current position and the previous position
+		public double tb;
+		
+		//relative speeds in x,y,z and modulus direction, and angle
+		public double rsx, rsy, rsz, modspd, spdtheta;
+		
+		//relative accelerations in x,y,z and modulus direction
+		public double rax, ray, raz, modacc, acctheta;
+		
+		public String phone_id;
+		
+		public int track_no;
+	}
+	
+	public void getSort(){
+		int i = 0,r = 0,s = 0;
+		int track = 1;
+		double x;
+		
+		while(i<length){
+			
+			x = cdcalc2[i].x;
+			if(x>200 && x<850){
+				cdcalc2[i].track_no = track;
+				cdcalc[16][i] = String.valueOf(track);
+			}
+			else if(x>850){
+				r=1;
+				s=0;
+				cdcalc2[i].track_no = -1;
+			}
+			else if(x<850 && r==1){
+				track++;
+				r=0;
+				cdcalc2[i].track_no = -1;
+			}
+			
+			
+			else if(x<200){s=1;r=0;
+				cdcalc2[i].track_no = -1;
+			}
+			else if(x>200 && s==1){
+				track++;
+				s=0;
+				cdcalc2[i].track_no = -1;
+			}
+			
+			//System.out.println("x = " + newdat[0][i] + ", ID = " + newdat[16][i]);	
+			i++;
+		}
+	}
+	
 	public int getPhone(){
 		return opt;
 	}
@@ -480,179 +541,14 @@ public class DataFormatOperations{
 		// Return true if the modulus speed is less than 1 point/sec, or false if not
 		return cdcalc2[index].modspd ==0;
 	}
-
-
-	
-	/**Set the track number for a point
-	 * 
-	 * @param index
-	 */
-	public void setTrackNo(int index, int track_no){
-		cdcalc2[index].track_no = track_no;
-	}
 	
 	
-
-
-	public void getSort(){
-		int i = 0,r = 0,s = 0;
-		int track = 1;
-		double x;
-		
-		while(i<length){
-			
-			x = cdcalc2[i].x;
-			if(x>200 && x<850){
-				cdcalc2[i].track_no = track;
-				cdcalc[16][i] = String.valueOf(track);
-			}
-			else if(x>850){
-				r=1;
-				s=0;
-				cdcalc2[i].track_no = -1;
-			}
-			else if(x<850 && r==1){
-				track++;
-				r=0;
-				cdcalc2[i].track_no = -1;
-			}
-			
-			
-			else if(x<200){s=1;r=0;
-				cdcalc2[i].track_no = -1;
-			}
-			else if(x>200 && s==1){
-				track++;
-				s=0;
-				cdcalc2[i].track_no = -1;
-			}
-			
-			//System.out.println("x = " + newdat[0][i] + ", ID = " + newdat[16][i]);	
-			i++;
-		}
-	}
-	/**Plot the track
-	 * 
-	 * @param track_info
-	 * @param row
-	 * @param col
-	 */
-	public static void plotTrack1(String[][] track_info, int row, int col, float timescaler){
-		Image im = new ImageIcon("map.jpg").getImage(); 
-		
-		String[] label = new String[]{
-			"Phone data"
-		};
-		PlotHelper plot = new PlotHelper(COLUMNS[row]+" vs "+COLUMNS[col], COLUMNS[row], COLUMNS[col], label);
-		plot.setAxisRange(0, 1100, 0, 500);
-		plot.setRangeAxisInverted(true);
-		XYPlot xyplot = plot.getXYPlot();
-		// Clear background paint
-		xyplot.setBackgroundPaint(null);
-		// Set background image to the map
-		xyplot.setBackgroundImage(im);
-		
-		ChartPanel cpanel = plot.getChartPanel();
-		JFrame frame = new JFrame();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLayout(new BorderLayout());
-		frame.add(cpanel, BorderLayout.CENTER);
-		JLabel jlabel = new JLabel();
-		frame.add(jlabel, BorderLayout.SOUTH);
-		frame.pack();
-		frame.setVisible(true);
-		
-		for(int i = 0; i<track_info[0].length; i++){
-			jlabel.setText("<html>"+track_info[i][3] + "<br> Point "+(i+1)+"</html>");
-			  try{
-				  int tb = (int) (timescaler*1000*(int) Double.parseDouble(track_info[i][5]));
-					Thread.sleep(tb);
-			  } catch (NumberFormatException e){
-					System.out.println(e.toString());
-				} catch (InterruptedException e){
-					System.err.println("User Aborted");
-					return;
-				}
-			 
-			plot.addData(label[0], Double.parseDouble(track_info[i][row]), Double.parseDouble(track_info[i][col]));
-		}
-		
-	}
-	public static void plotTrack2(String[][] track_info, int row, int col, float timescaler){
-		Image im = new ImageIcon("map.jpg").getImage(); 
-		
-		String[] label = new String[]{
-			"Phone data"
-		};
-		PlotHelper plot = new PlotHelper(COLUMNS[row]+" vs "+COLUMNS[col], COLUMNS[row], COLUMNS[col], label);
-		plot.setAxisRange(0, 1100, 0, 500);
-		plot.setRangeAxisInverted(true);
-		plot.setSeriesLinesVisble(label[0], true);
-		XYPlot xyplot = plot.getXYPlot();
-		// Clear background paint
-		xyplot.setBackgroundPaint(null);
-		// Set background image to the map
-		xyplot.setBackgroundImage(im);
-		
-		ChartPanel cpanel = plot.getChartPanel();
-		JFrame frame = new JFrame();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLayout(new BorderLayout());
-		frame.add(cpanel, BorderLayout.CENTER);
-		JLabel jlabel1 = new JLabel();
-		jlabel1.setText("Playing at "+(1/timescaler)+"X speed");
-		JPanel panel = new JPanel();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-		frame.add(panel, BorderLayout.SOUTH);
-		JLabel jlabel2 = new JLabel();
-		panel.add(jlabel1);
-		panel.add(jlabel2);
-		frame.pack();
-		frame.setVisible(true);
-		
-		for(int i = 0; i<track_info[0].length; i++){
-			jlabel2.setText("<html><p>"+track_info[3][i] + "&nbsp;&nbsp; Point "+(i+1)+" / "+track_info[0].length+"</p></html>");
-			  try{
-				  int tb = (int) (timescaler*1000*(int) Double.parseDouble(track_info[5][i]));
-					Thread.sleep(tb);
-			  } catch (NumberFormatException e){
-					System.out.println(e.toString());
-				} catch (InterruptedException e){
-					System.err.println("User Aborted");
-					return;
-				}
-			 
-			plot.addData(label[0], Double.parseDouble(track_info[row][i]), Double.parseDouble(track_info[col][i]));
-
-		}
-		jlabel1.setText("Stopped");
-		
-	}
 	
-
-
 	
-	public class PhoneData{
-		//position x,y,z
-		public double x, y, z;
-		
-		//whole date in Data and String format
-		public Date wholedate;
-		public String wholedatestring;
-		
-		//time between current position and the previous position
-		public double tb;
-		
-		//relative speeds in x,y,z and modulus direction, and angle
-		public double rsx, rsy, rsz, modspd, spdtheta;
-		
-		//relative accelerations in x,y,z and modulus direction
-		public double rax, ray, raz, modacc, acctheta;
-		
-		public String phone_id;
-		
-		public int track_no;
-	}
+	
+	
+	
+	
 /*	public void getSort(){
 
 	

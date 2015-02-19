@@ -7,6 +7,7 @@ import java.util.Scanner;
 import CSVImport.*;
 import splitting.*;
 import Maths.*;
+import Maths.DataFormatOperations.PhoneData;
 
 public class main {
 	public static void main(String args[]) throws ParseException{
@@ -21,16 +22,17 @@ public class main {
 		System.out.println("Select from the following options:\n1. Print Phone 1 Data\n2. Print Phone 2 Data\n3. Print Phone 3 Data\n4. Print Phone 4 Data\n5. Print Phone 5 Data\n6. Print Phone 6 Data\n7. Print Raw Data\n");
 		int phoneOpt = sc.nextInt();
 		
-		DataFormatOperations dfo = new DataFormatOperations(phoneOpt,filePath); //Data Processing
 		
-
 		//Split Data into Individual Tracks
-		DataSorting split = new DataSorting(phoneOpt, filePath);
-		String[][] split1 = split.getSort();
+		DataSorting2 split = new DataSorting2(phoneOpt, filePath);
+		PhoneData[] split1 = split.getSort();
+		System.out.println("Total tracks: "+TrackSelect.getTotalTracks(split1));
+
+		PhoneData[] split2 = TrackSelect.selecter(split1, 1);
 		
-		//Print data
-		DataFormatOperations.plotTrack2(split1, 0, 1, 0.1f);
+		// Plot graph
+		DataFormatOperations.plotTrack2(split2, DataFormatOperations.X, DataFormatOperations.Y, 0.2f);
 		
-		
+		sc.close();
 	}
 }

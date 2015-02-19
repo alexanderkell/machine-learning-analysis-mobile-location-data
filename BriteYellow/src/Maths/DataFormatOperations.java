@@ -2,13 +2,16 @@ package Maths;
 import java.util.*;
 import java.text.*;
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.io.IOException;
 import java.lang.Math;
 
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.plot.XYPlot;
@@ -19,9 +22,31 @@ import Graphing.PlotHelper;
 
 public class DataFormatOperations{
 	
+<<<<<<< HEAD
 	public final static String[] COLUMNS = {		
 		"X", "Y", "Z", "WholeDate","Phone id", "Time Between values", "Xspeed", "YSpeed", "ZSpeed", "ModSpd", "STheta", "Xacc", "Yacc", "Zacc", "ModAcc", "ATheta"	
+=======
+	final static String[] COLUMNS = {		
+		"X", "Y", "Z", "WholeDate","Phone id", "Time Between values", "Xspeed", "YSpeed", "ZSpeed", "ModSpd", "STheta", "Xacc", "Yacc", "Zacc", "ModAcc", "ATheta", "Track"
+>>>>>>> 533458e48a93e6fbdf62fbca99f73191cd9e2451
 	};
+	public final static int X = 0;
+	public final static int Y = 1;
+	public final static int Z = 2;
+	public final static int WholeDate = 3;
+	public final static int PhoneId = 4;
+	public final static int TimeBetween = 5;
+	public final static int XSpeed = 6;
+	public final static int YSpeed = 7;
+	public final static int ZSpeed = 8;
+	public final static int MSpeed = 9;
+	public final static int STheta = 10;
+	public final static int XAcc = 11;
+	public final static int YAcc = 12;
+	public final static int ZAcc = 13;
+	public final static int MAcc = 14;
+	public final static int ATheta = 15;
+	public final static int Track = 16;
 	
 	//initialise all variables
 	//time between variable
@@ -62,7 +87,7 @@ public class DataFormatOperations{
 	private CSVReaders Read;
 	private int opt;
 	private int length;
-	private static String fn = new String("/Users/thomas/4th-year-project/Tom4YP/src/24th Sept ORDERED.csv");
+	private String fn;
 	private String temp = new String();
 	//read in data
 	private String cdcalc[][];
@@ -73,15 +98,23 @@ public class DataFormatOperations{
 		//Read and store the phone data
 		Read = new CSVReaders(fn);
 
-		processData(Read, opt);
-				
-	}
-	
-	public void processData(CSVReaders Read, int opt){
 		cdcalc = Read.myPhone(opt);
-		this.opt = opt;
+		processData1();
+		processData2();
+	}
+	public void reanalyse(String[][] cdcalc){
+		this.cdcalc = cdcalc;
+		processData1();
+		processData2();
+	}
+	public void reanalyse(PhoneData[] cdcalc2){
+		this.cdcalc2 = cdcalc2;
+		processData2();
+	}
+	public void processData1(){
+		
+//		this.opt = opt;
 		//create constructor object
-		DataFormatOperations.fn = fn;
 		length = cdcalc[0].length;
 		
 		cdcalc2 = new PhoneData[length];
@@ -113,6 +146,8 @@ public class DataFormatOperations{
 			}
 		}
 		
+	}
+	public void processData2(){
 		
 		//works out the time between each reading based on the time
 			for(int y = 0; y<length-1; y++){
@@ -199,16 +234,23 @@ public class DataFormatOperations{
 				}
 				cdcalc2[l].modacc = (cdcalc2[l].modspd - cdcalc2[l-1].modspd) / cdcalc2[l].tb;
 				
+<<<<<<< HEAD
 			}
 			
 			getSort();
+=======
+			
+		}
+>>>>>>> 533458e48a93e6fbdf62fbca99f73191cd9e2451
 	}
 	public int getPhone(){
 		return opt;
 	}
 	
 	public void changePhone(int opt){
-		processData(Read, opt);
+		cdcalc = Read.myPhone(opt);
+		processData1();
+		processData2();
 	}
 	
 	public int getLength(){
@@ -217,8 +259,8 @@ public class DataFormatOperations{
 	
 
 	
-	public void setFileName(String fn){
-		DataFormatOperations.fn = fn;
+	public String getFileName(){
+		return fn;
 	}
 	
 	public void writeToFile() throws IOException{
@@ -226,7 +268,7 @@ public class DataFormatOperations{
 		CSVExport.CSVWriter cw = new CSVExport.CSVWriter(new SimpleDateFormat("dd-MM").format(cdcalc2[1].wholedate)+" phone "+getPhone()+".csv");
 		PhoneData[] pd = getFullPhoneData();
 		cw.write(COLUMNS);
-		DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+
 		for(int i=0; i<length; i++){
 			PhoneData pdi = pd[i];
 			String[] data = new String[]{
@@ -348,6 +390,27 @@ public class DataFormatOperations{
 		return Math.sqrt(xdiff*xdiff + ydiff*ydiff);
 	}
 	
+	public double getX(int index){
+		return cdcalc2[index].x;
+	}
+	public double getY(int index){
+		return cdcalc2[index].y;
+	}
+	public double getZ(int index){
+		return cdcalc2[index].z;
+	}
+	public double[] getXYZDistanceBetween(int index){
+		if(index<1)
+			throw new IllegalArgumentException("Index must be greater than or equal to 1");
+		
+		// Calculate different between 2 recorded position
+		double xdiff = cdcalc2[index].x - cdcalc2[index-1].x;
+		double ydiff = cdcalc2[index].y - cdcalc2[index-1].y;
+		double zdiff = cdcalc2[index].z - cdcalc2[index-1].z;
+		return new double[]{
+			xdiff, ydiff, zdiff
+			};
+	}
 	public double[] getXYZSpeedValue(int index){
 		if(index<1)
 			throw new IllegalArgumentException("Speed index must be greater than or equal to 1");
@@ -425,27 +488,7 @@ public class DataFormatOperations{
 		return cdcalc2[index].modspd ==0;
 	}
 
-	public class PhoneData{
-		//position x,y,z
-		double x, y, z;
-		
-		//whole date in Data and String format
-		Date wholedate;
-		String wholedatestring;
-		
-		//time between current position and the previous position
-		double tb;
-		
-		//relative speeds in x,y,z and modulus direction, and angle
-		double rsx, rsy, rsz, modspd, spdtheta;
-		
-		//relative accelerations in x,y,z and modulus direction
-		double rax, ray, raz, modacc, acctheta;
-		
-		String phone_id;
-		
-		int track_no;
-	}
+
 	
 	/**Set the track number for a point
 	 * 
@@ -456,6 +499,7 @@ public class DataFormatOperations{
 	}
 	
 	
+<<<<<<< HEAD
 
 	public void getSort(){
 		int i = 0,r = 0,s = 0;
@@ -491,10 +535,291 @@ public class DataFormatOperations{
 			
 			//System.out.println("x = " + newdat[0][i] + ", ID = " + newdat[16][i]);	
 			i++;
+=======
+/*	public void plotTrackTest(){
+		String[] label = new String[]{
+			"Phone data"
+		};
+		PlotHelper plot = new PlotHelper(COLUMNS[0]+" vs "+COLUMNS[1], COLUMNS[0], COLUMNS[1], label);
+		plot.showDialog();
+		for(int i = 0; i<cdcalc2.length; i++){
+			Thread.sleep(arg0)
+			plot.addData(label[0], cdcalc2[i].x, cdcalc2[i].y);
+		}
+	}
+*/	
+	/**Plot the track
+	 * 
+	 * @param track_info
+	 * @param row
+	 * @param col
+	 */
+	public static void plotTrack1(String[][] track_info, int row, int col, float timescaler){
+		Image im = new ImageIcon("map.jpg").getImage(); 
+		
+		String[] label = new String[]{
+			"Phone data"
+		};
+		PlotHelper plot = new PlotHelper(COLUMNS[row]+" vs "+COLUMNS[col], COLUMNS[row], COLUMNS[col], label);
+		plot.setAxisRange(0, 1100, 0, 500);
+		plot.setRangeAxisInverted(true);
+		XYPlot xyplot = plot.getXYPlot();
+		// Clear background paint
+		xyplot.setBackgroundPaint(null);
+		// Set background image to the map
+		xyplot.setBackgroundImage(im);
+		
+		ChartPanel cpanel = plot.getChartPanel();
+		JFrame frame = new JFrame();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLayout(new BorderLayout());
+		frame.add(cpanel, BorderLayout.CENTER);
+		JLabel jlabel = new JLabel();
+		frame.add(jlabel, BorderLayout.SOUTH);
+		frame.pack();
+		frame.setVisible(true);
+		
+		for(int i = 0; i<track_info[0].length; i++){
+			jlabel.setText("<html>"+track_info[i][3] + "<br> Point "+(i+1)+"</html>");
+			  try{
+				  int tb = (int) (timescaler*1000*(int) Double.parseDouble(track_info[i][5]));
+					Thread.sleep(tb);
+			  } catch (NumberFormatException e){
+					System.out.println(e.toString());
+				} catch (InterruptedException e){
+					System.err.println("User Aborted");
+					return;
+				}
+			 
+			plot.addData(label[0], Double.parseDouble(track_info[i][row]), Double.parseDouble(track_info[i][col]));
 		}
 		
 	}
+	public static void plotTrack2(String[][] track_info, int row, int col, float timescaler){
+		Image im = new ImageIcon("map.jpg").getImage(); 
+		
+		String[] label = new String[]{
+			"Phone data"
+		};
+		PlotHelper plot = new PlotHelper(COLUMNS[row]+" vs "+COLUMNS[col], COLUMNS[row], COLUMNS[col], label);
+		plot.setAxisRange(0, 1100, 0, 500);
+		plot.setRangeAxisInverted(true);
+		plot.setSeriesLinesVisble(label[0], true);
+		XYPlot xyplot = plot.getXYPlot();
+		// Clear background paint
+		xyplot.setBackgroundPaint(null);
+		// Set background image to the map
+		xyplot.setBackgroundImage(im);
+		
+		ChartPanel cpanel = plot.getChartPanel();
+		JFrame frame = new JFrame();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLayout(new BorderLayout());
+		frame.add(cpanel, BorderLayout.CENTER);
+		JLabel jlabel1 = new JLabel();
+		jlabel1.setText("Playing at "+(1/timescaler)+"X speed");
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+		frame.add(panel, BorderLayout.SOUTH);
+		JLabel jlabel2 = new JLabel();
+		panel.add(jlabel1);
+		panel.add(jlabel2);
+		frame.pack();
+		frame.setVisible(true);
+		
+		for(int i = 0; i<track_info[0].length; i++){
+			jlabel2.setText("<html><p>"+track_info[3][i] + "&nbsp;&nbsp; Point "+(i+1)+" / "+track_info[0].length+"</p></html>");
+			  try{
+				  int tb = (int) (timescaler*1000*(int) Double.parseDouble(track_info[5][i]));
+					Thread.sleep(tb);
+			  } catch (NumberFormatException e){
+					System.out.println(e.toString());
+				} catch (InterruptedException e){
+					System.err.println("User Aborted");
+					return;
+				}
+			 
+			plot.addData(label[0], Double.parseDouble(track_info[row][i]), Double.parseDouble(track_info[col][i]));
+>>>>>>> 533458e48a93e6fbdf62fbca99f73191cd9e2451
+		}
+		jlabel1.setText("Stopped");
+		
+	}
+	
+	public static void plotTrack2(PhoneData[] track_info, int row, int col, float timescaler){
+		Image im = new ImageIcon("map.jpg").getImage(); 
+		
+		String[] label = new String[]{
+			"Phone data"
+		};
+		PlotHelper plot = new PlotHelper(COLUMNS[row]+" vs "+COLUMNS[col], COLUMNS[row], COLUMNS[col], label);
+		plot.setAxisRange(0, 1100, 0, 500);
+		plot.setRangeAxisInverted(true);
+		plot.setSeriesLinesVisble(label[0], true);
+		XYPlot xyplot = plot.getXYPlot();
+		// Clear background paint
+		xyplot.setBackgroundPaint(null);
+		// Set background image to the map
+		xyplot.setBackgroundImage(im);
+		
+		ChartPanel cpanel = plot.getChartPanel();
+		JFrame frame = new JFrame();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLayout(new BorderLayout());
+		frame.add(cpanel, BorderLayout.CENTER);
+		JLabel jlabel1 = new JLabel();
+		jlabel1.setText("Playing at "+(1/timescaler)+"X speed");
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+		frame.add(panel, BorderLayout.SOUTH);
+		JLabel jlabel2 = new JLabel();
+		panel.add(jlabel1);
+		panel.add(jlabel2);
+		frame.pack();
+		frame.setVisible(true);
+		
+		for(int i = 0; i<track_info.length; i++){
+			jlabel2.setText("<html><p>"+track_info[i].wholedatestring + "&nbsp;&nbsp; Point "+(i+1)+" / "+track_info.length+"</p></html>");
+			  try{
+				  int tb = (int) (timescaler*1000*(int) track_info[i].tb);
+					Thread.sleep(tb);
+			  } catch (NumberFormatException e){
+					System.out.println(e.toString());
+				} catch (InterruptedException e){
+					System.err.println("User Aborted");
+					return;
+				}
+			
+			  
+			  Double r;
+			  try{
+				  r = getAttributeDouble(track_info[i], row);
+			  } catch (IllegalArgumentException e){
+				  try{
+					  r = (double) getAttributeInt(track_info[i], row);
+				  } catch (IllegalArgumentException f){
+					  throw new IllegalArgumentException(
+						 "It is not possible to plot graph with the attribute you have defined (2nd argument)"
+						);
+				  }
+			  }
+			  Double c;
+			  try{
+				  c = getAttributeDouble(track_info[i], col);
+			  } catch (IllegalArgumentException e){
+				  try{
+					  c = (double) getAttributeInt(track_info[i], col);
+				  } catch (IllegalArgumentException f){
+					  throw new IllegalArgumentException(
+						"It is not possible to plot graph with the attribute you have defined (3rd argument)"
+					  );
+				  }
+			  }
+			 plot.addData(label[0], r, c);
+		}
+		jlabel1.setText("Stopped");
+		
+	}
+<<<<<<< HEAD
 /*	public void getSort(){
+=======
+	
+	public static double getAttributeDouble(PhoneData p, int attribute){
+		if(attribute == X)
+			return p.x;
+		if(attribute == Y)
+			return p.y;
+		if(attribute == Z)
+			return p.z;
+
+		if(attribute == TimeBetween)
+			return p.tb;
+		if(attribute == XSpeed)
+			return p.rsx;		
+		if(attribute == YSpeed)
+				return p.rsy;
+		if(attribute == ZSpeed)
+			return p.rsz;
+		if(attribute == MSpeed)
+			return p.modspd;
+		if(attribute == STheta)
+			return p.spdtheta;
+		if(attribute == XAcc)
+			return p.rax;		
+		if(attribute == YAcc)
+			return p.ray;
+		if(attribute == ZAcc)
+			return p.raz;
+		if(attribute == MAcc)
+			return p.modacc;
+		if(attribute == ATheta)
+			return p.acctheta;
+		throw new IllegalArgumentException(
+			"You might have passed the wrong argument or you have used the wrong method to get attributes"
+			);
+	}
+
+	public static int getAttributeInt(PhoneData p, int attribute){
+		if(attribute == Track)
+			return p.track_no;
+		throw new IllegalArgumentException(
+				"You might have passed the wrong argument or you have used the wrong method to get attributes"
+				);
+	}
+	public static Date getDate(PhoneData p){
+		return p.wholedate;
+	}
+	
+	
+	public static String getAttributeString(PhoneData p, int attribute){
+		if(attribute == WholeDate)
+			return p.wholedatestring;
+		try{
+			return String.valueOf(getAttributeDouble(p, attribute));
+		} catch (IllegalArgumentException e){
+			try{
+				return String.valueOf(getAttributeInt(p, attribute));
+			} catch (IllegalArgumentException f){
+				throw new IllegalArgumentException("You might have passed the wrong argument");
+			}
+		}
+	}
+	
+	
+	public PhoneData[] getSort2(){
+		int i = 0,r = 0,s = 0;
+		int track = 1;
+		double x;
+		
+		while(i<length){
+			
+			x = cdcalc2[i].x;
+			if(x>200 && x<850){
+				setTrackNo(i,track);
+				cdcalc2[i].track_no = track;
+			}
+			else if(x>850){r=1;s=0;
+			}
+			else if(x<850 && r==1){
+				track++;
+				r=0;
+			}
+			
+			
+			else if(x<200){s=1;r=0;
+			}
+			else if(x>200 && s==1){
+				track++;
+				s=0;
+			}
+			
+			i++;
+		}
+		return cdcalc2;
+	}
+	
+	public String[][] getSort(){
+>>>>>>> 533458e48a93e6fbdf62fbca99f73191cd9e2451
 		int i = 0,r = 0,s = 0;
 		int track = 1;
 		double x;
@@ -523,10 +848,48 @@ public class DataFormatOperations{
 				s=0;
 			}
 			
+<<<<<<< HEAD
 			//System.out.println("x = " + newdat[0][i] + ", ID = " + newdat[16][i]);	
 			i++;
 		}
 		cdcalc = newdat;
+=======
+//			System.out.println("x = " + newdat[0][i] + ", ID = " + newdat[16][i]);	
+			i++;
+		}
+		return newdat;
+	}
+
+	
+	public class PhoneData{
+		//position x,y,z
+		public double x, y, z;
+		
+		//whole date in Data and String format
+		public Date wholedate;
+		public String wholedatestring;
+		
+		//time between current position and the previous position
+		public double tb;
+		
+		//relative speeds in x,y,z and modulus direction, and angle
+		public double rsx, rsy, rsz, modspd, spdtheta;
+		
+		//relative accelerations in x,y,z and modulus direction
+		public double rax, ray, raz, modacc, acctheta;
+		
+		public String phone_id;
+		
+		public int track_no;
+	}
+	
+/*	public static void main(String args[]) throws ParseException, IOException{
+		DataFormatOperations dfo = new DataFormatOperations(1, "C:\\Users\\testuser\\SkyDrive\\Documents\\4th year project files\\repos\\4th-year-project\\BriteYellow\\src\\24th Sept ORDERED.csv");
+		for (int i = 1; i<=5; i++){
+			dfo.changePhone(i);
+			dfo.writeToFile();
+		}
+>>>>>>> 533458e48a93e6fbdf62fbca99f73191cd9e2451
 	}
 	*/
 }

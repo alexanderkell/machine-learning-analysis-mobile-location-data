@@ -1,7 +1,7 @@
 import java.io.FileNotFoundException;
 import java.text.ParseException;
 
-import Maths.DataFormatOperations;
+import Maths.DataGetter;
 
 
 public class DateTestBench {
@@ -15,7 +15,7 @@ public class DateTestBench {
 		String fn =  new String("/Users/thomas/4th-year-project/BriteYellow/src/24th Sept ORDERED.csv");
 		
 		//create an instance of the DataFormatOperations class
-		DataFormatOperations data = new DataFormatOperations(opt, fn);
+		DataGetter data = new DataGetter(opt, fn);
 		
 		//gets the full matrix
 		String[][] newdat = data.getFull();

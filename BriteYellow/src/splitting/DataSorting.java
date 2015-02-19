@@ -1,12 +1,5 @@
 package splitting;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.text.ParseException;
 
 import Maths.DataFormatOperations;
@@ -72,7 +65,7 @@ public class DataSorting {
 				s=0;
 			}
 			
-			System.out.println("x = " + newdat[0][i] + ", ID = " + newdat[16][i]);	
+//			System.out.println("x = " + newdat[0][i] + ", ID = " + newdat[16][i]);	
 			i++;
 		}
 		return newdat;

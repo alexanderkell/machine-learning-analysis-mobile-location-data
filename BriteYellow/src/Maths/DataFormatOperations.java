@@ -65,7 +65,7 @@ public class DataFormatOperations{
 	private CSVReaders Read;
 	private int opt;
 	private int length;
-	private static String fn = new String("/Users/thomas/4th-year-project/Tom4YP/src/24th Sept ORDERED.csv");
+	private String fn;
 	private String temp = new String();
 	//read in data
 	private String cdcalc[][];
@@ -77,15 +77,17 @@ public class DataFormatOperations{
 		Read = new CSVReaders(fn);
 
 		cdcalc = Read.myPhone(opt);
-		processData(opt);
+		processData();
 				
 	}
-	
-	public void processData(int opt){
+	public void reanalyse(String[][] cdcalc){
+		this.cdcalc = cdcalc;
+		processData();
+	}
+	public void processData(){
 		
-		this.opt = opt;
+//		this.opt = opt;
 		//create constructor object
-		DataFormatOperations.fn = fn;
 		length = cdcalc[0].length;
 		
 		cdcalc2 = new PhoneData[length];
@@ -211,7 +213,7 @@ public class DataFormatOperations{
 	
 	public void changePhone(int opt){
 		cdcalc = Read.myPhone(opt);
-		processData(opt);
+		processData();
 	}
 	
 	public int getLength(){
@@ -220,8 +222,8 @@ public class DataFormatOperations{
 	
 
 	
-	public void setFileName(String fn){
-		DataFormatOperations.fn = fn;
+	public String getFileName(){
+		return fn;
 	}
 	
 	public void writeToFile() throws IOException{
@@ -229,7 +231,7 @@ public class DataFormatOperations{
 		CSVExport.CSVWriter cw = new CSVExport.CSVWriter(new SimpleDateFormat("dd-MM").format(cdcalc2[1].wholedate)+" phone "+getPhone()+".csv");
 		PhoneData[] pd = getFullPhoneData();
 		cw.write(COLUMNS);
-		DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+
 		for(int i=0; i<length; i++){
 			PhoneData pdi = pd[i];
 			String[] data = new String[]{

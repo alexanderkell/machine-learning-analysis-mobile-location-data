@@ -20,7 +20,7 @@ public class ARCalculations {
 	public ARCalculations(int opt, String fn) throws ParseException{
 		this.opt = opt;
 		this.fn = fn;
-		DataFormatOperations DFO = new DataFormatOperations(opt,fn);
+		DataGetter DFO = new DataGetter(opt,fn);
 		int length = DFO.getLength();
 		this.length = length;
 		double[][] data = new double[4][length];

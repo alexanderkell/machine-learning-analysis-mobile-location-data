@@ -1,24 +1,9 @@
 package Maths;
 import java.util.*;
 import java.text.*;
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import java.awt.Image;
-import java.io.IOException;
-import java.lang.Math;
+import java.sql.Timestamp;
 
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.plot.XYPlot;
-
-import CSVExport.CSVWriter;
 import CSVImport.CSVReaders;
-import Graphing.PlotHelper;
 
 public class DataFormatOperations{
 	
@@ -44,6 +29,7 @@ public class DataFormatOperations{
 	public final static int MAcc = 14;
 	public final static int ATheta = 15;
 	public final static int Track = 16;
+	public final static int Timestamp = 17;
 	
 	//initialise all variables
 	//time between variable
@@ -257,6 +243,8 @@ public class DataFormatOperations{
 		public String phone_id;
 		
 		public int track_no;
+		
+		public Timestamp ts;
 	}
 	
 	public void getSort(){
@@ -295,6 +283,27 @@ public class DataFormatOperations{
 			//System.out.println("x = " + newdat[0][i] + ", ID = " + newdat[16][i]);	
 			i++;
 		}
+	}
+	
+	public void makeTimeStamp(){
+		int i = 0;
+		
+		while(i<length){
+			//calculates the mysql timestamp
+			Date wholedate =  cdcalc2[i].wholedate;
+			//System.out.println(wholedate);
+			Timestamp ts = new Timestamp(wholedate.getTime());
+			cdcalc2[i].ts = ts;
+			cdcalc[17][i] = String.valueOf(ts);
+			i++;
+		}
+		
+	}
+	
+	public static void main(String[] args) throws ParseException{
+		DataFormatOperations DFO = new DataFormatOperations(1 , "/Users/thomas/4th-year-project/BriteYellow/src/24th Sept ORDERED.csv");
+		DFO.makeTimeStamp();
+		
 	}
 	
 

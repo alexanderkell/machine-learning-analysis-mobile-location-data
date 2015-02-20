@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.sql.Timestamp;
 
 import Maths.DataFormatOperations.PhoneData;
 
@@ -215,6 +216,9 @@ public class DataGetter extends DataFormatOperations{
 		return cdcalc2[index].modspd ==0;
 	}
 	
+	public Timestamp getTimestamp(int index){
+		return cdcalc2[index].ts;
+	}
 	
 
 }

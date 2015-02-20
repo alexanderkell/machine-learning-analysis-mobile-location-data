@@ -25,7 +25,7 @@ public class DateTestBench {
 		
 		//prints the array
 		for (int k = 0; k < length; k++){
-		for (int l = 0; l < 17; l++) {
+		for (int l = 0; l < 18; l++) {
 			System.out.print(newdat[l][k] + " ");
 		}
 			System.out.print("\n");

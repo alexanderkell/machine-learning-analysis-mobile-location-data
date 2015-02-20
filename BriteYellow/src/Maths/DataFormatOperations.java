@@ -6,31 +6,7 @@ import java.sql.Timestamp;
 import CSVImport.CSVReaders;
 
 public class DataFormatOperations{
-	
-
-	public final static String[] COLUMNS = {		
-		"X", "Y", "Z", "WholeDate","Phone id", "Time Between values", "Xspeed", "YSpeed", "ZSpeed", "ModSpd", "STheta", "Xacc", "Yacc", "Zacc", "ModAcc", "ATheta"	
-
-	};
-	public final static int X = 0;
-	public final static int Y = 1;
-	public final static int Z = 2;
-	public final static int WholeDate = 3;
-	public final static int PhoneId = 4;
-	public final static int TimeBetween = 5;
-	public final static int XSpeed = 6;
-	public final static int YSpeed = 7;
-	public final static int ZSpeed = 8;
-	public final static int MSpeed = 9;
-	public final static int STheta = 10;
-	public final static int XAcc = 11;
-	public final static int YAcc = 12;
-	public final static int ZAcc = 13;
-	public final static int MAcc = 14;
-	public final static int ATheta = 15;
-	public final static int Track = 16;
-	public final static int Timestamp = 17;
-	
+		
 	//initialise all variables
 	//time between variable
 	private double tb = 0;
@@ -84,6 +60,10 @@ public class DataFormatOperations{
 		cdcalc = Read.myPhone(opt);
 		processData1();
 		processData2();
+		getSort();
+		makeTimeStamp();
+		makeXYZDistanceBetween();
+		makeDistanceBetween();
 	}
 	public void reanalyse(String[][] cdcalc){
 		this.cdcalc = cdcalc;
@@ -220,7 +200,7 @@ public class DataFormatOperations{
 
 			}
 			
-			getSort();
+			
 	}
 	
 	public class PhoneData{
@@ -234,6 +214,9 @@ public class DataFormatOperations{
 		//time between current position and the previous position
 		public double tb;
 		
+		//Displacement x,y,z
+		public double xdisp, ydisp, zdisp, moddisp;
+		
 		//relative speeds in x,y,z and modulus direction, and angle
 		public double rsx, rsy, rsz, modspd, spdtheta;
 		
@@ -242,6 +225,7 @@ public class DataFormatOperations{
 		
 		public String phone_id;
 		
+		//
 		public int track_no;
 		
 		public Timestamp ts;
@@ -297,7 +281,28 @@ public class DataFormatOperations{
 			cdcalc[17][i] = String.valueOf(ts);
 			i++;
 		}
+	}
+	
+	public void makeXYZDistanceBetween(){
+		// Calculate different between 2 recorded position
+		int i = 0;
+		while(i<length){	
+			cdcalc2[i].xdisp = cdcalc2[i].x - cdcalc2[i-1].x;
+			cdcalc2[i].ydisp = cdcalc2[i].y - cdcalc2[i-1].y;
+			cdcalc2[i].zdisp = cdcalc2[i].z - cdcalc2[i-1].z;
+		}
 		
+		
+	}
+	
+	public void makeDistanceBetween(){
+		int i = 0;
+		while(i<length){
+			// Calculate different between 2 recorded position
+			double xdiff = cdcalc2[i].x - cdcalc2[i-1].x;
+			double ydiff = cdcalc2[i].y - cdcalc2[i-1].y;
+			cdcalc2[i].moddisp = Math.sqrt(xdiff*xdiff + ydiff*ydiff);
+		}
 	}
 	
 }

@@ -66,14 +66,21 @@ public class insertMySQL {
 		}
 	}
 	public static void query() throws SQLException{
+		PhoneData pdd = new PhoneData();
+	 
+		
 		try{
 			Connection conn = connection.Connect();
 			Statement stmt = conn.createStatement();
 			
-			String sql = "SELECT x, y FROM AnalysedTracks WHERE y = 13";
+			String sql = "SELECT * FROM AnalysedTracks WHERE y = 13";
 			ResultSet rs = stmt.executeQuery(sql);		
 			
 			while(rs.next()){
+				
+				pdd.x=rs.getInt("x");
+				pdd.y=rs.getInt("y");
+				
 				int x = rs.getInt("x");
 				int y = rs.getInt("y");
 				

@@ -111,11 +111,7 @@ public class DataGetter extends DataFormatOperations{
 	public double getDistanceBetween(int index){
 		if(index<1)
 			throw new IllegalArgumentException("Index must be greater than or equal to 1");
-		
-		// Calculate different between 2 recorded position
-		double xdiff = cdcalc2[index].x - cdcalc2[index-1].x;
-		double ydiff = cdcalc2[index].y - cdcalc2[index-1].y;
-		return Math.sqrt(xdiff*xdiff + ydiff*ydiff);
+		return cdcalc2[index].moddisp;
 	}
 	
 	public double getX(int index){
@@ -130,13 +126,8 @@ public class DataGetter extends DataFormatOperations{
 	public double[] getXYZDistanceBetween(int index){
 		if(index<1)
 			throw new IllegalArgumentException("Index must be greater than or equal to 1");
-		
-		// Calculate different between 2 recorded position
-		double xdiff = cdcalc2[index].x - cdcalc2[index-1].x;
-		double ydiff = cdcalc2[index].y - cdcalc2[index-1].y;
-		double zdiff = cdcalc2[index].z - cdcalc2[index-1].z;
 		return new double[]{
-			xdiff, ydiff, zdiff
+				cdcalc2[index].xdisp, cdcalc2[index].ydisp, cdcalc2[index].zdisp
 			};
 	}
 	public double[] getXYZSpeedValue(int index){

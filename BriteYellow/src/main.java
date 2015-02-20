@@ -31,6 +31,8 @@ public class main {
 
 		PhoneData[] split2 = TrackSelect.selecter(split1, 1);
 		
+		
+		
 		// Plot graph
 		DataFormatOperations.plotTrack2(split2, DataFormatOperations.X, DataFormatOperations.Y, 0.2f);
 		

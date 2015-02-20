@@ -259,23 +259,25 @@ public class DataFormatOperations{
 	
 	public void makeXYZDistanceBetween(){
 		// Calculate different between 2 recorded position
-		int i = 0;
+		int i = 1;
 		while(i<length){	
 			cdcalc2[i].xdisp = cdcalc2[i].x - cdcalc2[i-1].x;
 			cdcalc2[i].ydisp = cdcalc2[i].y - cdcalc2[i-1].y;
 			cdcalc2[i].zdisp = cdcalc2[i].z - cdcalc2[i-1].z;
+			i++;
 		}
 		
 		
 	}
 	
 	public void makeDistanceBetween(){
-		int i = 0;
+		int i = 1;
 		while(i<length){
 			// Calculate different between 2 recorded position
 			double xdiff = cdcalc2[i].x - cdcalc2[i-1].x;
 			double ydiff = cdcalc2[i].y - cdcalc2[i-1].y;
 			cdcalc2[i].moddisp = Math.sqrt(xdiff*xdiff + ydiff*ydiff);
+			i++;
 		}
 	}
 }

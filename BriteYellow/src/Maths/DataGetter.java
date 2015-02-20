@@ -213,7 +213,7 @@ public class DataGetter extends DataFormatOperations{
 	
 	public String getPhoneID(int index){
 		String[][] full = getFull();
-		String pid = full[5][index];
+		String pid = full[4][index];
 		return pid;
 	}
 	

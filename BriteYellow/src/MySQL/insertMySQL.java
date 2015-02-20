@@ -1,6 +1,7 @@
 package MySQL;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 import Maths.*;
 import Maths.DataFormatOperations.PhoneData;
@@ -66,7 +67,9 @@ public class insertMySQL {
 		}
 	}
 	public static void query() throws SQLException{
-		PhoneData pdd = new PhoneData();
+		
+		ArrayList<PhoneData> pdd2 = new ArrayList<PhoneData>();
+//		PhoneData[] pdd = new PhoneData[];
 	 
 		
 		try{
@@ -78,14 +81,37 @@ public class insertMySQL {
 			
 			while(rs.next()){
 				
-				pdd.x=rs.getInt("x");
-				pdd.y=rs.getInt("y");
+			
+// "(x,y,z,PhoneID,XDisp,YDisp,ZDisp,DispModulus,TimeBetween,XSpeed,YSpeed,ZSpeed,ModSpeed, STheta, XAcc, YAcc, ZAcc, ATheta) "
+
+				
+				PhoneData newData = new PhoneData();
+				newData.x = rs.getInt("x");
+				newData.y = rs.getInt("x");
+				newData.z = rs.getInt("x");
+				newData.phone_id = rs.getString("PhoneID");
+				newData.xdisp = rs.getDouble("XDisp");
+				newData.ydisp = rs.getDouble("YDisp");
+				newData.zdisp = rs.getDouble("ZDisp");
+				newData.moddisp = rs.getDouble("DispModulus");
+				newData.tb = rs.getDouble("TimeBetween");
+				newData.rsx = rs.getDouble("XSpeed");
+				newData.rsy = rs.getDouble("YSpeed");
+				newData.rsz = rs.getDouble("ZSpeed");
+				newData.modspd = rs.getDouble("ModSpeed");
+				newData.spdtheta = rs.getDouble("STheta");
+				newData.rax = rs.getDouble("XAcc");
+				newData.ray = rs.getDouble("YAcc");
+				newData.raz = rs.getDouble("ZAcc");
+				newData.acctheta = rs.getDouble("ATheta");
 				
 				int x = rs.getInt("x");
 				int y = rs.getInt("y");
 				
 				System.out.println("x: "+x);
 				System.out.println("y: "+y);
+				
+				pdd2.add(newData);
 			}
 			rs.close();
 		}catch(SQLException e){

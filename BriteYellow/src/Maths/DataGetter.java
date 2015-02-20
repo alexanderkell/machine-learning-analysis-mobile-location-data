@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.sql.Timestamp;
 
-import Maths.DataFormatOperations.PhoneData;
+import Maths.DataFormatOperations;
 
 public class DataGetter extends DataFormatOperations{
 

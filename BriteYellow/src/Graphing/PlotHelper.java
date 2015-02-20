@@ -355,6 +355,18 @@ public class PlotHelper extends JFrame {
     	}
     }
     
+    public void addData(String label, double[][] xy){
+    	addData(label, xy,0, xy.length-1);
+    }
+    public void addData(String label, double[][] xy, int lowerlimit, int higherlimit){
+    	for(int i=0; i<str_labels.length; i++){
+    		if(str_labels[i].equals(label)){
+    			for(int j=lowerlimit; j<=higherlimit; j++)
+    				series[i].add(xy[j][0],xy[j][1]);
+    			break;
+    		}
+    	}
+    }
     
     
     

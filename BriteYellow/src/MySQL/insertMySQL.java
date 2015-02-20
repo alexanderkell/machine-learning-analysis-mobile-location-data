@@ -5,13 +5,17 @@ import java.sql.*;
 import Maths.*;
 
 public class insertMySQL {
-
-	public static void main(String args[]) throws Exception{
-		insertMySQL.insertXDisp();
+	
+	public static void main(String args[]){
+		try {
+			insertMySQL.query();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
-	//public void insertXDisp(DataGetter Data) throws Exception{
-	public static void insertXDisp() throws Exception{
+	public void insertXDisp(DataGetter Data) throws Exception{
 		Connection conn = null;
 		Statement stmt = null;
 		PreparedStatement preparedStatement = null;
@@ -25,7 +29,7 @@ public class insertMySQL {
 					+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 			try{
 				preparedStatement = conn.prepareStatement(insert);
-				preparedStatement.setInt(1, 11);
+				preparedStatement.setInt(1, 12);
 				preparedStatement.setInt(2, 12);
 				preparedStatement.setInt(3, 13);
 				preparedStatement.setInt(4, 11);
@@ -53,4 +57,28 @@ public class insertMySQL {
 
 		}
 	}
+	public static void query() throws SQLException{
+		try{
+			Connection conn = connection.Connect();
+			Statement stmt = conn.createStatement();
+			
+			String sql = "SELECT x, y FROM AnalysedTracks WHERE y = 13";
+			ResultSet rs = stmt.executeQuery(sql);		
+			
+			while(rs.next()){
+				int x = rs.getInt("x");
+				int y = rs.getInt("y");
+				
+				System.out.println("x: "+x);
+				System.out.println("y: "+y);
+			}
+			rs.close();
+		}catch(SQLException e){
+			e.printStackTrace();
+		}catch(Exception e){
+			e.printStackTrace();
+		
+		}
+	}
+	
 }

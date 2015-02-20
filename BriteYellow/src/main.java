@@ -16,7 +16,6 @@ public class main {
 		System.out.println("Track machine learning 101");
 		Scanner sc  = new Scanner(System.in);
 		
-		
 		//Select Data
 		System.out.println("Enter data file path:");
 		String filePath = sc.nextLine();

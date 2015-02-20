@@ -1,10 +1,18 @@
 package Interpolation;
 
+import java.text.ParseException;
+
+import splitting.TrackSelect;
+
 import Graphing.PlotHelper;
+import Maths.DataFormatOperations.PhoneData;
+import Maths.DataGetter;
 
 public class CHSpline {
 	
 	/**
+	 * 
+	 * Method taken from http://www.sciencedirect.com/science/article/pii/S0165783609002604 Section 2.3
 	 * 
 	 * @param t A value between 0 and 1
 	 * @param point0	x y coordinate of the starting point
@@ -49,35 +57,54 @@ public class CHSpline {
 	/**Test bench for the CHS
 	 * 
 	 * @param args
+	 * @throws ParseException 
 	 */
-	public static void main(String args[]){
+	public static void main(String args[]) throws ParseException{
 		
-		final double[] point0 = new double[]{ 0, 2 };
-		final double[] point1 = new double[]{ 1, 1 };
 		
-		final double modspeed0 = 1;
-		final double heading0 = 0;
+		DataGetter dg = new DataGetter(2, "C:\\Users\\testuser\\SkyDrive\\Documents\\4th year project files\\repos\\4th-year-project\\BriteYellow\\src\\24th Sept ORDERED.csv");
 
-		final double modspeed1 = 2;
-		final double heading1 = 0;
-		
-		final float step = 0.04f;
-		//======================================================
-		
-		final int steps = (int) (1/step);
-		
-		final double[][] f = new double[steps+1][2];
-		
-		for(int i = 0; i<=steps; i++){
-			f[i] = cHs(i*step, point0, modspeed0, heading0, point1, modspeed1, heading1);
-		}
-		
+		// Select track 1
+//		PhoneData[] pd = TrackSelect.selecter(dg.getFullPhoneData(), 1);
+		PhoneData[] pd = dg.getFullPhoneData();
 		final String[] labels = new String[]{"SamplePoints", "SampleResults"};
 
 		PlotHelper plot = new PlotHelper("Demo", "X", "Y", labels);
-		plot.addData(labels[0], point0[0], point0[1]);
-		plot.addData(labels[0], point1[0], point1[1]);
-		plot.addData(labels[1], f);
+/*		for(int h = 0; h<4; h++){
+			
+			System.out.println(dg.getX(h)+" "+ dg.getY(h));
+			System.out.println(dg.getX(h+1)+" "+ dg.getY(h+1));
+		}
+*/		
+		for(int h = 55; h<58; h++){
+			final double[] point0 = new double[]{ pd[h].x, pd[h].y };
+			final double[] point1 = new double[]{ pd[h+1].x, pd[h+1].y  };
+			
+			System.out.println(pd[h].x+" "+ pd[h].y );
+			System.out.println(pd[h+1].x+" "+ pd[h].y);
+			final double modspeed0 = pd[h].modspd;
+			final double heading0 = pd[h].modacc;
+	
+			final double modspeed1 = pd[h+1].modspd;
+			final double heading1 = pd[h+1].modacc;
+			
+			final float step = 0.1f;
+			//======================================================
+			
+			final int steps = (int) (1/step);
+			
+			final double[][] f = new double[steps+1][2];
+			
+			
+			for(int i = 0; i<=steps; i++){
+				f[i] = cHs(i*step, point0, modspeed0, heading0, point1, modspeed1, heading1);
+			}
+			plot.addData(labels[0], point0[0], point0[1]);
+			plot.addData(labels[0], point1[0], point1[1]);
+			plot.addData(labels[1], f);
+		}
+
+
 		plot.showDialog();
 		
 	}

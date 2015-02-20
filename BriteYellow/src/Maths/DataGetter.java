@@ -220,5 +220,11 @@ public class DataGetter extends DataFormatOperations{
 		return cdcalc2[index].ts;
 	}
 	
+	public String getPhoneID(int index){
+		String[][] full = getFull();
+		String pid = full[5][index];
+		return pid;
+	}
+	
 
 }

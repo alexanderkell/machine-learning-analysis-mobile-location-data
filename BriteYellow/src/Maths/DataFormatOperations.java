@@ -300,11 +300,4 @@ public class DataFormatOperations{
 		
 	}
 	
-	public static void main(String[] args) throws ParseException{
-		DataFormatOperations DFO = new DataFormatOperations(1 , "/Users/thomas/4th-year-project/BriteYellow/src/24th Sept ORDERED.csv");
-		DFO.makeTimeStamp();
-		
-	}
-	
-
 }

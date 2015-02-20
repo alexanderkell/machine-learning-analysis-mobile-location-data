@@ -6,7 +6,6 @@ import Maths.*;
 import Maths.DataFormatOperations.PhoneData;
 
 public class insertMySQL {
-<<<<<<< HEAD
 	
 	public static void main(String args[]){
 		try {
@@ -17,18 +16,10 @@ public class insertMySQL {
 		}
 	}
 	
-	public void insertXDisp(DataGetter Data) throws Exception{
-=======
 
-	public static void main(String args[]) throws Exception{
-		int opt = 7;
-		String fn = new String("C:/Users/Fezan/Documents/4th-year-project/BriteYellow/src/24th Sept ORDERED.csv");
-		insertMySQL.insertXDisp(opt, fn);
-	}
-	
 	//public void insertXDisp(DataGetter Data) throws Exception{
 	public static void insertXDisp(int opt, String fn) throws Exception{
->>>>>>> 1c0106acb8a88fbf889d0ac8a7d56531b8a41b2b
+
 		Connection conn = null;
 		Statement stmt = null;
 		PreparedStatement preparedStatement = null;
@@ -44,26 +35,7 @@ public class insertMySQL {
 					+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 			try{
 				preparedStatement = conn.prepareStatement(insert);
-<<<<<<< HEAD
-				preparedStatement.setInt(1, 12);
-				preparedStatement.setInt(2, 12);
-				preparedStatement.setInt(3, 13);
-				preparedStatement.setInt(4, 11);
-				preparedStatement.setInt(5, 12);
-				preparedStatement.setInt(6, 13);
-				preparedStatement.setInt(7, 11);
-				preparedStatement.setInt(8, 12);
-				preparedStatement.setInt(9, 13);
-				preparedStatement.setInt(10, 11);
-				preparedStatement.setInt(11, 12);
-				preparedStatement.setInt(12, 13);
-				preparedStatement.setInt(13, 11);
-				preparedStatement.setInt(14, 12);
-				preparedStatement.setInt(15, 13);
-				preparedStatement.setInt(16, 11);
-				preparedStatement.setInt(17, 12);
-				preparedStatement.setInt(18, 13);
-=======
+				
 				preparedStatement.setInt(1, (int) (DG.getX(i)));
 				preparedStatement.setInt(2, (int) (DG.getY(i)));
 				preparedStatement.setInt(3, (int) (DG.getZ(i)));
@@ -82,7 +54,7 @@ public class insertMySQL {
 				preparedStatement.setInt(16, (int) (DG.getXYZAccelerationValue(i)[1]));
 				preparedStatement.setInt(17, (int) (DG.getXYZAccelerationValue(i)[2]));
 				preparedStatement.setInt(18, (int) (DG.getAThetaValue(i)));
->>>>>>> 1c0106acb8a88fbf889d0ac8a7d56531b8a41b2b
+
 				
 				preparedStatement.executeUpdate();
 				System.out.println("Record inserted");

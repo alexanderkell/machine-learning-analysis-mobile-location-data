@@ -1,9 +1,10 @@
 package MySQL;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 import Maths.*;
-import Maths.DataFormatOperations.PhoneData;
+//import Maths.DataFormatOperations.PhoneData;
 
 public class insertMySQL {
 	
@@ -18,14 +19,15 @@ public class insertMySQL {
 	
 
 	//public void insertXDisp(DataGetter Data) throws Exception{
-	public static void insertXDisp(int opt, String fn) throws Exception{
+	public static void insertXDisp(String fn) throws Exception{
 
 		Connection conn = null;
 		Statement stmt = null;
 		PreparedStatement preparedStatement = null;
-		
-		
+		int opt = 7;
+		System.out.println("Getter");
 		DataGetter DG = new DataGetter(opt, fn);
+		System.out.println("Connector");
 		conn = connection.Connect();
 		
 		for(int i = 0; i<DG.getLength(); i++){
@@ -35,25 +37,38 @@ public class insertMySQL {
 					+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 			try{
 				preparedStatement = conn.prepareStatement(insert);
-				
-				preparedStatement.setInt(1, (int) (DG.getX(i)));
-				preparedStatement.setInt(2, (int) (DG.getY(i)));
-				preparedStatement.setInt(3, (int) (DG.getZ(i)));
+				preparedStatement.
+				preparedStatement.setDouble(1, (DG.getX(i)));
+				preparedStatement.setDouble(2, (DG.getY(i)));
+				preparedStatement.setDouble(3, (DG.getZ(i)));
 				preparedStatement.setString(4, (DG.getPhoneID(i)));
-				preparedStatement.setInt(5, (int) (DG.getXYZDistanceBetween(i)[0]));
-				preparedStatement.setInt(6, (int) (DG.getXYZDistanceBetween(i)[1]));
-				preparedStatement.setInt(7, (int) (DG.getXYZDistanceBetween(i)[2]));
-				preparedStatement.setInt(8, (int) (DG.getDistanceBetween(i)));
-				preparedStatement.setInt(9, (int) (DG.getTimeBetweenValue(i)));
-				preparedStatement.setInt(10, (int) (DG.getXYZSpeedValue(i)[0]));
-				preparedStatement.setInt(11, (int) (DG.getXYZSpeedValue(i)[1]));
-				preparedStatement.setInt(12, (int) (DG.getXYZSpeedValue(i)[2]));
-				preparedStatement.setInt(13, (int) (DG.getModSValue(i)));
-				preparedStatement.setInt(14, (int) (DG.getSThetaValue(i)));
-				preparedStatement.setInt(15, (int) (DG.getXYZAccelerationValue(i)[0]));
-				preparedStatement.setInt(16, (int) (DG.getXYZAccelerationValue(i)[1]));
-				preparedStatement.setInt(17, (int) (DG.getXYZAccelerationValue(i)[2]));
-				preparedStatement.setInt(18, (int) (DG.getAThetaValue(i)));
+				if(i==0){
+					for(int zz = 5; zz<=18; zz++){
+						preparedStatement.setInt(zz, 0);
+					}
+					continue;
+				} 
+				preparedStatement.setDouble(5, (DG.getXYZDistanceBetween(i)[0]));
+				preparedStatement.setDouble(6, (DG.getXYZDistanceBetween(i)[1]));
+				preparedStatement.setDouble(7, (DG.getXYZDistanceBetween(i)[2]));
+				preparedStatement.setDouble(8, (DG.getDistanceBetween(i)));
+				preparedStatement.setDouble(9, (DG.getTimeBetweenValue(i)));
+				preparedStatement.setDouble(10, (DG.getXYZSpeedValue(i)[0]));
+				preparedStatement.setDouble(11, (DG.getXYZSpeedValue(i)[1]));
+				preparedStatement.setDouble(12, (DG.getXYZSpeedValue(i)[2]));
+				preparedStatement.setDouble(13, (DG.getModSValue(i)));
+				preparedStatement.setDouble(14, (DG.getSThetaValue(i)));
+				
+				if(i==1){
+					for(int zz = 15; zz<=18; zz++){
+						preparedStatement.setInt(zz, 0);
+					}
+					continue;
+				} 
+				preparedStatement.setDouble(15, (DG.getXYZAccelerationValue(i)[0]));
+				preparedStatement.setDouble(16, (DG.getXYZAccelerationValue(i)[1]));
+				preparedStatement.setDouble(17, (DG.getXYZAccelerationValue(i)[2]));
+				preparedStatement.setDouble(18, (DG.getAThetaValue(i)));
 
 				
 				preparedStatement.executeUpdate();
@@ -65,8 +80,10 @@ public class insertMySQL {
 
 		}
 	}
-	public static void query() throws SQLException{
-		PhoneData pdd = new PhoneData();
+	public static PhoneData[] query() throws SQLException{
+		
+		ArrayList<PhoneData> pdd2 = new ArrayList<PhoneData>();
+//		PhoneData[] pdd = new PhoneData[];
 	 
 		
 		try{
@@ -76,16 +93,30 @@ public class insertMySQL {
 			String sql = "SELECT * FROM AnalysedTracks WHERE y = 13";
 			ResultSet rs = stmt.executeQuery(sql);		
 			
-			while(rs.next()){
+			while(rs.next()){			
+// "(x,y,z,PhoneID,XDisp,YDisp,ZDisp,DispModulus,TimeBetween,XSpeed,YSpeed,ZSpeed,ModSpeed, STheta, XAcc, YAcc, ZAcc, ATheta) "
+
+				PhoneData newData = new PhoneData();
+				newData.x = rs.getInt("x");
+				newData.y = rs.getInt("x");
+				newData.z = rs.getInt("x");
+				newData.phone_id = rs.getString("PhoneID");
+				newData.xdisp = rs.getDouble("XDisp");
+				newData.ydisp = rs.getDouble("YDisp");
+				newData.zdisp = rs.getDouble("ZDisp");
+				newData.moddisp = rs.getDouble("DispModulus");
+				newData.tb = rs.getDouble("TimeBetween");
+				newData.rsx = rs.getDouble("XSpeed");
+				newData.rsy = rs.getDouble("YSpeed");
+				newData.rsz = rs.getDouble("ZSpeed");
+				newData.modspd = rs.getDouble("ModSpeed");
+				newData.spdtheta = rs.getDouble("STheta");
+				newData.rax = rs.getDouble("XAcc");
+				newData.ray = rs.getDouble("YAcc");
+				newData.raz = rs.getDouble("ZAcc");
+				newData.acctheta = rs.getDouble("ATheta");
 				
-				pdd.x=rs.getInt("x");
-				pdd.y=rs.getInt("y");
-				
-				int x = rs.getInt("x");
-				int y = rs.getInt("y");
-				
-				System.out.println("x: "+x);
-				System.out.println("y: "+y);
+				pdd2.add(newData);
 			}
 			rs.close();
 		}catch(SQLException e){
@@ -94,6 +125,9 @@ public class insertMySQL {
 			e.printStackTrace();
 		
 		}
+		
+		PhoneData[] result = pdd2.toArray(new PhoneData[pdd2.size()]);
+		return result;
 	}
 	
 }

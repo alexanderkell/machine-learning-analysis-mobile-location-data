@@ -203,33 +203,7 @@ public class DataFormatOperations{
 			
 	}
 	
-	public class PhoneData{
-		//position x,y,z
-		public double x, y, z;
-		
-		//whole date in Data and String format
-		public Date wholedate;
-		public String wholedatestring;
-		
-		//time between current position and the previous position
-		public double tb;
-		
-		//Displacement x,y,z
-		public double xdisp, ydisp, zdisp, moddisp;
-		
-		//relative speeds in x,y,z and modulus direction, and angle
-		public double rsx, rsy, rsz, modspd, spdtheta;
-		
-		//relative accelerations in x,y,z and modulus direction
-		public double rax, ray, raz, modacc, acctheta;
-		
-		public String phone_id;
-		
-		//
-		public int track_no;
-		
-		public Timestamp ts;
-	}
+
 	
 	public void getSort(){
 		int i = 0,r = 0,s = 0;
@@ -285,24 +259,30 @@ public class DataFormatOperations{
 	
 	public void makeXYZDistanceBetween(){
 		// Calculate different between 2 recorded position
-		int i = 0;
+		int i = 1;
 		while(i<length){	
 			cdcalc2[i].xdisp = cdcalc2[i].x - cdcalc2[i-1].x;
 			cdcalc2[i].ydisp = cdcalc2[i].y - cdcalc2[i-1].y;
 			cdcalc2[i].zdisp = cdcalc2[i].z - cdcalc2[i-1].z;
+			i++;
 		}
 		
 		
 	}
 	
 	public void makeDistanceBetween(){
-		int i = 0;
+		int i = 1;
 		while(i<length){
 			// Calculate different between 2 recorded position
 			double xdiff = cdcalc2[i].x - cdcalc2[i-1].x;
 			double ydiff = cdcalc2[i].y - cdcalc2[i-1].y;
 			cdcalc2[i].moddisp = Math.sqrt(xdiff*xdiff + ydiff*ydiff);
+			i++;
 		}
 	}
-	
 }
+
+
+
+
+

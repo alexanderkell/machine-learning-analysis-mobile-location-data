@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.sql.Timestamp;
 
-import Maths.DataFormatOperations.PhoneData;
+import Maths.DataFormatOperations;
 
 public class DataGetter extends DataFormatOperations{
 
@@ -213,7 +213,7 @@ public class DataGetter extends DataFormatOperations{
 	
 	public String getPhoneID(int index){
 		String[][] full = getFull();
-		String pid = full[5][index];
+		String pid = full[4][index];
 		return pid;
 	}
 	

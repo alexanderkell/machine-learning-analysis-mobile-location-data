@@ -10,7 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import Maths.DataFormatOperations.PhoneData;
+import Maths.PhoneData;
 
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.plot.XYPlot;

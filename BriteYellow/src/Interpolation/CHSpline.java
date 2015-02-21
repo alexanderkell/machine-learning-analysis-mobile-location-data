@@ -5,7 +5,7 @@ import java.text.ParseException;
 import splitting.TrackSelect;
 
 import Graphing.PlotHelper;
-import Maths.DataFormatOperations.PhoneData;
+import Maths.PhoneData;
 import Maths.DataGetter;
 
 public class CHSpline {
@@ -70,12 +70,7 @@ public class CHSpline {
 		final String[] labels = new String[]{"SamplePoints", "SampleResults"};
 
 		PlotHelper plot = new PlotHelper("Demo", "X", "Y", labels);
-/*		for(int h = 0; h<4; h++){
-			
-			System.out.println(dg.getX(h)+" "+ dg.getY(h));
-			System.out.println(dg.getX(h+1)+" "+ dg.getY(h+1));
-		}
-*/		
+		
 		for(int h = 55; h<58; h++){
 			final double[] point0 = new double[]{ pd[h].x, pd[h].y };
 			final double[] point1 = new double[]{ pd[h+1].x, pd[h+1].y  };

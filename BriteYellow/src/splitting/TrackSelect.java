@@ -1,6 +1,6 @@
 package splitting;
 
-import Maths.DataFormatOperations.PhoneData;
+import Maths.PhoneData;
 
 public class TrackSelect
 {

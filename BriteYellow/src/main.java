@@ -3,6 +3,7 @@ import java.text.ParseException;
 import java.util.Scanner;
 
 import CSVImport.*;
+import Graphing.PlotTracks;
 import redundant.DataSorting2;
 import splitting.*;
 import Maths.*;
@@ -22,10 +23,13 @@ public class main {
 		String query = sc.nextLine();
 		
 		PhoneData[] output = insertMySQL.query(query);
+				
 		System.out.println(output.length);
 		
 		sc.close();
 		
+		PlotTracks.plotTrack2(output, PlotTracks.X, PlotTracks.Y, 0.1f);
+
 		
 	}
 }

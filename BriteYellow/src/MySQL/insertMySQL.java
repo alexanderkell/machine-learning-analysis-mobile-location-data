@@ -71,7 +71,7 @@ public class insertMySQL {
 		}
 		System.out.println("Records inserted");
 	}
-	public static PhoneData[] query(String query) throws SQLException{
+	public static ArrayList<PhoneData> query(String query) throws SQLException{
 		
 		ArrayList<PhoneData> pdd2 = new ArrayList<PhoneData>();
 		int x = 0;
@@ -118,8 +118,8 @@ public class insertMySQL {
 		
 		}
 		
-		PhoneData[] result = pdd2.toArray(new PhoneData[pdd2.size()]);
-		return result;
+//		PhoneData[] result = pdd2.toArray(new PhoneData[pdd2.size()]);
+		return pdd2;
 	}
 	
 }

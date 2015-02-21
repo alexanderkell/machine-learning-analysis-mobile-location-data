@@ -30,8 +30,8 @@ public class main {
 		
 		sc.close();
 		
-		PlotTracks.plotTrack2(reana, PlotTracks.X, PlotTracks.Y, 0.1f);
-
+		//PlotTracks.plotTrack2(reana, PlotTracks.X, PlotTracks.Y, 0.1f);
+		PlotTracks.plotTrack2(output, PlotTracks.X, PlotTracks.Y, 0.1f);
 		
 	}
 }

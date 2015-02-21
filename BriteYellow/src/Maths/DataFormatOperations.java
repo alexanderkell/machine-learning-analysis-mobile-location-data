@@ -65,6 +65,15 @@ public class DataFormatOperations{
 		makeXYZDistanceBetween();
 		makeDistanceBetween();
 	}
+	
+public DataFormatOperations(PhoneData[] ph) throws ParseException{
+		//Read and store the phone data
+		cdcalc2 = ph;
+
+		processData2();
+		makeXYZDistanceBetween();
+		makeDistanceBetween();
+	}
 	public void reanalyse(String[][] cdcalc){
 		this.cdcalc = cdcalc;
 		processData1();

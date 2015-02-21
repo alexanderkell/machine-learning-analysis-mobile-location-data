@@ -14,6 +14,10 @@ public class DataGetter extends DataFormatOperations{
 		super(opt, fn);
 		
 	}
+	public DataGetter(PhoneData[] ph) throws ParseException{
+		super(ph);
+	}
+	
 	
 	public int getLength(){
 		return length;

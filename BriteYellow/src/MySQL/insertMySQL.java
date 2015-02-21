@@ -7,15 +7,7 @@ import Maths.*;
 //import Maths.DataFormatOperations.PhoneData;
 
 public class insertMySQL {
-	
-	public static void main(String args[]){
-		try {
-			insertMySQL.query();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+
 	
 
 	public static void insertXDisp(String fn) throws Exception{

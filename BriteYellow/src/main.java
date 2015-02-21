@@ -24,11 +24,13 @@ public class main {
 		
 		PhoneData[] output = insertMySQL.query(query);
 				
-		System.out.println(output.length);
+		DataGetter reAn = new DataGetter(output);
+		//reAn.reanalyse(output);
+		PhoneData[] reana = reAn.getFullPhoneData();
 		
 		sc.close();
 		
-		PlotTracks.plotTrack2(output, PlotTracks.X, PlotTracks.Y, 0.1f);
+		PlotTracks.plotTrack2(reana, PlotTracks.X, PlotTracks.Y, 0.1f);
 
 		
 	}

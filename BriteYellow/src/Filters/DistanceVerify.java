@@ -19,8 +19,8 @@ public class DistanceVerify {
 		while (index < ph.size()){
 			if(compare(index, high)){
 				ph.remove(index);
-				
-				reanalyse(index);
+				if(index < ph.size())
+					reanalyse(index);
 
 			} else {
 				index++;
@@ -40,5 +40,8 @@ public class DistanceVerify {
 		double xdiff = ph.get(index).x - ph.get(index-1).x;
 		double ydiff = ph.get(index).y - ph.get(index-1).y;
 		ph.get(index).moddisp = Math.sqrt(xdiff*xdiff + ydiff*ydiff);
+	}
+	public ArrayList<PhoneData> getFull(){
+		return ph;
 	}
 }

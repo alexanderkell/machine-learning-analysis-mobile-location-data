@@ -105,6 +105,7 @@ public class insertMySQL {
 				newData.ray = rs.getDouble("YAcc");
 				newData.raz = rs.getDouble("ZAcc");
 				newData.acctheta = rs.getDouble("ATheta");
+				newData.track_no = rs.getInt("TrackNo");
 				x++;
 				pdd2.add(newData);
 				

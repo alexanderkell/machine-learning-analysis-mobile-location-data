@@ -15,7 +15,7 @@ public class GapCleaner
 		double dif;
 		double xdiff = Double.parseDouble(fn[0][i+1]) - Double.parseDouble(fn[0][i]);
 		double ydiff = Double.parseDouble(fn[1][i+1]) - Double.parseDouble(fn[1][i]);
-		dif = xdiff * xdiff + ydiff * ydiff;
+		dif = java.lang.Math.pow(xdiff * xdiff + ydiff * ydiff,0.5);
 		while(i<fn[0].length){
 			if(dif<150)
 				{r++;}

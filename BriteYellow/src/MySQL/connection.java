@@ -6,17 +6,15 @@ import java.sql.SQLException;
 public class connection {
  
   public static Connection Connect() {
- 
-	System.out.println("-------- MySQL JDBC Connection Testing ------------");
+
  
 	try {
 		Class.forName("com.mysql.jdbc.Driver");
 	} catch (ClassNotFoundException e) {
-		System.out.println("Where is your MySQL JDBC Driver?");
+		System.out.println("Please install MySQL JDBC Driver");
 		e.printStackTrace();
 	}
  
-	System.out.println("MySQL JDBC Driver Registered!");
 	Connection connection = null;
  
 	try {
@@ -29,9 +27,9 @@ public class connection {
 	}
  
 	if (connection != null) {
-		System.out.println("You made it, take control your database now!");
+		System.out.println("Connected to Database");
 	} else {
-		System.out.println("Failed to make connection!");
+		System.out.println("Connection failed, please check database settings");
 	}
 	return connection;
   }

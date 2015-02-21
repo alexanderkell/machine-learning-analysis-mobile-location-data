@@ -6,25 +6,25 @@ import Maths.PhoneData;
 
 public class DistanceVerify {
 	private ArrayList<PhoneData> ph;
-	private int length;
+
 	private double high;
 	
 	public DistanceVerify(ArrayList<PhoneData> ph, double high){
 		this.ph = ph;
-		length = ph.size();
 		this.high = high;
 	}
 	public void check(){
 		int index = 1;
 		
-		while (index < length){
+		while (index < ph.size()){
 			if(compare(index, high)){
 				ph.remove(index);
 				
 				reanalyse(index);
-				index--;
+
+			} else {
+				index++;
 			}
-			index++;
 		}
 	}
 	/**Return if the moddisp is greater than the higher limit

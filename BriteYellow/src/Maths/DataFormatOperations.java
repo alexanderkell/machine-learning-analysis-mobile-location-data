@@ -83,7 +83,7 @@ public DataFormatOperations(PhoneData[] ph) throws ParseException{
 		this.cdcalc2 = cdcalc2;
 		processData2();
 	}
-	public void processData1(){
+	private void processData1(){
 		
 //		this.opt = opt;
 		//create constructor object
@@ -119,7 +119,7 @@ public DataFormatOperations(PhoneData[] ph) throws ParseException{
 		}
 		
 	}
-	public void processData2(){
+	private void processData2(){
 		
 		//works out the time between each reading based on the time
 			for(int y = 0; y<length-1; y++){
@@ -214,7 +214,7 @@ public DataFormatOperations(PhoneData[] ph) throws ParseException{
 	
 
 	
-	public void getSort(){
+	private void getSort(){
 		int i = 0,r = 0,s = 0;
 		int track = 1;
 		double x;
@@ -252,7 +252,7 @@ public DataFormatOperations(PhoneData[] ph) throws ParseException{
 		}
 	}
 	
-	public void makeTimeStamp(){
+	private void makeTimeStamp(){
 		int i = 0;
 		
 		while(i<length){
@@ -266,7 +266,7 @@ public DataFormatOperations(PhoneData[] ph) throws ParseException{
 		}
 	}
 	
-	public void makeXYZDistanceBetween(){
+	private void makeXYZDistanceBetween(){
 		// Calculate different between 2 recorded position
 		int i = 1;
 		while(i<length){	
@@ -279,7 +279,7 @@ public DataFormatOperations(PhoneData[] ph) throws ParseException{
 		
 	}
 	
-	public void makeDistanceBetween(){
+	private void makeDistanceBetween(){
 		int i = 1;
 		while(i<length){
 			// Calculate different between 2 recorded position

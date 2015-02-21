@@ -66,11 +66,24 @@ public class DataFormatOperations{
 		makeDistanceBetween();
 	}
 	
-public DataFormatOperations(PhoneData[] ph) throws ParseException{
+	public DataFormatOperations(PhoneData[] ph) throws ParseException{
 		//Read and store the phone data
 		cdcalc2 = ph;
 
 		processData2();
+		makeXYZDistanceBetween();
+		makeDistanceBetween();
+	}
+	/** Change phone without reading the data from CSVReaders again
+	 * 
+	 * @param opt Phone number
+	 */
+	public void changePhone(int opt){
+		cdcalc = Read.myPhone(opt);
+		processData1();
+		processData2();
+		getSort();
+		makeTimeStamp();
 		makeXYZDistanceBetween();
 		makeDistanceBetween();
 	}

@@ -39,47 +39,51 @@ public class FilterMain {
 	public void filter(final int property, double low, double high){
 		int i = 0;
 		while( i<length){
-			if(property == X)
-				compare(i, ph.get(i).x, low, high);
-			if(property == Y)
-				compare(i, ph.get(i).y, low, high);
-			if(property == Z)
-				compare(i, ph.get(i).z, low, high);
-	
-			if(property == TimeBetween)
-				compare(i, ph.get(i).tb, low, high);
-				
-			if(property == XSpeed)
-				compare(i, ph.get(i).rsx, low, high);		
-			if(property == YSpeed)
-				compare(i, ph.get(i).rsy, low, high);	
-			if(property == ZSpeed)
-				compare(i, ph.get(i).rsz, low, high);
-			if(property == MSpeed)
-				compare(i, ph.get(i).modspd, low, high);
-			if(property == STheta)
-				compare(i, ph.get(i).spdtheta, low, high);
-			if(property == XAcc)
-				compare(i, ph.get(i).rax, low, high);		
-			if(property == YAcc)
-				compare(i, ph.get(i).ray, low, high);
-			if(property == ZAcc)
-				compare(i, ph.get(i).raz, low, high);
-			if(property == MAcc)
-				compare(i, ph.get(i).modacc, low, high);
-			if(property == ATheta)
-				compare(i, ph.get(i).acctheta, low, high);
-			if(property == XDISP)
-				compare(i, ph.get(i).xdisp, low, high);
-			if(property == YDISP)
-				compare(i, ph.get(i).ydisp, low, high);
-			if(property == ZDISP)
-				compare(i, ph.get(i).zdisp, low, high);
-			if(property == MDISP)
-				compare(i, ph.get(i).moddisp, low, high);
-			throw new IllegalArgumentException(
-				"You might have passed the wrong argument or you have used the wrong method to get attributes"
-				);
+			try{
+				if(property == X)
+					compare(i, ph.get(i).x, low, high);
+				if(property == Y)
+					compare(i, ph.get(i).y, low, high);
+				if(property == Z)
+					compare(i, ph.get(i).z, low, high);
+		
+				if(property == TimeBetween)
+					compare(i, ph.get(i).tb, low, high);
+					
+				if(property == XSpeed)
+					compare(i, ph.get(i).rsx, low, high);		
+				if(property == YSpeed)
+					compare(i, ph.get(i).rsy, low, high);	
+				if(property == ZSpeed)
+					compare(i, ph.get(i).rsz, low, high);
+				if(property == MSpeed)
+					compare(i, ph.get(i).modspd, low, high);
+				if(property == STheta)
+					compare(i, ph.get(i).spdtheta, low, high);
+				if(property == XAcc)
+					compare(i, ph.get(i).rax, low, high);		
+				if(property == YAcc)
+					compare(i, ph.get(i).ray, low, high);
+				if(property == ZAcc)
+					compare(i, ph.get(i).raz, low, high);
+				if(property == MAcc)
+					compare(i, ph.get(i).modacc, low, high);
+				if(property == ATheta)
+					compare(i, ph.get(i).acctheta, low, high);
+				if(property == XDISP)
+					compare(i, ph.get(i).xdisp, low, high);
+				if(property == YDISP)
+					compare(i, ph.get(i).ydisp, low, high);
+				if(property == ZDISP)
+					compare(i, ph.get(i).zdisp, low, high);
+				if(property == MDISP)
+					compare(i, ph.get(i).moddisp, low, high);
+				throw new IllegalArgumentException(
+					"You might have passed the wrong argument or you have used the wrong method to get attributes"
+					);
+			} catch(IllegalArgumentException e){}
+			
+			i++;
 		}
 	}
 

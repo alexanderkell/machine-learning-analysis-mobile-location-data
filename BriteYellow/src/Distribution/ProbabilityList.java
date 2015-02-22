@@ -9,37 +9,39 @@ import java.util.ArrayList;
 
 import CSVExport.CSVWriter;
 import Maths.DataFormatOperations;
+import Maths.DataGetter;
+import Maths.PhoneData;
 
 /**
  *
  */
-public class ProbabilityList extends DataFormatOperations{
+public class ProbabilityList extends DataGetter{
 
 	// variable secret codes
 //	final static int POSITION = 10;	//X Y Z position
-	final static int STILL = 14;	//Amount of time standing still
-	final static int DISAPPEAR = 15;  //Amount of time disappear from the tracking system
+	public final static int STILL = 14;	//Amount of time standing still
+	public final static int DISAPPEAR = 15;  //Amount of time disappear from the tracking system
 
-	final static int MODSPD = 20;  // Time travelling at modulus speed
-	final static int XSPD = 21;  // X Speed
-	final static int YSPD = 22;  // Y Speed
-	final static int ZSPD = 23;  // Z Speed
-	final static int STHETA = 24;  // Speed theta
-	final static int STHETACHANGE = 25;  // Speed theta
+	public final static int MODSPD = 20;  // Time travelling at modulus speed
+	public final static int XSPD = 21;  // X Speed
+	public final static int YSPD = 22;  // Y Speed
+	public final static int ZSPD = 23;  // Z Speed
+	public final static int STHETA = 24;  // Speed theta
+	public final static int STHETACHANGE = 25;  // Speed theta
 	
-	final static int MODACC = 30;  // Modulus acceleration
-	final static int XACC = 31;  // X acceleration
-	final static int YACC = 32;  // Y acceleration
-	final static int ZACC = 33;  // Z acceleration
-	final static int ATHETA = 34;  // Acceleration theta
-	final static int ATHETACHANGE = 35;  // Acceleration theta
+	public final static int MODACC = 30;  // Modulus acceleration
+	public final static int XACC = 31;  // X acceleration
+	public final static int YACC = 32;  // Y acceleration
+	public final static int ZACC = 33;  // Z acceleration
+	public final static int ATHETA = 34;  // Acceleration theta
+	public final static int ATHETACHANGE = 35;  // Acceleration theta
 		
-	final static int TIME = 90; // Amount of time
-	final static int DIST = 91;	// Distance travelled
-	final static int XDIST = 92;	// Distance travelled
-	final static int YDIST = 93;	// Distance travelled
-	final static int ZDIST = 94;	// Distance travelled
-	final static int NUMBER = 95; // Number of times occurring
+	public final static int TIME = 90; // Amount of time
+	public final static int DIST = 91;	// Distance travelled
+	public final static int XDIST = 92;	// X Distance travelled
+	public final static int YDIST = 93;	// Y Distance travelled
+	public final static int ZDIST = 94;	// Z Distance travelled
+	public final static int NUMBER = 95; // Number of times occurring
 	
 	private int length;	// length of the data
 	
@@ -51,6 +53,11 @@ public class ProbabilityList extends DataFormatOperations{
 	 */
 	public ProbabilityList(int opt, String fn) throws ParseException{
 		super(opt, fn);
+		length = getLength();
+	}
+	
+	public ProbabilityList(PhoneData[] ph) throws ParseException{
+		super(ph);
 		length = getLength();
 	}
 	
@@ -106,6 +113,8 @@ public class ProbabilityList extends DataFormatOperations{
 				result += getXYZDistanceBetween(indices.get(i))[2];
 			} else if(result_property == TIME){
 				result += getTimeBetweenValue(indices.get(i));
+				
+	//				System.out.println(getTimeBetweenValue(indices.get(i)));
 			} else if(result_property == NUMBER){
 				result++;
 			} else if(result_property == STHETACHANGE){
@@ -649,11 +658,11 @@ public class ProbabilityList extends DataFormatOperations{
 		
 
 	}
-	static class Labels{
+	public static class Labels{
 
-		float low;
-		float high;
+		public float low;
+		public float high;
 		// -1 if no lower limit, 1 if no higher limit, 0 otherwise
-		short lorh = 0;
+		public short lorh = 0;
 	}
 }

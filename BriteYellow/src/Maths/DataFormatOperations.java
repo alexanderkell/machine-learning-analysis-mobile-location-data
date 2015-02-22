@@ -69,7 +69,7 @@ public class DataFormatOperations{
 	public DataFormatOperations(PhoneData[] ph) throws ParseException{
 		//Read and store the phone data
 		cdcalc2 = ph;
-
+		length = ph.length;
 		processData2();
 		makeXYZDistanceBetween();
 		makeDistanceBetween();
@@ -142,6 +142,17 @@ public class DataFormatOperations{
 				Date wholedate1 =  cdcalc2[y].wholedate; 
 				Date wholedate2 =  cdcalc2[y+1].wholedate;
 				
+				if(wholedate1 == null && wholedate2 == null){
+					wholedate1 = cdcalc2[y].ts;
+					wholedate2 = cdcalc2[y+1].ts;
+					
+					// 
+					if(wholedate1.getDate() - wholedate2.getDate() !=0){
+						tb = 0;
+						continue;
+					}
+				}
+				
 				if(wholedate1.compareTo(wholedate2)>0){
 					System.err.println("Please Put Data in Date and Time Order Before Running!");
 					break;
@@ -161,7 +172,7 @@ public class DataFormatOperations{
 					tb = (hr2 - hr)*60*60 + (mn2 - mn)*60 + (sc2 - sc);
 					cdcalc2[y+1].tb = tb;
 				}
-						
+					
 	        }
 			
 			for (int k = 1; k < length; k++){//working out relative speeds in all directions (velocity)

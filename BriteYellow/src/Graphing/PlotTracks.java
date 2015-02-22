@@ -1,14 +1,20 @@
 package Graphing;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Image;
+import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 
 import Maths.PhoneData;
 
@@ -38,47 +44,7 @@ public class PlotTracks {
 	public final static int MAcc = 14;
 	public final static int ATheta = 15;
 	public final static int Track = 16;
-	public static void plotTrack1(String[][] track_info, int row, int col, float timescaler){
-		Image im = new ImageIcon("map.jpg").getImage(); 
-		
-		String[] label = new String[]{
-			"Phone data"
-		};
-		PlotHelper plot = new PlotHelper(COLUMNS[row]+" vs "+COLUMNS[col], COLUMNS[row], COLUMNS[col], label);
-		plot.setAxisRange(0, 1100, 0, 500);
-		plot.setRangeAxisInverted(true);
-		XYPlot xyplot = plot.getXYPlot();
-		// Clear background paint
-		xyplot.setBackgroundPaint(null);
-		// Set background image to the map
-		xyplot.setBackgroundImage(im);
-		
-		ChartPanel cpanel = plot.getChartPanel();
-		JFrame frame = new JFrame();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLayout(new BorderLayout());
-		frame.add(cpanel, BorderLayout.CENTER);
-		JLabel jlabel = new JLabel();
-		frame.add(jlabel, BorderLayout.SOUTH);
-		frame.pack();
-		frame.setVisible(true);
-		
-		for(int i = 0; i<track_info[0].length; i++){
-			jlabel.setText("<html>"+track_info[i][3] + "<br> Point "+(i+1)+"</html>");
-			  try{
-				  int tb = (int) (timescaler*1000*(int) Double.parseDouble(track_info[i][5]));
-					Thread.sleep(tb);
-			  } catch (NumberFormatException e){
-					System.out.println(e.toString());
-				} catch (InterruptedException e){
-					System.err.println("User Aborted");
-					return;
-				}
-			 
-			plot.addData(label[0], Double.parseDouble(track_info[i][row]), Double.parseDouble(track_info[i][col]));
-		}
-		
-	}
+
 	public static void plotTrack2(String[][] track_info, int row, int col, float timescaler){
 		Image im = new ImageIcon("map.jpg").getImage(); 
 		
@@ -125,13 +91,13 @@ public class PlotTracks {
 		
 		
 		
-		public static void plotTrack2(PhoneData[] track_info, int row, int col, float timescaler){
+		public static void plotTrack2(final PhoneData[] track_info, final int row, final int col, float timescaler){
 			Image im = new ImageIcon("map.jpg").getImage(); 
 			
-			String[] label = new String[]{
+			final String[] label = new String[]{
 				"Phone data"
 			};
-			PlotHelper plot = new PlotHelper(COLUMNS[row]+" vs "+COLUMNS[col], COLUMNS[row], COLUMNS[col], label);
+			final PlotHelper plot = new PlotHelper(COLUMNS[row]+" vs "+COLUMNS[col], COLUMNS[row], COLUMNS[col], label);
 			plot.setAxisRange(0, 1100, 0, 500);
 			plot.setRangeAxisInverted(true);
 			plot.setSeriesLinesVisble(label[0], true);
@@ -146,57 +112,116 @@ public class PlotTracks {
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.setLayout(new BorderLayout());
 			frame.add(cpanel, BorderLayout.CENTER);
-			JLabel jlabel1 = new JLabel();
+			
+			
+			final JLabel jlabel1 = new JLabel();	// Label for "Playing at XX Speed"
 			jlabel1.setText("Playing at "+(1/timescaler)+"X speed");
+			
+			final JLabel jlabel2 = new JLabel();	// Label for showing the current point number
+			final JLabel jlabel3 = new JLabel();	// Label for showing start time
+			
+			final JLabel jlabel4 = new JLabel();	// Label for showing end time
+			
+					
+			final JProgressBar jpb = new JProgressBar();	//ProgressBar for showing the current time
+			jpb.setStringPainted(true);
+			
 			JPanel panel = new JPanel();
 			panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 			frame.add(panel, BorderLayout.SOUTH);
-			JLabel jlabel2 = new JLabel();
+			
+			
+			JPanel subpanel = new JPanel();
+			subpanel.setLayout(new BoxLayout(subpanel, BoxLayout.LINE_AXIS));
+			
 			panel.add(jlabel1);
-			panel.add(jlabel2);
+			jlabel1.setAlignmentX(Container.LEFT_ALIGNMENT);
+			subpanel.add(jlabel2);
+			subpanel.add(Box.createHorizontalStrut(20));
+			subpanel.add(jlabel3);
+			subpanel.add(Box.createHorizontalStrut(5));
+			subpanel.add(jpb);
+			subpanel.add(Box.createHorizontalStrut(5));
+			subpanel.add(jlabel4);
+			
+			subpanel.setAlignmentX(Container.LEFT_ALIGNMENT);
+			panel.add(subpanel);
 			frame.pack();
 			frame.setVisible(true);
 			
-			for(int i = 0; i<track_info.length; i++){
-				jlabel2.setText("<html><p>"+track_info[i].wholedatestring + "&nbsp;&nbsp; Point "+(i+1)+" / "+track_info.length+"</p></html>");
-				  try{
-					  int tb = (int) (timescaler*1000*(int) track_info[i].tb);
-						Thread.sleep(tb);
-				  } catch (NumberFormatException e){
-						System.out.println(e.toString());
-					} catch (InterruptedException e){
-						System.err.println("User Aborted");
-						return;
+		
+			final Timer timer = new Timer(true);
+			final TimerTask ttask = new TimerTask(){
+				private int i = 0;
+				private long current_time = track_info[0].ts.getTime()-1000;
+				private long curr_time_diff = 0;
+				private long points_time_diff = 0;
+				public void run(){
+					
+					current_time+=1000;
+//					System.out.println(current_time);
+//					System.out.println(track_info[i].ts.getTime());
+//					System.out.println((current_time - track_info[i].ts.getTime()));
+					while((current_time - track_info[i].ts.getTime())>=0 && i<track_info.length){
+//						jpb.setValue(0);
+						if(i<track_info.length - 1){
+							points_time_diff = track_info[i+1].ts.getTime() - track_info[i].ts.getTime();
+							jlabel4.setText(track_info[i+1].ts.toString());
+						
+						}
+						jlabel2.setText("Point "+(i+1)+" / "+track_info.length);
+						jlabel3.setText(track_info[i].ts.toString());
+						
+						// Get the attributes
+						Double r;
+						  try{
+							  r = getAttributeDouble(track_info[i], row);
+						  } catch (IllegalArgumentException e){
+							  try{
+								  r = (double) getAttributeInt(track_info[i], row);
+							  } catch (IllegalArgumentException f){
+								  throw new IllegalArgumentException(
+									 "It is not possible to plot graph with the attribute you have defined (2nd argument)"
+									);
+							  }
+						  }
+						  Double c;
+						  try{
+							  c = getAttributeDouble(track_info[i], col);
+						  } catch (IllegalArgumentException e){
+							  try{
+								  c = (double) getAttributeInt(track_info[i], col);
+							  } catch (IllegalArgumentException f){
+								  throw new IllegalArgumentException(
+									"It is not possible to plot graph with the attribute you have defined (3rd argument)"
+								  );
+							  }
+						  }
+
+						 plot.addData(label[0], r, c);
+						i++;
 					}
-				
-				  
-				  Double r;
-				  try{
-					  r = getAttributeDouble(track_info[i], row);
-				  } catch (IllegalArgumentException e){
-					  try{
-						  r = (double) getAttributeInt(track_info[i], row);
-					  } catch (IllegalArgumentException f){
-						  throw new IllegalArgumentException(
-							 "It is not possible to plot graph with the attribute you have defined (2nd argument)"
-							);
-					  }
-				  }
-				  Double c;
-				  try{
-					  c = getAttributeDouble(track_info[i], col);
-				  } catch (IllegalArgumentException e){
-					  try{
-						  c = (double) getAttributeInt(track_info[i], col);
-					  } catch (IllegalArgumentException f){
-						  throw new IllegalArgumentException(
-							"It is not possible to plot graph with the attribute you have defined (3rd argument)"
-						  );
-					  }
-				  }
-				 plot.addData(label[0], r, c);
-			}
-			jlabel1.setText("Stopped");
+						
+					curr_time_diff = current_time - track_info[i-1].ts.getTime();
+					
+					if(i == track_info.length){
+						timer.cancel();
+						jlabel1.setText("Stopped");
+					}
+					
+					// Set current time
+					jpb.setString(new Timestamp(current_time).toString());
+					int barvalue = points_time_diff==0 ? 0: (int) (100*curr_time_diff/points_time_diff);
+					jpb.setValue(barvalue);
+					
+				}
+			};
+			
+			timer.scheduleAtFixedRate(ttask, 0, (long)timescaler*1000);
+			
+			
+			
+			
 			
 		}
 		

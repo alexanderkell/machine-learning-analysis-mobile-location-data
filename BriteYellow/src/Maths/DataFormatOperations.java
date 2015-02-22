@@ -89,19 +89,7 @@ public class DataFormatOperations{
 		makeXYZDistanceBetween();
 		makeDistanceBetween();
 	}
-	/** Change phone without reading the data from CSVReaders again
-	 * 
-	 * @param opt Phone number
-	 */
-	public void changePhone(int opt){
-		cdcalc = Read.myPhone(opt);
-		processData1();
-		processData2();
-		getSort();
-		makeTimeStamp();
-		makeXYZDistanceBetween();
-		makeDistanceBetween();
-	}
+	
 	public void reanalyse(String[][] cdcalc){
 		this.cdcalc = cdcalc;
 		processData1();

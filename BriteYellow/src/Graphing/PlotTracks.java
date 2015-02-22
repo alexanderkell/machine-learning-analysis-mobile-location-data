@@ -78,7 +78,7 @@ public class PlotTracks {
 				  int tb = (int) (timescaler*1000*(int) Double.parseDouble(track_info[5][i]));
 					Thread.sleep(tb);
 			  } catch (NumberFormatException e){
-					System.out.println(e.toString());
+					System.err.println(e.toString());
 				} catch (InterruptedException e){
 					System.err.println("User Aborted");
 					return;

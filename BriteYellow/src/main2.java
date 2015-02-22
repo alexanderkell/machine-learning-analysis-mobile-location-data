@@ -79,9 +79,9 @@ public class main2 {
 		final String[] slabels = {
 			"<0.01", "0.01-10", "10-20", "20-30", "30-40", "40-50", "50-60", "60-70", "70-80", "80-90", "90-100", ">100"
 		};
-*/		final float lower_bound = 0;
+*/		final float lower_bound = 1;
 		final float higher_bound = 100000;
-		final boolean within_bounds = false;
+		final boolean within_bounds = true;
 		final double xstart = 100, xend = 1020, ystart = 300, yend = 375;
 		final int compare_pro = ProbabilityList.MODSPD;
 		final int result_pro = ProbabilityList.TIME;

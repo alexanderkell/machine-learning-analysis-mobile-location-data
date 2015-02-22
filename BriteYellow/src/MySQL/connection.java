@@ -19,7 +19,7 @@ public class connection {
  
 	try {
 		connection = DriverManager
-		.getConnection("jdbc:mysql://localhost:8889/BriteYellow","root", "root");
+		.getConnection("jdbc:mysql://host317.hostmonster.com:3306/rarefmco_BriteYellow","rarefmco_website", "j4aD93xN0k!");
  
 	} catch (SQLException e) {
 		System.out.println("Connection Failed! Check output console");

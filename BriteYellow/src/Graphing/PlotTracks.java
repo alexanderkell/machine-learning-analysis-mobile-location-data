@@ -272,7 +272,6 @@ public class PlotTracks {
 				
 			});
 			
-			
 		}
 		
 		
@@ -379,7 +378,6 @@ public class PlotTracks {
 			};
 			
 			timer.scheduleAtFixedRate(ttask, 0, (long)(pointspersec*1000));
-			
 			
 		}
 

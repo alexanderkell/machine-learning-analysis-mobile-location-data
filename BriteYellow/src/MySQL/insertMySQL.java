@@ -24,8 +24,8 @@ public class insertMySQL {
 		for(int i = 0; i<DG.getLength(); i++){
 
 			String insert = "INSERT INTO RawData "
-					+ "(x,y,z,PhoneID, Timestamp,XDisp,YDisp,ZDisp,DispModulus,TimeBetween,XSpeed,YSpeed,ZSpeed,ModSpeed, STheta, XAcc, YAcc, ZAcc, ATheta) "
-					+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+					+ "(x,y,z,PhoneID, Timestamp,TrackNo,XDisp,YDisp,ZDisp,DispModulus,TimeBetween,XSpeed,YSpeed,ZSpeed,ModSpeed, STheta, XAcc, YAcc, ZAcc, ATheta) "
+					+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 			try{
 				preparedStatement = conn.prepareStatement(insert);
 				preparedStatement.setDouble(1, (DG.getX(i)));
@@ -33,33 +33,36 @@ public class insertMySQL {
 				preparedStatement.setDouble(3, (DG.getZ(i)));
 				preparedStatement.setString(4, (DG.getPhoneID(i)));
 				preparedStatement.setTimestamp(5, (DG.getTimestamp(i)));
+				preparedStatement.setInt(6, (DG.getTrackNo(i)));
+				
 				if(i==0){
-					for(int zz = 6; zz<=18; zz++){
+					for(int zz = 7; zz<=20; zz++){
 						preparedStatement.setDouble(zz, 0);
 					}
 					continue;
 				} 
-				preparedStatement.setDouble(6, (DG.getXYZDistanceBetween(i)[0]));
-				preparedStatement.setDouble(7, (DG.getXYZDistanceBetween(i)[1]));
-				preparedStatement.setDouble(8, (DG.getXYZDistanceBetween(i)[2]));
-				preparedStatement.setDouble(9, (DG.getDistanceBetween(i)));
-				preparedStatement.setDouble(10, (DG.getTimeBetweenValue(i)));
-				preparedStatement.setDouble(11, (DG.getXYZSpeedValue(i)[0]));
-				preparedStatement.setDouble(12, (DG.getXYZSpeedValue(i)[1]));
-				preparedStatement.setDouble(13, (DG.getXYZSpeedValue(i)[2]));
-				preparedStatement.setDouble(14, (DG.getModSValue(i)));
-				preparedStatement.setDouble(15, (DG.getSThetaValue(i)));
+				preparedStatement.setDouble(7, (DG.getXYZDistanceBetween(i)[0]));
+				preparedStatement.setDouble(8, (DG.getXYZDistanceBetween(i)[1]));
+				preparedStatement.setDouble(9, (DG.getXYZDistanceBetween(i)[2]));
+				preparedStatement.setDouble(10, (DG.getDistanceBetween(i)));
+				preparedStatement.setDouble(11, (DG.getTimeBetweenValue(i)));
+				preparedStatement.setDouble(12, (DG.getXYZSpeedValue(i)[0]));
+				preparedStatement.setDouble(13, (DG.getXYZSpeedValue(i)[1]));
+				preparedStatement.setDouble(14, (DG.getXYZSpeedValue(i)[2]));
+				preparedStatement.setDouble(15, (DG.getModSValue(i)));
+				preparedStatement.setDouble(16, (DG.getSThetaValue(i)));
 				
 				if(i==1){
-					for(int zz = 16; zz<=19; zz++){
+					for(int zz = 17; zz<=20; zz++){
 						preparedStatement.setDouble(zz, 0);
 					}
 					continue;
 				} 
-				preparedStatement.setDouble(16, (DG.getXYZAccelerationValue(i)[0]));
-				preparedStatement.setDouble(17, (DG.getXYZAccelerationValue(i)[1]));
-				preparedStatement.setDouble(18, (DG.getXYZAccelerationValue(i)[2]));
-				preparedStatement.setDouble(19, (DG.getAThetaValue(i)));
+				preparedStatement.setDouble(17, (DG.getXYZAccelerationValue(i)[0]));
+				preparedStatement.setDouble(18, (DG.getXYZAccelerationValue(i)[1]));
+				preparedStatement.setDouble(19, (DG.getXYZAccelerationValue(i)[2]));
+				preparedStatement.setDouble(20, (DG.getAThetaValue(i)));
+				
 
 				
 				preparedStatement.executeUpdate();

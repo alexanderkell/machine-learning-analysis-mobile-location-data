@@ -16,11 +16,13 @@ public class main {
 		
 		System.out.println("Track machine learning 101");
 		Scanner sc  = new Scanner(System.in);
+
+		System.out.println("Enter data file path:");
+		String filePath = sc.nextLine();
+		insertMySQL.insertXDisp(filePath);
+
 		
-		//System.out.println("Enter data file path:");
-		//String filePath = sc.nextLine();
-		//insertMySQL.insertXDisp(filePath);
-		
+		/*
 		System.out.println("Enter query (eg: x = 156 AND PhoneID = 'HT25TW5055273593c875a9898b00'):");
 		String query = sc.nextLine();
 		
@@ -28,7 +30,7 @@ public class main {
 				
 //		DataGetter reAn = new DataGetter(output);
 		
-		DistanceVerify cutBig = new DistanceVerify(output,200);
+		DistanceVerify cutBig = new DistanceVerify(output,150);
 		cutBig.check();
 		ArrayList<PhoneData> reana = cutBig.getFull();
 		
@@ -36,6 +38,6 @@ public class main {
 		
 		//PlotTracks.plotTrack2(reana, PlotTracks.X, PlotTracks.Y, 0.1f);
 		PlotTracks.plotTrack2(reana.toArray(new PhoneData[reana.size()]), PlotTracks.X, PlotTracks.Y, 0.1f);
-		
+		*/
 	}
 }

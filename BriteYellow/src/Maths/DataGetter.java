@@ -220,6 +220,9 @@ public class DataGetter extends DataFormatOperations{
 		String pid = full[4][index];
 		return pid;
 	}
+	public int getTrackNo(int index){
+		return cdcalc2[index].track_no;
+	}
 	
 
 }

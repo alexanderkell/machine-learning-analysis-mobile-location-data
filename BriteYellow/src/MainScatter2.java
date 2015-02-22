@@ -57,16 +57,16 @@ public class MainScatter2 {
 		final int YINTERVAL = 3; //3
 		final double XSTART = 100;
 		final double YSTART = 302;
-		final double XEND = 1020;//(float) (XSTART+(1044 - XSTART)/4);//1044
-		final double YEND = 364;//(float) (YSTART+(364 - YSTART)/3);//364
+		final double XEND = 1020;
+		final double YEND = 364;
 		
 		final int PORPERTYX = Ratios1.MODSPD;
 		final int PORPERTYY = Ratios1.XSPD;
 		
 		
+		// No need to the change the following 5 lines
 		final String XAXIS = Ratios1.getAxisName(PORPERTYX)+" ("+Ratios1.getAxisUnit(PORPERTYX)+")";
 		final String YAXIS = Ratios1.getAxisName(PORPERTYY)+" ("+Ratios1.getAxisUnit(PORPERTYY)+")";
-		
 
 		float xstep = (float)(XEND - XSTART)/XINTERVAL;
 		float ystep = (float)(YEND - YSTART)/YINTERVAL;
@@ -82,11 +82,9 @@ public class MainScatter2 {
 			for(int b=0; b<YINTERVAL; b++){
 				
 				// Calculate xstart, xend, ystart, yend
-				
 				ystart = YSTART + ystep*b;
 				yend = ystart+ystep;
 				
-
 				String CHARTTITLE = Ratios1.getAxisName(PORPERTYY)+" vs. "+Ratios1.getAxisName(PORPERTYX)+" from ("+Math.round((float)xstart)+", "+Math.round((float)ystart)+") to ("+Math.round((float)xend)+", "+Math.round((float)yend)+")";
 				try {
 					writer = new CSVWriter("src/Distribution/Ratios1/"+CHARTTITLE+".csv");

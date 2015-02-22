@@ -43,7 +43,7 @@ public class MainScatter1 {
 			cutBig.check();
 			reana[i] = cutBig.getFull();
 		}
-		/* REMEMBER TO CHANGE LINE 106 which looks like the following
+		/* REMEMBER TO CHANGE LINE 103 which looks like the following
 		 * change output to reana if working with DistanceVerify
 		* Ratios ratios = new Ratios(output[i].toArray(new PhoneData[output[i].size()]));
 		*/
@@ -57,16 +57,16 @@ public class MainScatter1 {
 		final int YINTERVAL = 3; //3
 		final double XSTART = 100;
 		final double YSTART = 302;
-		final double XEND = 1020;//(float) (XSTART+(1044 - XSTART)/4);//1044
-		final double YEND = 364;//(float) (YSTART+(364 - YSTART)/3);//364
+		final double XEND = 1020;
+		final double YEND = 364;
 		
 		final int PORPERTYX = Ratios.TIME_SPENT;
 		final int PORPERTYY = Ratios.TIME_DISAPPEAR;
 		
 		
+		// No need to the change the following 5 lines
 		final String XAXIS = Ratios.getAxisName(PORPERTYX)+" ("+Ratios.getAxisUnit(PORPERTYX)+")";
 		final String YAXIS = Ratios.getAxisName(PORPERTYY)+" ("+Ratios.getAxisUnit(PORPERTYY)+")";
-		
 
 		float xstep = (float)(XEND - XSTART)/XINTERVAL;
 		float ystep = (float)(YEND - YSTART)/YINTERVAL;
@@ -82,13 +82,10 @@ public class MainScatter1 {
 			for(int b=0; b<YINTERVAL; b++){
 				
 				// Calculate xstart, xend, ystart, yend
-				
 				ystart = YSTART + ystep*b;
 				yend = ystart+ystep;
-				
-//				System.out.println(xstart+" "+xend+" "+ystart+" "+yend);
+
 				String CHARTTITLE = Ratios.getAxisName(PORPERTYY)+" vs. "+Ratios.getAxisName(PORPERTYX)+" from ("+Math.round((float)xstart)+", "+Math.round((float)ystart)+") to ("+Math.round((float)xend)+", "+Math.round((float)yend)+")";
-//				System.out.println(CHARTTITLE);
 				try {
 					writer = new CSVWriter("src/Distribution/Ratios/"+CHARTTITLE+".csv");
 					writer.write(new String[]{CHARTTITLE});

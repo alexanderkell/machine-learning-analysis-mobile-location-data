@@ -1,4 +1,4 @@
-package Autoregression;
+package autoregression;
 import java.util.ArrayList;
 
 import Maths.PhoneData;

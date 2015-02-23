@@ -2,11 +2,12 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import CSVExport.CSVWriter;
+
+import csvexport.CSVWriter;
+import filters.DistanceVerify;
+import maths.PhoneData;
+import mysql.insertMySQL;
 import Distribution.Ratios1;
-import Filters.DistanceVerify;
-import Maths.PhoneData;
-import MySQL.insertMySQL;
 
 
 public class MainScatter2 {

@@ -3,8 +3,9 @@ package Distribution;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import CSVExport.CSVWriter;
-import Maths.PhoneData;
+
+import csvexport.CSVWriter;
+import maths.PhoneData;
 
 public class Ratios extends ProbabilityList{
 

@@ -4,7 +4,7 @@ import java.io.FileNotFoundException;
 import java.util.*;
 import java.text.*;
 
-import CSVImport.*;
+import csvimport.*;
 
 //tests CSVreaders
 public class getArray {

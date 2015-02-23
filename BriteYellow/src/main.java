@@ -3,13 +3,13 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import CSVImport.*;
+import maths.*;
+import mysql.*;
+import csvimport.*;
 import Filters.DistanceVerify;
 import Graphing.PlotTracks;
 import redundant.DataSorting2;
 import splitting.*;
-import Maths.*;
-import MySQL.*;
 
 public class main {
 	public static void main(String args[]) throws Exception{

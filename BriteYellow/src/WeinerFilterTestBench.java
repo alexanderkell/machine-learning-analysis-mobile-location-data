@@ -1,5 +1,5 @@
-import Filters.*;
-import Graphing.*;
+import filters.*;
+import graphing.*;
 
 //import javax.swing.JPanel;
 

@@ -7,10 +7,10 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 
-import CSVExport.CSVWriter;
-import Maths.DataFormatOperations;
-import Maths.DataGetter;
-import Maths.PhoneData;
+import csvexport.CSVWriter;
+import maths.DataFormatOperations;
+import maths.DataGetter;
+import maths.PhoneData;
 
 /**
  *

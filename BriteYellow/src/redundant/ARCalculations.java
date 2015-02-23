@@ -1,7 +1,7 @@
 package redundant;
 import java.text.ParseException;
 
-import Maths.*;
+import maths.*;
 
 public class ARCalculations {
 	

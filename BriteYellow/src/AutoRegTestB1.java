@@ -1,5 +1,5 @@
+import maths.*;
 import autoregression.*;
-import Maths.*;
 
 public class AutoRegTestB1 {
 	

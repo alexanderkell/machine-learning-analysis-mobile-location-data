@@ -8,7 +8,7 @@ import filters.DistanceVerify;
 import maths.PhoneData;
 import mysql.insertMySQL;
 import Distribution.Ratios1;
-
+//for each point
 
 public class MainScatter2 {
 	final static String ph1n = "HT25TW5055273593c875a9898b00";//variables denoting phone IDs
@@ -88,7 +88,7 @@ public class MainScatter2 {
 				
 				String CHARTTITLE = Ratios1.getAxisName(PORPERTYY)+" vs. "+Ratios1.getAxisName(PORPERTYX)+" from ("+Math.round((float)xstart)+", "+Math.round((float)ystart)+") to ("+Math.round((float)xend)+", "+Math.round((float)yend)+")";
 				try {
-					writer = new CSVWriter("src/Distribution/Ratios1/"+CHARTTITLE+".csv");
+					writer = new CSVWriter("src/Distribution/Ratios1/"+Math.round((float)xstart)+", "+Math.round((float)ystart)+".csv");
 					writer.write(new String[]{CHARTTITLE});
 					writer.write(new String[]{XAXIS});
 					writer.write(new String[]{YAXIS});

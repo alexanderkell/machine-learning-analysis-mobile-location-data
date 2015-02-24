@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -86,9 +87,13 @@ public class MainScatter1 {
 				ystart = YSTART + ystep*b;
 				yend = ystart+ystep;
 
+				File directory = new File("src/Distribution/Ratios/Ratios");
+				if(! directory.isDirectory())
+					directory.mkdirs();
+				
 				String CHARTTITLE = Ratios.getAxisName(PORPERTYY)+" vs. "+Ratios.getAxisName(PORPERTYX)+" from ("+Math.round((float)xstart)+", "+Math.round((float)ystart)+") to ("+Math.round((float)xend)+", "+Math.round((float)yend)+")";
 				try {
-					writer = new CSVWriter("src/Distribution/Ratios/"+CHARTTITLE+".csv");
+					writer = new CSVWriter(directory+CHARTTITLE+".csv");
 					writer.write(new String[]{CHARTTITLE});
 					writer.write(new String[]{XAXIS});
 					writer.write(new String[]{YAXIS});

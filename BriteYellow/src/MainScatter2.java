@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -7,6 +8,7 @@ import csvexport.CSVWriter;
 import filters.DistanceVerify;
 import maths.PhoneData;
 import mysql.insertMySQL;
+import Distribution.Ratios;
 import Distribution.Ratios1;
 //for each point
 
@@ -85,10 +87,18 @@ public class MainScatter2 {
 				// Calculate xstart, xend, ystart, yend
 				ystart = YSTART + ystep*b;
 				yend = ystart+ystep;
+
+				File directory = new File("src/Distribution/Ratios/Ratios1/");
+				if(! directory.isDirectory())
+					directory.mkdirs();
 				
 				String CHARTTITLE = Ratios1.getAxisName(PORPERTYY)+" vs. "+Ratios1.getAxisName(PORPERTYX)+" from ("+Math.round((float)xstart)+", "+Math.round((float)ystart)+") to ("+Math.round((float)xend)+", "+Math.round((float)yend)+")";
 				try {
+<<<<<<< HEAD
 					writer = new CSVWriter("src/Distribution/Ratios1/"+Math.round((float)xstart)+", "+Math.round((float)ystart)+".csv");
+=======
+					writer = new CSVWriter(directory+CHARTTITLE+".csv");
+>>>>>>> a8821fb8a8c6586f8888688a9cb0b990fbdcbcc5
 					writer.write(new String[]{CHARTTITLE});
 					writer.write(new String[]{XAXIS});
 					writer.write(new String[]{YAXIS});

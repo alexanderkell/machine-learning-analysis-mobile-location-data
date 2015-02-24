@@ -6,16 +6,14 @@ import maths.PhoneData;
 
 public class ARDataFeed {
 	
-	ArrayList<PhoneData> PD;
-	ArrayList<double[]> ALData;
+	private ArrayList<PhoneData> PD;
 	int select;
-	char mp;
-	char xyz;
-	int length;
-	boolean myn = false;
-	int order;
-	
-	double[] data;
+	private char mp;
+	private char xyz;
+	private int length;
+	private boolean myn = false;
+	private int order;
+	private double[] data;
 	
 	/**
 	 * 
@@ -29,6 +27,7 @@ public class ARDataFeed {
 	public void setData(ArrayList<PhoneData> PD){
 		this.PD = PD;
 		length = PD.size();
+		data = new double[length];
 	}
 	
 	

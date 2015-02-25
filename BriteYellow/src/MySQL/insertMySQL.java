@@ -16,9 +16,7 @@ public class insertMySQL {
 		Statement stmt = null;
 		PreparedStatement preparedStatement = null;
 		int opt = 7;
-		System.out.println("Getter");
 		DataGetter DG = new DataGetter(opt, fn);
-		System.out.println("Connector");
 		conn = connection.Connect();
 		
 		for(int i = 0; i<DG.getLength(); i++){

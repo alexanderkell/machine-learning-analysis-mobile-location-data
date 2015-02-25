@@ -9,7 +9,7 @@ import filters.DistanceVerify;
 import maths.PhoneData;
 import mysql.insertMySQL;
 import Distribution.Ratios;
-
+//for whole divided area
 
 public class MainScatter1 {
 	final static String ph1n = "HT25TW5055273593c875a9898b00";//variables denoting phone IDs
@@ -41,7 +41,7 @@ public class MainScatter1 {
 			output[i] = insertMySQL.query("PhoneID = '"+phin[i]+"'");
 			
 			// For the verifying the modulus distance part
-			DistanceVerify cutBig = new DistanceVerify(output[0],150);
+			DistanceVerify cutBig = new DistanceVerify(output[i],144);
 			cutBig.check();
 			reana[i] = cutBig.getFull();
 		}
@@ -56,14 +56,14 @@ public class MainScatter1 {
 		 */
 		
 		final int XINTERVAL = 4; //4
-		final int YINTERVAL = 3; //3
-		final double XSTART = 100;
-		final double YSTART = 302;
-		final double XEND = 1020;
-		final double YEND = 364;
+		final int YINTERVAL = 1; //3
+		final double XSTART = 250;
+		final double YSTART = 300;
+		final double XEND = 950;
+		final double YEND = 380;
 		
-		final int PORPERTYX = Ratios.TIME_SPENT;
-		final int PORPERTYY = Ratios.TIME_DISAPPEAR;
+		final int PORPERTYX = Ratios.PATH_LENGTH;
+		final int PORPERTYY = Ratios.TIME_SPENT;
 		
 		
 		// No need to the change the following 5 lines

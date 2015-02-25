@@ -10,7 +10,7 @@ import maths.PhoneData;
 import mysql.insertMySQL;
 import Distribution.Ratios;
 import Distribution.Ratios1;
-
+//for each point
 
 public class MainScatter2 {
 	final static String ph1n = "HT25TW5055273593c875a9898b00";//variables denoting phone IDs
@@ -94,7 +94,11 @@ public class MainScatter2 {
 				
 				String CHARTTITLE = Ratios1.getAxisName(PORPERTYY)+" vs. "+Ratios1.getAxisName(PORPERTYX)+" from ("+Math.round((float)xstart)+", "+Math.round((float)ystart)+") to ("+Math.round((float)xend)+", "+Math.round((float)yend)+")";
 				try {
+<<<<<<< HEAD
+					writer = new CSVWriter("src/Distribution/Ratios1/"+Math.round((float)xstart)+", "+Math.round((float)ystart)+".csv");
+=======
 					writer = new CSVWriter(directory+CHARTTITLE+".csv");
+>>>>>>> a8821fb8a8c6586f8888688a9cb0b990fbdcbcc5
 					writer.write(new String[]{CHARTTITLE});
 					writer.write(new String[]{XAXIS});
 					writer.write(new String[]{YAXIS});

@@ -6,8 +6,8 @@ import java.util.Scanner;
 import maths.*;
 import mysql.*;
 import csvimport.*;
-import Filters.DistanceVerify;
-import Graphing.PlotTracks;
+import filters.DistanceVerify;
+import graphing.PlotTracks;
 import redundant.DataSorting2;
 import splitting.*;
 
@@ -17,12 +17,12 @@ public class main {
 		System.out.println("Track machine learning 101");
 		Scanner sc  = new Scanner(System.in);
 
-		System.out.println("Enter data file path:");
+/*		System.out.println("Enter data file path:");
 		String filePath = sc.nextLine();
 		insertMySQL.insertXDisp(filePath);
-
+*/
 		
-		/*
+		
 		System.out.println("Enter query (eg: x = 156 AND PhoneID = 'HT25TW5055273593c875a9898b00'):");
 		String query = sc.nextLine();
 		
@@ -38,6 +38,6 @@ public class main {
 		
 		//PlotTracks.plotTrack2(reana, PlotTracks.X, PlotTracks.Y, 0.1f);
 		PlotTracks.plotTrack2(reana.toArray(new PhoneData[reana.size()]), PlotTracks.X, PlotTracks.Y, 0.1f);
-		*/
+		
 	}
 }

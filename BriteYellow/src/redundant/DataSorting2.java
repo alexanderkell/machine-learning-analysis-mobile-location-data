@@ -2,8 +2,8 @@ package redundant;
 
 import java.text.ParseException;
 
-import Maths.DataFormatOperations;
-import Maths.DataFormatOperations.PhoneData;
+import maths.DataFormatOperations;
+import maths.DataFormatOperations.PhoneData;
 
 public class DataSorting2 {
 	PhoneData[] newdat;

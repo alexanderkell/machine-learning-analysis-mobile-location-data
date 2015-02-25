@@ -1,7 +1,7 @@
 import java.io.FileNotFoundException;
 import java.text.ParseException;
 
-import Maths.DataGetter;
+import maths.DataGetter;
 
 
 public class DateTestBench {

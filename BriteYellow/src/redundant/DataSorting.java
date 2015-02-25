@@ -2,7 +2,7 @@ package redundant;
 
 import java.text.ParseException;
 
-import Maths.DataFormatOperations;
+import maths.DataFormatOperations;
 
 public class DataSorting {
 	String[][] newdat;

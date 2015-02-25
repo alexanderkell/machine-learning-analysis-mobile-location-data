@@ -191,32 +191,11 @@ public class PlotTracks {
 						jlabel3.setText(track_info[i].ts.toString());
 						
 						// Get the attributes
-						Double r;
-						  try{
-							  r = getAttributeDouble(track_info[i], row);
-						  } catch (IllegalArgumentException e){
-							  try{
-								  r = (double) getAttributeInt(track_info[i], row);
-							  } catch (IllegalArgumentException f){
-								  throw new IllegalArgumentException(
-									 "It is not possible to plot graph with the attribute you have defined (2nd argument)"
-									);
-							  }
-						  }
-						  Double c;
-						  try{
-							  c = getAttributeDouble(track_info[i], col);
-						  } catch (IllegalArgumentException e){
-							  try{
-								  c = (double) getAttributeInt(track_info[i], col);
-							  } catch (IllegalArgumentException f){
-								  throw new IllegalArgumentException(
-									"It is not possible to plot graph with the attribute you have defined (3rd argument)"
-								  );
-							  }
-						  }
+						Double r = getAttributeDouble(track_info[i], row);
+						  
+						Double c = getAttributeDouble(track_info[i], col);
 
-						 plot.addData(label[0], r, c);
+						plot.addData(label[0], r, c);
 						i++;
 					}
 						
@@ -275,6 +254,204 @@ public class PlotTracks {
 		}
 		
 		
+		
+		
+		
+		public static void plotTrack2(final PhoneData[] before,final PhoneData[] after, final int row, final int col, float timescaler){
+			Image im = new ImageIcon("map.jpg").getImage(); 
+			
+			final String[] label = new String[]{
+				"Before filtering", "After filtering"
+			};
+			final PlotHelper plot = new PlotHelper(COLUMNS[row]+" vs "+COLUMNS[col], COLUMNS[row], COLUMNS[col], label);
+			plot.setAxisRange(0, 1100, 0, 500);
+			plot.setRangeAxisInverted(true);
+			plot.setSeriesLinesVisble(label[0], true);
+			plot.setSeriesLinesVisble(label[1], true);
+			XYPlot xyplot = plot.getXYPlot();
+			// Clear background paint
+			xyplot.setBackgroundPaint(null);
+			// Set background image to the map
+			xyplot.setBackgroundImage(im);
+			
+			ChartPanel cpanel = plot.getChartPanel();
+			JFrame frame = new JFrame();
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			frame.setLayout(new BorderLayout());
+			frame.add(cpanel, BorderLayout.CENTER);
+			
+			
+			final JLabel jlabel1 = new JLabel();	// Label for "Playing at XX Speed"
+			jlabel1.setText("Playing at "+(1/timescaler)+"X speed");
+			
+			final JLabel jlabel2 = new JLabel();	// Label for showing the current point number
+			final JLabel jlabel3 = new JLabel();	// Label for showing start time
+			
+			final JLabel jlabel4 = new JLabel();	// Label for showing end time
+			
+					
+			final JProgressBar jpb = new JProgressBar();	//ProgressBar for showing the current time
+			jpb.setStringPainted(true);
+			
+			JPanel panel = new JPanel();
+			panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+			frame.add(panel, BorderLayout.SOUTH);
+			
+			
+			JPanel subpanel = new JPanel();
+			subpanel.setLayout(new BoxLayout(subpanel, BoxLayout.LINE_AXIS));
+			
+			panel.add(jlabel1);
+			jlabel1.setAlignmentX(Container.LEFT_ALIGNMENT);
+			subpanel.add(jlabel2);
+			subpanel.add(Box.createHorizontalStrut(20));
+			subpanel.add(jlabel3);
+			subpanel.add(Box.createHorizontalStrut(5));
+			subpanel.add(jpb);
+			subpanel.add(Box.createHorizontalStrut(5));
+			subpanel.add(jlabel4);
+			
+			subpanel.setAlignmentX(Container.LEFT_ALIGNMENT);
+			panel.add(subpanel);
+			frame.pack();
+			frame.setVisible(true);
+			
+		
+			final Timer timer = new Timer(true);
+
+			final ExtendedTimerTask ttask = new ExtendedTimerTask(){
+				private boolean ibeforechanged = false;
+				
+				private int ibefore = 0;
+				private int iafter_at_ibefore = 0;
+				private int iafter = 0;
+				private long current_time = before[0].ts.getTime()-1000;
+				private long curr_time_diff = 0;
+				private long points_time_diff = 0;
+
+				public void setCurrentTime(float percent){
+					if( ibefore == 0){
+						current_time = before[ibefore].ts.getTime()+ (long)(points_time_diff*percent)/1000*1000;
+					} else{
+						current_time = before[ibefore-1].ts.getTime()+(long)(points_time_diff*percent)/1000*1000;
+					}
+					curr_time_diff = current_time - before[ibefore-1].ts.getTime();
+					jpb.setValue((int)(100*curr_time_diff/points_time_diff));
+					jpb.setString(new Timestamp(current_time).toString());
+					
+					while (current_time >= after[iafter-1].ts.getTime()){
+						// Get the attributes
+						Double r = getAttribute(after[iafter], row);;
+						  
+						Double c = getAttributeDouble(after[iafter], col);
+
+						plot.addData(label[1], r, c);
+						iafter++;
+					}
+					while (current_time < after[iafter-1].ts.getTime()){
+						// Get the attributes
+						plot.removeData(label[1], plot.getItemCount(label[1]));
+						iafter--;
+					}
+				}
+				public void run(){
+					
+					current_time+=1000;
+//					System.out.println(current_time);
+//					System.out.println(track_info[i].ts.getTime());
+//					System.out.println((current_time - track_info[i].ts.getTime()));
+					while(ibefore<before.length && (current_time - before[ibefore].ts.getTime())>=0){
+//						jpb.setValue(0);
+						if(ibefore<before.length - 1){
+							points_time_diff = before[ibefore+1].ts.getTime() - before[ibefore].ts.getTime();
+							jlabel4.setText(before[ibefore+1].ts.toString());
+						
+						}
+						jlabel2.setText("Point "+(ibefore+1)+" / "+before.length);
+						jlabel3.setText(before[ibefore].ts.toString());
+						
+						// Get the attributes
+						Double r = getAttribute(before[ibefore], row);
+						  
+						Double c = getAttributeDouble(before[ibefore], col);
+						
+						plot.addData(label[0], r, c);
+						ibefore++;
+						
+						ibeforechanged = true;
+					}
+					
+					if(after != null){
+						while(iafter<after.length && (current_time - after[iafter].ts.getTime())>=0){
+							
+							// Get the attributes
+							Double r = getAttribute(after[iafter], row);;
+							  
+							Double c = getAttributeDouble(after[iafter], col);
+	
+							plot.addData(label[1], r, c);
+							iafter++;
+							
+						}
+					}
+					
+					if(ibeforechanged){
+						iafter_at_ibefore = iafter;
+						ibeforechanged = false;
+					}
+					curr_time_diff = current_time - before[ibefore-1].ts.getTime();
+					
+					if(ibefore == before.length){
+						timer.cancel();
+						jlabel1.setText("Stopped");
+					}
+					
+					// Set current time
+					jpb.setString(new Timestamp(current_time).toString());
+					int barvalue = points_time_diff==0 ? 0: (int) (100*curr_time_diff/points_time_diff);
+					jpb.setValue(barvalue);
+					
+					
+				}
+			};
+			
+			timer.scheduleAtFixedRate(ttask, 0, (long)(timescaler*1000));
+			
+			jpb.addMouseListener(new MouseListener(){
+
+				@Override
+				public void mouseClicked(MouseEvent arg0) {
+					// TODO Auto-generated method stub
+										
+				}
+
+				@Override
+				public void mouseEntered(MouseEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void mouseExited(MouseEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void mousePressed(MouseEvent arg0) {
+					// TODO Auto-generated method stub
+					ttask.setCurrentTime((float)arg0.getX() / (float)jpb.getWidth());
+				}
+
+				@Override
+				public void mouseReleased(MouseEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+			});
+			
+		}
 		/**Plot the track at N points per second
 		 * 
 		 * @param track_info	Track information contained in the phone data object
@@ -341,33 +518,11 @@ public class PlotTracks {
 					jlabel3.setText(track_info[i].ts.toString());
 						
 					// Get the attributes
-					Double r;
-					  try{
-						  r = getAttributeDouble(track_info[i], row);
-					  } catch (IllegalArgumentException e){
-						  try{
-							  r = (double) getAttributeInt(track_info[i], row);
-						  } catch (IllegalArgumentException f){
-							  throw new IllegalArgumentException(
-								 "It is not possible to plot graph with the attribute you have defined (2nd argument)"
-								);
-						  }
-					  }
-					  Double c;
-					  try{
-						  c = getAttributeDouble(track_info[i], col);
-						  } catch (IllegalArgumentException e){
-						  try{
-							  c = (double) getAttributeInt(track_info[i], col);
-						  } catch (IllegalArgumentException f){
-							  throw new IllegalArgumentException(
-								"It is not possible to plot graph with the attribute you have defined (3rd argument)"
-							  );
-						  }
-					  }
-
-					 plot.addData(label[0], r, c);
-						i++;
+					Double r = getAttributeDouble(track_info[i], row);
+					  
+					Double c = getAttributeDouble(track_info[i], col);
+					plot.addData(label[0], r, c);
+					i++;
 						
 					if(i == track_info.length){
 						timer.cancel();
@@ -381,7 +536,19 @@ public class PlotTracks {
 			
 		}
 
-		
+		public static double getAttribute(PhoneData point, int property){
+			try{
+				  return getAttributeDouble(point, property);
+			  } catch (IllegalArgumentException e){
+				  try{
+					  return (double) getAttributeInt(point, property);
+				  } catch (IllegalArgumentException f){
+					  throw new IllegalArgumentException(
+						"It is not possible to plot graph with the attribute you have defined (3rd argument)"
+					  );
+				  }
+			  }
+		}
 		public static double getAttributeDouble(PhoneData p, int attribute){
 			if(attribute == X)
 				return p.x;
@@ -473,4 +640,3 @@ public class PlotTracks {
 	//	plotTrack2(dfo.getFull(), 0, 1, 0.1f);
 	}*/
 		
-

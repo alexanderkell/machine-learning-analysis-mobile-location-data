@@ -401,6 +401,30 @@ public class PlotHelper extends JFrame {
     	}
     }
     
+    /** Method for removing a single point from a series
+     *  
+     *  @param label
+     *  Label for the series you want to add data
+     *  @param x x coordinate
+     *  @param y y coordinate
+     */
+    public void removeData(String label, int index){
+
+    	for(int i=0; i<str_labels.length; i++){
+    		if(str_labels[i].equals(label)){
+    			series[i].remove(index);
+    			break;
+    		}
+    	}
+    }
+    public int getItemCount(String label){
+    	for(int i=0; i<str_labels.length; i++){
+    		if(str_labels[i].equals(label)){
+    			return series[i].getItemCount();
+    		}
+    	}
+    	return 0;
+    }
     /**Method for clearing all data of a series
      * 
      * @param label

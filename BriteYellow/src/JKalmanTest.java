@@ -1,11 +1,8 @@
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
-import filters.jkalman.Copy_2_of_JKalmanHelper;
 import filters.jkalman.JKalman;
 import filters.jkalman.JKalmanHelper;
-import graphing.PlotTracks;
-
 import maths.PhoneData;
 import jama.Matrix;
 

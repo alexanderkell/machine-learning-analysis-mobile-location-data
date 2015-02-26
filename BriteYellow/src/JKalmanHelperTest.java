@@ -1,8 +1,6 @@
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import filters.jkalman.Copy_2_of_JKalmanHelper;
 import filters.jkalman.JKalmanHelper;
 import graphing.PlotTracks;
 
@@ -34,7 +32,7 @@ public class JKalmanHelperTest {
 //			System.out.println(output2.get(i).x+" "+output2.get(i).y+" "+output2.get(i).ts.toString());
 		
 		
-		JKalmanHelper jkh = new JKalmanHelper(output2, 100, 25);
+		JKalmanHelper jkh = new JKalmanHelper(output2, 50, 23);
 		while(!jkh.isEndReached())
 			jkh.processData();
 		

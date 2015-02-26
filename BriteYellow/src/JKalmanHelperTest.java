@@ -25,7 +25,7 @@ public class JKalmanHelperTest {
 		ArrayList<PhoneData> output = insertMySQL.query(query);
 		
 		ArrayList<PhoneData> output2 = new ArrayList<PhoneData>();
-		for(int i=1; i<10; i++)
+		for(int i=1; i<50; i++)
 			output2.add(output.get(i));
 		
 //		for(int i=0; i<10; i++)

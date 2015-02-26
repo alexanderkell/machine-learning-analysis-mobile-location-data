@@ -339,7 +339,7 @@ public class PlotTracks {
 					jpb.setValue((int)(100*curr_time_diff/points_time_diff));
 					jpb.setString(new Timestamp(current_time).toString());
 					
-					while (current_time >= after[iafter-1].ts.getTime()){
+					while (current_time >= after[iafter].ts.getTime()){
 						// Get the attributes
 						Double r = getAttribute(after[iafter], row);;
 						  

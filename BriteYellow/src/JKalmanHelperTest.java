@@ -32,7 +32,7 @@ public class JKalmanHelperTest {
 //			System.out.println(output2.get(i).x+" "+output2.get(i).y+" "+output2.get(i).ts.toString());
 		
 		
-		JKalmanHelper jkh = new JKalmanHelper(output2, 50, 23);
+		JKalmanHelper jkh = new JKalmanHelper(output2, 11, 13);
 		while(!jkh.isEndReached())
 			jkh.processData();
 		
@@ -40,7 +40,7 @@ public class JKalmanHelperTest {
 		for(int i=0; i<result.size(); i++)
 			System.out.println(output2.get(i).x+" "+output2.get(i).y+" -- "+result.get(i).x+" "+result.get(i).y+" "+result.get(i).ts.toString());
 
-		PlotTracks.plotTrack2(output2.toArray(new PhoneData[output2.size()]), result.toArray(new PhoneData[result.size()]), PlotTracks.X, PlotTracks.Y, 1);
+		PlotTracks.plotTrack2(output2.toArray(new PhoneData[output2.size()]), result.toArray(new PhoneData[result.size()]), PlotTracks.X, PlotTracks.Y, 0.5f);
 	}
 	
 }

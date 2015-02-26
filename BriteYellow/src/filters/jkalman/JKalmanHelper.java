@@ -28,8 +28,8 @@ public class JKalmanHelper extends JKalman{
 		setState_post(new Matrix(new double[][]{
 				 {data.get(0).x},
 				 {data.get(0).y},
-				 {0},
-				 {0}
+				 {data.get(1).rsx},
+				 {data.get(1).rsy}
 				 }));
 		setMeasurement_noise_cov(tkn_x, tkn_y);
 	}

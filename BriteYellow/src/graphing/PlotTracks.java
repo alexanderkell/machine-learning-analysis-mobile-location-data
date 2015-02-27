@@ -46,7 +46,16 @@ public class PlotTracks {
 	public final static int MAcc = 14;
 	public final static int ATheta = 15;
 	public final static int Track = 16;
+	private static Timer timer;
+	private static ExtendedTimerTask ttask;
 
+	/**
+	 * @deprecated
+	 * @param track_info
+	 * @param row
+	 * @param col
+	 * @param timescaler
+	 */
 	public static void plotTrack2(String[][] track_info, int row, int col, float timescaler){
 		Image im = new ImageIcon("map.jpg").getImage(); 
 		
@@ -97,7 +106,7 @@ public class PlotTracks {
 		 * @param col
 		 * @param timescaler	Time scaler: Specify how long 1 second is
 		 */
-		public static void plotTrack2(final PhoneData[] track_info, final int row, final int col, float timescaler){
+		public static void plotTrack2(final PhoneData[] track_info, final int row, final int col, final float timescaler){
 			Image im = new ImageIcon("map.jpg").getImage(); 
 			
 			final String[] label = new String[]{
@@ -120,8 +129,8 @@ public class PlotTracks {
 			frame.add(cpanel, BorderLayout.CENTER);
 			
 			
-			final JLabel jlabel1 = new JLabel();	// Label for "Playing at XX Speed"
-			jlabel1.setText("Playing at "+(1/timescaler)+"X speed");
+			final JLabel jlabel1 = new JLabel("Playing at "+(1/timescaler)+"X speed");	// Label for "Playing at XX Speed"
+
 			
 			final JLabel jlabel2 = new JLabel();	// Label for showing the current point number
 			final JLabel jlabel3 = new JLabel();	// Label for showing start time
@@ -156,65 +165,38 @@ public class PlotTracks {
 			frame.setVisible(true);
 			
 		
-			final Timer timer = new Timer(true);
+			timer = new Timer(true);
 
-			final ExtendedTimerTask ttask = new ExtendedTimerTask(){
-				private int i = 0;
-				private long current_time = track_info[0].ts.getTime()-1000;
-				private long curr_time_diff = 0;
-				private long points_time_diff = 0;
+			final TimerEventsListener tel = new TimerEventsListener(){
 
-				public void setCurrentTime(float percent){
-					if( i == 0){
-						current_time = track_info[i].ts.getTime()+ (long)(points_time_diff*percent)/1000*1000;
-					} else{
-						current_time = track_info[i-1].ts.getTime()+(long)(points_time_diff*percent)/1000*1000;
-					}
-					curr_time_diff = current_time - track_info[i-1].ts.getTime();
-					jpb.setValue((int)(100*curr_time_diff/points_time_diff));
-					jpb.setString(new Timestamp(current_time).toString());
+				@Override
+				public void currentTimeUpdated(Timestamp curr_time, int percent) {
+					// TODO Auto-generated method stub
+					jpb.setValue(percent);
+					jpb.setString(curr_time.toString());
 				}
-				public void run(){
-					
-					current_time+=1000;
-//					System.out.println(current_time);
-//					System.out.println(track_info[i].ts.getTime());
-//					System.out.println((current_time - track_info[i].ts.getTime()));
-					while((current_time - track_info[i].ts.getTime())>=0 && i<track_info.length){
-//						jpb.setValue(0);
-						if(i<track_info.length - 1){
-							points_time_diff = track_info[i+1].ts.getTime() - track_info[i].ts.getTime();
-							jlabel4.setText(track_info[i+1].ts.toString());
-						
-						}
-						jlabel2.setText("Point "+(i+1)+" / "+track_info.length);
-						jlabel3.setText(track_info[i].ts.toString());
-						
-						// Get the attributes
-						Double r = getAttributeDouble(track_info[i], row);
-						  
-						Double c = getAttributeDouble(track_info[i], col);
 
-						plot.addData(label[0], r, c);
-						i++;
+				@Override
+				public void pointsUpdated(int index) {
+					// TODO Auto-generated method stub
+					if(index<track_info.length - 1){
+						jlabel4.setText(track_info[index+1].ts.toString());
+					
 					}
-						
-					curr_time_diff = current_time - track_info[i-1].ts.getTime();
-					
-					if(i == track_info.length){
-						timer.cancel();
-						jlabel1.setText("Stopped");
-					}
-					
-					// Set current time
-					jpb.setString(new Timestamp(current_time).toString());
-					int barvalue = points_time_diff==0 ? 0: (int) (100*curr_time_diff/points_time_diff);
-					jpb.setValue(barvalue);
-					
-					
+					jlabel2.setText("Point "+(index+1)+" / "+track_info.length);
+					jlabel3.setText(track_info[index].ts.toString());
 				}
+
+				@Override
+				public void timerStopped() {
+					// TODO Auto-generated method stub
+					timer.cancel();
+					jlabel1.setText("Stopped");
+				}
+				
 			};
-			
+			final TimeLine tl = new TimeLine(track_info, null, 1000, tel, plot, row, col, label);
+			ttask = new ExtendedTimerTask(tl);			
 			timer.scheduleAtFixedRate(ttask, 0, (long)(timescaler*1000));
 			
 			jpb.addMouseListener(new MouseListener(){
@@ -240,12 +222,18 @@ public class PlotTracks {
 				@Override
 				public void mousePressed(MouseEvent arg0) {
 					// TODO Auto-generated method stub
-					ttask.setCurrentTime((float)arg0.getX() / (float)jpb.getWidth());
+					timer.cancel();
+					tl.setCurrentTime((float)arg0.getX() / (float)jpb.getWidth());
+					jlabel1.setText("Paused");
 				}
 
 				@Override
 				public void mouseReleased(MouseEvent arg0) {
 					// TODO Auto-generated method stub
+					timer = new Timer(true);
+					ttask = new ExtendedTimerTask(tl);
+					timer.scheduleAtFixedRate(ttask, 0, 100);
+					jlabel1.setText("Playing at "+(1/timescaler)+"X speed");
 					
 				}
 				
@@ -257,7 +245,7 @@ public class PlotTracks {
 		
 		
 		
-		public static void plotTrack2(final PhoneData[] before,final PhoneData[] after, final int row, final int col, float timescaler){
+		public static void plotTrack2(final PhoneData[] before,final PhoneData[] after, final int row, final int col, final float timescaler){
 			Image im = new ImageIcon("map.jpg").getImage(); 
 			
 			final String[] label = new String[]{
@@ -281,8 +269,7 @@ public class PlotTracks {
 			frame.add(cpanel, BorderLayout.CENTER);
 			
 			
-			final JLabel jlabel1 = new JLabel();	// Label for "Playing at XX Speed"
-			jlabel1.setText("Playing at "+(1/timescaler)+"X speed");
+			final JLabel jlabel1 = new JLabel("Playing at "+(1/timescaler)+"X speed");	// Label for "Playing at XX Speed"
 			
 			final JLabel jlabel2 = new JLabel();	// Label for showing the current point number
 			final JLabel jlabel3 = new JLabel();	// Label for showing start time
@@ -316,106 +303,45 @@ public class PlotTracks {
 			frame.pack();
 			frame.setVisible(true);
 			
-		
-			final Timer timer = new Timer(true);
-
-			final ExtendedTimerTask ttask = new ExtendedTimerTask(){
-				private boolean ibeforechanged = false;
-				
-				private int ibefore = 0;
-				private int iafter_at_ibefore = 0;
-				private int iafter = 0;
-				private long current_time = before[0].ts.getTime()-1000;
-				private long curr_time_diff = 0;
-				private long points_time_diff = 0;
-
-				public void setCurrentTime(float percent){
-					if( ibefore == 0){
-						current_time = before[ibefore].ts.getTime()+ (long)(points_time_diff*percent)/1000*1000;
-					} else{
-						current_time = before[ibefore-1].ts.getTime()+(long)(points_time_diff*percent)/1000*1000;
-					}
-					curr_time_diff = current_time - before[ibefore-1].ts.getTime();
-					jpb.setValue((int)(100*curr_time_diff/points_time_diff));
-					jpb.setString(new Timestamp(current_time).toString());
-					
-					while (current_time >= after[iafter].ts.getTime()){
-						// Get the attributes
-						Double r = getAttribute(after[iafter], row);;
-						  
-						Double c = getAttributeDouble(after[iafter], col);
-
-						plot.addData(label[1], r, c);
-						iafter++;
-					}
-					while (current_time < after[iafter-1].ts.getTime()){
-						// Get the attributes
-						plot.removeData(label[1], plot.getItemCount(label[1]));
-						iafter--;
-					}
-				}
-				public void run(){
-					
-					current_time+=1000;
-//					System.out.println(current_time);
-//					System.out.println(track_info[i].ts.getTime());
-//					System.out.println((current_time - track_info[i].ts.getTime()));
-					while(ibefore<before.length && (current_time - before[ibefore].ts.getTime())>=0){
-//						jpb.setValue(0);
-						if(ibefore<before.length - 1){
-							points_time_diff = before[ibefore+1].ts.getTime() - before[ibefore].ts.getTime();
-							jlabel4.setText(before[ibefore+1].ts.toString());
-						
-						}
-						jlabel2.setText("Point "+(ibefore+1)+" / "+before.length);
-						jlabel3.setText(before[ibefore].ts.toString());
-						
-						// Get the attributes
-						Double r = getAttribute(before[ibefore], row);
-						  
-						Double c = getAttributeDouble(before[ibefore], col);
-						
-						plot.addData(label[0], r, c);
-						ibefore++;
-						
-						ibeforechanged = true;
-					}
-					
-					if(after != null){
-						while(iafter<after.length && (current_time - after[iafter].ts.getTime())>=0){
-							
-							// Get the attributes
-							Double r = getAttribute(after[iafter], row);;
-							  
-							Double c = getAttributeDouble(after[iafter], col);
-	
-							plot.addData(label[1], r, c);
-							iafter++;
-							
-						}
-					}
-					
-					if(ibeforechanged){
-						iafter_at_ibefore = iafter;
-						ibeforechanged = false;
-					}
-					curr_time_diff = current_time - before[ibefore-1].ts.getTime();
-					
-					if(ibefore == before.length){
-						timer.cancel();
-						jlabel1.setText("Stopped");
-					}
-					
-					// Set current time
-					jpb.setString(new Timestamp(current_time).toString());
-					int barvalue = points_time_diff==0 ? 0: (int) (100*curr_time_diff/points_time_diff);
-					jpb.setValue(barvalue);
-					
-					
-				}
-			};
 			
-			timer.scheduleAtFixedRate(ttask, 0, (long)(timescaler*1000));
+			
+			timer = new Timer(true);
+
+			
+			final TimerEventsListener tel = new TimerEventsListener(){
+
+				@Override
+				public void currentTimeUpdated(Timestamp curr_time, int percent) {
+					// TODO Auto-generated method stub
+					// Set current time
+					jpb.setString(curr_time.toString());
+					jpb.setValue(percent);
+				}
+
+				@Override
+				public void pointsUpdated(int index) {
+					// TODO Auto-generated method stub
+					if(index<before.length - 1){
+						jlabel4.setText(before[index+1].ts.toString());
+					}
+					jlabel2.setText("Point "+(index+1)+" / "+before.length);
+					jlabel3.setText(before[index].ts.toString());
+				}
+
+				@Override
+				public void timerStopped() {
+					// TODO Auto-generated method stub
+					timer.cancel();
+					jlabel1.setText("Stopped");
+					
+				}
+				
+			};
+			final TimeLine tl = new TimeLine(before, after, (int)(100/timescaler), tel, plot, row, col, label);
+			ttask = new ExtendedTimerTask(tl);
+			
+//			ttask.setTimeInterval((int)(100/timescaler));
+			timer.scheduleAtFixedRate(ttask, 0, 100);
 			
 			jpb.addMouseListener(new MouseListener(){
 
@@ -440,13 +366,18 @@ public class PlotTracks {
 				@Override
 				public void mousePressed(MouseEvent arg0) {
 					// TODO Auto-generated method stub
-					ttask.setCurrentTime((float)arg0.getX() / (float)jpb.getWidth());
+					timer.cancel();
+					tl.setCurrentTime((float)arg0.getX() / (float)jpb.getWidth());
+					jlabel1.setText("Paused");
 				}
 
 				@Override
 				public void mouseReleased(MouseEvent arg0) {
 					// TODO Auto-generated method stub
-					
+					timer = new Timer(true);
+					ttask = new ExtendedTimerTask(tl);
+					timer.scheduleAtFixedRate(ttask, 0, 100);
+					jlabel1.setText("Playing at "+(1/timescaler)+"X speed");
 				}
 				
 			});
@@ -613,11 +544,157 @@ public class PlotTracks {
 
 		
 	}
-	abstract class ExtendedTimerTask extends TimerTask{
-		public abstract void setCurrentTime(float percent);
+	interface TimerEventsListener{
 		
-		public abstract void run();
+		/**Called when the time is updated
+		 * return the current time and percentage (out of 100) of time passed the previous point
+		 * 
+		 * @param curr_time	current time
+		 * @param percent percentage (out of 100) of time passed the previous point
+		 */
+		public abstract void currentTimeUpdated(Timestamp curr_time, int percent);
 		
+		/**Called when the time is updated
+		 * 
+		 * @param index
+		 */
+		public abstract void pointsUpdated(int index);
+		/**Called when the timer stops
+		 * 
+		 */
+		public abstract void timerStopped();
+	}
+
+	
+	class ExtendedTimerTask extends TimerTask{
+		final private TimeLine tl;
+		public ExtendedTimerTask(final TimeLine tl){
+			this.tl = tl;
+		}
+		
+		public void run(){
+			tl.advanceTime();
+		}
+	};
+	class TimeLine{
+
+		private boolean ibeforechanged = false;
+		
+		private int ibefore = 0, iafter = 0;
+		private long current_time;
+		private long curr_time_diff = 0;
+		private long points_time_diff = 0;
+
+		private int interval = 1000;
+
+		private PhoneData[] before, after;
+
+		private TimerEventsListener etel;
+
+		private final PlotHelper plot;
+
+		private int row;
+		private int col;
+
+		private String[] labels;
+		private boolean finished = false;	// Indicates whether the timeline has reach the end
+
+		public TimeLine(final PhoneData[] before,final PhoneData[] after, int interval, TimerEventsListener etel, PlotHelper plot, int row, int col, String[] labels){
+			this.before = before;
+			this.after = after;
+			current_time = before[0].ts.getTime();
+			this.interval = interval;
+			this.etel = etel;
+			this.plot = plot;
+			this.row = row;
+			this.col = col;
+			this.labels = labels;
+		}
+		public void setTimeInterval(int interval){
+			this.interval = interval;
+		}
+		public void setCurrentTime(float percent){
+			if( ibefore == 0){
+				current_time = before[ibefore].ts.getTime()+ (long)(points_time_diff*percent)/100*100;
+			} else{
+				current_time = before[ibefore-1].ts.getTime()+(long)(points_time_diff*percent)/100*100;
+			}
+			curr_time_diff = current_time - before[ibefore-1].ts.getTime();
+			etel.currentTimeUpdated(new Timestamp(current_time), (int)(100*curr_time_diff/points_time_diff));
+			
+			while (current_time >= after[iafter].ts.getTime()){
+				// Get the attributes
+				Double r = PlotTracks.getAttribute(after[iafter], row);;
+				  
+				Double c = PlotTracks.getAttributeDouble(after[iafter], col);
+
+				plot.addData(labels[1], r, c);
+				iafter++;
+			}
+			while (current_time < after[iafter-1].ts.getTime()){
+				// Get the attributes
+				plot.removeData(labels[1], plot.getItemCount(labels[1]));
+				iafter--;
+			}
+		}
+		public long getCurrentTime(){
+			return current_time;
+		}
+		public void setTimeLineFinished(boolean finished){
+			this.finished = finished;
+		}
+		public boolean getTimeLineFinished(){
+			return finished;
+		}
+		public void advanceTime(){
+			if(! finished){
+				current_time+=interval;
+				while(ibefore<before.length && (current_time - before[ibefore].ts.getTime())>=0){
+	
+					points_time_diff = (ibefore<before.length - 1)? before[ibefore+1].ts.getTime() - before[ibefore].ts.getTime() : 0;
+					
+					etel.pointsUpdated(ibefore);
+					
+					// Get the attributes
+					Double r = PlotTracks.getAttribute(before[ibefore], row);
+					  
+					Double c = PlotTracks.getAttributeDouble(before[ibefore], col);
+					
+					plot.addData(labels[0], r, c);
+					ibefore++;
+					
+					ibeforechanged = true;
+				}
+				
+				if(after != null){
+					while(iafter<after.length && (current_time - after[iafter].ts.getTime())>=0){
+						
+						// Get the attributes
+						Double r = PlotTracks.getAttribute(after[iafter], row);;
+						  
+						Double c = PlotTracks.getAttributeDouble(after[iafter], col);
+	
+						plot.addData(labels[1], r, c);
+						iafter++;
+						
+					}
+				}
+			}
+			
+			if(ibeforechanged){
+				ibeforechanged = false;
+			}
+			curr_time_diff = current_time - before[ibefore-1].ts.getTime();
+			
+			if(ibefore == before.length){
+				etel.timerStopped();
+				finished = true;
+				points_time_diff = 0;
+			}
+			
+			etel.currentTimeUpdated(new Timestamp(current_time/100*100), points_time_diff==0 ? 0: (int) (100*curr_time_diff/points_time_diff));
+			
+		}
 	}
 	/*public static void main(String args[]) throws ParseException, IOException{
 		DataFormatOperations dfo = new DataFormatOperations(1, "C:\\Users\\testuser\\SkyDrive\\Documents\\4th year project files\\repos\\4th-year-project\\BriteYellow\\src\\24th Sept ORDERED.csv");

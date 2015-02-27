@@ -633,7 +633,7 @@ public class PlotTracks {
 			}
 			while (current_time < after[iafter-1].ts.getTime()){
 				// Get the attributes
-				plot.removeData(labels[1], plot.getItemCount(labels[1]));
+				plot.removeData(labels[1], plot.getItemCount(labels[1])-1);
 				iafter--;
 			}
 		}

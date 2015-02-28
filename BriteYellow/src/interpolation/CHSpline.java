@@ -1,8 +1,11 @@
 package interpolation;
 
 import graphing.PlotHelper;
+import graphing.PlotTracks;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
+import java.util.ArrayList;
 
 import maths.DataGetter;
 import maths.PhoneData;
@@ -71,7 +74,14 @@ public class CHSpline {
 
 		PlotHelper plot = new PlotHelper("Demo", "X", "Y", labels);
 		
+		ArrayList <PhoneData> before = new ArrayList <PhoneData>();
+		ArrayList <PhoneData> after = new ArrayList <PhoneData>();
+		
 		for(int h = 55; h<58; h++){
+			if(h == 55)
+				before.add(pd[h]);
+			before.add(pd[h+1]);
+			
 			final double[] point0 = new double[]{ pd[h].x, pd[h].y };
 			final double[] point1 = new double[]{ pd[h+1].x, pd[h+1].y  };
 			
@@ -93,14 +103,21 @@ public class CHSpline {
 			
 			for(int i = 0; i<=steps; i++){
 				f[i] = cHs(i*step, point0, modspeed0, heading0, point1, modspeed1, heading1);
+				PhoneData newdata = new PhoneData();
+				newdata.x = f[i][0];
+				newdata.y = f[i][1];
+				newdata.ts = new Timestamp(pd[h].ts.getTime()+((pd[h+1].ts.getTime()-pd[h].ts.getTime())/100*i*steps));
+//				System.out.println(pd[h].ts.toString()+" "+pd[h+1].ts.toString());
+				after.add(newdata);
 			}
 			plot.addData(labels[0], point0[0], point0[1]);
 			plot.addData(labels[0], point1[0], point1[1]);
 			plot.addData(labels[1], f);
+
 		}
 
 
 		plot.showDialog();
-		
+		PlotTracks.plotTrack2(before.toArray(new PhoneData[before.size()]), after.toArray(new PhoneData[after.size()]), PlotTracks.X, PlotTracks.Y, 1f);
 	}
 }

@@ -102,160 +102,42 @@ public class PlotTracks {
 		/**Plot the track against time
 		 * 
 		 * @param track_info	Track information contained in the PhoneData object
-		 * @param row
-		 * @param col
-		 * @param timescaler	Time scaler: Specify how long 1 second is
+		 * @param row	 The type of attribute of the row axis
+		 * @param col	 The type of attribute of the column axis
+		 * @param timescale	Time scaler: Specify how long 1 second is
 		 */
-		public static void plotTrack2(final PhoneData[] track_info, final int row, final int col, final float timescaler){
+		public static void plotTrack2(final PhoneData[] track_info, final int row, final int col, final float timescale){
+			plotTrack2(track_info, null, row, col, timescale);
+		}	
+		
+		/** Plot the track before filtering and after filtering against time
+		 * 	
+		 * @param before	Track before filtering contained in the PhoneData object
+		 * @param after		Track after filtering contained in the PhoneData object
+		 * @param row	 The type of attribute of the row axis
+		 * @param col	 The type of attribute of the column axis
+		 * @param timescale Time scaler: Specify how long 1 second is
+		 */
+		public static void plotTrack2(final PhoneData[] before,final PhoneData[] after, final int row, final int col, final float timescale
+				){
 			Image im = new ImageIcon("map.jpg").getImage(); 
 			
-			final String[] label = new String[]{
-				"Phone data"
-			};
-			final PlotHelper plot = new PlotHelper(COLUMNS[row]+" vs "+COLUMNS[col], COLUMNS[row], COLUMNS[col], label);
-			plot.setAxisRange(0, 1100, 0, 500);
-			plot.setRangeAxisInverted(true);
-			plot.setSeriesLinesVisble(label[0], true);
-			XYPlot xyplot = plot.getXYPlot();
-			// Clear background paint
-			xyplot.setBackgroundPaint(null);
-			// Set background image to the map
-			xyplot.setBackgroundImage(im);
-			
-			ChartPanel cpanel = plot.getChartPanel();
-			JFrame frame = new JFrame();
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.setLayout(new BorderLayout());
-			frame.add(cpanel, BorderLayout.CENTER);
-			
-			
-			final JLabel jlabel1 = new JLabel("Playing at "+(1/timescaler)+"X speed");	// Label for "Playing at XX Speed"
-
-			
-			final JLabel jlabel2 = new JLabel();	// Label for showing the current point number
-			final JLabel jlabel3 = new JLabel();	// Label for showing start time
-			
-			final JLabel jlabel4 = new JLabel();	// Label for showing end time
-			
-					
-			final JProgressBar jpb = new JProgressBar();	//ProgressBar for showing the current time
-			jpb.setStringPainted(true);
-			
-			JPanel panel = new JPanel();
-			panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-			frame.add(panel, BorderLayout.SOUTH);
-			
-			
-			JPanel subpanel = new JPanel();
-			subpanel.setLayout(new BoxLayout(subpanel, BoxLayout.LINE_AXIS));
-			
-			panel.add(jlabel1);
-			jlabel1.setAlignmentX(Container.LEFT_ALIGNMENT);
-			subpanel.add(jlabel2);
-			subpanel.add(Box.createHorizontalStrut(20));
-			subpanel.add(jlabel3);
-			subpanel.add(Box.createHorizontalStrut(5));
-			subpanel.add(jpb);
-			subpanel.add(Box.createHorizontalStrut(5));
-			subpanel.add(jlabel4);
-			
-			subpanel.setAlignmentX(Container.LEFT_ALIGNMENT);
-			panel.add(subpanel);
-			frame.pack();
-			frame.setVisible(true);
-			
-		
-			timer = new Timer(true);
-
-			final TimerEventsListener tel = new TimerEventsListener(){
-
-				@Override
-				public void currentTimeUpdated(Timestamp curr_time, int percent) {
-					// TODO Auto-generated method stub
-					jpb.setValue(percent);
-					jpb.setString(curr_time.toString());
-				}
-
-				@Override
-				public void pointsUpdated(int index) {
-					// TODO Auto-generated method stub
-					if(index<track_info.length - 1){
-						jlabel4.setText(track_info[index+1].ts.toString());
-					
-					}
-					jlabel2.setText("Point "+(index+1)+" / "+track_info.length);
-					jlabel3.setText(track_info[index].ts.toString());
-				}
-
-				@Override
-				public void timerStopped() {
-					// TODO Auto-generated method stub
-					timer.cancel();
-					jlabel1.setText("Stopped");
-				}
-				
-			};
-			final TimeLine tl = new TimeLine(track_info, null, 1000, tel, plot, row, col, label);
-			ttask = new ExtendedTimerTask(tl);			
-			timer.scheduleAtFixedRate(ttask, 0, (long)(timescaler*1000));
-			
-			jpb.addMouseListener(new MouseListener(){
-
-				@Override
-				public void mouseClicked(MouseEvent arg0) {
-					// TODO Auto-generated method stub
-										
-				}
-
-				@Override
-				public void mouseEntered(MouseEvent arg0) {
-					// TODO Auto-generated method stub
-					
-				}
-
-				@Override
-				public void mouseExited(MouseEvent arg0) {
-					// TODO Auto-generated method stub
-					
-				}
-
-				@Override
-				public void mousePressed(MouseEvent arg0) {
-					// TODO Auto-generated method stub
-					timer.cancel();
-					tl.setCurrentTime((float)arg0.getX() / (float)jpb.getWidth());
-					jlabel1.setText("Paused");
-				}
-
-				@Override
-				public void mouseReleased(MouseEvent arg0) {
-					// TODO Auto-generated method stub
-					timer = new Timer(true);
-					ttask = new ExtendedTimerTask(tl);
-					timer.scheduleAtFixedRate(ttask, 0, 100);
-					jlabel1.setText("Playing at "+(1/timescaler)+"X speed");
-					
-				}
-				
-			});
-			
-		}
-		
-		
-		
-		
-		
-		public static void plotTrack2(final PhoneData[] before,final PhoneData[] after, final int row, final int col, final float timescaler){
-			Image im = new ImageIcon("map.jpg").getImage(); 
-			
-			final String[] label = new String[]{
+			final String[] label;
+			if(after == null){
+				label = new String[]{
+						"Phone data"
+				};
+			} else{
+				label = new String[]{
 				"Before filtering", "After filtering"
-			};
+				};
+			}
 			final PlotHelper plot = new PlotHelper(COLUMNS[row]+" vs "+COLUMNS[col], COLUMNS[row], COLUMNS[col], label);
 			plot.setAxisRange(0, 1100, 0, 500);
 			plot.setRangeAxisInverted(true);
 			plot.setSeriesLinesVisble(label[0], true);
-			plot.setSeriesLinesVisble(label[1], true);
+			if(after != null)
+				plot.setSeriesLinesVisble(label[1], true);
 			XYPlot xyplot = plot.getXYPlot();
 			// Clear background paint
 			xyplot.setBackgroundPaint(null);
@@ -268,12 +150,9 @@ public class PlotTracks {
 			frame.setLayout(new BorderLayout());
 			frame.add(cpanel, BorderLayout.CENTER);
 			
-			
-			final JLabel jlabel1 = new JLabel("Playing at "+(1/timescaler)+"X speed");	// Label for "Playing at XX Speed"
-			
+			final JLabel jlabel1 = new JLabel("Playing at "+(1/timescale)+"X speed");	// Label for "Playing at XX Speed"
 			final JLabel jlabel2 = new JLabel();	// Label for showing the current point number
 			final JLabel jlabel3 = new JLabel();	// Label for showing start time
-			
 			final JLabel jlabel4 = new JLabel();	// Label for showing end time
 			
 					
@@ -306,7 +185,6 @@ public class PlotTracks {
 			
 			
 			timer = new Timer(true);
-
 			
 			final TimerEventsListener tel = new TimerEventsListener(){
 
@@ -337,7 +215,7 @@ public class PlotTracks {
 				}
 				
 			};
-			final TimeLine tl = new TimeLine(before, after, (int)(100/timescaler), tel, plot, row, col, label);
+			final TimeLine tl = new TimeLine(before, after, (int)(100/timescale), tel, plot, row, col, label);
 			ttask = new ExtendedTimerTask(tl);
 			
 //			ttask.setTimeInterval((int)(100/timescaler));
@@ -377,7 +255,7 @@ public class PlotTracks {
 					timer = new Timer(true);
 					ttask = new ExtendedTimerTask(tl);
 					timer.scheduleAtFixedRate(ttask, 0, 100);
-					jlabel1.setText("Playing at "+(1/timescaler)+"X speed");
+					jlabel1.setText("Playing at "+(1/timescale)+"X speed");
 				}
 				
 			});
@@ -615,26 +493,28 @@ public class PlotTracks {
 		}
 		public void setCurrentTime(float percent){
 			if( ibefore == 0){
-				current_time = before[ibefore].ts.getTime()+ (long)(points_time_diff*percent)/100*100;
+				current_time = before[ibefore].ts.getTime()+ (long)(points_time_diff*percent)/interval*interval;
 			} else{
-				current_time = before[ibefore-1].ts.getTime()+(long)(points_time_diff*percent)/100*100;
+				current_time = before[ibefore-1].ts.getTime()+(long)(points_time_diff*percent)/interval*interval;
 			}
 			curr_time_diff = current_time - before[ibefore-1].ts.getTime();
 			etel.currentTimeUpdated(new Timestamp(current_time), (int)(100*curr_time_diff/points_time_diff));
 			
-			while (current_time >= after[iafter].ts.getTime()){
-				// Get the attributes
-				Double r = PlotTracks.getAttribute(after[iafter], row);;
-				  
-				Double c = PlotTracks.getAttributeDouble(after[iafter], col);
-
-				plot.addData(labels[1], r, c);
-				iafter++;
-			}
-			while (current_time < after[iafter-1].ts.getTime()){
-				// Get the attributes
-				plot.removeData(labels[1], plot.getItemCount(labels[1])-1);
-				iafter--;
+			if(after != null){
+				while (current_time >= after[iafter].ts.getTime()){
+					// Get the attributes
+					Double r = PlotTracks.getAttribute(after[iafter], row);;
+					  
+					Double c = PlotTracks.getAttributeDouble(after[iafter], col);
+	
+					plot.addData(labels[1], r, c);
+					iafter++;
+				}
+				while (current_time < after[iafter-1].ts.getTime()){
+					// Get the attributes
+					plot.removeData(labels[1], plot.getItemCount(labels[1])-1);
+					iafter--;
+				}
 			}
 		}
 		public long getCurrentTime(){

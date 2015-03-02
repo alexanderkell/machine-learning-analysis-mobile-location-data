@@ -1,9 +1,11 @@
 package csvexport;
 
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 public class CSVWriter {
 	private final FileWriter fw;
@@ -37,6 +39,19 @@ public class CSVWriter {
 		}
 		write(str_data);
 	}
+	
+	public void write(double[][] data) throws IOException{
+		String[] str_data = new String[data.length];
+		
+		for(int j = 0; j < data[0].length; j++){
+			for(int i = 0; i < data.length; i++){
+				str_data[i] = String.valueOf(data[i][j]);	
+			}
+			
+			write(str_data);
+		}
+	}
+	
 	public void write(float[] data) throws IOException{
 		String[] str_data = new String[data.length];
 		for(int i=0; i<data.length; i++){

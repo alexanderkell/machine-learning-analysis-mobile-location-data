@@ -14,7 +14,7 @@ public class DoubleCSVMaker {
 	static String fn = new String("/Users/thomas/4th-year-project/BriteYellow/src/24th Sept ORDERED.csv");
 	
 	public static void main(String[] args) throws ParseException{
-		speedMapper();
+		speedPositionWriter();
 		
 	}
 	
@@ -26,11 +26,12 @@ public class DoubleCSVMaker {
 		int maxtn = PD[length-1].track_no;
 		int tn = 1;
 		double [] temp1 = new double[5];
-		ArrayList<double[]> temp2 = new ArrayList<double[]>();;
-		double[][] temp3;
+		ArrayList<double[]> temp2 = new ArrayList<double[]>();
+		double[][] temp3 = new double [temp2.size()][];
+		String title = new String();
+		
 			for(int j = 0; j<length; j++){
-				
-				
+			
 				if(tn == PD[j].track_no){
 					temp1[0] = PD[j].x;
 					temp1[1] = PD[j].y;
@@ -38,17 +39,15 @@ public class DoubleCSVMaker {
 					temp1[3] = PD[j].ts.getTime();
 					temp1[4] = PD[j].modspd;
 					temp2.add(temp1);
+					temp1 = new double[5];
 					
 				}
 				else if(tn == PD[j].track_no-1){
-					try {
-						temp3 = toArray(temp2);
-						CSVWriter CSVW = new CSVWriter(String.format("Phone No. %d track no %d", opt, tn));
-						CSVW.write(temp3);
-						CSVW.finish();
-					} catch (IOException e) {
-						System.out.println("IOException");
-					}
+					
+					temp3 = toArray(temp2);
+					title = String.format("Phone No. %d track no %d", opt, tn);
+					writeArray(temp3, title);
+					temp3 = new double [temp2.size()][];
 					tn++;
 				}
 				
@@ -61,20 +60,15 @@ public class DoubleCSVMaker {
 				}
 				
 			}	
-			
-			try {
-				temp3 = toArray(temp2);
-				CSVWriter CSVW = new CSVWriter(String.format("Phone No. %d track no %d", opt, tn));
-				CSVW.write(temp3);
-				CSVW.finish();
-			} catch (IOException e) {
-				System.out.println("IOException");
-			}
+			temp3 = toArray(temp2);
+			title = String.format("Phone No. %d track no %d", opt, tn);
+			writeArray(temp3, title);
+			temp3 = new double [temp2.size()][];
 		
 		
 	}
 	
-	public static void speedMapper() throws ParseException{
+	public static void speedPositionWriter() throws ParseException{
 		int length;
 		DataGetter DG = new DataGetter(opt,fn);
 		length = DG.getLength();
@@ -82,12 +76,12 @@ public class DoubleCSVMaker {
 		int maxtn = PD[length-1].track_no;
 		int tn = 1;
 		double [] temp1 = new double[5];
-		ArrayList<double[]> temp2 = new ArrayList<double[]>();;
-		double[][] temp3;
-		double[][] pm;
+		ArrayList<double[]> temp2 = new ArrayList<double[]>();
+		double[][] temp3 = new double [temp2.size()][];
+		String title = new String();
+		
 			for(int j = 0; j<length; j++){
-				
-				
+			
 				if(tn == PD[j].track_no){
 					temp1[0] = PD[j].x;
 					temp1[1] = PD[j].y;
@@ -95,18 +89,17 @@ public class DoubleCSVMaker {
 					temp1[3] = PD[j].ts.getTime();
 					temp1[4] = PD[j].modspd;
 					temp2.add(temp1);
+					temp1 = new double[5];
 					
 				}
 				else if(tn == PD[j].track_no-1){
-					try {
-						temp3 = toArray(temp2);
-						pm = toPositionMap(temp3);
-						CSVWriter CSVW = new CSVWriter(String.format("Position Speed Map for Track No %d", tn));
-						CSVW.write(pm);
-						CSVW.finish();
-					} catch (IOException e) {
-						System.out.println("IOException");
-					}
+					
+					temp3 = toArray(temp2);
+					title = String.format("Speed Map of Phone No. %d track no %d", opt, tn);
+					double[][] pmat = toPositionMap(temp3);
+					writeArray(pmat, title);
+					temp3 = new double [temp2.size()][];
+					
 					tn++;
 				}
 				
@@ -119,19 +112,24 @@ public class DoubleCSVMaker {
 				}
 				
 			}	
-			
-			try {
-				temp3 = toArray(temp2);
-				pm = toPositionMap(temp3);
-				CSVWriter CSVW = new CSVWriter(String.format("Position Speed Map for Track No %d", tn));
-				CSVW.write(pm);
-				CSVW.finish();
-			} catch (IOException e) {
-				System.out.println("IOException");
-			}
+			temp3 = toArray(temp2);
+			title = String.format("Speed Map of Phone No. %d track no %d", opt, tn);
+			double[][] pmat = toPositionMap(temp3);
+			writeArray(pmat, title);
+			temp3 = new double [temp2.size()][];
 		
 		
-		
+	}
+	
+	
+	private static void writeArray(double[][] input, String title){
+		try {
+			CSVWriter CSVW = new CSVWriter(title);
+			CSVW.write(input);
+			CSVW.finish();
+		} catch (IOException e) {
+			System.out.println("IOException");
+		}
 	}
 	
 	private static double[][] toArray(ArrayList<double[]> list){
@@ -145,6 +143,7 @@ public class DoubleCSVMaker {
 		return result;
 	}
 	
+	
 	private static double[][] toPositionMap(double[][] input){
 		int xval;
 		int yval;
@@ -156,11 +155,17 @@ public class DoubleCSVMaker {
 		for(int x=0; x<input[0].length; x++){
 			
 			xval = (int) input[0][x];
+		
 			yval = (int) input[1][x];
+			
 			zval = (int) input[2][x];
+			
 			mv = input[4][x];
+			
+			System.out.println(mv);
+			
 			output[xval][yval] = mv;
-			System.out.println(output[xval][yval]);
+		
 		}
 		
 		return output;
@@ -196,5 +201,28 @@ public class DoubleCSVMaker {
 	}
 	System.out.println();
 }*/	
+	
+	/*ArrayList<double[]> temp2 = new ArrayList<double[]>();
+	double[] temp3  = {1,2,3,4,5,6,7,8};
+	double[][] temp1;
+	for(int i = 0; i<10; i++){
+		temp2.add(temp3);
+		for(int j = 0; j < temp3.length; j++){
+			temp3[j]++;
+		}
+	}
+	
+	temp1 = toArray(temp2);
+	
+	for(int y = 0;  y< temp1[0].length; y++){
+		for(int x = 0; x < temp1.length; x++){
+		
+			System.out.print(temp1[x][y]+" ");
+			
+		}
+		System.out.println();
+	}
+	
+	writeArray(temp1, "test");*/
 	
 }

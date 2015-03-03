@@ -1,6 +1,6 @@
-package SupportVectorMachine;
+package svm;
 
-import SupportVectorMachine.libsvm.svm_node;
+import svm.libsvm.svm_node;
 
 /** Class XDATA
  *  for storing points containing SVM nodes

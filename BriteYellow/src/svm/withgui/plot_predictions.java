@@ -1,4 +1,4 @@
-package SupportVectorMachine;
+package svm.withgui;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
@@ -26,9 +26,10 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.event.ChartProgressEvent;
 import org.jfree.chart.event.ChartProgressListener;
 
-import SupportVectorMachine.libsvm.svm;
-import SupportVectorMachine.libsvm.svm_model;
-import SupportVectorMachine.libsvm.svm_node;
+import svm.XDATA;
+import svm.libsvm.svm;
+import svm.libsvm.svm_model;
+import svm.libsvm.svm_node;
 
 
 public class plot_predictions {

@@ -1,4 +1,4 @@
-package SupportVectorMachine;
+package svm.withgui;
 
 public class svm_helper {
 

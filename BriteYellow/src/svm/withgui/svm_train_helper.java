@@ -1,4 +1,4 @@
-package SupportVectorMachine;
+package svm.withgui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -33,7 +33,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.jfree.chart.event.ChartProgressEvent;
 
-import SupportVectorMachine.exit_exception.ExitTrappedException;
+import svm.svm_predict;
+import svm.svm_train;
+import svm.exit_exception.ExitTrappedException;
 
 
 public class svm_train_helper extends JFrame{

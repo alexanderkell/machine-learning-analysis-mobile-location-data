@@ -1,4 +1,4 @@
-package SupportVectorMachine.exit_exception;
+package svm.exit_exception;
 
 import java.security.Permission;
 

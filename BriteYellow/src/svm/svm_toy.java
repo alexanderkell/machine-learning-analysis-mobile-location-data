@@ -1,6 +1,6 @@
-package SupportVectorMachine;
+package svm;
 
-import SupportVectorMachine.libsvm.*;
+import svm.libsvm.*;
 import java.applet.*;
 import java.awt.*;
 import java.util.*;

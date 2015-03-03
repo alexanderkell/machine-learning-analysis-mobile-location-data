@@ -1,4 +1,4 @@
-package SupportVectorMachine;
+package svm.withgui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

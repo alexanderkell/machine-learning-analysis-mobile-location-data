@@ -1,4 +1,4 @@
-package SupportVectorMachine;
+package svm;
 
 import java.io.*;
 import java.util.*;

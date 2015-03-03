@@ -9,7 +9,7 @@ public class DateTestBench {
 	
 	public static void main(String[] args) throws ParseException{
 		//this is the phone option you wish to print
-		int opt = 7;
+		int opt = 1;
 		
 		//this is the filename
 		String fn =  new String("/Users/thomas/4th-year-project/BriteYellow/src/24th Sept ORDERED.csv");
@@ -21,7 +21,7 @@ public class DateTestBench {
 		String[][] newdat = data.getFull();
 		
 		//selects how many lines to print
-		int length = 8;
+		int length = data.getLength();
 		
 		//prints the array
 		for (int k = 0; k < length; k++){

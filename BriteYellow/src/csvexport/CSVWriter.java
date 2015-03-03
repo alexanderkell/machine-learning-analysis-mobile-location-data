@@ -11,8 +11,9 @@ public class CSVWriter {
 	private String filename;
 	
 	public CSVWriter(String filename) throws IOException{
-		fw = new FileWriter(filename);
-		this.filename = filename;
+		this.filename = filename+".csv";
+		fw = new FileWriter(this.filename);
+		
 	}
 	
 	public void write(String[] data) throws IOException{

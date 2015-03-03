@@ -5,6 +5,8 @@ import java.awt.Container;
 import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Timer;
@@ -22,6 +24,7 @@ import maths.PhoneData;
 
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.data.xy.XYDataItem;
 
 public class PlotTracks {
 	
@@ -125,17 +128,23 @@ public class PlotTracks {
 			final String[] label;
 			if(after == null){
 				label = new String[]{
-						"Phone data"
+						"Phone data", "Last point"
 				};
 			} else{
 				label = new String[]{
-				"Before filtering", "After filtering"
+				"Before filtering", "After filtering", "Before filter last point", "After filter last point"
 				};
 			}
 			final PlotHelper plot = new PlotHelper(COLUMNS[row]+" vs "+COLUMNS[col], COLUMNS[row], COLUMNS[col], label);
 			plot.setAxisRange(0, 1100, 0, 500);
 			plot.setRangeAxisInverted(true);
 			plot.setSeriesLinesVisble(label[0], true);
+			plot.setSeriesShape(label[0], new Ellipse2D.Float(-2.0f, -2.0f, 4f, 4f));
+			plot.setSeriesShape(label[1], new Rectangle2D.Float(-3.0f, -3.0f, 6f, 6f));
+			if(label.length == 4){
+				plot.setSeriesShape(label[2], new Ellipse2D.Float(-2.0f, -2.0f, 4f, 4f));
+				plot.setSeriesShape(label[3], new Rectangle2D.Float(-3.0f, -3.0f, 6f, 6f));
+			}
 			if(after != null)
 				plot.setSeriesLinesVisble(label[1], true);
 			XYPlot xyplot = plot.getXYPlot();
@@ -487,6 +496,7 @@ public class PlotTracks {
 			this.row = row;
 			this.col = col;
 			this.labels = labels;
+			plot.setSeriesRenderingOrder(false);
 		}
 		public void setTimeInterval(int interval){
 			this.interval = interval;
@@ -507,12 +517,20 @@ public class PlotTracks {
 					  
 					Double c = PlotTracks.getAttributeDouble(after[iafter], col);
 	
+					if(labels.length == 4){
+						plot.removeData(labels[3], plot.getItemCount(labels[3])-1);
+						plot.addData(labels[3], r, c);
+					}
 					plot.addData(labels[1], r, c);
 					iafter++;
 				}
 				while (current_time < after[iafter-1].ts.getTime()){
 					// Get the attributes
-					plot.removeData(labels[1], plot.getItemCount(labels[1])-1);
+					XYDataItem xydi = plot.removeData(labels[1], plot.getItemCount(labels[1])-1);
+					if(labels.length == 4){
+						plot.removeData(labels[3], plot.getItemCount(labels[3])-1);
+						plot.addData(labels[3], xydi);
+					}
 					iafter--;
 				}
 			}
@@ -541,6 +559,15 @@ public class PlotTracks {
 					Double c = PlotTracks.getAttributeDouble(before[ibefore], col);
 					
 					plot.addData(labels[0], r, c);
+					if(labels.length == 4){
+						if(plot.getItemCount(labels[2]) > 0)
+							plot.removeData(labels[2], plot.getItemCount(labels[2])-1);
+						plot.addData(labels[2], r, c);
+					} else if (after== null && labels.length == 2){
+						if(plot.getItemCount(labels[1]) > 0)
+						plot.removeData(labels[1], plot.getItemCount(labels[1])-1);
+						plot.addData(labels[1], r, c);
+					}
 					ibefore++;
 					
 					ibeforechanged = true;
@@ -555,6 +582,11 @@ public class PlotTracks {
 						Double c = PlotTracks.getAttributeDouble(after[iafter], col);
 	
 						plot.addData(labels[1], r, c);
+						if(labels.length == 4){
+							if(plot.getItemCount(labels[3]) > 0)
+								plot.removeData(labels[3], plot.getItemCount(labels[3])-1);
+							plot.addData(labels[3], r, c);
+						}
 						iafter++;
 						
 					}

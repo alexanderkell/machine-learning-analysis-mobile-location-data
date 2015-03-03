@@ -25,9 +25,10 @@ public class PhoneData{
 	
 	public String phone_id;
 	
-	//
+	// Track number
 	public int track_no;
 	
+	// Time stamp
 	public Timestamp ts;
 	
 }

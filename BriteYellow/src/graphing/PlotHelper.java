@@ -19,9 +19,11 @@ import org.jfree.chart.event.ChartChangeEvent;
 import org.jfree.chart.event.ChartChangeListener;
 import org.jfree.chart.event.ChartProgressListener;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.SeriesRenderingOrder;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -256,6 +258,12 @@ public class PlotHelper extends JFrame {
     	xyPlot.getRangeAxis().setInverted(invert);
     }
 
+    public void setSeriesRenderingOrder(boolean reverse){
+    	if(reverse)
+    		xyPlot.setSeriesRenderingOrder(SeriesRenderingOrder.REVERSE);
+    	else 
+    		xyPlot.setSeriesRenderingOrder(SeriesRenderingOrder.FORWARD);
+    }
     @SuppressWarnings("unused")
 	private void setAxisRange(NumberAxis axis, boolean vertical) {
         axis.setRange(-6.0, 6.0);
@@ -269,6 +277,8 @@ public class PlotHelper extends JFrame {
         	xySeriesCollection.addSeries(series[i]);
 		return xySeriesCollection;
     }
+    
+    
    
     /** Method for adding a single point to a series
      *  
@@ -301,6 +311,9 @@ public class PlotHelper extends JFrame {
     		throw new ArrayIndexOutOfBoundsException("x array length differs for y array length");
 
     	addData(label, x, y, 0, x.length-1);
+    }
+    public void addData(String label, XYDataItem item){
+    	addData(label, item);
     }
     public void addData(String label, int[] x, int[] y, int lowerlimit, int higherlimit){
     	for(int i=0; i<str_labels.length; i++){
@@ -408,14 +421,14 @@ public class PlotHelper extends JFrame {
      *  @param x x coordinate
      *  @param y y coordinate
      */
-    public void removeData(String label, int index){
+    public XYDataItem removeData(String label, int index){
 
     	for(int i=0; i<str_labels.length; i++){
     		if(str_labels[i].equals(label)){
-    			series[i].remove(index);
-    			break;
+    			return series[i].remove(index);
     		}
     	}
+    	return null;
     }
     public int getItemCount(String label){
     	for(int i=0; i<str_labels.length; i++){

@@ -29,20 +29,21 @@ public class main {
 		
 		ArrayList<PhoneData> output = insertMySQL.query(query);
 				
-//		DataGetter reAn = new DataGetter(output);
+//		DataGetter reAn = new DataGetter(1, "24th Sept ORDERED.csv");
+//		ArrayList<PhoneData> output = reAn.getFullPhoneData();
 		
-//		DistanceVerify cutBig = new DistanceVerify(output,150);
-//		cutBig.check();
-//		ArrayList<PhoneData> reana = cutBig.getFull();
+		DistanceVerify cutBig = new DistanceVerify(output,250);
+		cutBig.check();
+		ArrayList<PhoneData> reana = cutBig.getFull();
 		
 		sc.close();
 		
 		// Kalman filter
-		JKalmanHelper jkh = new JKalmanHelper(output, 11, 13);
+		JKalmanHelper jkh = new JKalmanHelper(reana, 11, 13);
 		while(!jkh.isEndReached())
 			jkh.processData();
 		
-		ArrayList<PhoneData> reana = jkh.getFullResult();
+		reana = jkh.getFullResult();
 		//PlotTracks.plotTrack2(reana, PlotTracks.X, PlotTracks.Y, 0.1f);
 		PlotTracks.plotTrack2(output.toArray(new PhoneData[output.size()]),reana.toArray(new PhoneData[reana.size()]), PlotTracks.X, PlotTracks.Y, 0.1f);
 		

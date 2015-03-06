@@ -14,6 +14,7 @@ public class DoubleCSVMaker {
 	static String fn = new String("/Users/thomas/4th-year-project/BriteYellow/src/24th Sept ORDERED.csv");
 	
 	public static void main(String[] args) throws ParseException{
+		speedWriter();
 		speedPositionWriter();
 		
 	}
@@ -161,8 +162,7 @@ public class DoubleCSVMaker {
 			zval = (int) input[2][x];
 			
 			mv = input[4][x];
-			
-			System.out.println(mv);
+
 			
 			output[xval][yval] = mv;
 		
@@ -183,46 +183,6 @@ public class DoubleCSVMaker {
 		return max;
 	}
 	
-	
-	/*for(int i = 0; i < temp3[0].length; i++) {
-		for(int k = 0; k < 5; k++){
-			System.out.print(temp3[k][i]+" ");
-			
-		}
-		System.out.println();
-	}*/
-	
 
-
-/*for(int i = 0; i < temp2.size(); i++) {
-	for(int k = 0; k < 5; k++){
-		System.out.print(" "+temp2.get(i)[k]);
-		
-	}
-	System.out.println();
-}*/	
-	
-	/*ArrayList<double[]> temp2 = new ArrayList<double[]>();
-	double[] temp3  = {1,2,3,4,5,6,7,8};
-	double[][] temp1;
-	for(int i = 0; i<10; i++){
-		temp2.add(temp3);
-		for(int j = 0; j < temp3.length; j++){
-			temp3[j]++;
-		}
-	}
-	
-	temp1 = toArray(temp2);
-	
-	for(int y = 0;  y< temp1[0].length; y++){
-		for(int x = 0; x < temp1.length; x++){
-		
-			System.out.print(temp1[x][y]+" ");
-			
-		}
-		System.out.println();
-	}
-	
-	writeArray(temp1, "test");*/
 	
 }

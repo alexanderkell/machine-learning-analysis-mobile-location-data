@@ -16,8 +16,8 @@ public class Ratios extends ProbabilityList{
 	public final static int STHETACHANGE = 104;
 	public final static int STHETAIN = 105;
 	public final static int STHETAOUT = 106;
-	public final static int STHETAINOUT = 107;
-	public final static int AVERAGE_SPEED = 110;
+	public final static int STHETAINOUT = 107;	//STEHTAOUT - STHETAIN
+	public final static int AVERAGE_SPEED = 110;	// PATH_LENGTH / TIME_SPENT
 	
 	private int length;
 	
@@ -31,6 +31,9 @@ public class Ratios extends ProbabilityList{
 		// TODO Auto-generated constructor stub
 		super(phonedata);
 		length = getLength();
+	}
+	public Ratios(ArrayList<PhoneData> phonelist) throws ParseException{
+		this(phonelist.toArray(new PhoneData[phonelist.size()]));
 	}
 
 	@Override

@@ -20,7 +20,7 @@ public class SParam extends svm_parameter{
 	
 	private svm_parameter param;
 	public SParam(){
-
+		param = new svm_parameter();
 		// default values
 		param.svm_type = svm_parameter.C_SVC;
 		param.kernel_type = svm_parameter.RBF;

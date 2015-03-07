@@ -1,4 +1,4 @@
-package filters;
+package redundant.filters;
 
 import java.util.ArrayList;
 

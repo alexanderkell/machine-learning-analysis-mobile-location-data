@@ -1,4 +1,4 @@
-package filters;
+package redundant.filters;
 import matrices.*;
 
 public class kalman {

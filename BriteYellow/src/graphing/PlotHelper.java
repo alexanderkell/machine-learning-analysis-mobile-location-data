@@ -279,7 +279,23 @@ public class PlotHelper extends JFrame {
     }
     
     
-   
+    /** Method for getting a single point to a series
+     *  
+     *  @param label
+     *  Label for the series you want to add data
+     *  @param x x coordinate
+     *  @param y y coordinate
+     * @return 
+     */
+    public XYDataItem getData(String label, int index){
+
+    	for(int i=0; i<str_labels.length; i++){
+    		if(str_labels[i].equals(label)){
+    			return series[i].getDataItem(index);
+    		}
+    	}
+    	return null;
+    }
     /** Method for adding a single point to a series
      *  
      *  @param label
@@ -313,7 +329,12 @@ public class PlotHelper extends JFrame {
     	addData(label, x, y, 0, x.length-1);
     }
     public void addData(String label, XYDataItem item){
-    	addData(label, item);
+    	for(int i=0; i<str_labels.length; i++){
+    		if(str_labels[i].equals(label)){
+    			series[i].add(item);
+    			break;
+    		}
+    	}
     }
     public void addData(String label, int[] x, int[] y, int lowerlimit, int higherlimit){
     	for(int i=0; i<str_labels.length; i++){

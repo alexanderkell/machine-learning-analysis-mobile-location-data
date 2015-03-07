@@ -1,6 +1,7 @@
 package graphing;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Image;
 import java.awt.event.MouseEvent;
@@ -140,10 +141,17 @@ public class PlotTracks {
 			plot.setRangeAxisInverted(true);
 			plot.setSeriesLinesVisble(label[0], true);
 			plot.setSeriesShape(label[0], new Ellipse2D.Float(-2.0f, -2.0f, 4f, 4f));
-			plot.setSeriesShape(label[1], new Rectangle2D.Float(-3.0f, -3.0f, 6f, 6f));
+			plot.setSeriesPaint(label[0], Color.RED);
 			if(label.length == 4){
-				plot.setSeriesShape(label[2], new Ellipse2D.Float(-2.0f, -2.0f, 4f, 4f));
+				plot.setSeriesShape(label[1], new Ellipse2D.Float(-2.0f, -2.0f, 4f, 4f));
+				plot.setSeriesPaint(label[1], Color.BLUE);
+				plot.setSeriesShape(label[2], new Rectangle2D.Float(-3.0f, -3.0f, 6f, 6f));
+				plot.setSeriesPaint(label[2], new Color(255,200,0));
 				plot.setSeriesShape(label[3], new Rectangle2D.Float(-3.0f, -3.0f, 6f, 6f));
+				plot.setSeriesPaint(label[3], new Color(0,200,255));
+			} else {
+				plot.setSeriesShape(label[1], new Rectangle2D.Float(-3.0f, -3.0f, 6f, 6f));
+				plot.setSeriesPaint(label[1], new Color(255,200,0));
 			}
 			if(after != null)
 				plot.setSeriesLinesVisble(label[1], true);
@@ -526,10 +534,10 @@ public class PlotTracks {
 				}
 				while (current_time < after[iafter-1].ts.getTime()){
 					// Get the attributes
-					XYDataItem xydi = plot.removeData(labels[1], plot.getItemCount(labels[1])-1);
+					plot.removeData(labels[1], plot.getItemCount(labels[1])-1);
 					if(labels.length == 4){
 						plot.removeData(labels[3], plot.getItemCount(labels[3])-1);
-						plot.addData(labels[3], xydi);
+						plot.addData(labels[3], plot.getData(labels[1], plot.getItemCount(labels[1])-1));
 					}
 					iafter--;
 				}

@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Image;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Ellipse2D;
@@ -25,7 +27,6 @@ import maths.PhoneData;
 
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.data.xy.XYDataItem;
 
 public class PlotTracks {
 	
@@ -52,6 +53,8 @@ public class PlotTracks {
 	public final static int Track = 16;
 	private static Timer timer;
 	private static ExtendedTimerTask ttask;
+	
+	private static boolean paused = false;
 
 	/**
 	 * @deprecated
@@ -122,8 +125,7 @@ public class PlotTracks {
 		 * @param col	 The type of attribute of the column axis
 		 * @param timescale Time scaler: Specify how long 1 second is
 		 */
-		public static void plotTrack2(final PhoneData[] before,final PhoneData[] after, final int row, final int col, final float timescale
-				){
+		public static void plotTrack2(final PhoneData[] before,final PhoneData[] after, final int row, final int col, final float timescale){
 			Image im = new ImageIcon("map.jpg").getImage(); 
 			
 			final String[] label;
@@ -167,7 +169,8 @@ public class PlotTracks {
 			frame.setLayout(new BorderLayout());
 			frame.add(cpanel, BorderLayout.CENTER);
 			
-			final JLabel jlabel1 = new JLabel("Playing at "+(1/timescale)+"X speed");	// Label for "Playing at XX Speed"
+			final String PLAY = "<html> <font size=+0>Playing at "+(1/timescale)+"X speed <i>(Press space to pause)</i></font></html>";
+			final JLabel jlabel1 = new JLabel(PLAY);	// Label for "Playing at XX Speed"
 			final JLabel jlabel2 = new JLabel();	// Label for showing the current point number
 			final JLabel jlabel3 = new JLabel();	// Label for showing start time
 			final JLabel jlabel4 = new JLabel();	// Label for showing end time
@@ -227,16 +230,52 @@ public class PlotTracks {
 				public void timerStopped() {
 					// TODO Auto-generated method stub
 					timer.cancel();
-					jlabel1.setText("Stopped");
+					jlabel1.setText("<html> <font size=+0>Stopped</html>");
 					
 				}
 				
 			};
+			
 			final TimeLine tl = new TimeLine(before, after, (int)(100/timescale), tel, plot, row, col, label);
 			ttask = new ExtendedTimerTask(tl);
 			
 //			ttask.setTimeInterval((int)(100/timescaler));
 			timer.scheduleAtFixedRate(ttask, 0, 100);
+			
+			frame.addKeyListener(new KeyListener(){
+
+				@Override
+				public void keyPressed(KeyEvent arg0) {
+					// TODO Auto-generated method stub
+					if(arg0.getKeyCode() == KeyEvent.VK_SPACE){
+						paused = !paused;
+						if(paused){
+							timer.cancel();
+							jlabel1.setText("<html> <font size=+0>Paused <i>(Press space to resume)</i></font></html>");
+						} else {
+							timer = new Timer(true);
+							ttask = new ExtendedTimerTask(tl);
+							timer.scheduleAtFixedRate(ttask, 0, 100);
+							jlabel1.setText(PLAY);
+
+						}
+					}
+				}
+
+				@Override
+				public void keyReleased(KeyEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void keyTyped(KeyEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+			});
+
 			
 			jpb.addMouseListener(new MouseListener(){
 
@@ -261,18 +300,21 @@ public class PlotTracks {
 				@Override
 				public void mousePressed(MouseEvent arg0) {
 					// TODO Auto-generated method stub
-					timer.cancel();
-					tl.setCurrentTime((float)arg0.getX() / (float)jpb.getWidth());
-					jlabel1.setText("Paused");
+					if(!paused){
+						timer.cancel();
+						jlabel1.setText("<html> <font size=+0> Paused <i>(Release LMB to resume)</i> <font></html>");
+					}tl.setCurrentTime((float)arg0.getX() / (float)jpb.getWidth());
 				}
 
 				@Override
 				public void mouseReleased(MouseEvent arg0) {
 					// TODO Auto-generated method stub
-					timer = new Timer(true);
-					ttask = new ExtendedTimerTask(tl);
-					timer.scheduleAtFixedRate(ttask, 0, 100);
-					jlabel1.setText("Playing at "+(1/timescale)+"X speed");
+					if(!paused){
+						timer = new Timer(true);
+						ttask = new ExtendedTimerTask(tl);
+						timer.scheduleAtFixedRate(ttask, 0, 100);
+						jlabel1.setText(PLAY);
+					}
 				}
 				
 			});
@@ -309,7 +351,7 @@ public class PlotTracks {
 			
 			
 			final JLabel jlabel1 = new JLabel();	// Label for "Playing at XX Speed"
-			jlabel1.setText("Showing "+(1/pointspersec)+"point(s) / second");
+			jlabel1.setText("<html> <font size=+0>Showing "+(1/pointspersec)+"point(s) / second</html>");
 			
 			final JLabel jlabel2 = new JLabel();	// Label for showing the current point number
 			final JLabel jlabel3 = new JLabel();	// Label for showing start time
@@ -494,6 +536,15 @@ public class PlotTracks {
 		private String[] labels;
 		private boolean finished = false;	// Indicates whether the timeline has reach the end
 
+		private long points_time_diff2;
+
+		private long curr_time_diff2;
+
+		private boolean temppointsadded = false;
+		private boolean temppointsadded2 = false;
+
+		private boolean iafterchanged;
+
 		public TimeLine(final PhoneData[] before,final PhoneData[] after, int interval, TimerEventsListener etel, PlotHelper plot, int row, int col, String[] labels){
 			this.before = before;
 			this.after = after;
@@ -511,19 +562,17 @@ public class PlotTracks {
 		}
 		public void setCurrentTime(float percent){
 			if( ibefore == 0){
-				current_time = before[ibefore].ts.getTime()+ (long)(points_time_diff*percent)/interval*interval;
+				current_time = before[ibefore].ts.getTime()+ (long)(points_time_diff*percent)/interval*interval - interval;
 			} else{
-				current_time = before[ibefore-1].ts.getTime()+(long)(points_time_diff*percent)/interval*interval;
+				current_time = before[ibefore-1].ts.getTime()+(long)(points_time_diff*percent)/interval*interval - interval;
 			}
-			curr_time_diff = current_time - before[ibefore-1].ts.getTime();
-			etel.currentTimeUpdated(new Timestamp(current_time), (int)(100*curr_time_diff/points_time_diff));
 			
-			if(after != null){
+			if(after != null && !finished){
 				while (current_time >= after[iafter].ts.getTime()){
 					// Get the attributes
-					Double r = PlotTracks.getAttribute(after[iafter], row);;
+					Double r = Copy_3_of_PlotTracks.getAttribute(after[iafter], row);;
 					  
-					Double c = PlotTracks.getAttributeDouble(after[iafter], col);
+					Double c = Copy_3_of_PlotTracks.getAttributeDouble(after[iafter], col);
 	
 					if(labels.length == 4){
 						plot.removeData(labels[3], plot.getItemCount(labels[3])-1);
@@ -532,7 +581,7 @@ public class PlotTracks {
 					plot.addData(labels[1], r, c);
 					iafter++;
 				}
-				while (current_time < after[iafter-1].ts.getTime()){
+				while (iafter>0 && current_time < after[iafter-1].ts.getTime()){
 					// Get the attributes
 					plot.removeData(labels[1], plot.getItemCount(labels[1])-1);
 					if(labels.length == 4){
@@ -541,6 +590,9 @@ public class PlotTracks {
 					}
 					iafter--;
 				}
+				advanceTime();
+				etel.currentTimeUpdated(new Timestamp(current_time), (int)(100*curr_time_diff/points_time_diff));
+				
 			}
 		}
 		public long getCurrentTime(){
@@ -562,49 +614,83 @@ public class PlotTracks {
 					etel.pointsUpdated(ibefore);
 					
 					// Get the attributes
-					Double r = PlotTracks.getAttribute(before[ibefore], row);
+					Double r = Copy_3_of_PlotTracks.getAttribute(before[ibefore], row);
 					  
-					Double c = PlotTracks.getAttributeDouble(before[ibefore], col);
+					Double c = Copy_3_of_PlotTracks.getAttributeDouble(before[ibefore], col);
 					
-					plot.addData(labels[0], r, c);
-					if(labels.length == 4){
-						if(plot.getItemCount(labels[2]) > 0)
-							plot.removeData(labels[2], plot.getItemCount(labels[2])-1);
-						plot.addData(labels[2], r, c);
-					} else if (after== null && labels.length == 2){
-						if(plot.getItemCount(labels[1]) > 0)
-						plot.removeData(labels[1], plot.getItemCount(labels[1])-1);
-						plot.addData(labels[1], r, c);
+					if(temppointsadded ){
+						plot.removeData(labels[0], plot.getItemCount(labels[0])-1);
+						temppointsadded = false;
 					}
+					plot.addData(labels[0], r, c);
 					ibefore++;
 					
 					ibeforechanged = true;
 				}
 				
+				
 				if(after != null){
 					while(iafter<after.length && (current_time - after[iafter].ts.getTime())>=0){
-						
+						points_time_diff2 = (iafter<after.length - 1)? after[iafter+1].ts.getTime() - after[iafter].ts.getTime() : 0;
+
 						// Get the attributes
-						Double r = PlotTracks.getAttribute(after[iafter], row);;
+						Double r = Copy_3_of_PlotTracks.getAttribute(after[iafter], row);;
 						  
-						Double c = PlotTracks.getAttributeDouble(after[iafter], col);
+						Double c = Copy_3_of_PlotTracks.getAttributeDouble(after[iafter], col);
 	
-						plot.addData(labels[1], r, c);
-						if(labels.length == 4){
-							if(plot.getItemCount(labels[3]) > 0)
-								plot.removeData(labels[3], plot.getItemCount(labels[3])-1);
-							plot.addData(labels[3], r, c);
+						if(temppointsadded2 ){
+							plot.removeData(labels[1], plot.getItemCount(labels[1])-1);
+							temppointsadded2 = false;
 						}
+						plot.addData(labels[1], r, c);
 						iafter++;
-						
+						iafterchanged = true;
 					}
 				}
+			}
+			
+
+			curr_time_diff = current_time - before[ibefore-1].ts.getTime();
+			curr_time_diff2 = current_time - after[iafter-1].ts.getTime();
+			// Calculate the estimated position
+			if(ibefore < before.length && ( (labels.length == 4)|| (after== null && labels.length == 2))){
+				double[] result = estPosition(before[ibefore-1], before[ibefore], curr_time_diff, points_time_diff);
+				
+				if(labels.length == 4){
+					if(plot.getItemCount(labels[2]) > 0)
+						plot.removeData(labels[2],  plot.getItemCount(labels[2])-1);
+					plot.addData(labels[2], result[0], result[1]);
+					
+				} else {
+					if(plot.getItemCount(labels[1]) > 0)
+						plot.removeData(labels[1],  plot.getItemCount(labels[1])-1);
+					plot.addData(labels[1], result[0], result[1]);
+				}
+				if(!ibeforechanged)
+					plot.removeData(labels[0],  plot.getItemCount(labels[0])-1);
+				plot.addData(labels[0], result[0], result[1]);
+				temppointsadded = true;
+			}
+			if(iafter < after.length && after != null && labels.length == 4){
+				double[] result = estPosition(after[iafter-1], after[iafter], curr_time_diff2, points_time_diff2);
+				
+				if(plot.getItemCount(labels[3]) > 0)
+					plot.removeData(labels[3],  plot.getItemCount(labels[3])-1);
+				plot.addData(labels[3], result[0], result[1]);
+				
+				if(!iafterchanged)
+					plot.removeData(labels[1],  plot.getItemCount(labels[1])-1);
+				plot.addData(labels[1], result[0], result[1]);
+				temppointsadded2 = true;
 			}
 			
 			if(ibeforechanged){
 				ibeforechanged = false;
 			}
-			curr_time_diff = current_time - before[ibefore-1].ts.getTime();
+			if(iafterchanged){
+				iafterchanged = false;
+			}
+			
 			
 			if(ibefore == before.length){
 				etel.timerStopped();
@@ -613,6 +699,16 @@ public class PlotTracks {
 			}
 			
 			etel.currentTimeUpdated(new Timestamp(current_time/100*100), points_time_diff==0 ? 0: (int) (100*curr_time_diff/points_time_diff));
+			
+		}
+		
+		private double[] estPosition(PhoneData pre_point, PhoneData aft_point, long curr_time_difference, long points_time_difference){
+			double px = Copy_3_of_PlotTracks.getAttribute(pre_point, row);
+			double py = Copy_3_of_PlotTracks.getAttributeDouble(pre_point, col);
+			double nx = Copy_3_of_PlotTracks.getAttribute(aft_point, row);
+			double ny = Copy_3_of_PlotTracks.getAttributeDouble(aft_point, col);
+			float cur_faction = (float)curr_time_difference / (float)points_time_difference;
+			return new double[]{ px+(nx-px)*cur_faction, py+(ny-py)*cur_faction};
 			
 		}
 	}

@@ -90,15 +90,15 @@ public class PlotTracks {
 		
 		for(int i = 0; i<track_info[0].length; i++){
 			jlabel.setText("<html>"+track_info[3][i] + "<br> Point "+(i+1)+"</html>");
-			  try{
-				  int tb = (int) (timescaler*1000*(int) Double.parseDouble(track_info[5][i]));
-					Thread.sleep(tb);
-			  } catch (NumberFormatException e){
-					System.err.println(e.toString());
-				} catch (InterruptedException e){
-					System.err.println("User Aborted");
-					return;
-				}
+			try{
+				int tb = (int) (timescaler*1000*(int) Double.parseDouble(track_info[5][i]));
+			 	Thread.sleep(tb);
+			} catch (NumberFormatException e){
+				System.err.println(e.toString());
+			} catch (InterruptedException e){
+				System.err.println("User Aborted");
+				return;
+			}
 			 
 			plot.addData(label[0], Double.parseDouble(track_info[row][i]), Double.parseDouble(track_info[col][i]));
 		}
@@ -239,7 +239,6 @@ public class PlotTracks {
 			final TimeLine tl = new TimeLine(before, after, (int)(100/timescale), tel, plot, row, col, label);
 			ttask = new ExtendedTimerTask(tl);
 			
-//			ttask.setTimeInterval((int)(100/timescaler));
 			timer.scheduleAtFixedRate(ttask, 0, 100);
 			
 			frame.addKeyListener(new KeyListener(){
@@ -249,7 +248,7 @@ public class PlotTracks {
 					// TODO Auto-generated method stub
 					if(arg0.getKeyCode() == KeyEvent.VK_SPACE){
 						paused = !paused;
-						if(paused){
+						if(paused && !tl.getTimeLineFinished()){
 							timer.cancel();
 							jlabel1.setText("<html> <font size=+0>Paused <i>(Press space to resume)</i></font></html>");
 						} else {
@@ -300,7 +299,7 @@ public class PlotTracks {
 				@Override
 				public void mousePressed(MouseEvent arg0) {
 					// TODO Auto-generated method stub
-					if(!paused){
+					if(!paused && !tl.getTimeLineFinished()){
 						timer.cancel();
 						jlabel1.setText("<html> <font size=+0> Paused <i>(Release LMB to resume)</i> <font></html>");
 					}tl.setCurrentTime((float)arg0.getX() / (float)jpb.getWidth());
@@ -309,7 +308,7 @@ public class PlotTracks {
 				@Override
 				public void mouseReleased(MouseEvent arg0) {
 					// TODO Auto-generated method stub
-					if(!paused){
+					if(!paused && !tl.getTimeLineFinished()){
 						timer = new Timer(true);
 						ttask = new ExtendedTimerTask(tl);
 						timer.scheduleAtFixedRate(ttask, 0, 100);
@@ -570,9 +569,9 @@ public class PlotTracks {
 			if(after != null && !finished){
 				while (current_time >= after[iafter].ts.getTime()){
 					// Get the attributes
-					Double r = Copy_3_of_PlotTracks.getAttribute(after[iafter], row);;
+					Double r = PlotTracks.getAttribute(after[iafter], row);;
 					  
-					Double c = Copy_3_of_PlotTracks.getAttributeDouble(after[iafter], col);
+					Double c = PlotTracks.getAttributeDouble(after[iafter], col);
 	
 					if(labels.length == 4){
 						plot.removeData(labels[3], plot.getItemCount(labels[3])-1);
@@ -614,9 +613,9 @@ public class PlotTracks {
 					etel.pointsUpdated(ibefore);
 					
 					// Get the attributes
-					Double r = Copy_3_of_PlotTracks.getAttribute(before[ibefore], row);
+					Double r = PlotTracks.getAttribute(before[ibefore], row);
 					  
-					Double c = Copy_3_of_PlotTracks.getAttributeDouble(before[ibefore], col);
+					Double c = PlotTracks.getAttributeDouble(before[ibefore], col);
 					
 					if(temppointsadded ){
 						plot.removeData(labels[0], plot.getItemCount(labels[0])-1);
@@ -634,9 +633,9 @@ public class PlotTracks {
 						points_time_diff2 = (iafter<after.length - 1)? after[iafter+1].ts.getTime() - after[iafter].ts.getTime() : 0;
 
 						// Get the attributes
-						Double r = Copy_3_of_PlotTracks.getAttribute(after[iafter], row);;
+						Double r = PlotTracks.getAttribute(after[iafter], row);;
 						  
-						Double c = Copy_3_of_PlotTracks.getAttributeDouble(after[iafter], col);
+						Double c = PlotTracks.getAttributeDouble(after[iafter], col);
 	
 						if(temppointsadded2 ){
 							plot.removeData(labels[1], plot.getItemCount(labels[1])-1);
@@ -703,33 +702,12 @@ public class PlotTracks {
 		}
 		
 		private double[] estPosition(PhoneData pre_point, PhoneData aft_point, long curr_time_difference, long points_time_difference){
-			double px = Copy_3_of_PlotTracks.getAttribute(pre_point, row);
-			double py = Copy_3_of_PlotTracks.getAttributeDouble(pre_point, col);
-			double nx = Copy_3_of_PlotTracks.getAttribute(aft_point, row);
-			double ny = Copy_3_of_PlotTracks.getAttributeDouble(aft_point, col);
+			double px = PlotTracks.getAttribute(pre_point, row);
+			double py = PlotTracks.getAttributeDouble(pre_point, col);
+			double nx = PlotTracks.getAttribute(aft_point, row);
+			double ny = PlotTracks.getAttributeDouble(aft_point, col);
 			float cur_faction = (float)curr_time_difference / (float)points_time_difference;
 			return new double[]{ px+(nx-px)*cur_faction, py+(ny-py)*cur_faction};
 			
 		}
-	}
-	/*public static void main(String args[]) throws ParseException, IOException{
-		DataFormatOperations dfo = new DataFormatOperations(1, "C:\\Users\\testuser\\SkyDrive\\Documents\\4th year project files\\repos\\4th-year-project\\BriteYellow\\src\\24th Sept ORDERED.csv");
-		for (int i = 1; i<=5; i++){
-			dfo.changePhone(i);
-			dfo.writeToFile();
-		}
-	}
-*/
-	/*public static void main(String args[]) throws ParseException, IOException{
-		DataFormatOperations dfo = new DataFormatOperations(1, "C:\\Users\\testuser\\SkyDrive\\Documents\\4th year project files\\repos\\4th-year-project\\BriteYellow\\src\\24th Sept ORDERED.csv");
-		String[][] result = dfo.getSort();
-		System.out.println(result.length-1);
-		for(int i=0; i<result[0].length; i++){
-			for(int j=0; j<result.length; j++){
-				System.out.print(result[j][i]+"\t");
-			}
-			System.out.print("\n");
-		}
-	//	plotTrack2(dfo.getFull(), 0, 1, 0.1f);
-	}*/
-		
+	}	

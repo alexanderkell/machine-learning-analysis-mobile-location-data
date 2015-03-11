@@ -5,27 +5,39 @@ import java.io.IOException;
 import svm.libsvm.svm;
 import svm.libsvm.svm_model;
 import svm.libsvm.svm_node;
-import svm.libsvm.svm_problem;
 
 public class SPredictHelper{
 
 	private svm_model model;
+	private StrNumConverter snc;
 	
-	public SPredictHelper(svm_model model){
+
+	public SPredictHelper(svm_model model, StrNumConverter snc){
 		this.model = model;
+		this.snc = snc;
 	}
 	
-	public SPredictHelper(String model_file_name) throws IOException{
-		model = loadModel(model_file_name);	
+	public SPredictHelper(String model_file_name, StrNumConverter snc) throws IOException{
+		model = loadModel(model_file_name);
+		this.snc = snc;
 	}
 	
+	public SPredictHelper(svm_model model, String str_converter_file_name){
+		this.model = model;
+		snc = new StrNumConverter(str_converter_file_name);
+	}
+	
+	public SPredictHelper(String model_file_name, String str_converter_file_name) throws IOException{
+		model = loadModel(model_file_name);
+		snc = new StrNumConverter(str_converter_file_name);
+	}
+	
+
 	private static svm_model loadModel(String model_file) throws IOException{
 		svm_model model = svm.svm_load_model(model_file);
 		if (model == null)
-		{
-			System.err.print("can't open model file "+model_file+"\n");
-			System.exit(1);
-		}
+			throw new NullPointerException("Can't open model file "+model_file+". The model seems to be null.");
+
 		return model;
 	}
 
@@ -34,8 +46,7 @@ public class SPredictHelper{
 	 * @param point the point in the double format
 	 * @return
 	 */
-	public double predict(double[] point){
-		
+	public String predict(double[] point){
 		svm_node[] x = new svm_node[point.length];
 		for(int j=0;j<point.length;j++){
 			x[j] = new svm_node();
@@ -43,7 +54,7 @@ public class SPredictHelper{
 			x[j].value = point[j];
 		}
 
-		return svm.svm_predict(model,x);
+		return snc.getName((int)svm.svm_predict(model,x));
 	}
 	
 	/** Method for predicting a single point
@@ -55,12 +66,4 @@ public class SPredictHelper{
 		return svm.svm_predict(model,x);
 	}
 	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

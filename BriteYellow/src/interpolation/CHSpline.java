@@ -51,7 +51,7 @@ public class CHSpline {
 		// Calculate the point 
 		double[] result = new double[point0.length];
 		for(int i = 0; i < result.length; i++){
-			result[i] = (2*t*t*t - 3*t*t + 1) * point0[i] + (t*t*t - 2*t*t + t)*speed0[i] + (-2*t*t*t + 3*t*t)*point1[0] + (t*t*t-t*t)*speed1[i];
+			result[i] = (2*t*t*t - 3*t*t + 1) * point0[i] + (t*t*t - 2*t*t + t)*speed0[i] + (-2*t*t*t + 3*t*t)*point1[i] + (t*t*t-t*t)*speed1[i];
 		}
 //		double f1 = (2*t*t*t - 3*t*t + 1) * point0[0] + (t*t*t - 2*t*t + t)*H0i + (-2*t*t*t + 3*t*t)*point1[0] + (t*t*t-t*t)*H1i;
 //		double f2 = (2*t*t*t - 3*t*t + 1) * point0[1] + (t*t*t - 2*t*t + t)*H0j + (-2*t*t*t + 3*t*t)*point1[1] + (t*t*t-t*t)*H1j;

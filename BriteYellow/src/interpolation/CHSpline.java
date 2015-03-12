@@ -41,20 +41,22 @@ public class CHSpline {
 	public static double[] cHs(float t, double[] point0, double[] speed0, double[] point1, double[] speed1){
 
 		// The starting point's speed in x and y direction
-		double H0i = speed0[0];
-		double H0j = speed0[1];
+//		double H0i = speed0[0];
+//		double H0j = speed0[1];
 
 		// The next point's speed in x and y direction
-		double H1i = speed1[0];
-		double H1j = speed1[1];
+//		double H1i = speed1[0];
+//		double H1j = speed1[1];
 
 		// Calculate the point 
-		double f1 = (2*t*t*t - 3*t*t + 1) * point0[0] + (t*t*t - 2*t*t + t)*H0i + (-2*t*t*t + 3*t*t)*point1[0] + (t*t*t-t*t)*H1i;
-		double f2 = (2*t*t*t - 3*t*t + 1) * point0[1] + (t*t*t - 2*t*t + t)*H0j + (-2*t*t*t + 3*t*t)*point1[1] + (t*t*t-t*t)*H1j;
+		double[] result = new double[point0.length];
+		for(int i = 0; i < result.length; i++){
+			result[i] = (2*t*t*t - 3*t*t + 1) * point0[i] + (t*t*t - 2*t*t + t)*speed0[i] + (-2*t*t*t + 3*t*t)*point1[0] + (t*t*t-t*t)*speed1[i];
+		}
+//		double f1 = (2*t*t*t - 3*t*t + 1) * point0[0] + (t*t*t - 2*t*t + t)*H0i + (-2*t*t*t + 3*t*t)*point1[0] + (t*t*t-t*t)*H1i;
+//		double f2 = (2*t*t*t - 3*t*t + 1) * point0[1] + (t*t*t - 2*t*t + t)*H0j + (-2*t*t*t + 3*t*t)*point1[1] + (t*t*t-t*t)*H1j;
 
-		return new double[]{
-				f1,f2	
-		};
+		return result;
 	}
 	
 	/**Test bench for the CHS
@@ -77,8 +79,8 @@ public class CHSpline {
 		ArrayList <PhoneData> before = new ArrayList <PhoneData>();
 		ArrayList <PhoneData> after = new ArrayList <PhoneData>();
 		
-		for(int h = 55; h<58; h++){
-			if(h == 55)
+		for(int h = 50; h<60; h++){
+			if(h == 50)
 				before.add(pd[h]);
 			before.add(pd[h+1]);
 			
@@ -88,10 +90,10 @@ public class CHSpline {
 			System.out.println(pd[h].x+" "+ pd[h].y );
 			System.out.println(pd[h+1].x+" "+ pd[h].y);
 			final double modspeed0 = pd[h].modspd;
-			final double heading0 = pd[h].modacc;
+			final double heading0 = pd[h].spdtheta;
 	
 			final double modspeed1 = pd[h+1].modspd;
-			final double heading1 = pd[h+1].modacc;
+			final double heading1 = pd[h+1].spdtheta;
 			
 			final float step = 0.1f;
 			//======================================================
@@ -102,7 +104,8 @@ public class CHSpline {
 			
 			
 			for(int i = 0; i<=steps; i++){
-				f[i] = cHs(i*step, point0, modspeed0, heading0, point1, modspeed1, heading1);
+//				f[i] = cHs(i*step, point0, modspeed0, heading0, point1, modspeed1, heading1);
+				f[i] = cHs(i*step, point0, new double[]{pd[h].rsx, pd[h].rsy}, point1, new double[]{pd[h+1].rsx, pd[h+1].rsy});
 				PhoneData newdata = new PhoneData();
 				newdata.x = f[i][0];
 				newdata.y = f[i][1];

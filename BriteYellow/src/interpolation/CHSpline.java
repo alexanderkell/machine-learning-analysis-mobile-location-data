@@ -38,23 +38,22 @@ public class CHSpline {
 		
 	}
 	
+	/**
+	 * 
+	 * @param t A value between 0 and 1
+	 * @param point0 coordinate of the starting point
+	 * @param speed0 speed of the starting point
+	 * @param point1 coordinate of the end point
+	 * @param speed1 speed of the end point
+	 * @return
+	 */
 	public static double[] cHs(float t, double[] point0, double[] speed0, double[] point1, double[] speed1){
-
-		// The starting point's speed in x and y direction
-//		double H0i = speed0[0];
-//		double H0j = speed0[1];
-
-		// The next point's speed in x and y direction
-//		double H1i = speed1[0];
-//		double H1j = speed1[1];
 
 		// Calculate the point 
 		double[] result = new double[point0.length];
 		for(int i = 0; i < result.length; i++){
 			result[i] = (2*t*t*t - 3*t*t + 1) * point0[i] + (t*t*t - 2*t*t + t)*speed0[i] + (-2*t*t*t + 3*t*t)*point1[i] + (t*t*t-t*t)*speed1[i];
 		}
-//		double f1 = (2*t*t*t - 3*t*t + 1) * point0[0] + (t*t*t - 2*t*t + t)*H0i + (-2*t*t*t + 3*t*t)*point1[0] + (t*t*t-t*t)*H1i;
-//		double f2 = (2*t*t*t - 3*t*t + 1) * point0[1] + (t*t*t - 2*t*t + t)*H0j + (-2*t*t*t + 3*t*t)*point1[1] + (t*t*t-t*t)*H1j;
 
 		return result;
 	}
@@ -79,16 +78,16 @@ public class CHSpline {
 		ArrayList <PhoneData> before = new ArrayList <PhoneData>();
 		ArrayList <PhoneData> after = new ArrayList <PhoneData>();
 		
-		for(int h = 50; h<60; h++){
-			if(h == 50)
+		for(int h = 49; h<60; h++){
+			if(h == 49)
 				before.add(pd[h]);
 			before.add(pd[h+1]);
 			
 			final double[] point0 = new double[]{ pd[h].x, pd[h].y };
 			final double[] point1 = new double[]{ pd[h+1].x, pd[h+1].y  };
 			
-			System.out.println(pd[h].x+" "+ pd[h].y );
-			System.out.println(pd[h+1].x+" "+ pd[h].y);
+//			System.out.println(pd[h].x+" "+ pd[h].y );
+//			System.out.println(pd[h+1].x+" "+ pd[h].y);
 			final double modspeed0 = pd[h].modspd;
 			final double heading0 = pd[h].spdtheta;
 	
@@ -102,14 +101,48 @@ public class CHSpline {
 			
 			final double[][] f = new double[steps+1][2];
 			
+/*			double xdispt0 = Math.abs(pd[h].xdisp) + Math.abs(pd[h+1].xdisp);
+			double xdispt1 = Math.abs(pd[h+1].xdisp) + Math.abs(pd[h+2].xdisp);
+			double ydispt0 = Math.abs(pd[h].ydisp) + Math.abs(pd[h+1].ydisp);
+			double ydispt1 = Math.abs(pd[h+1].ydisp) + Math.abs(pd[h+2].ydisp);
 			
+			double[] speed0 = new double[]{
+					pd[h].rsx*Math.abs(pd[h+1].xdisp)/xdispt0 + pd[h+1].rsx*Math.abs(pd[h].xdisp)/xdispt0 ,
+					pd[h].rsy*Math.abs(pd[h+1].ydisp)/ydispt0 + pd[h+1].rsy*Math.abs(pd[h].ydisp)/ydispt0 ,
+			};
+			double[] speed1 = new double[]{
+					pd[h+1].rsx*Math.abs(pd[h+2].xdisp)/xdispt1 + pd[h+2].rsx*Math.abs(pd[h+1].xdisp)/xdispt1 ,
+					pd[h+1].rsy*Math.abs(pd[h+2].ydisp)/ydispt1 + pd[h+2].rsy*Math.abs(pd[h+1].ydisp)/ydispt1 ,
+			};
+*/			
+			// Calculate the average speed between the current and the next point
+			double[] speed0 = new double[]{
+					(pd[h].rsx + pd[h+1].rsx)/2,
+					(pd[h].rsy + pd[h+1].rsy)/2
+			};
+			// Calculate the average speed between the next point and the point after
+			double[] speed1;
+			if(h+2 >= pd.length){
+				speed1 = new double[]{
+						pd[h+1].rsx,
+						pd[h+1].rsy
+					};
+			} else {
+				speed1 = new double[]{
+					(pd[h+1].rsx + pd[h+2].rsx)/2,
+					(pd[h+1].rsy + pd[h+2].rsy)/2
+				};
+			}
 			for(int i = 0; i<=steps; i++){
 //				f[i] = cHs(i*step, point0, modspeed0, heading0, point1, modspeed1, heading1);
-				f[i] = cHs(i*step, point0, new double[]{pd[h].rsx, pd[h].rsy}, point1, new double[]{pd[h+1].rsx, pd[h+1].rsy});
+//				f[i] = cHs(i*step, point0, new double[]{pd[h].rsx, pd[h].rsy}, point1, new double[]{pd[h+1].rsx, pd[h+1].rsy});
+				f[i] = cHs(i*step, point0, speed0, point1, speed1);
+
+				
 				PhoneData newdata = new PhoneData();
 				newdata.x = f[i][0];
 				newdata.y = f[i][1];
-				newdata.ts = new Timestamp(pd[h].ts.getTime()+((pd[h+1].ts.getTime()-pd[h].ts.getTime())/100*i*steps));
+				newdata.ts = new Timestamp(pd[h].ts.getTime()+(long)((pd[h+1].ts.getTime()-pd[h].ts.getTime())*i*step));
 //				System.out.println(pd[h].ts.toString()+" "+pd[h+1].ts.toString());
 				after.add(newdata);
 			}

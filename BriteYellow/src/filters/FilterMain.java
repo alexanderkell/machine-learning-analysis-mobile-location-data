@@ -76,14 +76,23 @@ public class FilterMain {
 					p0.x, p0.y, p0.z
 			};
 			double[] speed0 = new double[]{
-					p0.rsx, p0.rsy, p0.rsz
+					(p0.rsx+p1.rsx)/2, (p0.rsy+p1.rsy)/2, (p0.rsz+p1.rsz)/2
 			};
 			double[] point1 = new double[]{
 					p1.x, p1.y, p1.z
 			};
-			double[] speed1 = new double[]{
-					p1.rsx, p1.rsy, p1.rsz
-			};
+			double[] speed1;
+			if(i<input.size()-1){
+				PhoneData p2 = input.get(i+1);
+				speed1 = new double[]{
+						(p1.rsx+p2.rsx)/2, (p1.rsy+p2.rsy)/2, (p1.rsz+p2.rsz)/2
+				};
+			} else{
+				speed1 = new double[]{
+						p1.rsx, p1.rsy, p1.rsz
+				};
+			}
+					
 			// Calculate the time between 2 successive points
 			long time0 = p0.ts.getTime();
 			long time_diff = p1.ts.getTime() - time0;

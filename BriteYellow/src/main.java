@@ -6,7 +6,9 @@ import java.util.Scanner;
 import maths.*;
 import mysql.*;
 import csvimport.*;
+import filters.*;
 import filters.DistanceVerify;
+import filters.FilterMain;
 import filters.jkalman.JKalmanHelper;
 import graphing.PlotTracks;
 import redundant.DataSorting2;
@@ -22,30 +24,15 @@ public class main {
 		String filePath = sc.nextLine();
 		insertMySQL.insertXDisp(filePath);
 */
-		
-		
-		System.out.println("Enter query (eg: x = 156 AND PhoneID = 'HT25TW5055273593c875a9898b00'):");
+		System.out.println("Enter query (eg: x = 01 AND PhoneID = 'HT25TW5055273593c875a9898b00'):");
 		String query = sc.nextLine();
 		
 		ArrayList<PhoneData> output = insertMySQL.query(query);
-				
-//		DataGetter reAn = new DataGetter(1, "24th Sept ORDERED.csv");
-//		ArrayList<PhoneData> output = reAn.getFullPhoneData();
-		
-		DistanceVerify cutBig = new DistanceVerify(output,250);
-		cutBig.check();
-		ArrayList<PhoneData> reana = cutBig.getFull();
-		
 		sc.close();
+
+		FilterMain filtering = new FilterMain(200, 11, 13);
+		ArrayList<PhoneData> filtered = filtering.FilterTot(output);
 		
-		// Kalman filter
-		JKalmanHelper jkh = new JKalmanHelper(reana, 11, 13);
-		while(!jkh.isEndReached())
-			jkh.processData();
-		
-		reana = jkh.getFullResult();
-		//PlotTracks.plotTrack2(reana, PlotTracks.X, PlotTracks.Y, 0.1f);
-		PlotTracks.plotTrack2(output.toArray(new PhoneData[output.size()]),reana.toArray(new PhoneData[reana.size()]), PlotTracks.X, PlotTracks.Y, 0.1f);
-		
+		PlotTracks.plotTrack2(output.toArray(new PhoneData[output.size()]),filtered.toArray(new PhoneData[filtered.size()]), PlotTracks.X, PlotTracks.Y, 0.1f);
 	}
 }

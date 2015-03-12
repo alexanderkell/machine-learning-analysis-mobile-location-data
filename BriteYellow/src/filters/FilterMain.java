@@ -3,29 +3,49 @@ package filters;
 import java.text.ParseException;
 import java.util.ArrayList;
 
+import filters.jkalman.JKalmanHelper;
 import maths.DataGetter;
 import maths.PhoneData;
 
 public class FilterMain {
-	public FilterMain(ArrayList<PhoneData> output) throws ParseException{
+	int maxSpeed=200;
+	int xMesNoise=11;
+	int yMesNoise=13;
 	
-		lessThanFilter filt = new lessThanFilter(output);
-		filt.filter(lessThanFilter.MDISP, 0, 150);
-		ArrayList<PhoneData> underDisp = filt.getFullPhoneData();
+	public FilterMain(){
+
+	}
+	
+	public FilterMain(int xMesNoise, int yMesNoise){
+		this.xMesNoise = xMesNoise;
+		this.yMesNoise = yMesNoise;
+	}
+	
+	
+	public FilterMain(int maxSpeed, int xMesNoise, int yMesNoise){
+		this.maxSpeed = maxSpeed;
+		this.xMesNoise = xMesNoise;
+		this.yMesNoise = yMesNoise;
+
+	}	
+	
+	public ArrayList<PhoneData> FilterTot(ArrayList<PhoneData> output) throws Exception{
+		//Cut big speeds
+	
+		DistanceVerify cutBig = new DistanceVerify(output,maxSpeed);
+		cutBig.check();
+		ArrayList<PhoneData> reana = cutBig.getFull();
+	
 		
-		//ReAnalyse Data
-		DataGetter reAn = new DataGetter(underDisp.toArray(new PhoneData[underDisp.size()]));
-		PhoneData[] reana = reAn.getFullPhoneData();
+		// Kalman filter
+		JKalmanHelper jkh = new JKalmanHelper(reana, xMesNoise, yMesNoise);
+		while(!jkh.isEndReached())
+			jkh.processData();
 		
-		lessThanFilter filt = new lessThanFilter(output);
-		filt.filter(lessThanFilter.MSpeed, 0, 100);
-		ArrayList<PhoneData> underSpeed = filt.getFullPhoneData();
+		reana = jkh.getFullResult();
 		
-		//ReAnalyse Data
-		DataGetter reAn = new DataGetter(underDisp.toArray(new PhoneData[underDisp.size()]));
-		PhoneData[] reana = reAn.getFullPhoneData();
-		
-		
+		return reana;
+			
 	}
 	
 	

@@ -34,12 +34,12 @@ public class DistanceVerify {
 	 * @return
 	 */
 	public boolean compare(int index, double high){
-		return (ph.get(index).moddisp > high);
+		return (ph.get(index).modspd > high);
 	}
 	public void reanalyse(int index){
-		double xdiff = ph.get(index).x - ph.get(index-1).x;
-		double ydiff = ph.get(index).y - ph.get(index-1).y;
-		ph.get(index).moddisp = Math.sqrt(xdiff*xdiff + ydiff*ydiff);
+		double xdiff = ph.get(index).rsx - ph.get(index-1).rsx;
+		double ydiff = ph.get(index).rsy - ph.get(index-1).rsy;
+		ph.get(index).modspd = Math.sqrt(xdiff*xdiff + ydiff*ydiff);
 	}
 	public ArrayList<PhoneData> getFull(){
 		return ph;

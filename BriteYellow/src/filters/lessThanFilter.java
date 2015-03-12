@@ -2,9 +2,9 @@ package filters;
 
 import java.util.ArrayList;
 
-import Maths.PhoneData;
+import maths.PhoneData;
 
-public class FilterMain {
+public class lessThanFilter {
 	
 	public final static int X = 0;
 	public final static int Y = 1;
@@ -31,7 +31,7 @@ public class FilterMain {
 	
 	ArrayList<PhoneData> ph;
 	int length;
-	public FilterMain(ArrayList<PhoneData> ph){
+	public lessThanFilter(ArrayList<PhoneData> ph){
 		this.ph = ph;
 		length = ph.size();
 	}

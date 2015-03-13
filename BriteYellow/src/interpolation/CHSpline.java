@@ -78,7 +78,7 @@ public class CHSpline {
 		ArrayList <PhoneData> before = new ArrayList <PhoneData>();
 		ArrayList <PhoneData> after = new ArrayList <PhoneData>();
 		
-		for(int h = 49; h<60; h++){
+		for(int h = 49; h<61; h++){
 			if(h == 49)
 				before.add(pd[h]);
 			before.add(pd[h+1]);
@@ -91,7 +91,7 @@ public class CHSpline {
 			final double modspeed0 = pd[h].modspd;
 			final double heading0 = pd[h].spdtheta;
 	
-			final double modspeed1 = pd[h+1].modspd;
+			final double modspeed1 = pd[h+1].modspd; 
 			final double heading1 = pd[h+1].spdtheta;
 			
 			final float step = 0.1f;

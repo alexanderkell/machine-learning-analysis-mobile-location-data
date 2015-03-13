@@ -53,13 +53,14 @@ public class FilterMain {
 			
 	}
 	
-	final static int tstep = 20;
+	
 	/**The interpolation method
 	 * 
+	 * @param tstep The number of interpolated points to be added between 2 successive points
 	 * @param input The ArrayList of PhoneData
 	 * @return The interpolated ArrayList of PhoneData
 	 */
-	public ArrayList<PhoneData> interpolate(ArrayList<PhoneData> input){
+	public ArrayList<PhoneData> interpolate(int tstep, ArrayList<PhoneData> input){
 		// The process cannot continue if result.size() <= 1
 		if(input.size() <= 1){
 			System.err.println("Interpolation is not carried out as the size of the input is less than 2");
@@ -113,6 +114,11 @@ public class FilterMain {
 				}
 				// Calculate and store the time
 				newdata.ts = new Timestamp(time0+ (long)(time_diff*t));
+				// Add the track no
+				newdata.track_no = input.get(0).track_no;
+				// Add the phone id
+				newdata.phone_id = input.get(0).phone_id;
+				
 				result.add(newdata);
 			}
 			result.add(input.get(i));

@@ -5,6 +5,7 @@ import interpolation.CHSpline;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import filters.jkalman.JKalmanHelper;
 import maths.DataGetter;
@@ -61,6 +62,7 @@ public class FilterMain {
 	 * @return The interpolated ArrayList of PhoneData
 	 */
 	public ArrayList<PhoneData> interpolate(int tstep, ArrayList<PhoneData> input){
+		
 		// The process cannot continue if result.size() <= 1
 		if(input.size() <= 1){
 			System.err.println("Interpolation is not carried out as the size of the input is less than 2");
@@ -68,8 +70,16 @@ public class FilterMain {
 		}
 		
 		// Otherwise
+		if(tstep<0)
+			throw new IllegalArgumentException("The parameter \"tstep\" cannot be smaller than 0");
+		// Add 2 to tstep (i.e. 2 extra steps to account for when t = 0 and t = 1) which are the start and end points
+		tstep += 2;
+		
+		// Create new ArrayList and store the first point
 		ArrayList<PhoneData> result = new ArrayList<PhoneData>();
 		result.add(input.get(0));
+		
+		// The interpolation methods
 		for(int i = 1; i < input.size(); i++){
 			PhoneData p0 = input.get(i-1);
 			PhoneData p1 = input.get(i);
@@ -113,6 +123,7 @@ public class FilterMain {
 					break;
 				}
 				// Calculate and store the time
+				newdata.wholedate = new Date(time0+ (long)(time_diff*t));
 				newdata.ts = new Timestamp(time0+ (long)(time_diff*t));
 				// Add the track no
 				newdata.track_no = input.get(0).track_no;

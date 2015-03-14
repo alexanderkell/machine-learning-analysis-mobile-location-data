@@ -70,8 +70,8 @@ public class FilterMain {
 		// Otherwise
 		if(tstep<0)
 			throw new IllegalArgumentException("The parameter \"tstep\" cannot be smaller than 0");
-		// Add 2 to tstep (i.e. 2 extra steps to account for when t = 0 and t = 1) which are the start and end points
-		tstep += 2;
+		// Add 1 to tstep (i.e. 2 extra steps to account for when t = 0 and t = 1) which are the start and end points
+		tstep += 1;
 		
 		// Create new ArrayList and store the first point
 		ArrayList<PhoneData> result = new ArrayList<PhoneData>();

@@ -3,66 +3,18 @@ package filters;
 import interpolation.CHSpline;
 
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 
-import filters.jkalman.JKalmanHelper;
-import maths.DataGetter;
 import maths.PhoneData;
-
-public class FilterMain {
-	int maxSpeed=200;
-	int xMesNoise=11;
-	int yMesNoise=13;
 	
-	public FilterMain(){
-
-	}
-	
-	public FilterMain(int xMesNoise, int yMesNoise){
-		this.xMesNoise = xMesNoise;
-		this.yMesNoise = yMesNoise;
-	}
-	
-	
-	public FilterMain(int maxSpeed, int xMesNoise, int yMesNoise){
-		this.maxSpeed = maxSpeed;
-		this.xMesNoise = xMesNoise;
-		this.yMesNoise = yMesNoise;
-
-	}	
-	
-	public ArrayList<PhoneData> FilterTot(ArrayList<PhoneData> output) throws Exception{
-		//Cut big speeds
-	
-		DistanceVerify cutBig = new DistanceVerify(output,maxSpeed);
-		cutBig.check();
-		ArrayList<PhoneData> reana = cutBig.getFull();
-	
-		
-		// Kalman filter
-		JKalmanHelper jkh = new JKalmanHelper(reana, xMesNoise, yMesNoise);
-		while(!jkh.isEndReached())
-			jkh.processData();
-		
-		reana = jkh.getFullResult();
-		
-		ArrayList<PhoneData> interpolated = interpolate(3, reana);
-		
-		return interpolated;
-			
-	}
-	
-	
+public class Interpolation{
+	final static int tstep = 20;
 	/**The interpolation method
 	 * 
-	 * @param tstep The number of interpolated points to be added between 2 successive points
 	 * @param input The ArrayList of PhoneData
 	 * @return The interpolated ArrayList of PhoneData
 	 */
-	public ArrayList<PhoneData> interpolate(int tstep, ArrayList<PhoneData> input){
-		
+	public ArrayList<PhoneData> interpolate(ArrayList<PhoneData> input){
 		// The process cannot continue if result.size() <= 1
 		if(input.size() <= 1){
 			System.err.println("Interpolation is not carried out as the size of the input is less than 2");
@@ -70,16 +22,8 @@ public class FilterMain {
 		}
 		
 		// Otherwise
-		if(tstep<0)
-			throw new IllegalArgumentException("The parameter \"tstep\" cannot be smaller than 0");
-		// Add 2 to tstep (i.e. 2 extra steps to account for when t = 0 and t = 1) which are the start and end points
-		tstep += 2;
-		
-		// Create new ArrayList and store the first point
 		ArrayList<PhoneData> result = new ArrayList<PhoneData>();
 		result.add(input.get(0));
-		
-		// The interpolation methods
 		for(int i = 1; i < input.size(); i++){
 			PhoneData p0 = input.get(i-1);
 			PhoneData p1 = input.get(i);
@@ -123,19 +67,11 @@ public class FilterMain {
 					break;
 				}
 				// Calculate and store the time
-				newdata.wholedate = new Date(time0+ (long)(time_diff*t));
 				newdata.ts = new Timestamp(time0+ (long)(time_diff*t));
-				// Add the track no
-				newdata.track_no = input.get(0).track_no;
-				// Add the phone id
-				newdata.phone_id = input.get(0).phone_id;
-				
 				result.add(newdata);
 			}
 			result.add(input.get(i));
 		}
 		return result;
 	}
-	
-	
 }

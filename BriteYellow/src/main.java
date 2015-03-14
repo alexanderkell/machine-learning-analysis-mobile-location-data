@@ -33,6 +33,10 @@ public class main {
 		FilterMain filtering = new FilterMain(200, 11, 13);
 		ArrayList<PhoneData> filtered = filtering.FilterTot(output);
 		
+		// Reanalyse the filtered data using DataGetter and store the result in the "newdata" variable
+		DataGetter newdg = new DataGetter(filtered.toArray(new PhoneData[filtered.size()]));
+		PhoneData[] newdata = newdg.getFullPhoneData();
+		
 		PlotTracks.plotTrack2(output.toArray(new PhoneData[output.size()]),filtered.toArray(new PhoneData[filtered.size()]), PlotTracks.X, PlotTracks.Y, 0.1f);
 	}
 }

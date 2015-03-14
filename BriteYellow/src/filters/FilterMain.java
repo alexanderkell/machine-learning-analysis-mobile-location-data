@@ -3,12 +3,10 @@ package filters;
 import interpolation.CHSpline;
 
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 
 import filters.jkalman.JKalmanHelper;
-import maths.DataGetter;
 import maths.PhoneData;
 
 public class FilterMain {

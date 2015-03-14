@@ -78,6 +78,7 @@ public class STrainHelper extends SParam{
 	public svm_model svmTrain() throws IOException {
 	    prob = new svm_problem();
 	    int dataCount = train.length;
+	    total_dots += dataCount;
 	    prob.y = new double[dataCount];
 	    prob.l = dataCount;
 	    prob.x = new svm_node[dataCount][];     
@@ -119,8 +120,6 @@ public class STrainHelper extends SParam{
 	}
 	
 	public double[][] getTrainData(){
-		// Total dots to draw
-		total_dots += train.length;
 		double[][] result = new double[train.length][2];
 		for(int i=0; i<result.length; i++){
 			result[i][0] = train[i][0];
@@ -238,7 +237,7 @@ public class STrainHelper extends SParam{
 				
 				try{
 					TimerTask timertask = new TimerTask(){
-	
+						
 						@Override
 						public void run() {
 							// TODO Auto-generated method stub

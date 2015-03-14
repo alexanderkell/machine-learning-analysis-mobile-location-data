@@ -3,64 +3,18 @@ package filters;
 import interpolation.CHSpline;
 
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.util.ArrayList;
 
-import filters.jkalman.JKalmanHelper;
-import maths.DataGetter;
 import maths.PhoneData;
-
-public class FilterMain {
-	int maxSpeed=200;
-	int xMesNoise=11;
-	int yMesNoise=13;
 	
-	public FilterMain(){
-
-	}
-	
-	public FilterMain(int xMesNoise, int yMesNoise){
-		this.xMesNoise = xMesNoise;
-		this.yMesNoise = yMesNoise;
-	}
-	
-	
-	public FilterMain(int maxSpeed, int xMesNoise, int yMesNoise){
-		this.maxSpeed = maxSpeed;
-		this.xMesNoise = xMesNoise;
-		this.yMesNoise = yMesNoise;
-
-	}	
-	
-	public ArrayList<PhoneData> FilterTot(ArrayList<PhoneData> output) throws Exception{
-		//Cut big speeds
-	
-		DistanceVerify cutBig = new DistanceVerify(output,maxSpeed);
-		cutBig.check();
-		ArrayList<PhoneData> reana = cutBig.getFull();
-	
-		
-		// Kalman filter
-		JKalmanHelper jkh = new JKalmanHelper(reana, xMesNoise, yMesNoise);
-		while(!jkh.isEndReached())
-			jkh.processData();
-		
-		reana = jkh.getFullResult();
-		
-		ArrayList<PhoneData> interpolated = interpolate(3, reana);
-		
-		return interpolated;
-			
-	}
-	
-	
+public class Interpolation{
+	final static int tstep = 20;
 	/**The interpolation method
 	 * 
-	 * @param tstep The number of interpolated points to be added between 2 successive points
 	 * @param input The ArrayList of PhoneData
 	 * @return The interpolated ArrayList of PhoneData
 	 */
-	public ArrayList<PhoneData> interpolate(int tstep, ArrayList<PhoneData> input){
+	public ArrayList<PhoneData> interpolate(ArrayList<PhoneData> input){
 		// The process cannot continue if result.size() <= 1
 		if(input.size() <= 1){
 			System.err.println("Interpolation is not carried out as the size of the input is less than 2");
@@ -114,17 +68,10 @@ public class FilterMain {
 				}
 				// Calculate and store the time
 				newdata.ts = new Timestamp(time0+ (long)(time_diff*t));
-				// Add the track no
-				newdata.track_no = input.get(0).track_no;
-				// Add the phone id
-				newdata.phone_id = input.get(0).phone_id;
-				
 				result.add(newdata);
 			}
 			result.add(input.get(i));
 		}
 		return result;
 	}
-	
-	
 }

@@ -1,3 +1,4 @@
+
 import java.io.FileNotFoundException;
 import java.util.*;
 import java.text.*;
@@ -5,7 +6,7 @@ import java.text.*;
 import csvimport.*;
 
 //tests CSVreaders
-public class MainTestBench {
+public class DataPrintMain {
 	
 	public static void main(String[] args){
 	Scanner ui = new Scanner( System.in );//state the scanner

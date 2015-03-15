@@ -1,3 +1,4 @@
+
 import java.io.FileNotFoundException;
 import java.text.ParseException;
 
@@ -12,7 +13,7 @@ public class DateTestBench {
 		int opt = 1;
 		
 		//this is the filename
-		String fn =  new String("/Users/thomas/4th-year-project/BriteYellow/src/24th Sept ORDERED.csv");
+		String fn =  new String("HT25TW5055273593c875a9898b00.csv");
 		
 		//create an instance of the DataFormatOperations class
 		DataGetter data = new DataGetter(opt, fn);

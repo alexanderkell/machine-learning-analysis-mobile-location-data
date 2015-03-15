@@ -28,15 +28,13 @@ public class DataFormatOperations{
 	private double xco = 0;
 	private double yco = 0;
 	private double zco = 0;
-	private double modspd = 0;
-	private double modacc = 0;
-	private double spdtheta = 0;
-	private double acctheta = 0;
+	
 	
 	
 
 	//sets up the date formats to be used for splitting up the different constituent parts of the date
 	DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.ENGLISH);
+	DateFormat df2 = new SimpleDateFormat("HH:mm:ss", Locale.ENGLISH);
 	DateFormat hour = new SimpleDateFormat("HH", Locale.ENGLISH);
 	DateFormat min = new SimpleDateFormat("mm", Locale.ENGLISH);
 	DateFormat sec = new SimpleDateFormat("ss", Locale.ENGLISH);
@@ -44,10 +42,7 @@ public class DataFormatOperations{
 	
 	//class variables
 	private CSVReaders Read;
-	private int opt;
 	protected int length;
-	private String fn;
-	private String temp = new String();
 	//read in data
 	protected String cdcalc[][];
 	protected PhoneData cdcalc2[];
@@ -158,18 +153,12 @@ public class DataFormatOperations{
 					System.err.println("Please Put Data in Date and Time Order Before Running!");
 					break;
 				}else{
-					temp = hour.format(wholedate1);
-					hr =Double.parseDouble(temp);
-					temp = min.format(wholedate1);
-					mn =Double.parseDouble(temp);
-					temp = sec.format(wholedate1);
-					sc =Double.parseDouble(temp); 
-					temp = hour.format(wholedate2);
-					hr2 =Double.parseDouble(temp);
-					temp = min.format(wholedate2);
-					mn2 =Double.parseDouble(temp);
-					temp = sec.format(wholedate2);
-					sc2 =Double.parseDouble(temp);
+					hr =Double.parseDouble(hour.format(wholedate1));
+					mn =Double.parseDouble(min.format(wholedate1));
+					sc =Double.parseDouble(sec.format(wholedate1)); 
+					hr2 =Double.parseDouble(hour.format(wholedate2));
+					mn2 =Double.parseDouble(min.format(wholedate2));
+					sc2 =Double.parseDouble(sec.format(wholedate2));
 					tb = (hr2 - hr)*60*60 + (mn2 - mn)*60 + (sc2 - sc);
 					cdcalc2[y+1].tb = tb;
 				}

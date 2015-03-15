@@ -7,6 +7,7 @@ public class CSVReaders{
 	final static String DEFAULT_FN = "C:\\Users\\Fezan\\Documents\\4th-year-project\\BriteYellow\\src\\24th Sept ORDERED.csv";
     private String fn;
     final static int amd = 20;
+    private String[] parts;
 
     private ArrayList<String[]> phs;
 	private ArrayList<String[]> ph1;
@@ -22,29 +23,21 @@ public class CSVReaders{
     	try{
 			
     		Scanner scanner = new Scanner(new File(fn));//Get scanner instance
-    		scanner.useDelimiter(",|\r\n|\n"); //Set the delimiter used in file, the "\r\n" is exclusively for Windows
+    		String lineSeparator = System.getProperty("line.separator");
+    		scanner.useDelimiter(lineSeparator + "|\r\n|\n|\r"); //Set the delimiter used in file, the "\r\n" is exclusively for Windows
 
     		String[] data = new String[amd];
     		scanner.nextLine();	//Skip the first line
-    		int i = 0;//indices of data
        
     		while (scanner.hasNext()){//while loop for writing data into main data matrix of raw data
-    			switch (i){//switch statement with case for each cell
-        			case 0:
-        			case 1:
-        			case 2:
-        			case 3: data[i] = scanner.next();
-        			break;
-        			case 4: data[i] = scanner.next();
-        			phs.add(data);
-        			data = new String[amd];
-        			i=-1;//goes back to beginning column
-
-        			break;
+    			parts = scanner.next().split(",");
+    			data = new String[amd];
+    			for(int x = 0; x < 5; x++){
+    				data[x] = parts[x];
     			}
-    			i++;//i incremented to write into each cell of array
+    			phs.add(data);
         	}	
-
+    		
     		scanner.close();
     		categorise();
     		}catch(FileNotFoundException fnf){
@@ -79,6 +72,7 @@ public class CSVReaders{
         ph6 = new ArrayList<String[]>();
         
         int length = phs.size();
+        
         for (int k = 0; k < length; k++){
         	String dat = phs.get(k)[4];
         	if (dat.contains(ph1n)){//workaround so data can be categorised, if phone id is phone 1 then sel=1

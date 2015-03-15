@@ -18,7 +18,7 @@ public class AttributesPrinter {
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 
-		DataGetter dfo = new DataGetter(1, "C:\\Users\\testuser\\SkyDrive\\Documents\\4th year project files\\repos\\4th-year-project\\BriteYellow\\src\\26th Sept ORDERED.csv");
+		DataGetter dfo = new DataGetter(1, "C:\\Users\\testuser\\SkyDrive\\Documents\\4th year project files\\repos\\4th-year-project\\BriteYellow\\26th Sept ORDERED.csv");
 		for (int i = 1; i<=5; i++){
 			dfo.changePhone(i);
 			FilterMain filtering = new FilterMain(200, 11, 13);

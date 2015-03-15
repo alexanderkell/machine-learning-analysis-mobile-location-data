@@ -23,6 +23,7 @@ public class StrNumConverter {
 	 */
 	
 	private ArrayList<String> str_labels_map;
+	private String model_file_name;
 	private boolean print;
 	
 	public StrNumConverter(){
@@ -31,7 +32,7 @@ public class StrNumConverter {
 	public StrNumConverter(ArrayList<String> str_labels_map){
 		this.str_labels_map = str_labels_map;
 	}
-	public StrNumConverter(String filename){
+	public StrNumConverter(String model_file_name, String filename){
 		str_labels_map = new ArrayList<String>();
 		
 		DataInputStream in = null;
@@ -39,6 +40,14 @@ public class StrNumConverter {
 			 
 			in = new DataInputStream(new
 		            BufferedInputStream(new FileInputStream(filename)));
+			this.model_file_name = in.readUTF();
+			if( !this.model_file_name.equals(model_file_name)){
+				System.err.println("This String Number Converter file \""+filename+"\" is not intended to used with the current model file\n"+
+						"User specified model file: \""+model_file_name+"\"\n"+
+						"Expected model file: \""+this.model_file_name+"\"\n"+
+						"The program will continue but unexpected results may occurred");
+				
+			}
 			int total = in.readInt();
 			try{
 				for(int i = 0; i<total; i++){
@@ -87,10 +96,11 @@ public class StrNumConverter {
 			print = true;
 		}
 	}
-	public void save2File(String filename){
+	public void save2File(String model_file_name, String filename){
 		try {
 			DataOutputStream out = new DataOutputStream(new BufferedOutputStream(
 					new FileOutputStream(filename)));
+			out.writeUTF(model_file_name);
 			out.writeInt(str_labels_map.size());
 			for(int i = 0; i<str_labels_map.size(); i++){
 				out.writeInt(i);

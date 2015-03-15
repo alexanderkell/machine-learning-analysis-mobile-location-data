@@ -11,6 +11,10 @@ public class CSVWriter {
 	private String filename;
 	
 	public CSVWriter(String filename) throws IOException{
+		// Check if the parent directory exists
+		File parent = new File(filename).getParentFile();
+		if( !parent.exists())
+			parent.mkdirs();
 		this.filename = filename+".csv";
 		fw = new FileWriter(this.filename);
 		

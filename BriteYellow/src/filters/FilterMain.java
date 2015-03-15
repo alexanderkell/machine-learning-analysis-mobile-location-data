@@ -127,8 +127,10 @@ public class FilterMain {
 				newdata.track_no = input.get(0).track_no;
 				// Add the phone id
 				newdata.phone_id = input.get(0).phone_id;
+				// Indicate this point is added from this interpolation method
+				newdata.interpolated = true;
 				
-				result.add(newdata);
+				result.add(newdata);		
 			}
 			result.add(input.get(i));
 		}

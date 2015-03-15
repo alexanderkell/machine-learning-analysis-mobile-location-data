@@ -31,5 +31,7 @@ public class PhoneData{
 	// Time stamp
 	public Timestamp ts;
 	
+	// Show if the point is added during interpolation
+	public boolean interpolated = false;
 }
 

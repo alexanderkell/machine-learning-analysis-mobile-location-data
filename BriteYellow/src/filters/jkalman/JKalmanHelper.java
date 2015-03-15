@@ -98,7 +98,9 @@ public class JKalmanHelper extends JKalman{
 		pd.rsx = array[2][0];
 		pd.rsy = array[3][0];
 		pd.ts = data.get(index).ts;
-		pd.tb = dt;
+		pd.wholedate = data.get(index).wholedate;
+		pd.phone_id = data.get(index).phone_id;
+		pd.track_no = data.get(index).track_no;
 		result.add(pd);
 		index++;
 		

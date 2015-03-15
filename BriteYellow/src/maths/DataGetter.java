@@ -1,6 +1,8 @@
 package maths;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.sql.Timestamp;
 
@@ -45,6 +47,9 @@ public class DataGetter extends DataFormatOperations{
 	}
 	public PhoneData[] getFullPhoneData(){
 		return cdcalc2;
+	}
+	public ArrayList<PhoneData> getFullPhoneDataList(){
+		return new ArrayList<PhoneData>(Arrays.asList(cdcalc2));
 	}
 	
 	public double[] getXYZValue(int index){

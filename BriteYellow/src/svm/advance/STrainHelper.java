@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
+import java.io.File;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -51,7 +52,7 @@ public class STrainHelper extends SParam{
 	// String to number converter for converting String to numbers for
 	// svm training and predicting
 	private StrNumConverter snc;
-	private String file_name = "";
+	private String file_name = new File("").getAbsolutePath()+"/src/svm/models/new";
 	
 	public STrainHelper(String[] str_labels, double[][] train){
 		super();
@@ -114,8 +115,13 @@ public class STrainHelper extends SParam{
 
 	    System.out.println("Training...");
 	    model = svm.svm_train(prob, super.getParam());
+	    File parent = new File(file_name).getParentFile();
+	    if(!parent.exists()){
+	    	parent.mkdirs();
+	    }
+	    System.out.println("Filepath for model files: \""+parent.getAbsolutePath()+"\"");
 	    svm.svm_save_model(file_name+model_file_ext,model);
-	    snc.save2File(file_name+snc_file_ext);
+	    snc.save2File(file_name+model_file_ext, file_name+snc_file_ext);
 	    return model;
 	}
 	
@@ -428,7 +434,7 @@ public class STrainHelper extends SParam{
 		t.svmTrain();
 		t.plot_graph("Axis 1", "Axis 2", null);
 		
-		SPredictHelper h = new SPredictHelper(t.getModel(), t.getSNCFileName());
+		SPredictHelper h = new SPredictHelper(t.getModelFileName(), t.getSNCFileName());
 		System.out.println(h.predict(b[4]));		
 	}
 

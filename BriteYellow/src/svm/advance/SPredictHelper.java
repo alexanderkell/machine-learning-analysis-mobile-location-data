@@ -17,19 +17,9 @@ public class SPredictHelper{
 		this.snc = snc;
 	}
 	
-	public SPredictHelper(String model_file_name, StrNumConverter snc) throws IOException{
-		model = loadModel(model_file_name);
-		this.snc = snc;
-	}
-	
-	public SPredictHelper(svm_model model, String str_converter_file_name){
-		this.model = model;
-		snc = new StrNumConverter(str_converter_file_name);
-	}
-	
 	public SPredictHelper(String model_file_name, String str_converter_file_name) throws IOException{
 		model = loadModel(model_file_name);
-		snc = new StrNumConverter(str_converter_file_name);
+		snc = new StrNumConverter(model_file_name, str_converter_file_name);
 	}
 	
 

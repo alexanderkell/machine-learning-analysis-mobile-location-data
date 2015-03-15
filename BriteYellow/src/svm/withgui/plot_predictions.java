@@ -26,7 +26,6 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.event.ChartProgressEvent;
 import org.jfree.chart.event.ChartProgressListener;
 
-import svm.XDATA;
 import svm.libsvm.svm;
 import svm.libsvm.svm_model;
 import svm.libsvm.svm_node;

@@ -124,9 +124,9 @@ public class FilterMain {
 				newdata.wholedate = new Date(time0+ (long)(time_diff*t));
 				newdata.ts = new Timestamp(time0+ (long)(time_diff*t));
 				// Add the track no
-				newdata.track_no = input.get(0).track_no;
+				newdata.track_no = input.get(i).track_no;
 				// Add the phone id
-				newdata.phone_id = input.get(0).phone_id;
+				newdata.phone_id = input.get(i).phone_id;
 				// Indicate this point is added from this interpolation method
 				newdata.interpolated = true;
 				

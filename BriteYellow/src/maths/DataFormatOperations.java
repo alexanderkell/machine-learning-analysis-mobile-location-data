@@ -68,6 +68,7 @@ public class DataFormatOperations{
 		processData2();
 		makeXYZDistanceBetween();
 		makeDistanceBetween();
+		makeTimeStamp();
 	}
 	
 	/**This method allows the phone to be changed without the need to
@@ -136,6 +137,23 @@ public class DataFormatOperations{
 		
 	}
 	private void processData2(){
+		
+		if(cdcalc2[0].wholedate == null){
+			for(int i=0; i<length; i++){
+				try{
+					cdcalc2[i].wholedate = df.parse(cdcalc2[i].wholedatestring);
+				}catch(ParseException pe){
+					try{
+						cdcalc2[i].wholedate = df2.parse(cdcalc2[i].wholedatestring);
+						
+					}catch(ParseException pe2){
+						System.err.println("Problem Passing Date, Please Check Format");
+					}
+				}
+				
+			}
+			
+		}
 		
 		//works out the time between each reading based on the time
 			for(int y = 0; y<length-1; y++){
@@ -282,7 +300,11 @@ public class DataFormatOperations{
 			//System.out.println(wholedate);
 			Timestamp ts = new Timestamp(wholedate.getTime());
 			cdcalc2[i].ts = ts;
-			cdcalc[17][i] = String.valueOf(ts);
+			try{
+				cdcalc[17][i] = String.valueOf(ts);
+				}catch(NullPointerException npe){
+					
+				}
 			i++;
 		}
 	}

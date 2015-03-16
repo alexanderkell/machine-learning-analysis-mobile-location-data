@@ -27,7 +27,7 @@ public class main {
 		System.out.println("Enter query (PhoneID = 'HT25TW5055273593c875a9898b00' AND TrackNo = 3):");
 		String query = sc.nextLine();
 		
-		ArrayList<PhoneData> output = insertMySQL.query("FilteredData", query);
+		ArrayList<PhoneData> output = insertMySQL.query("RawData", query);
 		sc.close();
 
 		FilterMain filtering = new FilterMain(200, 11, 13);

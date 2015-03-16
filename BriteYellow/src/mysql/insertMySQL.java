@@ -173,8 +173,8 @@ public class insertMySQL {
 			Connection conn = connection.Connect();
 			Statement stmt = conn.createStatement();
 			
-			String sql = "SELECT * FROM "+table+" WHERE "+query;
-			//String sql = "SELECT * FROM RawData"+query;
+			//String sql = "SELECT * FROM "+table+" WHERE "+query;
+			String sql = "SELECT * FROM "+table+""+query;
 			
 			ResultSet rs = stmt.executeQuery(sql);		
 			

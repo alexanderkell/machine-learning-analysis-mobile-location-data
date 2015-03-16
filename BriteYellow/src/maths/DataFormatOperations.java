@@ -125,7 +125,12 @@ public class DataFormatOperations{
 			try{
 				cdcalc2[i].wholedate = df.parse(cdcalc[3][i]);
 			}catch(ParseException pe){
-				
+				try{
+					cdcalc2[i].wholedate = df2.parse(cdcalc[3][i]);
+					
+				}catch(ParseException pe2){
+					System.err.println("Problem Passing Date, Please Check Format");
+				}
 			}
 		}
 		
@@ -151,7 +156,7 @@ public class DataFormatOperations{
 				
 				if(wholedate1.compareTo(wholedate2)>0){
 					System.err.println("Please Put Data in Date and Time Order Before Running!");
-					break;
+					System.exit(1);
 				}else{
 					hr =Double.parseDouble(hour.format(wholedate1));
 					mn =Double.parseDouble(min.format(wholedate1));

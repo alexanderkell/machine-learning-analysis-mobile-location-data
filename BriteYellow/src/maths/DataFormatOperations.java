@@ -68,7 +68,9 @@ public class DataFormatOperations{
 		processData2();
 		makeXYZDistanceBetween();
 		makeDistanceBetween();
+		getSort();
 		makeTimeStamp();
+		
 	}
 	
 	/**This method allows the phone to be changed without the need to

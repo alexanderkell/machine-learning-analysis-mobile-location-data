@@ -10,10 +10,12 @@ public class DateTestBench {
 	
 	public static void main(String[] args) throws ParseException{
 		//this is the phone option you wish to print
-		int opt = 1;
+		int opt = 7;
 		
 		//this is the filename
-		String fn =  new String("HT25TW5055273593c875a9898b00.csv");
+		//HT25TW5055273593c875a9898b00.csv
+		//24th Sept ORDERED.csv
+		String fn =  new String("ZX1B23QFSP48abead89f52e3bb.csv");
 		
 		//create an instance of the DataFormatOperations class
 		DataGetter data = new DataGetter(opt, fn);

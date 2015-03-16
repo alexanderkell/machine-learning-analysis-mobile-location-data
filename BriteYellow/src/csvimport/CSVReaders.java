@@ -2,7 +2,7 @@ package csvimport;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
-
+import maths.PhoneData;
 public class CSVReaders{
 	final static String DEFAULT_FN = "C:\\Users\\Fezan\\Documents\\4th-year-project\\BriteYellow\\src\\24th Sept ORDERED.csv";
     private String fn;
@@ -16,26 +16,45 @@ public class CSVReaders{
 	private ArrayList<String[]> ph4;
 	private ArrayList<String[]> ph5;
 	private ArrayList<String[]> ph6;
-
+	private ArrayList<PhoneData> PDA= new ArrayList<PhoneData>();
+	
     public CSVReaders(String fn){
     	this.fn = fn;
     	phs = new ArrayList<String[]>();
+    	PhoneData PD;
+    	
+    	
     	try{
 			
     		Scanner scanner = new Scanner(new File(fn));//Get scanner instance
     		String lineSeparator = System.getProperty("line.separator");
     		scanner.useDelimiter(lineSeparator + "|\r\n|\n|\r"); //Set the delimiter used in file, the "\r\n" is exclusively for Windows
-
-    		String[] data = new String[amd];
+    		
+    		String[] data;
     		scanner.nextLine();	//Skip the first line
-       
+    		
     		while (scanner.hasNext()){//while loop for writing data into main data matrix of raw data
     			parts = scanner.next().split(",");
     			data = new String[amd];
     			for(int x = 0; x < 5; x++){
     				data[x] = parts[x];
     			}
+    			try{
+    				PD = new PhoneData();
+    				PD.x = Double.parseDouble(parts[0]);
+    				PD.y = Double.parseDouble(parts[1]);
+    				PD.z = Double.parseDouble(parts[2]);
+    				PD.wholedatestring = parts[3];
+    				PD.phone_id = parts[4];
+    				PDA.add(PD);
+    			}catch(NumberFormatException nfe){
+    				
+    			}
+    			
     			phs.add(data);
+    			
+    			
+    			
         	}	
     		
     		scanner.close();
@@ -55,8 +74,15 @@ public class CSVReaders{
     	return fn;
     }
 	
-
+    public ArrayList<PhoneData> getUncategorisedDataObjectList(){
+    	return PDA;
+    }
 	
+    public PhoneData[] getUncategorisedDataObject(){
+    	PhoneData[] PD = toArrayPD(PDA);
+    	return PD;
+    }
+    
     private void categorise(){
     	final String ph1n = "HT25TW5055273593c875a9898b00";//variables denoting phone IDs
         final String ph2n = "ZX1B23QBS53771758c578bbd85";
@@ -137,6 +163,14 @@ public class CSVReaders{
 			for(int j=0; j<amd; j++){
 				result[j][i] = d[j];
 			}
+		}
+		return result;
+	}
+	
+	private static PhoneData[] toArrayPD(ArrayList<PhoneData> list){
+		PhoneData[] result = new PhoneData[list.size()];
+		for(int i=0; i<list.size(); i++){
+			result[i] = list.get(i);
 		}
 		return result;
 	}

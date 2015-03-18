@@ -66,7 +66,7 @@ public class CHSpline {
 	public static void main(String args[]) throws ParseException{
 		
 		
-		DataGetter dg = new DataGetter(2, "C:\\Users\\testuser\\SkyDrive\\Documents\\4th year project files\\repos\\4th-year-project\\BriteYellow\\src\\24th Sept ORDERED.csv");
+		DataGetter dg = new DataGetter(2, "C:\\Users\\testuser\\SkyDrive\\Documents\\4th year project files\\repos\\4th-year-project\\BriteYellow\\24th Sept ORDERED.csv");
 
 		// Select track 1
 //		PhoneData[] pd = TrackSelect.selecter(dg.getFullPhoneData(), 1);
@@ -143,17 +143,16 @@ public class CHSpline {
 				newdata.x = f[i][0];
 				newdata.y = f[i][1];
 				newdata.ts = new Timestamp(pd[h].ts.getTime()+(long)((pd[h+1].ts.getTime()-pd[h].ts.getTime())*i*step));
-//				System.out.println(pd[h].ts.toString()+" "+pd[h+1].ts.toString());
 				after.add(newdata);
 			}
-			plot.addData(labels[0], point0[0], point0[1]);
-			plot.addData(labels[0], point1[0], point1[1]);
-			plot.addData(labels[1], f);
+//			plot.addData(labels[0], point0[0], point0[1]);
+//			plot.addData(labels[0], point1[0], point1[1]);
+//			plot.addData(labels[1], f);
 
 		}
 
 
-		plot.showDialog();
-		PlotTracks.plotTrack2(before.toArray(new PhoneData[before.size()]), after.toArray(new PhoneData[after.size()]), PlotTracks.X, PlotTracks.Y, 1f);
+//		plot.showDialog();
+		PlotTracks.plotTrack2(before.toArray(new PhoneData[before.size()]),after.toArray(new PhoneData[after.size()]), PlotTracks.X, PlotTracks.Y, 1f);
 	}
 }

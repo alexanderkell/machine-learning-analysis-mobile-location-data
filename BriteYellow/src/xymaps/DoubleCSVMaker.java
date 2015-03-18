@@ -11,7 +11,7 @@ import csvexport.*;
 public class DoubleCSVMaker {
 	
 	static int opt = 1;
-	static String fn = new String("/Users/thomas/4th-year-project/BriteYellow/src/24th Sept ORDERED.csv");
+	static String fn = new String("");
 	
 	public static void main(String[] args) throws ParseException{
 		speedWriter();

@@ -9,7 +9,7 @@ import graphing.PlotTracks;
 
 public class TrackPlotter3000 {
 	public static void main(String[] args) throws ParseException{
-		String fn = "ZX1B23QFSP48abead89f52e3bb.csv";
+		String fn = "HT25TW5055273593c875a9898b00.csv";
 		CSVReaders CSV = new CSVReaders(fn);
 		PhoneData[] PD = CSV.getUncategorisedDataObject();
 		DataGetter DG = new DataGetter(PD);

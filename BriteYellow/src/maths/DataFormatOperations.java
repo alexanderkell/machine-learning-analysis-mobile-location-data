@@ -8,8 +8,6 @@ import csvimport.CSVReaders;
 public class DataFormatOperations{
 		
 	//initialise all variables
-	//time between variable
-	private double tb = 0;
 	//relative speed
 	private double rsx = 0;
 	private double rsy = 0;
@@ -51,24 +49,25 @@ public class DataFormatOperations{
 
 		cdcalc = Read.myPhone(opt);
 		processData1();
+		makeTimeStamp();
 		processData2();
 		getSort();
-		makeTimeStamp();
 		makeXYZDistanceBetween();
 		makeDistanceBetween();
 	}
 	
 	public DataFormatOperations(PhoneData[] ph) throws ParseException{
 		//Read and store the phone data
-		cdcalc2 = ph;
 		length = ph.length;
+		cdcalc2 = ph;
+		cdcalc = new String[20][length];
+		if(cdcalc2[0].ts == null){
+			makeTimeStamp();
+		}
 		processData2();
 		makeXYZDistanceBetween();
 		makeDistanceBetween();
 		getSort();
-		if(cdcalc2[0].ts == null){
-			makeTimeStamp();
-		}
 	}
 	
 	/**This method allows the phone to be changed without the need to
@@ -78,8 +77,11 @@ public class DataFormatOperations{
 	 */
 	public void changePhone(int opt){
 		cdcalc = Read.myPhone(opt);
+		length = cdcalc[0].length;
 		processData1();
-		makeTimeStamp();
+		if(cdcalc2[0].ts == null){
+			makeTimeStamp();
+		}
 		processData2();
 		getSort();
 		makeTimeStamp();
@@ -154,20 +156,17 @@ public class DataFormatOperations{
 				Timestamp wholedate1 = cdcalc2[y].ts;
 				Timestamp wholedate2 = cdcalc2[y+1].ts;
 				
-				
+					// If the 2 successive points are not in the same day, make tb = 0
 					if(wholedate1.getDate() - wholedate2.getDate() != 0){
-						tb = 0;
+						cdcalc2[y+1].tb = 0;
 						continue;
 					}
 				
 				
 				if(wholedate1.compareTo(wholedate2)>0){
-					System.err.println("Please Put Data in Date and Time Order Before Running!");
-					System.exit(1);
+					throw new IllegalArgumentException("Please Put Data in Date and Time Order Before Running!");
 				}else{
-					
-					tb = wholedate2.getTime() - wholedate1.getTime();
-					cdcalc2[y+1].tb = tb/1000;
+					cdcalc2[y+1].tb = (wholedate2.getTime() - wholedate1.getTime())/1000;
 				}
 					
 	        }
@@ -228,10 +227,8 @@ public class DataFormatOperations{
 					cdcalc2[l].acctheta = Math.atan(ray/rax);
 				}
 				cdcalc2[l].modacc = (cdcalc2[l].modspd - cdcalc2[l-1].modspd) / cdcalc2[l].tb;
-				
 
 			}
-			
 			
 	}
 	
@@ -276,21 +273,31 @@ public class DataFormatOperations{
 	}
 	
 	private void makeTimeStamp(){
-		int i = 0;
-		
-		while(i<length){
+
+		for(int i = 0; i<length; i++){
 			//calculates the mysql timestamp
 			Date wholedate =  cdcalc2[i].wholedate;
-			//System.out.println(wholedate);
+			// If the data doesn't have the wholedate attribute in Date format, create it then
+			if(wholedate == null){
+				try{
+					wholedate = df.parse(cdcalc2[i].wholedatestring);
+				}catch(ParseException pe){
+					try{
+						wholedate = df2.parse(cdcalc2[i].wholedatestring);
+						
+					}catch(ParseException pe2){
+						System.err.println("Problem Passing Date, Please Check Format");
+					}
+				}
+			}
 			Timestamp ts = new Timestamp(wholedate.getTime());
 			cdcalc2[i].ts = ts;
-			try{
+/*			try{
 				cdcalc[17][i] = String.valueOf(ts);
-				}catch(NullPointerException npe){
+			}catch(NullPointerException npe){
 					
-				}
-			i++;
-		}
+			}
+*/		}
 	}
 	
 	private void makeXYZDistanceBetween(){
@@ -317,8 +324,4 @@ public class DataFormatOperations{
 		}
 	}
 }
-
-
-
-
 

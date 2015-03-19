@@ -22,9 +22,6 @@ public class DataFormatOperations{
 	protected double hr = 0;
 	protected double mn = 0;
 	protected double sc = 0;
-	private double hr2 = 0;
-	private double mn2 = 0;
-	private double sc2 = 0;
 	private double xco = 0;
 	private double yco = 0;
 	private double zco = 0;
@@ -69,8 +66,9 @@ public class DataFormatOperations{
 		makeXYZDistanceBetween();
 		makeDistanceBetween();
 		getSort();
-		makeTimeStamp();
-		
+		if(cdcalc2[0].ts == null){
+			makeTimeStamp();
+		}
 	}
 	
 	/**This method allows the phone to be changed without the need to
@@ -81,6 +79,7 @@ public class DataFormatOperations{
 	public void changePhone(int opt){
 		cdcalc = Read.myPhone(opt);
 		processData1();
+		makeTimeStamp();
 		processData2();
 		getSort();
 		makeTimeStamp();
@@ -88,15 +87,7 @@ public class DataFormatOperations{
 		makeDistanceBetween();
 	}
 	
-	public void reanalyse(String[][] cdcalc){
-		this.cdcalc = cdcalc;
-		processData1();
-		processData2();
-	}
-	public void reanalyse(PhoneData[] cdcalc2){
-		this.cdcalc2 = cdcalc2;
-		processData2();
-	}
+	
 	private void processData1(){
 		
 //		this.opt = opt;
@@ -140,7 +131,7 @@ public class DataFormatOperations{
 	}
 	private void processData2(){
 		
-		if(cdcalc2[0].wholedate == null){
+		if(cdcalc2[0].wholedate == null && cdcalc2[0].ts == null){
 			for(int i=0; i<length; i++){
 				try{
 					cdcalc2[i].wholedate = df.parse(cdcalc2[i].wholedatestring);
@@ -160,32 +151,23 @@ public class DataFormatOperations{
 		//works out the time between each reading based on the time
 			for(int y = 0; y<length-1; y++){
 				
-				Date wholedate1 =  cdcalc2[y].wholedate; 
-				Date wholedate2 =  cdcalc2[y+1].wholedate;
+				Timestamp wholedate1 = cdcalc2[y].ts;
+				Timestamp wholedate2 = cdcalc2[y+1].ts;
 				
-				if(wholedate1 == null && wholedate2 == null){
-					wholedate1 = cdcalc2[y].ts;
-					wholedate2 = cdcalc2[y+1].ts;
-					
-					// 
-					if(wholedate1.getDate() - wholedate2.getDate() !=0){
+				
+					if(wholedate1.getDate() - wholedate2.getDate() != 0){
 						tb = 0;
 						continue;
 					}
-				}
+				
 				
 				if(wholedate1.compareTo(wholedate2)>0){
 					System.err.println("Please Put Data in Date and Time Order Before Running!");
 					System.exit(1);
 				}else{
-					hr =Double.parseDouble(hour.format(wholedate1));
-					mn =Double.parseDouble(min.format(wholedate1));
-					sc =Double.parseDouble(sec.format(wholedate1)); 
-					hr2 =Double.parseDouble(hour.format(wholedate2));
-					mn2 =Double.parseDouble(min.format(wholedate2));
-					sc2 =Double.parseDouble(sec.format(wholedate2));
-					tb = (hr2 - hr)*60*60 + (mn2 - mn)*60 + (sc2 - sc);
-					cdcalc2[y+1].tb = tb;
+					
+					tb = wholedate2.getTime() - wholedate1.getTime();
+					cdcalc2[y+1].tb = tb/1000;
 				}
 					
 	        }

@@ -39,8 +39,8 @@ public class main {
 	
 		
 		System.out.println(newdata.length);
-		insertMySQL input = new insertMySQL();
-		input.insertMyS(newdata, "FilteredData");
+//		insertMySQL input = new insertMySQL();
+//		input.insertMyS(newdata, "FilteredData");
 	 
 		
 		PlotTracks.plotTrack2(output.toArray(new PhoneData[output.size()]),filtered.toArray(new PhoneData[filtered.size()]), PlotTracks.X, PlotTracks.Y, 0.1f);

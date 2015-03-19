@@ -24,7 +24,10 @@ public class DataGetter extends DataFormatOperations{
 	}
 	
 	
-	
+	/**
+	 * @deprecated
+	 * @return full array of phone data in String[][] format
+	 */
 	public String[][] getFull(){
 		if(cdcalc[5][0] == null){	// Just to check if the full String is already created, if yes, no need to build full String[][] again
 			// Build the full String[][]

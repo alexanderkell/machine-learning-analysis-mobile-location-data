@@ -443,7 +443,7 @@ public class PlotHelper extends JFrame {
      *  @param y y coordinate
      */
     public XYDataItem removeData(String label, int index){
-
+    	
     	for(int i=0; i<str_labels.length; i++){
     		if(str_labels[i].equals(label)){
     			return series[i].remove(index);
@@ -451,6 +451,16 @@ public class PlotHelper extends JFrame {
     	}
     	return null;
     }
+    public XYDataItem removeDataIfPossible(String label, int index){
+    	
+    	for(int i=0; i<str_labels.length; i++){
+    		if(str_labels[i].equals(label)){
+    			if(series[i].getItemCount()>0)
+    				return series[i].remove(index);
+    		}
+    	}
+    	return null;
+    } 
     public int getItemCount(String label){
     	for(int i=0; i<str_labels.length; i++){
     		if(str_labels[i].equals(label)){

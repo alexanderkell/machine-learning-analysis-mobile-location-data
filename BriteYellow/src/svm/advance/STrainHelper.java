@@ -5,7 +5,6 @@ import graphing.PlotHelper;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,7 +15,6 @@ import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -32,6 +30,10 @@ import svm.libsvm.svm_problem;
 
 public class STrainHelper extends SParam{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3443334455284060103L;
 	final static String AREA = " area";
 	final static String POINTS = " points";
 	

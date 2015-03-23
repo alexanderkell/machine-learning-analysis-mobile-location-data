@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 import maths.DataGetter;
 import maths.PhoneData;
-import splitting.TrackSelect;
 
 public class CHSpline {
 	

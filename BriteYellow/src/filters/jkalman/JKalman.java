@@ -13,8 +13,6 @@ package filters.jkalman;
 
 import jama.Matrix;
 
-import java.util.*;
-
 /**
  * Kalman filter (state).
  * <p>

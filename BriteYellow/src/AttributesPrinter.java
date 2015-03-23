@@ -1,12 +1,8 @@
 import java.util.ArrayList;
-import java.util.Arrays;
-
 import csvexport.CSVWriter;
-import csvimport.CSVReaders;
 import filters.FilterMain;
 import maths.DataGetter;
 import maths.PhoneData;
-import mysql.insertMySQL;
 
 
 public class AttributesPrinter {

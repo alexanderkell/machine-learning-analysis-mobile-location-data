@@ -47,6 +47,10 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		"Yacc", "Zacc", "ModAcc", "ATheta"
 	};
 	static Font labelFont = new Font("", Font.BOLD, 14);
+	final static String PLAYSYMBOL = ""+(char)9658;
+	final static String PAUSESYMBOL = ""+(char)73+(char)73;
+	final static String STOPSYMBOL = ""+(char)9632;
+	
 	public final static int X = 0;
 	public final static int Y = 1;
 	public final static int Z = 2;
@@ -93,6 +97,7 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 	private String STOP;
 	private String PAUSE2;
 	private boolean helddown;
+	final private JLabel jlabelA;
 	
 
 	/**
@@ -102,6 +107,7 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 	 * @param col
 	 * @param timescaler
 	 */
+	@Deprecated
 	public static void plotTrack2(String[][] track_info, int row, int col, float timescaler){
 		Image im = new ImageIcon("map.jpg").getImage(); 
 		String[] label = new String[]{
@@ -189,6 +195,7 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 			  }
 		  }
 	}
+	
 	public static double getAttributeDouble(PhoneData p, int attribute){
 		if(attribute == X)
 			return p.x;
@@ -264,26 +271,30 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 			};
 		}		
 
-		
+
 		if(points_or_time == TIME){
-			PLAY = ""+(char)9658+" Playing at "+(1/period)+"x speed";
-			PAUSE2 = "<html>"+(char)73+(char)73+" Paused <i>(Release RMB to resume)</i></html>";
+			PLAY = PLAYSYMBOL+" Playing at "+(1/period)+"x speed";
+			PAUSE2 = "<html>"+PAUSESYMBOL+" Paused <i>(Release LMB to resume)</i></html>";
 		} else if(points_or_time == POINTS){
-			PLAY = (char)9658+" Showing "+(1/period)+" point(s) / second";	
+			PLAY = PLAYSYMBOL+" Showing "+(1/period)+" point(s) / second";	
 		}
-		PAUSE = ""+(char)73+(char)73+" Paused";
-		STOP = (char)9632+" Stopped";
+		PAUSE = PAUSESYMBOL+" Paused";
+		STOP = STOPSYMBOL+" Stopped";
 		
-		jbutton1 = new JButton(PLAY);	// Label for "Playing at XX speed or points/sec"
+		jbutton1 = new JButton(PLAYSYMBOL);	// Label for "Playing at XX speed or points/sec"
 		jbutton2 = new JButton("<<");
 		jbutton3 = new JButton(">>");
 		jlabel1 = new JLabel();	// Label for showing the current point number
 		jlabel2 = new JLabel();	// Label for showing start time
 		jlabel3 = new JLabel();	// Label for showing end time
+		jlabelA = new JLabel(PLAY); // Label for showing the player status
+		jlabelA.setHorizontalAlignment(JLabel.LEFT);
+		jlabelA.setHorizontalAlignment(JLabel.RIGHT);
 		jbutton1.setFont(labelFont);
 		jlabel1.setFont(labelFont);
 		jlabel2.setFont(labelFont);
 		jlabel3.setFont(labelFont);
+		jlabelA.setFont(labelFont);
 
 		jpb = new JProgressBar();	//ProgressBar for showing the current time
 		jpb.setStringPainted(true);
@@ -294,20 +305,21 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		JPanel subpanel1 = new JPanel();
 		subpanel1.setLayout(new BoxLayout(subpanel1, BoxLayout.LINE_AXIS));
 		subpanel1.setAlignmentX(Container.LEFT_ALIGNMENT);
-		
-		
+		subpanel1.add(Box.createHorizontalStrut(3));
 		subpanel1.add(jbutton1);
 		subpanel1.add(Box.createHorizontalStrut(20));
 		subpanel1.add(jbutton2);
 		subpanel1.add(Box.createHorizontalStrut(5));
 		subpanel1.add(jbutton3);
-		// Add an empty panel to prevent other components from changing size
-		subpanel1.add(new JPanel());
+		// Add a horizontal glue so that the jlabelA can be appear at the right hand side of the frame
+		subpanel1.add(Box.createHorizontalGlue());
+		subpanel1.add(jlabelA);
 		
 		
 		// Create and configure components
 		JPanel subpanel2 = new JPanel();
 		subpanel2.setLayout(new BoxLayout(subpanel2, BoxLayout.LINE_AXIS));
+		subpanel2.setAlignmentX(Container.LEFT_ALIGNMENT);
 		subpanel2.add(jlabel1);
 		subpanel2.add(Box.createHorizontalStrut(20));
 		subpanel2.add(jlabel2);
@@ -317,7 +329,6 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 			subpanel2.add(Box.createHorizontalStrut(5));
 			subpanel2.add(jlabel3);
 		}
-		subpanel2.setAlignmentX(Container.LEFT_ALIGNMENT);
 		panel.add(subpanel2);
 		panel.add(subpanel1);
 		
@@ -357,8 +368,9 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 				// TODO Auto-generated method stub
 				timer.cancel();
 				paused = true;
-				jbutton1.setText(STOP);
+				jbutton1.setText(PLAYSYMBOL);
 				jbutton1.setToolTipText("Play from beginning (space)");
+				jlabelA.setText(STOP);
 			}
 		};
 		
@@ -396,13 +408,10 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		frame.add(panel, BorderLayout.SOUTH);
 		frame.pack();
 		
-		customiseButtons(jbutton1,8);
-		customiseButtons(jbutton2,2);
-		customiseButtons(jbutton3,2);
-		if(points_or_time == TIME)
-			jbutton1.setPreferredSize(new Dimension(210,jbutton1.getHeight()+8));
-		else if(points_or_time == POINTS)
-			jbutton1.setPreferredSize(new Dimension(250,jbutton1.getHeight()+8));
+		customiseButtons(jbutton1,8,6);
+		customiseButtons(jbutton2,3,2);
+		customiseButtons(jbutton3,3,2);
+		jbutton1.setPreferredSize(new Dimension(jbutton1.getWidth()-4,jbutton1.getHeight()+6));
 		
 		jbutton2.setToolTipText("Previous Point (\u2190)");
 		jbutton3.setToolTipText("Next Point (\u2192)");
@@ -462,7 +471,9 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		if(component == jpb){
 			if(!paused && !tl.getTimeLineFinished()){
 				timer.cancel();
-				jbutton1.setText(PAUSE2);
+				jbutton1.setText(PLAYSYMBOL);
+				jbutton1.setToolTipText(PAUSE2);
+				jlabelA.setText(PAUSE2);
 			}
 			tl.setCurrentTime((float)arg0.getX() / (float)jpb.getWidth());
 		} else if(component == jbutton2){
@@ -564,19 +575,21 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		but.setContentAreaFilled(but.getModel().isRollover());
 		
 	}
-	private void customiseButtons(JButton b, int height){
+	private void customiseButtons(JButton b, int width, int height){
 		b.setFocusable(false);
 		b.setFocusPainted(false);
-		b.setMargin(new Insets(height, 3, height, 3));
+		b.setMargin(new Insets(height, width, height, width));
 		b.setContentAreaFilled(false);
 		b.addChangeListener(this);
+		b.setHorizontalAlignment(JButton.CENTER);
 	}
 	private void playOrPause(){
 		paused = !paused;
 		if(paused){
 			timer.cancel();
-			jbutton1.setText(PAUSE);
+			jbutton1.setText(PLAYSYMBOL);
 			jbutton1.setToolTipText("Play (space)");
+			jlabelA.setText(PAUSE);
 		} else {
 			if(tl.getTimeLineFinished())
 				tl.setCurrentPoint(0);
@@ -585,8 +598,9 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 
 	}
 	private void play(){
-		jbutton1.setText(PLAY);
+		jbutton1.setText(PAUSESYMBOL);
 		jbutton1.setToolTipText("Pause (space)");
+		jlabelA.setText(PLAY);
 		timer = new Timer(true);
 		if(points_or_time == TIME){
 			ttask = new ExtendedTimerTask(tl, TIME);
@@ -599,13 +613,14 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 	}
 	private void rewind(){
 		tl.setCurrentPoint(tl.getCurrentPoint()-1);
-		if(!tl.getTimeLineFinished() && paused)
-			jbutton1.setText(PAUSE);
+		if(!tl.getTimeLineFinished() && paused){
+			jbutton1.setText(PLAYSYMBOL);
+			jbutton1.setToolTipText(PLAY);
+			jlabelA.setText(PAUSE);
+		}
 	}
 	private void fastforward(){
 		tl.setCurrentPoint(tl.getCurrentPoint()+1);
-		if(!tl.getTimeLineFinished() && paused)
-			jbutton1.setText(PAUSE);
 	}
 }
 

@@ -65,13 +65,14 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 	public final static int ATheta = 15;
 	public final static int Track = 16;
 	
-	
+	// Timer and TimerTask
 	private static Timer timer;
 	private static ExtendedTimerTask ttask;
 	
+	// Indicate if the timer is paused or playing
 	private static boolean paused = false;
 	
-	
+	// Declaration of static int fields for variable "points_or_time"
 	public final static int TIME = -2;
 	public final static int POINTS = -1;
 	
@@ -201,7 +202,7 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		if(attribute == XSpeed)
 			return p.rsx;		
 		if(attribute == YSpeed)
-				return p.rsy;
+			return p.rsy;
 		if(attribute == ZSpeed)
 			return p.rsz;
 		if(attribute == MSpeed)
@@ -300,7 +301,7 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		subpanel1.add(jbutton2);
 		subpanel1.add(Box.createHorizontalStrut(5));
 		subpanel1.add(jbutton3);
-		// Add an empty panel to prevent other components to change size
+		// Add an empty panel to prevent other components from changing size
 		subpanel1.add(new JPanel());
 		
 		
@@ -358,9 +359,7 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 				paused = true;
 				jbutton1.setText(STOP);
 				jbutton1.setToolTipText("Play from beginning (space)");
-				
 			}
-			
 		};
 		
 		tl = new TimeLine(before, after, (int)(100/period), tel, row, col, label[0], label[1], label[2], label[3]);
@@ -402,9 +401,9 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		customiseButtons(jbutton3,2);
 		if(points_or_time == TIME)
 			jbutton1.setPreferredSize(new Dimension(210,jbutton1.getHeight()+8));
-		else if(points_or_time == POINTS){
+		else if(points_or_time == POINTS)
 			jbutton1.setPreferredSize(new Dimension(250,jbutton1.getHeight()+8));
-		}
+		
 		jbutton2.setToolTipText("Previous Point (\u2190)");
 		jbutton3.setToolTipText("Next Point (\u2192)");
 		jbutton1.addActionListener(this);
@@ -599,20 +598,17 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 			throw new IllegalArgumentException ("Invalid \"points_or_time\" argument");
 	}
 	private void rewind(){
+		tl.setCurrentPoint(tl.getCurrentPoint()-1);
 		if(!tl.getTimeLineFinished() && paused)
 			jbutton1.setText(PAUSE);
-		tl.setCurrentPoint(tl.getCurrentPoint()-1);
 	}
 	private void fastforward(){
+		tl.setCurrentPoint(tl.getCurrentPoint()+1);
 		if(!tl.getTimeLineFinished() && paused)
 			jbutton1.setText(PAUSE);
-		tl.setCurrentPoint(tl.getCurrentPoint()+1);
 	}
-
-
-
-	
 }
+
 interface TimerEventsListener{
 	
 	/**Called when the time is updated
@@ -787,6 +783,9 @@ class TimeLine{
 	public int getCurrentPoint(){
 		//If the first point hasn't been plotted (i.e. index = -1), set index = 0
 		return ibefore == 0 ? 0 : ibefore-1;
+	}
+	public int getTotalPoints(){
+		return before.length;
 	}
 	public void setTimeLineFinished(boolean finished){
 		this.finished = finished;

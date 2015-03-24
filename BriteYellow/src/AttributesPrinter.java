@@ -1,12 +1,8 @@
 import java.util.ArrayList;
-import java.util.Arrays;
-
 import csvexport.CSVWriter;
-import csvimport.CSVReaders;
 import filters.FilterMain;
 import maths.DataGetter;
 import maths.PhoneData;
-import mysql.insertMySQL;
 
 
 public class AttributesPrinter {
@@ -18,7 +14,7 @@ public class AttributesPrinter {
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 
-		DataGetter dfo = new DataGetter(1, "26th Sept ORDERED.csv");
+		DataGetter dfo = new DataGetter(1, "24th Sept ORDERED.csv");
 
 		for (int i = 1; i<=5; i++){
 			dfo.changePhone(i);
@@ -27,8 +23,8 @@ public class AttributesPrinter {
 			
 			// Reanalyse the filtered data using DataGetter and store the result in the "newdata" variable
 			DataGetter newdg = new DataGetter(filtered.toArray(new PhoneData[filtered.size()]));
-			PhoneData[] newdata = newdg.getFullPhoneData();
-/*			CSVWriter ce = new CSVWriter("Attributes/26th Sept Phone "+i);
+			PhoneData[] newdata = dfo.getFullPhoneData();
+			CSVWriter ce = new CSVWriter("Attributes/24th Sept Phone "+i);
 			ce.write(new String[]{
 					"X","Y","Z","TimeStamp",
 					"PhoneID","Tb","XDISP","YDISP",
@@ -48,7 +44,7 @@ public class AttributesPrinter {
 				});
 			}
 			ce.finish();
-*/			
+			
 		}
 	}
 

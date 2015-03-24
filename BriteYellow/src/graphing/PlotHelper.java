@@ -8,9 +8,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Shape;
 import java.awt.Stroke;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import javax.swing.JFrame;
 import org.jfree.chart.*;
 import org.jfree.chart.axis.NumberAxis;
@@ -45,6 +42,10 @@ import org.jfree.data.xy.XYSeriesCollection;
  */
 public class PlotHelper extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7366462985416769055L;
 	public static final String SV = "SVECTOR";
 	public static final boolean AREA = false;
 	public static final boolean DATA = true;
@@ -282,10 +283,10 @@ public class PlotHelper extends JFrame {
     /** Method for getting a single point to a series
      *  
      *  @param label
-     *  Label for the series you want to add data
+     *  Label for the series you want to get data
      *  @param x x coordinate
      *  @param y y coordinate
-     * @return 
+     * @return the data you wish to get
      */
     public XYDataItem getData(String label, int index){
 
@@ -443,7 +444,7 @@ public class PlotHelper extends JFrame {
      *  @param y y coordinate
      */
     public XYDataItem removeData(String label, int index){
-
+    	
     	for(int i=0; i<str_labels.length; i++){
     		if(str_labels[i].equals(label)){
     			return series[i].remove(index);
@@ -451,6 +452,16 @@ public class PlotHelper extends JFrame {
     	}
     	return null;
     }
+    public XYDataItem removeDataIfPossible(String label, int index){
+    	
+    	for(int i=0; i<str_labels.length; i++){
+    		if(str_labels[i].equals(label)){
+    			if(series[i].getItemCount()>0)
+    				return series[i].remove(index);
+    		}
+    	}
+    	return null;
+    } 
     public int getItemCount(String label){
     	for(int i=0; i<str_labels.length; i++){
     		if(str_labels[i].equals(label)){

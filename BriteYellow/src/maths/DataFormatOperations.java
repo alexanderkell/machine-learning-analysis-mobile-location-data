@@ -235,40 +235,28 @@ public class DataFormatOperations{
 
 	
 	private void getSort(){
-		int i = 0,r = 0,s = 0;
-		int track = 1;
-		double x;
-		
-		while(i<length){
-			
-			x = cdcalc2[i].x;
-			if(x>200 && x<850){
-				cdcalc2[i].track_no = track;
-				cdcalc[16][i] = String.valueOf(track);
-			}
-			else if(x>850){
-				r=1;
-				s=0;
-				cdcalc2[i].track_no = -1;
-			}
-			else if(x<850 && r==1){
-				track++;
-				r=0;
-				cdcalc2[i].track_no = -1;
-			}
-			
-			
-			else if(x<200){s=1;r=0;
-				cdcalc2[i].track_no = -1;
-			}
-			else if(x>200 && s==1){
-				track++;
-				s=0;
-				cdcalc2[i].track_no = -1;
-			}
-			
-			//System.out.println("x = " + newdat[0][i] + ", ID = " + newdat[16][i]);	
-			i++;
+		int r = 0,s = 0; 
+		int track = 1; 
+		for(int i = 0; i<length; i++){ 
+			double x = cdcalc2[i].x;
+			if(x<200){ 
+				s = 1;
+				if(r == 1){ 
+					r = 0; 
+					track++;
+				} 
+			cdcalc2[i].track_no = -1; 
+			} else if(x>850){
+				r = 1; 
+				if(s == 1){ 
+					s = 0; 
+					track++; 
+				} 
+				cdcalc2[i].track_no = -1; 
+			}else{ 
+				cdcalc2[i].track_no = track; 
+				cdcalc[16][i] = String.valueOf(track); 
+			} 
 		}
 	}
 	

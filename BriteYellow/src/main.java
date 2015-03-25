@@ -27,10 +27,14 @@ public class main {
 		System.out.println("Enter query (PhoneID = 'HT25TW5055273593c875a9898b00' AND TrackNo = 3):");
 		String query = sc.nextLine();
 		
-		ArrayList<PhoneData> output = insertMySQL.query("FilteredData", query);
+		ArrayList<PhoneData> output = insertMySQL.query("RawData", query);
+		
+		
+//		ArrayList<PhoneData> filtered = insertMySQL.query("FilteredData", query);
+//		ArrayList<PhoneData> output = filtered;
 		sc.close();
-
-		FilterMain filtering = new FilterMain(200, 11, 13);
+/*
+		FilterMain filtering = new FilterMain(200, 5, 5);
 		ArrayList<PhoneData> filtered = filtering.FilterTot(output);
 		
 		// Reanalyse the filtered data using DataGetter and store the result in the "newdata" variable
@@ -39,10 +43,10 @@ public class main {
 	
 		
 		System.out.println(newdata.length);
-//		insertMySQL input = new insertMySQL();
-//		input.insertMyS(newdata, "FilteredData");
-	 
-		
+		insertMySQL input = new insertMySQL();
+		input.insertMyS(newdata, "FilteredData");
+
+*/		
 		PlotTracks.plotTrack2(output.toArray(new PhoneData[output.size()]),filtered.toArray(new PhoneData[filtered.size()]), PlotTracks.X, PlotTracks.Y, 0.1f);
 	}
 }

@@ -13,6 +13,7 @@ public class FilterMain {
 	int maxSpeed=200;
 	int xMesNoise=11;
 	int yMesNoise=13;
+	int interpolNo=3;
 	
 	public FilterMain(){
 
@@ -30,6 +31,12 @@ public class FilterMain {
 		this.yMesNoise = yMesNoise;
 
 	}	
+	public FilterMain(int maxSpeed, int xMesNoise, int yMesNoise, int interpolNo){
+		this.maxSpeed = maxSpeed;
+		this.xMesNoise = xMesNoise;
+		this.yMesNoise = yMesNoise;
+		this.interpolNo = interpolNo;
+	}	
 	
 	public ArrayList<PhoneData> FilterTot(ArrayList<PhoneData> output) throws Exception{
 		//Cut big speeds
@@ -46,7 +53,7 @@ public class FilterMain {
 		
 		reana = jkh.getFullResult();
 		
-		ArrayList<PhoneData> interpolated = interpolate(3, reana);
+		ArrayList<PhoneData> interpolated = interpolate(interpolNo, reana);
 		
 		return interpolated;
 			

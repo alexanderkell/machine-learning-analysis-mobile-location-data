@@ -166,15 +166,19 @@ public class insertMySQL {
 	
 	
 	public static ArrayList<PhoneData> query(String table, String query) throws SQLException{
-		
+		String sql;
 		ArrayList<PhoneData> pdd2 = new ArrayList<PhoneData>();
 		int x = 0;
 		try{
 			Connection conn = connection.Connect();
 			Statement stmt = conn.createStatement();
+			if(query.isEmpty()){
+				sql = "SELECT * FROM "+table+"";
+			}
+			else{
+				sql = "SELECT * FROM "+table+" WHERE "+query;
+			}
 			
-			String sql = "SELECT * FROM "+table+" WHERE "+query;
-			//String sql = "SELECT * FROM RawData"+query;
 			
 			ResultSet rs = stmt.executeQuery(sql);		
 			

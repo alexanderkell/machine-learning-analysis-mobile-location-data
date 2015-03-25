@@ -17,7 +17,7 @@ public class StatsGenerator extends ProbabilityList{
 	public final static int STHETAIN = 131;
 	public final static int STHETAOUT = 132;
 	public final static int STHETAINOUT = 133;	//STEHTAOUT - STHETAIN
-	public final static int STHETACHANGE_NO = 134;
+	public final static int STHETACHANGE_NO = 134;	// No. of times the person has changed specific angles
 	public final static int AVERAGE_SPEED = 140;	// PATH_LENGTH / TIME_SPENT
 	public final static int AVERAGE_ACCELERATION = 150;
 	

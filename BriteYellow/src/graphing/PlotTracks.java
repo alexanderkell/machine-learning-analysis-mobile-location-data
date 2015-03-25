@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -14,6 +15,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.sql.Timestamp;
@@ -27,10 +30,14 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.plaf.basic.BasicProgressBarUI;
@@ -40,13 +47,14 @@ import maths.PhoneData;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.plot.XYPlot;
 
-public class PlotTracks implements ActionListener,ChangeListener, KeyListener,MouseListener,MouseMotionListener{
+public class PlotTracks implements ActionListener,ChangeListener, KeyListener,MouseListener,MouseMotionListener, WindowFocusListener{
 	
 	public final static String[] COLUMNS = {		
 		"X", "Y", "Z", "WholeDate","Phone id", "Time Between values", "Xspeed", "YSpeed", "ZSpeed", "ModSpd", "STheta", "Xacc", 
 		"Yacc", "Zacc", "ModAcc", "ATheta"
 	};
 	static Font labelFont = new Font("", Font.BOLD, 14);
+	static Font labelFontLarge = new Font("", Font.BOLD, 18);
 	final static String PLAYSYMBOL = ""+(char)9658;
 	final static String PAUSESYMBOL = ""+(char)73+(char)73;
 	final static String STOPSYMBOL = ""+(char)9632;
@@ -85,7 +93,7 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 	final private JButton jbutton2;
 	final private JButton jbutton3;
 	
-	final private JLabel jlabel1;
+	final private JButton jlabel1;
 	final private JLabel jlabel2;
 	final private JLabel jlabel3;
 	final private JProgressBar jpb;
@@ -98,6 +106,10 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 	private String PAUSE2;
 	private boolean helddown;
 	final private JLabel jlabelA;
+	private Thread butthread;
+	private JSpinner jspinner1;
+	private JButton jbutton4;
+	private JDialog internal_dialog;
 	
 
 	/**
@@ -239,7 +251,13 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 				);
 	}
 	
-
+	/**
+	 * @deprecated as not all PhoneData has the date in the String format
+	 * @param p
+	 * @param attribute
+	 * @return
+	 */
+	@Deprecated
 	public static String getAttributeString(PhoneData p, int attribute){
 		if(attribute == WholeDate)
 			return p.wholedatestring;
@@ -284,18 +302,53 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		jbutton1 = new JButton(PLAYSYMBOL);	// Label for "Playing at XX speed or points/sec"
 		jbutton2 = new JButton("<<");
 		jbutton3 = new JButton(">>");
-		jlabel1 = new JLabel();	// Label for showing the current point number
+		jlabel1 = new JButton();	// Label for showing the current point number
 		jlabel2 = new JLabel();	// Label for showing start time
 		jlabel3 = new JLabel();	// Label for showing end time
 		jlabelA = new JLabel(PLAY); // Label for showing the player status
-		jlabelA.setHorizontalAlignment(JLabel.LEFT);
 		jlabelA.setHorizontalAlignment(JLabel.RIGHT);
-		jbutton1.setFont(labelFont);
+		jbutton1.setFont(labelFontLarge);
+		jbutton2.setFont(labelFont);
+		jbutton3.setFont(labelFont);
 		jlabel1.setFont(labelFont);
 		jlabel2.setFont(labelFont);
 		jlabel3.setFont(labelFont);
 		jlabelA.setFont(labelFont);
 
+		jlabel1.addActionListener(this);
+		
+		// For the pop up dialog
+		SpinnerModel spinnerModel =
+		         new SpinnerNumberModel(1, //initial value
+		            1, //min
+		            before.length, //max
+		            1);//step
+		jspinner1 = new JSpinner(spinnerModel);
+		
+		jspinner1.addChangeListener(this);
+		jspinner1.setFont(labelFont);
+		JLabel jlabel4 = new JLabel("Point: ");
+		jlabel4.setFont(labelFont);
+		JLabel jlabel5 = new JLabel(" / "+before.length);
+		jlabel5.setFont(labelFont);
+		jbutton4 = new JButton("Done");
+		jbutton4.setFont(labelFont);
+		jbutton4.addActionListener(this);
+		JPanel jpanel2 = new JPanel();
+		jpanel2.setLayout(new BoxLayout(jpanel2,BoxLayout.LINE_AXIS));
+		jpanel2.add(jlabel4);
+		jpanel2.add(jspinner1);
+		jpanel2.add(jlabel5);
+		jpanel2.add(Box.createHorizontalStrut(5));
+		jpanel2.add(jbutton4);
+		jpanel2.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+		
+		internal_dialog = new JDialog();
+		internal_dialog.add(jpanel2);
+		internal_dialog.setUndecorated(true);
+		internal_dialog.pack();
+		internal_dialog.addWindowFocusListener(this);
+		
 		jpb = new JProgressBar();	//ProgressBar for showing the current time
 		jpb.setStringPainted(true);
 		jpb.setFont(labelFont);
@@ -331,7 +384,6 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		}
 		panel.add(subpanel2);
 		panel.add(subpanel1);
-		
 		jpb.setForeground(new Color(100,100,255));
 		jpb.setBackground(Color.WHITE);
 		jpb.setBorder(BorderFactory.createLineBorder(subpanel2.getBackground()));
@@ -378,7 +430,7 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		// Get and configure the plot
 		final PlotHelper plot = tl.getPlot();
 		plot.setSeriesRenderingOrder(false);
-		plot.setAxisRange(0, 1100, 0, 500);
+		plot.setAxisRange(0, 1175, 0, 500);
 		plot.setRangeAxisInverted(true);
 		plot.setSeriesLinesVisble(label[0], true);
 		plot.setSeriesShape(label[0], new Ellipse2D.Float(-2.0f, -2.0f, 4f, 4f));
@@ -407,11 +459,13 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		frame.add(plot.getChartPanel(), BorderLayout.CENTER);
 		frame.add(panel, BorderLayout.SOUTH);
 		frame.pack();
-		
+
 		customiseButtons(jbutton1,8,6);
-		customiseButtons(jbutton2,3,2);
-		customiseButtons(jbutton3,3,2);
-		jbutton1.setPreferredSize(new Dimension(jbutton1.getWidth()-4,jbutton1.getHeight()+6));
+		customiseButtons(jbutton2,3,1);
+		customiseButtons(jbutton3,3,1);
+		customiseButtons(jlabel1,3,1);
+		jlabel1.setToolTipText("Click to change current point");
+		jbutton1.setPreferredSize(new Dimension(jbutton1.getWidth()-10,jbutton1.getHeight()+3));
 		
 		jbutton2.setToolTipText("Previous Point (\u2190)");
 		jbutton3.setToolTipText("Next Point (\u2192)");
@@ -477,41 +531,47 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 			}
 			tl.setCurrentTime((float)arg0.getX() / (float)jpb.getWidth());
 		} else if(component == jbutton2){
+			rewind();
 			helddown = true;
-			new Thread(){
+			if(butthread!=null && butthread.isAlive())
+				butthread.interrupt();
+			
+			butthread = new Thread(){
 				public void run(){
-					rewind();
 					try {
-						Thread.sleep(500);
+						Thread.sleep(600);
 						while(helddown){
 							rewind();
 							Thread.sleep(40);
 						}
 					} catch (InterruptedException e1) {
 						// TODO Auto-generated catch block
-						e1.printStackTrace();
 					}
 				}
-			}.start();
+			};
+			butthread.start();
 			
 				
 		} else if(component == jbutton3){
+			fastforward();
 			helddown = true;
-			new Thread(){
+			if(butthread!=null && butthread.isAlive())
+				butthread.interrupt();
+				
+			butthread = new Thread(){
 				public void run(){
-					fastforward();
 					try {
-						Thread.sleep(500);
+						Thread.sleep(600);
 						while(helddown){
 							fastforward();
 							Thread.sleep(40);
 						}
 					} catch (InterruptedException e1) {
 						// TODO Auto-generated catch block
-						e1.printStackTrace();
 					}
 				}
-			}.start();
+			};
+			butthread.start();
 				
 		}
 	}
@@ -529,12 +589,11 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 	}
 
 
-
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 		// TODO Auto-generated method stub
 		if(arg0.getKeyCode() == KeyEvent.VK_SPACE){
-			playOrPause();
+			playOrPause(!paused);
 		} else if(arg0.getKeyCode() == KeyEvent.VK_LEFT){
 			if(!helddown)
 				rewind();
@@ -563,18 +622,42 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
 		JButton but = (JButton) arg0.getSource();
-		if(but == jbutton1)
-			playOrPause();
-		
+		if(but == jbutton1){
+			playOrPause(!paused);
+		}else if (but == jlabel1){
+			playOrPause(true);
+			jspinner1.setValue(tl.getCurrentPoint()+1);
+			Point point = jlabel1.getLocationOnScreen();
+			internal_dialog.setLocation(point.x, point.y+jlabel1.getHeight());
+			internal_dialog.setVisible(true);
+		} else if (but == jbutton4){
+			internal_dialog.setVisible(false);
+		}
+			
 	}
 	
 	@Override
 	public void stateChanged(ChangeEvent arg0) {
 		// TODO Auto-generated method stub
-		JButton but = (JButton)arg0.getSource();
-		but.setContentAreaFilled(but.getModel().isRollover());
+		JComponent com = (JComponent)arg0.getSource();
+		if(com == jspinner1){
+			tl.setCurrentPoint((int)jspinner1.getValue()-1);
+		} else
+			((JButton)com).setContentAreaFilled(((JButton)com).getModel().isRollover());
+	}
+	@Override
+	public void windowGainedFocus(WindowEvent e) {
+		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void windowLostFocus(WindowEvent e) {
+		// TODO Auto-generated method stub
+		if(e.getSource() == internal_dialog)
+			internal_dialog.setVisible(false);
+	}
+	
 	private void customiseButtons(JButton b, int width, int height){
 		b.setFocusable(false);
 		b.setFocusPainted(false);
@@ -583,8 +666,8 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		b.addChangeListener(this);
 		b.setHorizontalAlignment(JButton.CENTER);
 	}
-	private void playOrPause(){
-		paused = !paused;
+	private void playOrPause(boolean paused){
+		PlotTracks.paused = paused;
 		if(paused){
 			timer.cancel();
 			jbutton1.setText(PLAYSYMBOL);
@@ -622,6 +705,7 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 	private void fastforward(){
 		tl.setCurrentPoint(tl.getCurrentPoint()+1);
 	}
+	
 }
 
 interface TimerEventsListener{
@@ -670,8 +754,6 @@ class TimeLine{
 
 	private int ibefore = 0, iafter = 0;
 	private long current_time;
-	private long curr_time_diff = 0;
-	private long points_time_diff = 0;
 
 	private int interval = 1000;
 
@@ -687,13 +769,11 @@ class TimeLine{
 	private String[] labels;
 	private boolean finished = false;	// Indicates whether the timeline has reach the end
 
-	private long points_time_diff2;
-
+	private long curr_time_diff = 0;
+	private long points_time_diff = 0;
 	private long curr_time_diff2;
-
-	private boolean temppointsadded = false;
-	private boolean temppointsadded2 = false;
-
+	private long points_time_diff2 = 0;
+	
 	public TimeLine(final PhoneData[] before,final PhoneData[] after, int interval, TimerEventsListener etel, int row, int col,
 			String beforeseries, String afterseries, String beforelast, String afterlast){
 		// Conditions that are not allowed
@@ -702,6 +782,12 @@ class TimeLine{
 			throw new IllegalArgumentException("Invalid Arguments");
 		
 		labels = new String[]{beforeseries, afterseries, beforelast, afterlast};
+		// Initialise the time difference between points for before filtering series and after filtering series
+		if(beforeseries.length()>1)
+			points_time_diff = before[1].ts.getTime() - before[0].ts.getTime();
+		if(after!=null && afterseries.length()>1)
+			points_time_diff2 = after[1].ts.getTime() - after[0].ts.getTime();
+		
 		ArrayList<String> al = new ArrayList<String>();
 		for(int i = 0; i<labels.length; i++){
 			if(labels[i]!=null)
@@ -717,8 +803,8 @@ class TimeLine{
 		this.etel = etel;
 		this.row = row;
 		this.col = col;
-		
 	}
+	
 	public PlotHelper getPlot(){
 		return plot;
 	}
@@ -743,7 +829,8 @@ class TimeLine{
 	private synchronized void setCurrentTime(int index, float percent){
 		long previous_time = current_time;
 		current_time = before[index].ts.getTime()+ (long)(points_time_diff*percent)/interval*interval;
-		if(index == getCurrentPoint() &&( index == before.length-1 || previous_time == current_time)){
+		// If the specified index is equal to current point and either the index is the last point or time is the same
+		if(index == getCurrentPoint() && (index == before.length-1 || previous_time == current_time)){
 			if(index == before.length-1){
 				etel.timerStopped();
 				finished = true;
@@ -753,7 +840,6 @@ class TimeLine{
 		}
 		// Decrement the current_time by 1 interval so that the advanceTime method can be used
 		current_time -= interval;
-		
 		if(!finished){
 			// Rewind - Remove recently added points until the set index has reached
 			while (ibefore>0 && index<ibefore){
@@ -762,33 +848,14 @@ class TimeLine{
 					plot.removeData(labels[0], plot.getItemCount(labels[0])-1);
 				ibefore--;
 			}
-			if(after != null){
-				// Fastforward - Add points until the set index has reached
-				while (iafter<after.length && current_time >= after[iafter].ts.getTime()){
-					// Get the attributes
-					Double r = PlotTracks.getAttributeDouble(after[iafter], row);
-					Double c = PlotTracks.getAttributeDouble(after[iafter], col);
-	
-					if(labels[3]!=null){
-						if(plot.getItemCount(labels[3])>0)
-							plot.removeData(labels[3], plot.getItemCount(labels[3])-1);
-						plot.addData(labels[3], r, c);
-					}
-					plot.addData(labels[1], r, c);
-					iafter++;
-				}
-				// Rewind - Remove recently added points until the set index has reached or 
+			if(after != null){			
+				// Rewind - Remove recently added points until the set index has reached
 				while (iafter>0 && current_time < after[iafter-1].ts.getTime()){
 					plot.removeData(labels[1], plot.getItemCount(labels[1])-1);
-					if(labels[3]!=null && after!= null){
-						if(plot.getItemCount(labels[3])>0)
-							plot.removeData(labels[3], plot.getItemCount(labels[3])-1);
-						plot.addData(labels[3], plot.getData(labels[1], plot.getItemCount(labels[1])-1));
-					}
 					iafter--;
 				}
 			}
-			advanceTimeOnce();
+			advanceTimeTo(index);
 		}
 
 	}
@@ -809,19 +876,20 @@ class TimeLine{
 		return finished;
 	}
 	public synchronized void advanceTime(){
-		advanceTime(false);
+		advanceTime(before.length);
 	}
-	public synchronized void advanceTimeOnce(){
-		advanceTime(true);
+	public synchronized void advanceTimeTo(int index){
+		advanceTime(index);
 	}
-	public synchronized void advanceTime(boolean once){
+	public synchronized void advanceTime(int index){
 		if(! finished){
 			current_time+=interval;
 			
-			boolean ibeforechanged = false;
-			// If once == true - Add one point
-			// Otherwise - Add all points whose timestamp is behind the current time by looping this while loop
-			while(ibefore<before.length && (current_time - before[ibefore].ts.getTime())>=0){
+			if(plot.getItemCount(labels[0])>0)
+				plot.removeData(labels[0],  plot.getItemCount(labels[0])-1);
+
+			// Add all points whose timestamp is behind the current time by looping this while loop
+			while((current_time - before[ibefore].ts.getTime())>=0){
 
 				points_time_diff = (ibefore<before.length - 1)? before[ibefore+1].ts.getTime() - before[ibefore].ts.getTime() : 0;
 				etel.pointsUpdated(ibefore);
@@ -829,43 +897,46 @@ class TimeLine{
 				// Get the attributes
 				Double r = PlotTracks.getAttributeDouble(before[ibefore], row);	  
 				Double c = PlotTracks.getAttributeDouble(before[ibefore], col);
-				if(temppointsadded && plot.getItemCount(labels[0])>0){
-					plot.removeData(labels[0], plot.getItemCount(labels[0])-1);
-					temppointsadded = false;
-				}
 				plot.addData(labels[0], r, c);
 				ibefore++;
 				
-				ibeforechanged = true;
-				if(once)
+				// Find out if the track has reached an end (for estimating new position purposes)
+				finished = ibefore == before.length;
+
+				// Exit loop if advance once is set or the track has reached an end
+				if(ibefore == index+1 || finished)
 					break;
+			}
+			
+			// Call timerStopped() function if the last point has been reached
+			if(finished){
+				etel.timerStopped();
+				points_time_diff = 0;
 			}
 			
 			// Calculate time difference between the current time and latest added before filtering point
 			curr_time_diff = current_time - before[ibefore-1].ts.getTime();
 			
 			// Calculate the estimated before filtering position
-			if(ibefore <= before.length){
-				double[] result;
-				if(ibefore < before.length)
-					result = estPosition(before[ibefore-1], before[ibefore], curr_time_diff, points_time_diff);
-				else 
-					result = estPosition(before[ibefore-2], before[ibefore-1], curr_time_diff, points_time_diff);
+			double[] result;
+			if(finished)
+				result = estPosition(before[ibefore-1], null, curr_time_diff, points_time_diff);
+			else 
+				result = estPosition(before[ibefore-1], before[ibefore], curr_time_diff, points_time_diff);
+			
+			// Update the location of the estimated point
+			if(labels[2]!=null){
+				if(plot.getItemCount(labels[2]) > 0)
+					plot.removeData(labels[2],  plot.getItemCount(labels[2])-1);
+				plot.addData(labels[2], result[0], result[1]);
 				
-				if(labels[2]!=null){
-					if(plot.getItemCount(labels[2]) > 0)
-						plot.removeData(labels[2],  plot.getItemCount(labels[2])-1);
-					plot.addData(labels[2], result[0], result[1]);
-					
-				}
-				if(!ibeforechanged && plot.getItemCount(labels[0])>0)
-					plot.removeData(labels[0],  plot.getItemCount(labels[0])-1);
-				plot.addData(labels[0], result[0], result[1]);
-				temppointsadded = true;
 			}
+			// Add the estimated point to the before filtering series as well so that a line is drawn between the last and estimated points
+			plot.addData(labels[0], result[0], result[1]);
 			
 			if(after != null){
-				boolean iafterchanged = false;
+				if(plot.getItemCount(labels[1])>0)
+					plot.removeData(labels[1],  plot.getItemCount(labels[1])-1);
 				// Add all points whose timestamp is behind the current time by looping this while loop
 				while((iafter<after.length && (current_time - after[iafter].ts.getTime())>=0)){
 					points_time_diff2 = (iafter<after.length - 1)? after[iafter+1].ts.getTime() - after[iafter].ts.getTime() : 0;
@@ -881,62 +952,46 @@ class TimeLine{
 						c = PlotTracks.getAttributeDouble(after[iafter], col);
 					}
 
-					if(temppointsadded2 && plot.getItemCount(labels[1])>0){
-						plot.removeData(labels[1], plot.getItemCount(labels[1])-1);
-						temppointsadded2 = false;
-					}
 					plot.addData(labels[1], r, c);
 					if(iafter == after.length)
 						break;
 					iafter++;
-					iafterchanged = true;
 				}
 				
+				
+				// Calculate time difference between the current time and latest added after filtering point
+				curr_time_diff2 = current_time - after[iafter-1].ts.getTime();
 				
 				// Calculate the estimated after filtering position
-				if(iafter <= after.length){
-					// Calculate time difference between the current time and latest added after filtering point
-					curr_time_diff2 = current_time - after[iafter-1].ts.getTime();
-					
-					double[] result;
-					if(iafter < after.length)
-						result = estPosition(after[iafter-1], after[iafter], curr_time_diff2, points_time_diff2);
-					else 
-						result = estPosition(after[iafter-2], after[iafter-1], curr_time_diff2, points_time_diff2);
-					
-					if(labels[3]!=null){
-						if(plot.getItemCount(labels[3]) > 0)
-							plot.removeData(labels[3],  plot.getItemCount(labels[3])-1);
-						plot.addData(labels[3], result[0], result[1]);
-					}
-					if(!iafterchanged && plot.getItemCount(labels[1])>0 )
-						plot.removeData(labels[1],  plot.getItemCount(labels[1])-1);
-					plot.addData(labels[1], result[0], result[1]);
-					temppointsadded2 = true;
+				if(finished)
+					result = estPosition(after[iafter-1], null, curr_time_diff2, points_time_diff2);
+				else 
+					result = estPosition(after[iafter-1], after[iafter], curr_time_diff2, points_time_diff2);
+				
+				// Update the location of the last point
+				if(labels[3]!=null){
+					if(plot.getItemCount(labels[3]) > 0)
+						plot.removeData(labels[3],  plot.getItemCount(labels[3])-1);
+					plot.addData(labels[3], result[0], result[1]);
 				}
+				// Add the estimated point to the after filtering series as well so that a line is drawn between the last and estimated points
+				plot.addData(labels[1], result[0], result[1]);
 			}
-		}
-		
-		// Update current time
-		etel.currentTimeUpdated(new Timestamp(current_time/100*100), points_time_diff==0 ? 0: (int) (100*curr_time_diff/points_time_diff));
+			// Update current time
+			etel.currentTimeUpdated(new Timestamp(current_time/100*100), points_time_diff==0 ? 0: (int) (100*curr_time_diff/points_time_diff));	
 
-		// Check if the last point has passed
-		if(ibefore == before.length){
-			etel.timerStopped();
-			finished = true;
-			points_time_diff = 0;
-		}		
+		}
 	}
 	
 	private double[] estPosition(PhoneData pre_point, PhoneData aft_point, long curr_time_difference, long points_time_difference){
-		double nx = PlotTracks.getAttributeDouble(aft_point, row);
-		double ny = PlotTracks.getAttributeDouble(aft_point, col);
-		if(points_time_difference == 0)
-			return new double[] {nx,ny};
-		
 		double px = PlotTracks.getAttributeDouble(pre_point, row);
 		double py = PlotTracks.getAttributeDouble(pre_point, col);
-		float cur_faction = (float)curr_time_difference / (float)points_time_difference;
-		return new double[]{ px+(nx-px)*cur_faction, py+(ny-py)*cur_faction};
+		if(aft_point == null || points_time_difference == 0)
+			return new double[] {px,py};
+		
+		double nx = PlotTracks.getAttributeDouble(aft_point, row);
+		double ny = PlotTracks.getAttributeDouble(aft_point, col);
+		float cur_fraction = (float)curr_time_difference / (float)points_time_difference;
+		return new double[]{ px+(nx-px)*cur_fraction, py+(ny-py)*cur_fraction};
 	}
 }

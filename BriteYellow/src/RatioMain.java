@@ -22,7 +22,7 @@ public class RatioMain {
 		System.out.println("Enter query (eg: x = 156 AND PhoneID = 'HT25TW5055273593c875a9898b00'):");
 		String query = sc.nextLine();
 				
-		ArrayList<PhoneData> output = insertMySQL.query(query);
+		ArrayList<PhoneData> output = new insertMySQL().query("Rawdata",query);
 		
 		return TrackSelect.selecter(output.toArray(new PhoneData[output.size()]), 1);
 

@@ -8,7 +8,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 
 import csvexport.CSVWriter;
-import maths.DataFormatOperations;
 import maths.DataGetter;
 import maths.PhoneData;
 

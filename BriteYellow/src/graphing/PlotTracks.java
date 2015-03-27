@@ -503,6 +503,8 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		
 		jbutton2.setToolTipText("Previous Point (\u2190)");
 		jbutton3.setToolTipText("Next Point (\u2192)");
+		jbutton4.setToolTipText("Previous Track");
+		jbutton5.setToolTipText("Next Track");
 		jbutton1.addActionListener(this);
 		jbutton2.addMouseListener(this);
 		jbutton3.addMouseListener(this);
@@ -726,29 +728,40 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		} else if (but == jbuttonDone){
 			internal_dialog.setVisible(false);
 		} else if (but == jbutton4){
-			String old_name = jlabelB.getText();
-			
 			jlabelB.setText("Loading ...");
-			String name = tcl.previousTrackName();
-			if(name==null){
-				jlabelB.setText(old_name);
-			} else {
-				jlabelB.setText(name);
-				changeTrack(tcl.previousTrack(), null);
-			}
+			// New thread is required for the loading message to show
+			new Thread(){
+				public void run(){
+					String old_name = jlabelB.getText();
+					jlabelB.revalidate();
+					jlabelB.repaint();
+					String name = tcl.previousTrackName();
+					if(name==null){
+						jlabelB.setText(old_name);
+					} else {
+						jlabelB.setText(name);
+						changeTrack(tcl.setTrack(), null);
+					}
+				}
+			}.start();
 			
 		} else if (but == jbutton5){
-			String old_name = jlabelB.getText();
-			
 			jlabelB.setText("Loading ...");
-			jlabelB.repaint();
-			String name = tcl.nextTrackName();
-			if(name==null){
-				jlabelB.setText(old_name);
-			} else {
-				jlabelB.setText(name);
-				changeTrack(tcl.nextTrack(), null);
-			}
+			// New thread is required for the loading message to show
+			new Thread(){
+				public void run(){
+					String old_name = jlabelB.getText();
+					jlabelB.revalidate();
+					jlabelB.repaint();
+					String name = tcl.nextTrackName();
+					if(name==null){
+						jlabelB.setText(old_name);
+					} else {
+						jlabelB.setText(name);
+						changeTrack(tcl.setTrack(), null);
+					}
+				}
+			}.start();
 			
 		}
 			

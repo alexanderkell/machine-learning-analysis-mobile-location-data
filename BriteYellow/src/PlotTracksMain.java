@@ -54,7 +54,7 @@ public class PlotTracksMain {
 			public String previousTrackName() {
 				// TODO Auto-generated method stub
 				
-				if(track-1 >= 0){
+				if(track-1 >= 1){
 					ArrayList<PhoneData> filtered;
 					track--;
 					try {
@@ -112,10 +112,10 @@ public class PlotTracksMain {
 		final JComboBox<String> cbox1 = new JComboBox<String>(phones);
 		cbox1.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
-		JButton okbutton = new JButton("Plot it");
+		final JButton okbutton = new JButton("Plot it");
 		okbutton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
-		JPanel panel = new JPanel();
+		final JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 		panel.add(selectlabel);
 		panel.add(Box.createVerticalStrut(10));
@@ -127,14 +127,23 @@ public class PlotTracksMain {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				try {
-					plot((String)(cbox1.getSelectedItem()));
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				frame.dispose();
-				
+				panel.remove(okbutton);
+				frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+				JLabel oklabel = new JLabel("Getting tracks...");
+				oklabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+				panel.add(oklabel);
+				frame.pack();
+				new Thread(){
+					public void run(){
+						try {
+							plot((String)(cbox1.getSelectedItem()));
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						frame.dispose();
+					}
+				}.start();
 			}
 			
 		});

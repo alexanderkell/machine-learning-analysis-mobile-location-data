@@ -131,6 +131,7 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 	private JSpinner jspinner2;
 	private JDialog internal_dialog2;
 	private JPanel subpanel1a;
+	private Thread updateTrackThread;
 	
 
 	/**
@@ -321,8 +322,8 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		customiseButtons(jbutton4,3,2);
 		customiseButtons(jbutton5,3,2);
 		customiseButtons(jlabelB,3,1);
-		jbutton4.setToolTipText("Previous Track");
-		jbutton5.setToolTipText("Next Track");
+		jbutton4.setToolTipText("Previous Track (Page Down)");
+		jbutton5.setToolTipText("Next Track (Page Up)");
 		jbutton4.addActionListener(this);
 		jbutton5.addActionListener(this);
 		jlabelB.addActionListener(this);
@@ -752,7 +753,7 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 				updateTrackLabel(current_track+1);
 		} else if(keycode == KeyEvent.VK_PAGE_DOWN){
 			if(tcl!=null)
-				updateTrackLabel(current_track+1);
+				updateTrackLabel(current_track-1);
 		}
 	}
 
@@ -803,35 +804,37 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 	 * @param prev_or_next Previous point = true, Next point = false
 	 */
 	private void updateTrackLabel(final int index){
-		jlabelB.setText("Loading ...");
-		// New thread is required for the loading message to show
-		new Thread(){
-			public void run(){
-				String old_name = jlabelB.getText();
-				jlabelB.revalidate();
-				jlabelB.repaint();
-				
-				
-				if(index>=1 && index <= max_tracks){
-					PhoneData[] newtrack = tcl.setTrack(index);
-					// Check if the track is empty
-					if(newtrack == null){
-						System.err.println("Track "+index+" is empty");
-						jlabelB.setText(old_name);
-						return;
+		if(updateTrackThread == null || !updateTrackThread.isAlive()){
+			final String old_name = jlabelB.getText();
+			jlabelB.setText("Loading ...");
+			// New thread is required for the loading message to show
+			updateTrackThread = new Thread(){
+				public void run(){
+					jlabelB.revalidate();
+					jlabelB.repaint();
+					
+					
+					if(index>=1 && index <= max_tracks){
+						PhoneData[] newtrack = tcl.setTrack(index);
+						// Check if the track is empty
+						if(newtrack == null){
+							System.err.println("Track "+index+" is empty");
+							jlabelB.setText(old_name);
+							return;
+						} else {
+							jlabelB.setText("Track "+index+" / "+max_tracks);
+							changeTrack(newtrack, null);
+							current_track = index;
+						}
 					} else {
-						jlabelB.setText("Track "+index+" / "+max_tracks);
-						changeTrack(newtrack, null);
-						current_track = index;
+						jlabelB.setText(old_name);
 					}
-				} else {
-					jlabelB.setText(old_name);
+					
 				}
-				
-			}
-		}.start();
+			};
+			updateTrackThread.start();
 
-		
+		}
 	}
 	@Override
 	public void stateChanged(ChangeEvent arg0) {

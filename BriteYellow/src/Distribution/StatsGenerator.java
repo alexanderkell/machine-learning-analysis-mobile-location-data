@@ -1,4 +1,4 @@
-package Distribution;
+package distribution;
 
 import java.text.ParseException;
 import java.util.ArrayList;

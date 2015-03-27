@@ -16,7 +16,7 @@ import javax.swing.SwingUtilities;
 
 import csvexport.CSVWriter;
 
-import Distribution.StatsGenerator;
+import distribution.StatsGenerator;
 
 import maths.PhoneData;
 import mysql.insertMySQL;

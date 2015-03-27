@@ -1,4 +1,4 @@
-package Distribution;
+package distribution;
 
 import graphing.PlotHelper;
 

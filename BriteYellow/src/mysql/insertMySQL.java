@@ -7,16 +7,16 @@ import maths.*;
 
 public class insertMySQL {
 
-	
+	private Connection conn;
 
-	public static void insertXDisp(String fn) throws Exception{
+	public insertMySQL(){
+		conn = connection.Connect();
+	}
 
-		Connection conn = null;
-		Statement stmt = null;
-		PreparedStatement preparedStatement = null;
+	public void insertXDisp(String fn) throws Exception{
+
 		int opt = 7;
 		DataGetter DG = new DataGetter(opt, fn);
-		conn = connection.Connect();
 		
 		for(int i = 0; i<DG.getLength(); i++){
 
@@ -24,7 +24,7 @@ public class insertMySQL {
 					+ "(x,y,z,PhoneID, Timestamp,TrackNo,XDisp,YDisp,ZDisp,DispModulus,TimeBetween,XSpeed,YSpeed,ZSpeed,ModSpeed, STheta, XAcc, YAcc, ZAcc, ATheta) "
 					+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 			try{
-				preparedStatement = conn.prepareStatement(insert);
+				PreparedStatement preparedStatement = conn.prepareStatement(insert);
 				preparedStatement.setDouble(1, (DG.getX(i)));
 				preparedStatement.setDouble(2, (DG.getY(i)));
 				preparedStatement.setDouble(3, (DG.getZ(i)));
@@ -73,13 +73,8 @@ public class insertMySQL {
 	}
 	
 	
-	public static void insertMyS(PhoneData[] DG, String tableName) throws Exception{
-
-		Connection conn = null;
-		Statement stmt = null;
-		PreparedStatement preparedStatement = null;
-		int opt = 7;
-		conn = connection.Connect();
+	public void insertMyS(PhoneData[] DG, String tableName) throws Exception{
+		
 		
 		//DG[1].acctheta;
 		
@@ -89,7 +84,7 @@ public class insertMySQL {
 					+ "(x,y,z,PhoneID, Timestamp,TrackNo,XDisp,YDisp,ZDisp,DispModulus,TimeBetween,XSpeed,YSpeed,ZSpeed,ModSpeed, STheta, XAcc, YAcc, ZAcc, ATheta) "
 					+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 			try{
-				preparedStatement = conn.prepareStatement(insert);
+				PreparedStatement preparedStatement = conn.prepareStatement(insert);
 				preparedStatement.setDouble(1, (DG[i].x));
 				preparedStatement.setDouble(2, (DG[i].y));
 				preparedStatement.setDouble(3, (DG[i].z));
@@ -165,12 +160,30 @@ public class insertMySQL {
 	}
 	
 	
-	public static ArrayList<PhoneData> query(String table, String query) throws SQLException{
+	public int totalTracksQuery(String table, String query) throws SQLException{
+		try{
+			String sql = "SELECT max(TrackNo) FROM "+table+" WHERE "+query ;
+			Statement stmt = conn.prepareStatement(sql);
+			
+			
+			ResultSet rs = stmt.executeQuery(sql);
+			if(rs.next())
+				return rs.getInt(1);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}catch(Exception e){
+			e.printStackTrace();
+		
+		}
+		
+		return 0;
+	}
+	
+	public ArrayList<PhoneData> query(String table, String query) throws SQLException{
 		String sql;
 		ArrayList<PhoneData> pdd2 = new ArrayList<PhoneData>();
 		int x = 0;
 		try{
-			Connection conn = connection.Connect();
 			Statement stmt = conn.createStatement();
 			if(query.isEmpty()){
 				sql = "SELECT * FROM "+table+"";

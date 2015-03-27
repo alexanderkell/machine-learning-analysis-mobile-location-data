@@ -48,26 +48,40 @@ public class StatsGenerator extends ProbabilityList{
 	 */
 	public double getTotalAverage(int property, double xstart, double xend, double ystart, double yend){
 		if(property == TIME_PER_STOP){
+			double stops = getTotalAverage(NO_STOPS, xstart, xend, ystart, yend);
+			if(stops == 0)
+				return 0;
 			return getTotalAverage(TIME_STOPPED, xstart, xend, ystart, yend) /
-					getTotalAverage(NO_STOPS, xstart, xend, ystart, yend);
+					stops;
 			
 		} else if(property == FREQ_IN_AREA){
-			// Return the length of the resultant array 
-			return get(TIME_SPENT, xstart, xend, ystart, yend).length;
+			// Return the length of the resultant array
+			try{
+				return get(TIME_SPENT, xstart, xend, ystart, yend).length;
+			} catch (NullPointerException e){
+				return 0;
+			}
 			
 		} else if(property == AVERAGE_SPEED){
+			double time = getTotalAverage(TIME_SPENT, xstart, xend, ystart, yend);
+			if(time == 0)
+				return 0;
 			return getTotalAverage(PATH_LENGTH, xstart, xend, ystart, yend) /
-					getTotalAverage(TIME_SPENT, xstart, xend, ystart, yend);
+					time;
 			
 		} else if(property == PATH_LENGTH || property == TIME_SPENT || property == INACTIVE_TIME ||
 				property == NO_STOPS || property == TIME_STOPPED || property == STHETACHANGE){
 			double[] p1 = get(property, xstart, xend, ystart, yend);
 			double p1total = 0;
 			
-			for(int i = 0; i < p1.length; i++){
-				p1total += p1[i];
+			try{
+				for(int i = 0; i < p1.length; i++){
+					p1total += p1[i];
+				}
+				return p1total;
+			}catch(NullPointerException e){
+				return 0;
 			}
-			return p1total;
 		}
 		throw new IllegalArgumentException("You might have used the wrong method");
 	}
@@ -445,5 +459,26 @@ public class StatsGenerator extends ProbabilityList{
         }
         return null;
 	}
-
+	
+	public static String getAxisName(int property){
+		if(property == PATH_LENGTH)
+			return "path length";
+		if(property == TIME_STOPPED)
+			return "time stopped";
+		if(property == NO_STOPS) //gettotalaverage
+			return "number of stops";
+		if(property == TIME_SPENT) //gettotalaverage
+			return "time spent";
+		if(property == INACTIVE_TIME) //gettotalaverage
+			return "inactive time";
+		if(property == STHETACHANGE) //gettotalaverage
+			return "change in speed theta";
+		if(property == TIME_PER_STOP) //gettotalaverage
+			return "time spent per stop";
+		if(property == AVERAGE_SPEED) //gettotalaverage
+			return "average speed";
+		if(property == FREQ_IN_AREA) //gettotalaverage
+			return "times appeared in this area";
+		return ProbabilityList.getAxisName(property);
+	}
 }

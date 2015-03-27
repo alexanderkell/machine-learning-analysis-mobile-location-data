@@ -2,6 +2,7 @@ package graphing;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -110,7 +111,7 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 	private JSpinner jspinner1;
 	private JButton jbuttonDone;
 	private JDialog internal_dialog;
-	private JLabel jlabelB;
+	private JButton jlabelB;
 	private JButton jbutton5;
 	private JButton jbutton4;
 	private TrackChangeListener tcl;
@@ -120,6 +121,16 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 	private int col;
 	private PlotHelper plot;
 	private JFrame frame;
+	
+	// For the change track functions
+	private int max_tracks;
+	private static int current_track = 1;
+	private JPanel subpanel1;
+	private JLabel jlabel7;
+	private JButton jbuttonDone2;
+	private JSpinner jspinner2;
+	private JDialog internal_dialog2;
+	private JPanel subpanel1a;
 	
 
 	/**
@@ -181,9 +192,6 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 	public static void plotTrack2(final PhoneData[] track_info, final int row, final int col, final float timescale){
 		plotTrack2(track_info, null, row, col, timescale);
 	}	
-	public static void plotTrack2(final PhoneData[] track_info, final int row, final int col, final float timescale, String trackname, final TrackChangeListener tcl){
-		plotTrack2(track_info, null, row, col, timescale, trackname, tcl);
-	}	
 	
 	/** Plot the track before filtering and after filtering against time
 	 * 	
@@ -196,8 +204,8 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 	public static void plotTrack2(final PhoneData[] before,final PhoneData[] after, final int row, final int col, final float timescale){
 		new PlotTracks(before, after, row, col, TIME, timescale);
 	}
-	public static void plotTrack2(final PhoneData[] before,final PhoneData[] after, final int row, final int col, final float timescale, String trackname, TrackChangeListener tcl){
-		new PlotTracks(before, after, row, col, TIME, timescale, trackname, tcl);
+	public static void plotTrack2(final int row, final int col, final float timescale, TrackChangeListener tcl, int max_tracks){
+		new PlotTracks(row, col, TIME, timescale, tcl, max_tracks);
 	}
 	/**Plot the track at N points per second
 	 * 
@@ -288,11 +296,72 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		}
 	}
 	
-	private PlotTracks(final PhoneData[] before,final PhoneData[] after, final int row, final int col, int points_or_time, float period){
-		this(before, after, row, col, points_or_time, period, null, null);
-	}
-	private PlotTracks(final PhoneData[] before,final PhoneData[] after, final int row, final int col, int points_or_time, float period, String trackname, TrackChangeListener tcl){
+
+	private PlotTracks(final int row, final int col, int points_or_time, float period, TrackChangeListener tcl, int max_tracks){
+		this(tcl.setTrack(current_track), null, row, col, points_or_time, period);
 		this.tcl = tcl;
+		this.max_tracks = max_tracks;	// Total amount of tracks
+		
+		jlabelB = new JButton("Track "+String.valueOf(current_track)+" / "+max_tracks);
+		jlabelB.setFont(labelFont);
+		
+
+		jbutton4 = new JButton("|<<");
+		jbutton5 = new JButton(">>|");
+		
+		subpanel1a.setLayout(new BoxLayout(subpanel1a, BoxLayout.LINE_AXIS));
+		subpanel1a.add(Box.createHorizontalStrut(20));
+		subpanel1a.add(jbutton4);
+		subpanel1a.add(Box.createHorizontalStrut(5));
+		subpanel1a.add(jlabelB);
+		subpanel1a.add(Box.createHorizontalStrut(5));
+		subpanel1a.add(jbutton5);
+	
+
+		customiseButtons(jbutton4,3,2);
+		customiseButtons(jbutton5,3,2);
+		customiseButtons(jlabelB,3,1);
+		jbutton4.setToolTipText("Previous Track");
+		jbutton5.setToolTipText("Next Track");
+		jbutton4.addActionListener(this);
+		jbutton5.addActionListener(this);
+		jlabelB.addActionListener(this);
+		
+		// For the pop up dialog for changing tracks
+		SpinnerModel spinnerModel =
+		         new SpinnerNumberModel(1, //initial value
+		            1, //min
+		            max_tracks, //max
+		            1);//step
+		jspinner2 = new JSpinner(spinnerModel);
+		
+		jspinner2.addChangeListener(this);
+		jspinner2.setFont(labelFont);
+		JLabel jlabel6 = new JLabel("Track: ");
+		jlabel6.setFont(labelFont);
+		jlabel7 = new JLabel(" / "+max_tracks);
+		jlabel7.setFont(labelFont);
+		jbuttonDone2 = new JButton("Done");
+		jbuttonDone2.setFont(labelFont);
+		jbuttonDone2.addActionListener(this);
+		
+		JPanel jpanel3 = new JPanel();
+		jpanel3.setLayout(new BoxLayout(jpanel3,BoxLayout.LINE_AXIS));
+		jpanel3.add(jlabel6);
+		jpanel3.add(jspinner2);
+		jpanel3.add(jlabel7);
+		jpanel3.add(Box.createHorizontalStrut(5));
+		jpanel3.add(jbuttonDone2);
+		jpanel3.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+		
+		internal_dialog2 = new JDialog();
+		internal_dialog2.add(jpanel3);
+		internal_dialog2.setUndecorated(true);
+		internal_dialog2.pack();
+		internal_dialog2.addWindowFocusListener(this);
+		
+	}
+	private PlotTracks(final PhoneData[] before,final PhoneData[] after, final int row, final int col, int points_or_time, float period){
 		this.points_or_time = points_or_time;
 		this.period = period;
 		Image im = new ImageIcon("map.jpg").getImage(); 
@@ -322,26 +391,23 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		jbutton1 = new JButton(PLAYSYMBOL);	// Label for "Playing at XX speed or points/sec"
 		jbutton2 = new JButton("<<");
 		jbutton3 = new JButton(">>");
-		jbutton4 = new JButton("|<<");
-		jbutton5 = new JButton(">>|");
 		jlabel1 = new JButton();	// Label for showing the current point number
 		jlabel2 = new JLabel();	// Label for showing start time
 		jlabel3 = new JLabel();	// Label for showing end time
 		jlabelA = new JLabel(PLAY); // Label for showing the player status
 		jlabelA.setHorizontalAlignment(JLabel.RIGHT);
-		jlabelB = new JLabel(trackname);
+		
 		jbutton1.setFont(labelFontLarge);
 		jbutton2.setFont(labelFont);
 		jbutton3.setFont(labelFont);
 		jlabel1.setFont(labelFont);
 		jlabel2.setFont(labelFont);
 		jlabel3.setFont(labelFont);
-		jlabelB.setFont(labelFont);
 		jlabelA.setFont(labelFont);
 
 		jlabel1.addActionListener(this);
 		
-		// For the pop up dialog
+		// For the pop up dialog for changing points
 		SpinnerModel spinnerModel =
 		         new SpinnerNumberModel(1, //initial value
 		            1, //min
@@ -379,7 +445,8 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 
-		JPanel subpanel1 = new JPanel();
+		subpanel1 = new JPanel();
+		subpanel1a = new JPanel();
 		subpanel1.setLayout(new BoxLayout(subpanel1, BoxLayout.LINE_AXIS));
 		subpanel1.setAlignmentX(Container.LEFT_ALIGNMENT);
 		subpanel1.add(Box.createHorizontalStrut(3));
@@ -388,14 +455,7 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		subpanel1.add(jbutton2);
 		subpanel1.add(Box.createHorizontalStrut(5));
 		subpanel1.add(jbutton3);
-		if(tcl != null){
-			subpanel1.add(Box.createHorizontalStrut(20));
-			subpanel1.add(jbutton4);
-			subpanel1.add(Box.createHorizontalStrut(5));
-			subpanel1.add(jlabelB);
-			subpanel1.add(Box.createHorizontalStrut(5));
-			subpanel1.add(jbutton5);
-		}
+		subpanel1.add(subpanel1a);
 		// Add a horizontal glue so that the jlabelA can be appear at the right hand side of the frame
 		subpanel1.add(Box.createHorizontalGlue());
 		subpanel1.add(jlabelA);
@@ -495,21 +555,16 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		customiseButtons(jbutton1,8,6);
 		customiseButtons(jbutton2,3,1);
 		customiseButtons(jbutton3,3,1);
-		customiseButtons(jbutton4,3,1);
-		customiseButtons(jbutton5,3,1);
 		customiseButtons(jlabel1,3,1);
 		jlabel1.setToolTipText("Click to change current point");
 		jbutton1.setPreferredSize(new Dimension(jbutton1.getWidth()-10,jbutton1.getHeight()+3));
 		
 		jbutton2.setToolTipText("Previous Point (\u2190)");
 		jbutton3.setToolTipText("Next Point (\u2192)");
-		jbutton4.setToolTipText("Previous Track");
-		jbutton5.setToolTipText("Next Track");
+		
 		jbutton1.addActionListener(this);
 		jbutton2.addMouseListener(this);
 		jbutton3.addMouseListener(this);
-		jbutton4.addActionListener(this);
-		jbutton5.addActionListener(this);
 		frame.addKeyListener(this);
 		
 		jpb.addMouseListener(this);
@@ -527,8 +582,8 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		            1, //min
 		            before.length, //max
 		            1);//step
-		jspinner1 = new JSpinner(spinnerModel);
-		jlabel5 = new JLabel(" / "+before.length);
+		jspinner1.setModel(spinnerModel);
+		jlabel5.setText(" / "+before.length);
 		final TimerEventsListener tel = new TimerEventsListener(){
 
 			@Override
@@ -561,6 +616,8 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 				jlabelA.setText(STOP);
 			}
 		};
+		
+		
 		for(int i = 0; i<label.length; i++)
 			plot.clearData(label[i]);
 		// Pause the player if it is currently playing otherwise the old data will keep playing, causing unpredictable behaviour
@@ -569,13 +626,7 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		tl = new TimeLine(before, after, (int)(100/period), tel, row, col, label[0], label[1], label[2], label[3], plot);
 		tl.setCurrentPoint(0);
 		
-/*		frame.remove(plot.getChartPanel());
-		plot = tl.getPlot();
-		frame.add(plot.getChartPanel(), BorderLayout.CENTER);
-		frame.pack();
-		frame.revalidate();
-		frame.repaint();
-*/	}
+	}
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
 		// TODO Auto-generated method stub
@@ -687,14 +738,21 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		if(arg0.getKeyCode() == KeyEvent.VK_SPACE){
+		int keycode = arg0.getKeyCode();
+		if(keycode == KeyEvent.VK_SPACE){
 			playOrPause(!paused);
-		} else if(arg0.getKeyCode() == KeyEvent.VK_LEFT){
+		} else if(keycode == KeyEvent.VK_LEFT){
 			if(!helddown)
 				rewind();
-		} else if(arg0.getKeyCode() == KeyEvent.VK_RIGHT){
+		} else if(keycode == KeyEvent.VK_RIGHT){
 			if(!helddown)
 				fastforward();
+		} else if(keycode == KeyEvent.VK_PAGE_UP){
+			if(tcl!=null)
+				updateTrackLabel(current_track+1);
+		} else if(keycode == KeyEvent.VK_PAGE_DOWN){
+			if(tcl!=null)
+				updateTrackLabel(current_track+1);
 		}
 	}
 
@@ -727,52 +785,66 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 			internal_dialog.setVisible(true);
 		} else if (but == jbuttonDone){
 			internal_dialog.setVisible(false);
-		} else if (but == jbutton4){
-			jlabelB.setText("Loading ...");
-			// New thread is required for the loading message to show
-			new Thread(){
-				public void run(){
-					String old_name = jlabelB.getText();
-					jlabelB.revalidate();
-					jlabelB.repaint();
-					String name = tcl.previousTrackName();
-					if(name==null){
-						jlabelB.setText(old_name);
-					} else {
-						jlabelB.setText(name);
-						changeTrack(tcl.setTrack(), null);
-					}
-				}
-			}.start();
-			
-		} else if (but == jbutton5){
-			jlabelB.setText("Loading ...");
-			// New thread is required for the loading message to show
-			new Thread(){
-				public void run(){
-					String old_name = jlabelB.getText();
-					jlabelB.revalidate();
-					jlabelB.repaint();
-					String name = tcl.nextTrackName();
-					if(name==null){
-						jlabelB.setText(old_name);
-					} else {
-						jlabelB.setText(name);
-						changeTrack(tcl.setTrack(), null);
-					}
-				}
-			}.start();
-			
+		} else if (but == jbutton4){	// Previous track button pressed
+			updateTrackLabel(current_track-1);
+		} else if (but == jbutton5){	// Next track button pressed
+			updateTrackLabel(current_track+1);
+		} else if (but == jlabelB){
+			Point point = jlabelB.getLocationOnScreen();
+			jspinner2.setValue(current_track);
+			internal_dialog2.setLocation(point.x, point.y+jlabelB.getHeight());
+			internal_dialog2.setVisible(true);
+		} else if (but == jbuttonDone2){
+			internal_dialog2.setVisible(false);
 		}
-			
 	}
-	
+	/**
+	 * 
+	 * @param prev_or_next Previous point = true, Next point = false
+	 */
+	private void updateTrackLabel(final int index){
+		jlabelB.setText("Loading ...");
+		// New thread is required for the loading message to show
+		new Thread(){
+			public void run(){
+				String old_name = jlabelB.getText();
+				jlabelB.revalidate();
+				jlabelB.repaint();
+				
+				
+				if(index>=1 && index <= max_tracks){
+					PhoneData[] newtrack = tcl.setTrack(index);
+					// Check if the track is empty
+					if(newtrack == null){
+						System.err.println("Track "+index+" is empty");
+						jlabelB.setText(old_name);
+						return;
+					} else {
+						jlabelB.setText("Track "+index+" / "+max_tracks);
+						changeTrack(newtrack, null);
+						current_track = index;
+					}
+				} else {
+					jlabelB.setText(old_name);
+				}
+				
+			}
+		}.start();
+
+		
+	}
 	@Override
 	public void stateChanged(ChangeEvent arg0) {
 		// TODO Auto-generated method stub
 		JComponent com = (JComponent)arg0.getSource();
 		if(com == jspinner1){
 			tl.setCurrentPoint((int)jspinner1.getValue()-1);
+		} else if(com == jspinner2){
+			// Obtain the new track and pass it to the updateTrackLabel() method
+			int index = (int)jspinner2.getValue();
+			// Update track if the selected track is different from the old track
+			if(index != current_track)
+				updateTrackLabel(index);
 		} else
 			((JButton)com).setContentAreaFilled(((JButton)com).getModel().isRollover());
 	}
@@ -787,6 +859,8 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		// TODO Auto-generated method stub
 		if(e.getSource() == internal_dialog)
 			internal_dialog.setVisible(false);
+		else if(e.getSource() == internal_dialog2)
+			internal_dialog2.setVisible(false);
 	}
 	
 	private void customiseButtons(JButton b, int width, int height){
@@ -970,7 +1044,7 @@ class TimeLine{
 	}
 	private synchronized void setCurrentTime(int index, float percent){
 		long previous_time = current_time;
-		current_time = before[index].ts.getTime()+ (long)(points_time_diff*percent)/interval*interval;
+		current_time = before[index].ts.getTime()+ (long)(points_time_diff*percent)/100*100;
 		// If the specified index is equal to current point and either the index is the last point or time is the same
 		if(!newtrackisdrawn && index == getCurrentPoint() && (index == before.length-1 || previous_time == current_time)){
 			if(index == before.length-1){
@@ -1019,6 +1093,8 @@ class TimeLine{
 		return finished;
 	}
 	public synchronized void advanceTime(){
+		// Adjust current_time so that it can be divided by the interval
+		current_time = current_time/interval*interval;
 		advanceTime(before.length);
 	}
 	public synchronized void advanceTimeTo(int index){

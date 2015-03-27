@@ -44,61 +44,33 @@ public class PlotTracksMain {
 	private static void plot(final String phoneid) throws SQLException{
 
 		final insertMySQL mysql = new insertMySQL();
-		final ArrayList<PhoneData> filtered = mysql.query("FilteredData", "PhoneID = '"+phoneid+"' AND TrackNo = "+ track);
-		filarray = filtered.toArray(new PhoneData[filtered.size()]);
-		totaltracks = mysql.totalTracksQuery("FilteredData", "PhoneID = '"+phoneid+"'");
-		
+				
 		TrackChangeListener tcl = new TrackChangeListener(){
 
 			@Override
-			public String previousTrackName() {
+			public PhoneData[] setTrack(int index) {
 				// TODO Auto-generated method stub
-				
-				if(track-1 >= 1){
-					ArrayList<PhoneData> filtered;
-					track--;
+				if(index >= 1 && index <= totaltracks){
 					try {
 						
-						filtered = mysql.query("FilteredData", "PhoneID = '"+phoneid+"' AND TrackNo = "+ track);
+						ArrayList<PhoneData> filtered = mysql.query("FilteredData", "PhoneID = '"+phoneid+"' AND TrackNo = "+ index);
 						filarray = filtered.toArray(new PhoneData[filtered.size()]);
-						return "Track "+ (track)+"/"+totaltracks;
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					
 				}
-				return null;
-			}
-
-			@Override
-			public PhoneData[] setTrack() {
-				// TODO Auto-generated method stub
 				return filarray;
 			}
 
-			@Override
-			public String nextTrackName() {
-				// TODO Auto-generated method stub
-				if(track+1 <= totaltracks){
-					ArrayList<PhoneData> filtered;
-					track++;
-					try {
-						
-						filtered = mysql.query("FilteredData", "PhoneID = '"+phoneid+"' AND TrackNo = "+ track);
-						filarray = filtered.toArray(new PhoneData[filtered.size()]);
-						return "Track "+ (track)+"/"+totaltracks;
-					} catch (SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-				}
-				return null;
-			}
 			
 		};
-		PlotTracks.plotTrack2(filtered.toArray(new PhoneData[filtered.size()]), PlotTracks.X, PlotTracks.Y, 0.1f, "Track "+track+"/"+totaltracks, tcl);
+		totaltracks = mysql.totalTracksQuery("FilteredData", "PhoneID = '"+phoneid+"'");
+		if(totaltracks == 0)
+			System.err.println("There are no tracks associated with this phone id: "+phoneid);
+		else
+			PlotTracks.plotTrack2(PlotTracks.X, PlotTracks.Y, 0.1f, tcl, totaltracks);
 
 	}
 	private static void getPhoneID() {

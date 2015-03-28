@@ -131,6 +131,7 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 	private JDialog internal_dialog2;
 	private JPanel subpanel1a;
 	private Thread updateTrackThread;
+	private PhoneData[] before;
 	
 
 	/**
@@ -295,16 +296,17 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 			}
 		}
 	}
-	
 
 	private PlotTracks(final int row, final int col, int points_or_time, float period, TrackChangeListener tcl, int max_tracks){
 		this(tcl.setTrack(current_track), null, row, col, points_or_time, period);
 		this.tcl = tcl;
 		this.max_tracks = max_tracks;	// Total amount of tracks
 		
-		jlabelB = new JButton("Track "+String.valueOf(current_track)+" / "+max_tracks);
+		jlabelB = new JButton();
 		jlabelB.setFont(labelFont);
-		
+		jlabelB.setText("Track "+current_track+" / "+max_tracks+" ("+
+				before[0].ts.toString()+" - "+before[before.length-1].ts.toString()+")");
+
 
 		jbutton4 = new JButton("|<<");
 		jbutton5 = new JButton(">>|");
@@ -321,8 +323,8 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		customiseButtons(jbutton4,3,2);
 		customiseButtons(jbutton5,3,2);
 		customiseButtons(jlabelB,3,1);
-		jbutton4.setToolTipText("Previous Track (Page Down)");
-		jbutton5.setToolTipText("Next Track (Page Up)");
+		jbutton4.setToolTipText("Previous Track (Page Up)");
+		jbutton5.setToolTipText("Next Track (Page Down)");
 		jbutton4.addActionListener(this);
 		jbutton5.addActionListener(this);
 		jlabelB.addActionListener(this);
@@ -364,6 +366,7 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 	private PlotTracks(final PhoneData[] before,final PhoneData[] after, final int row, final int col, int points_or_time, float period){
 		this.points_or_time = points_or_time;
 		this.period = period;
+		this.before = before;
 		Image im = new ImageIcon("map.jpg").getImage(); 
 		
 		this.row = row;
@@ -432,7 +435,7 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		jpanel2.add(Box.createHorizontalStrut(5));
 		jpanel2.add(jbuttonDone);
 		jpanel2.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
-		
+
 		internal_dialog = new JDialog();
 		internal_dialog.add(jpanel2);
 		internal_dialog.setUndecorated(true);
@@ -552,12 +555,13 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		frame.add(panel, BorderLayout.SOUTH);
 		frame.pack();
 
-		customiseButtons(jbutton1,8,6);
+		customiseButtons(jbutton1,3,6);
 		customiseButtons(jbutton2,3,1);
 		customiseButtons(jbutton3,3,1);
 		customiseButtons(jlabel1,3,1);
 		jlabel1.setToolTipText("Click to change current point");
-		jbutton1.setPreferredSize(new Dimension(jbutton1.getWidth()-10,jbutton1.getHeight()+3));
+		// Prevent the play button from changing size
+		jbutton1.setPreferredSize(new Dimension(jbutton1.getWidth()-5,jbutton1.getHeight()+5));
 		
 		jbutton2.setToolTipText("Previous Point (\u2190)");
 		jbutton3.setToolTipText("Next Point (\u2192)");
@@ -576,6 +580,11 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 	}
 
 
+	/**To be called from the updateTrackLabel() method only
+	 * 
+	 * @param before	PhoneData before filtering
+	 * @param after		PhoneData after filtering
+	 */
 	private void changeTrack(final PhoneData[] before, final PhoneData[] after){
 	
 		// For the pop up dialog
@@ -626,7 +635,7 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		if(paused == false)
 			playOrPause(true);
 		tl = new TimeLine(before, after, (int)(100/period), tel, row, col, label[0], label[1], label[2], label[3], plot);
-		tl.setCurrentPoint(0);
+		tl.setCurrentPoint(before.length-1);
 		
 	}
 	@Override
@@ -751,10 +760,10 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 				fastforward();
 		} else if(keycode == KeyEvent.VK_PAGE_UP){
 			if(tcl!=null)
-				updateTrackLabel(current_track+1);
+				updateTrackLabel(current_track-1);
 		} else if(keycode == KeyEvent.VK_PAGE_DOWN){
 			if(tcl!=null)
-				updateTrackLabel(current_track-1);
+				updateTrackLabel(current_track+1);
 		}
 	}
 
@@ -823,7 +832,8 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 							jlabelB.setText(old_name);
 							return;
 						} else {
-							jlabelB.setText("Track "+index+" / "+max_tracks);
+							jlabelB.setText("Track "+index+" / "+max_tracks+" ("+
+									newtrack[0].ts.toString()+" - "+newtrack[newtrack.length-1].ts.toString()+")");
 							changeTrack(newtrack, null);
 							current_track = index;
 						}

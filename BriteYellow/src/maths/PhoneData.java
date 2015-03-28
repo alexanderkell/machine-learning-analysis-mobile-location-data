@@ -7,9 +7,10 @@ public class PhoneData{
 	//position x,y,z
 	public double x, y, z;
 	
-	//whole date in Data and String format
+	//whole date in date, string, and timestamp format
 	public Date wholedate;
 	public String wholedatestring;
+	public Timestamp ts;
 	
 	//time between current position and the previous position
 	public double tb;
@@ -23,13 +24,11 @@ public class PhoneData{
 	//relative accelerations in x,y,z and modulus direction
 	public double rax, ray, raz, modacc, acctheta;
 	
+	//Phone id
 	public String phone_id;
 	
 	// Track number
 	public int track_no;
-	
-	// Time stamp
-	public Timestamp ts;
 	
 	// Show if the point is added during interpolation
 	public boolean interpolated = false;

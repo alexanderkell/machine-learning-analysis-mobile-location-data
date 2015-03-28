@@ -1,11 +1,8 @@
 import java.awt.Component;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Scanner;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -28,24 +25,20 @@ public class PlotTracksMain {
 		"ZX1B23QFSP48abead89f52e3bb"
 	};
 
-	private static int track = 1;
 	private static int totaltracks;
-	private static PhoneData[] filarray;
 	public static void main(String args[]) throws Exception{
 		
-		System.out.println("Track machine learning 101");
-
+		System.out.println("PlotTracksMain");
 		
-		getPhoneID();
-		
-		
+		getPhoneIDAndPlot();
+				
 	}
 
 	private static void plot(final String phoneid) throws SQLException{
 
 		final insertMySQL mysql = new insertMySQL();
 				
-		TrackChangeListener tcl = new TrackChangeListener(){
+		final TrackChangeListener tcl = new TrackChangeListener(){
 
 			@Override
 			public PhoneData[] setTrack(int index) {
@@ -54,14 +47,14 @@ public class PlotTracksMain {
 					try {
 						
 						ArrayList<PhoneData> filtered = mysql.query("FilteredData", "PhoneID = '"+phoneid+"' AND TrackNo = "+ index);
-						filarray = filtered.toArray(new PhoneData[filtered.size()]);
+						return filtered.toArray(new PhoneData[filtered.size()]);
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					
 				}
-				return filarray;
+				return null;
 			}
 
 			
@@ -73,12 +66,12 @@ public class PlotTracksMain {
 			PlotTracks.plotTrack2(PlotTracks.X, PlotTracks.Y, 0.1f, tcl, totaltracks);
 
 	}
-	private static void getPhoneID() {
+	private static void getPhoneIDAndPlot() {
 		// TODO Auto-generated method stub
 		final JFrame frame = new JFrame();
 		frame.setResizable(false);
 		
-		JLabel selectlabel = new JLabel("Select phone id: ");
+		JLabel selectlabel = new JLabel("Select a phone: ");
 		selectlabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		
 		final JComboBox<String> cbox1 = new JComboBox<String>(phones);
@@ -99,21 +92,30 @@ public class PlotTracksMain {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
+				cbox1.setEnabled(false);
 				panel.remove(okbutton);
 				frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-				JLabel oklabel = new JLabel("Getting tracks...");
+				final JLabel oklabel = new JLabel("Getting tracks...");
 				oklabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 				panel.add(oklabel);
 				frame.pack();
 				new Thread(){
 					public void run(){
 						try {
-							plot((String)(cbox1.getSelectedItem()));
-						} catch (SQLException e1) {
+							plot(phones[cbox1.getSelectedIndex()]);
+							frame.dispose();
+						} catch (Exception e1) {
 							// TODO Auto-generated catch block
+							StackTraceElement trace = e1.getStackTrace()[0];
+							oklabel.setText("<html>Oops! An error has occured: <br><font color = 'red'><i>"+e1.toString()+"<br> at line "+trace.getLineNumber()+
+									" in class \""+ trace.getClassName()+"\"</i></font><br><br>Please also check the console for the full error message</html>");
+							// Revalidate and repaint the label as it may have changed size
+							oklabel.revalidate();
+							frame.pack();
 							e1.printStackTrace();
+							frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 						}
-						frame.dispose();
+						
 					}
 				}.start();
 			}

@@ -2,7 +2,6 @@ package graphing;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -566,6 +565,8 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		jbutton1.addActionListener(this);
 		jbutton2.addMouseListener(this);
 		jbutton3.addMouseListener(this);
+		// Pack the frame again in case something doesn't fit well in the frame
+		frame.pack();
 		frame.addKeyListener(this);
 		
 		jpb.addMouseListener(this);

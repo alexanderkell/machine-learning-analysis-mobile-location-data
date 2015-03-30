@@ -28,7 +28,7 @@ public class main {
 		String query = sc.nextLine();
 		
 		ArrayList<PhoneData> output = new insertMySQL().query("RawData", query);
-		
+		ArrayList<PhoneData> filtered= output;
 		
 //		ArrayList<PhoneData> filtered = insertMySQL.query("FilteredData", query);
 //		ArrayList<PhoneData> output = filtered;

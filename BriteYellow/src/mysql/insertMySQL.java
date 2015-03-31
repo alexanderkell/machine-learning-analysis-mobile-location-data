@@ -160,23 +160,17 @@ public class insertMySQL {
 	}
 	
 	
-	public int totalTracksQuery(String table, String query) throws SQLException{
-		try{
-			String sql = "SELECT max(TrackNo) FROM "+table+" WHERE "+query ;
+	public String singleItemQuery(String table, String query, String select) throws SQLException{
+
+			String sql = "SELECT "+select+" FROM "+table+" WHERE "+query ;
 			Statement stmt = conn.prepareStatement(sql);
 			
 			
 			ResultSet rs = stmt.executeQuery(sql);
 			if(rs.next())
-				return rs.getInt(1);
-		}catch(SQLException e){
-			e.printStackTrace();
-		}catch(Exception e){
-			e.printStackTrace();
+				return rs.getString(1);
 		
-		}
-		
-		return 0;
+		return null;
 	}
 	
 	public ArrayList<PhoneData> query(String table, String query) throws SQLException{

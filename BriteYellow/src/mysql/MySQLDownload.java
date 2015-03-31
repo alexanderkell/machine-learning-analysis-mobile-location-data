@@ -15,7 +15,7 @@ public class MySQLDownload{
 	public interface PTMListener{
 		public abstract void statusUpdated(int step, String msg);
 		public abstract void stepProgressUpdated(int step, int percent);
-		public abstract void finish();
+		public abstract void finish(int exit, String msg);
 	}
 
 	private String tablename;
@@ -116,7 +116,7 @@ public class MySQLDownload{
 			connect();
 			
 			if(ptm!=null){
-				ptm.statusUpdated(3, "Updating local copies of the tracks from \n(Database version 10 ("+date+"))...");
+				ptm.statusUpdated(3, "Updating local copies of the tracks  for phone "+phoneid+ " from \n(Database version 10 ("+date+"))...");
 				ptm.stepProgressUpdated(3, 0);
 			}
 	
@@ -128,7 +128,7 @@ public class MySQLDownload{
 			for(int i = 1; i <= totaltracks; i++){
 				if(!MySQLDownload.checkATrack(phoneid, i, version)){
 					if(ptm!=null){
-						ptm.statusUpdated(3, "Updating local copies of the tracks ("+(i)+"/"+totaltracks+") \n(Database version 10 ("+date+"))");
+						ptm.statusUpdated(3, "Updating local copies of the tracks for phone "+phoneid+ " ("+(i)+"/"+totaltracks+") \n(Database version 10 ("+date+"))");
 						ptm.stepProgressUpdated(3, 100*(i)/totaltracks);
 					}
 					ArrayList<PhoneData> filtered = query("PhoneID = '"+phoneid+"' AND TrackNo = "+ (i));

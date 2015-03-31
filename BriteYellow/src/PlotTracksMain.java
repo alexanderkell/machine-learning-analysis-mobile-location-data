@@ -59,7 +59,7 @@ public class PlotTracksMain {
 
 			
 		};
-		totaltracks = mysql.totalTracksQuery("FilteredData", "PhoneID = '"+phoneid+"'");
+		totaltracks = Integer.parseInt(mysql.singleItemQuery("FilteredData", "PhoneID = '"+phoneid+"'", "max(TrackNo)"));
 		if(totaltracks == 0)
 			System.err.println("There are no tracks associated with this phone id: "+phoneid);
 		else

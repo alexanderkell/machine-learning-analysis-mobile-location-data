@@ -1,28 +1,33 @@
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.SwingUtilities;
 
 import csvexport.CSVWriter;
 
 import distribution.StatsGenerator;
 
 import maths.PhoneData;
-import mysql.insertMySQL;
+import mysql.MySQLDownload;
+import mysql.MySQLDownload.PTMListener;
 
 
-public class StatGeneratorMain extends TimerTask{
+public class StatGeneratorMain extends TimerTask implements ActionListener, PTMListener{
 
 	public final static String[] phones = {
 		"HT25TW5055273593c875a9898b00",
@@ -38,14 +43,16 @@ public class StatGeneratorMain extends TimerTask{
 	public static int[] ybounds = {
 		302,364
 	};
-	/*
-	 * 	public static int[] xbounds = {
+	
+	public int phoneindexcount = 0;
+	
+/*	public static int[] xbounds = {
 		200,330,460,590,720,850
 	};
 	public static int[] ybounds = {
 		302,322,344,364
 	};
-	 */
+*/	
 	public static int[] property = {
 		StatsGenerator.PATH_LENGTH,	//gettotalaverage
 		StatsGenerator.TIME_STOPPED, //gettotalaverage
@@ -69,12 +76,11 @@ public class StatGeneratorMain extends TimerTask{
 		
 	};
 	public static double[][] property2 = {
-		{StatsGenerator.AVERAGE_SPEED, 0, 3},
+/*		{StatsGenerator.AVERAGE_SPEED, 0, 3},
 		{StatsGenerator.AVERAGE_SPEED, 10, 100},
-//		{StatsGenerator.STHETACHANGE, -Math.PI/2,-Math.PI/2},
 		{StatsGenerator.STHETACHANGE_NO, -Math.PI/8,Math.PI/8},
 		{StatsGenerator.STHETACHANGE_NO, -Math.PI,Math.PI},
-	};
+*/	};
 	
 	private JProgressBar jpb;
 
@@ -88,13 +94,27 @@ public class StatGeneratorMain extends TimerTask{
 	private Timer timer;
 
 	private JPanel panel;
-	public StatGeneratorMain(){
-		jpb = new JProgressBar();
-		statuslabel = new JLabel("Preparing ...");
-		timelabel = new JLabel(" ");
-		starttime = System.currentTimeMillis();
-		infolabel = new JLabel("To terminate: go to console and press \"Ctrl\" + \"C\"");
 
+	private JButton cancelbutton;
+	public void setupGUI(){
+		jpb = new JProgressBar();
+		statuslabel = new JLabel("<html>Preparing ...<br> &nbsp</html>");
+		timelabel = new JLabel(" ");
+		
+		infolabel = new JLabel("The download process will be resume if cancelled");
+		cancelbutton = new JButton("Cancel");
+		
+		// Configure components
+		jpb.setAlignmentX(Component.CENTER_ALIGNMENT);
+		statuslabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		statuslabel.setHorizontalAlignment(JLabel.LEFT);
+		timelabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		timelabel.setHorizontalAlignment(JLabel.LEFT);
+		infolabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		infolabel.setHorizontalAlignment(JLabel.LEFT);
+		cancelbutton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		cancelbutton.addActionListener(this);
+		
 		
 		panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
@@ -105,6 +125,8 @@ public class StatGeneratorMain extends TimerTask{
 		panel.add(timelabel);
 		panel.add(Box.createVerticalStrut(10));
 		panel.add(infolabel);	
+		panel.add(Box.createVerticalStrut(5));
+		panel.add(cancelbutton);
 		jframe = new JFrame();
 		jframe.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		jframe.setTitle("Generating stats - StatsGeneratorMain");
@@ -112,21 +134,15 @@ public class StatGeneratorMain extends TimerTask{
 		jframe.pack();
 		jframe.setLocationRelativeTo(null);
 		jframe.setResizable(false);
+		jframe.setMinimumSize(new Dimension(500,170));
 		jframe.setVisible(true);
 		
+		starttime = System.currentTimeMillis();
 		timer = new Timer();
 		timer.scheduleAtFixedRate(this, 0, 1000);
 	}
-	public void setStatus(final int phoneindex, final int track, final int totaltracks, final int totaldatapoints){
-		SwingUtilities.invokeLater(new Runnable(){
-			@Override
-			public void run(){
-				jpb.setValue(100*phoneindex/phones.length + 100/phones.length*track/totaltracks);
-				statuslabel.setText("Phone: "+phones[phoneindex]+",  Track: "+track+"/"+totaltracks+" has: "+totaldatapoints+" point(s)");
-		
-			}
-		});
-	}
+
+	@Override
 	public void finish(final int exit, final String err_msg){
 
 		timer.cancel();
@@ -151,6 +167,38 @@ public class StatGeneratorMain extends TimerTask{
 			jframe.repaint();
 		}
 	}
+	
+	@Override
+	public void statusUpdated(int step, String msg) {
+		// TODO Auto-generated method stub
+		// Replace all \n with <br> and the whole message into
+		// html format
+		msg = "<html>"+msg.replaceAll("\n", "<br>")+"</html>";
+		statuslabel.setText(msg);
+		jframe.pack();
+	}
+	@Override
+	public void stepProgressUpdated(int step, int percent) {
+		// TODO Auto-generated method stub
+		if(step == 3){
+			if(percent == 0){
+				phoneindexcount++;
+			}
+
+			jpb.setValue(phoneindexcount*20+percent/5);
+		}
+		else if(percent>=0){
+			if(step>=4){
+				cancelbutton.setVisible(false);
+				infolabel.setText("To terminate: go to console and press \"Ctrl\" + \"C\"");
+			}
+			jpb.setIndeterminate(false);
+			jpb.setValue(percent);
+		} else {
+			jpb.setIndeterminate(true);
+		}
+	}
+
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
@@ -164,16 +212,42 @@ public class StatGeneratorMain extends TimerTask{
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws ParseException, SQLException, IOException {
+		new StatGeneratorMain();
+	}
+	public StatGeneratorMain(){
 		// TODO Auto-generated method stub
-		StatGeneratorMain sgm = new StatGeneratorMain();
 		System.out.println("StatGenerator main method");
-		// Create and initialise CSVWriter
+		// set up the GUI
+		setupGUI();
+		
+		final int[] totaltracks = new int[phones.length];
+		
+		// Create connection to the mySQL server
 		try{
+			MySQLDownload msd = new MySQLDownload("FilteredData");
+			
+			msd.setPTMListener(this);
+	
+			for(int i = 0; i<phones.length; i++){
+				boolean success = msd.downloadAndSerialise(phones[i]);
+				totaltracks[i] = msd.getTotalTracks();
+				if (!success)
+					JOptionPane.showMessageDialog(null, "Unable to connect to database and check for updates\nLocal copy of data will be used instead", "Unable to connect to database", JOptionPane.WARNING_MESSAGE);
+			}
+			statusUpdated(4, "Analysing tracks ...");
+			stepProgressUpdated(4, 100);
+		
+		
+			// Create CSVWriters
 			final CSVWriter[] cw = new CSVWriter[(xbounds.length-1)*(ybounds.length-1)];
+			
+			// Initialise the CSVWriters and write the headers
 			for(int j = 0; j < xbounds.length-1; j++){
 				for(int k = 0; k < ybounds.length-1; k++){
 					int index = j*(ybounds.length-1) + k;
+					// Initialise the CSVWriters, destination of CSVWriter: "Statistics/"
 					cw[index] = new CSVWriter("Statistics/From ("+xbounds[j]+", "+xbounds[j+1]+") to ("+ybounds[k]+", "+ybounds[k+1]+")");
+					// Write the headers
 					String[] headers = new String[property.length+property2.length+2];
 					headers[0] = "PhoneID";
 					headers[1] = "Track";
@@ -183,36 +257,22 @@ public class StatGeneratorMain extends TimerTask{
 					for(int n=0; n<property2.length; n++){
 						headers[n+property.length+2] = StatsGenerator.getAxisName(property[n]);
 					}
-					
 					cw[index].write(headers);
 				}
 			}
 			
-			// Create connection to the mySQL server
-			insertMySQL mysql = new insertMySQL();
+
+				
 			for(int i = 0; i<phones.length; i++){
+								
+				System.out.println("PhoneID "+phones[i]+" has "+totaltracks[i]+" tracks");
 				
-				int max_track = mysql.totalTracksQuery("FilteredData", "PhoneID = '"+phones[i]+"'");
-				System.out.println("PhoneID "+phones[i]+" has "+max_track+" tracks");
-				
-				for(int track = 1; track <= max_track; track++){
-					String query = "PhoneID = '"+phones[i]+"' AND TrackNo = "+String.valueOf(track);
-					
-					ArrayList<PhoneData> filtered;
-					try{
-						filtered = mysql.query("FilteredData", query);
-					} catch (SQLException e){
-						System.err.println("Track "+track+"/"+max_track+" is empty");
-						continue;
-					}
-					
-					// Update status
-					sgm.setStatus(i, track, max_track,filtered.size());
-//					System.out.println("Track: "+track+"/"+max_track+" has "+filtered.size()+" data point(s)");
+				for(int track = 1; track <= totaltracks[i]; track++){
 					
 					// Generate stats
-					if(filtered.size() > 0){
-						StatsGenerator sg = new StatsGenerator(filtered);
+					PhoneData[] data = MySQLDownload.deserialise(phones[i], track);
+					if(data.length > 0){
+						StatsGenerator sg = new StatsGenerator(data);
 						for(int j = 0; j < xbounds.length-1; j++){
 							for(int k = 0; k < ybounds.length-1; k++){
 								int index = j*(ybounds.length-1) + k;
@@ -226,6 +286,7 @@ public class StatGeneratorMain extends TimerTask{
 								for(int m = 0; m < property2.length; m++){
 									results[m+property.length+2] = String.valueOf(sg.getTotalFreqAt(property2[m][0], property2[m][1],property2[m][2],xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
 								}
+								// Write the stats
 								cw[index].write(results);
 							}
 						}
@@ -234,11 +295,23 @@ public class StatGeneratorMain extends TimerTask{
 				}
 			}
 			
+			// Flush and finialise the files
 			for(CSVWriter index : cw)
 				index.finish();
-			sgm.finish(0, null);
+			// Tell GUI that the process is finished
+			finish(0, null);
 		} catch (Exception e){
-			sgm.finish(1, e.toString()+" (at line "+e.getStackTrace()[0].getLineNumber()+")");
+			finish(1, e.toString()+" (at line "+e.getStackTrace()[0].getLineNumber()+")");
+		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		if(e.getSource() == cancelbutton){
+			jframe.dispose();
+			System.err.println("User aborted");
+			System.exit(1);
 		}
 	}
 

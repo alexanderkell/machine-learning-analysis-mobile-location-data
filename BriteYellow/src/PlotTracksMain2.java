@@ -82,7 +82,7 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener{
 		else
 			PlotTracks.plotTrack2(PlotTracks.X, PlotTracks.Y, 0.1f, tcl, totaltracks);
 
-		ptm.finish();
+		ptm.finish(0, null);
 	}
 	
 	protected static JLabel timelabel;
@@ -221,7 +221,7 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener{
 							}
 
 							@Override
-							public void finish() {
+							public void finish(int exit, String msg) {
 								// TODO Auto-generated method stub
 								finishTimer();
 								frame.dispose();

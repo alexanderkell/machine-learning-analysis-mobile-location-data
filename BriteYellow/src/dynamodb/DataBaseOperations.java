@@ -141,6 +141,7 @@ public class DataBaseOperations {
 		
 	}
 	
+	//deletes a table with a given name
 	public void deleteTable(String tableName) {
         Table table = dynamo.getTable(tableName);
         try {
@@ -156,7 +157,8 @@ public class DataBaseOperations {
         }
     }
 	
-	public void addNewItem(PhoneDataDB pdb) {
+	//to add a value or update a value with the same key
+	public void saveItem(PhoneDataDB pdb) {
 		
 		mapper.save(pdb);
 		
@@ -166,6 +168,7 @@ public class DataBaseOperations {
 		
     }
 	
+	//to add or multiple values
 	public void batchSave(ArrayList<PhoneDataDB> pdb){
 		
 		mapper.batchSave(pdb);
@@ -176,6 +179,27 @@ public class DataBaseOperations {
 		
 	}
 	
+	public void deleteItem(PhoneDataDB pdb) {
+		
+		mapper.delete(pdb);
+		
+		DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(tableName);
+        TableDescription tableDescription = client.describeTable(describeTableRequest).getTable();
+        System.out.println("Table Description: " + tableDescription);
+		
+    }
+	
+	public void batchDelete(ArrayList<PhoneDataDB> pdb){
+		
+		mapper.batchDelete(pdb);
+		
+		DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(tableName);
+        TableDescription tableDescription = client.describeTable(describeTableRequest).getTable();
+        System.out.println("Table Description: " + tableDescription);
+		
+	}
+	
+	//converts an Arraylist of PhoneData objects to PhoneDataDB objects
 	public ArrayList<PhoneDataDB> convertToPhoneDataDB(ArrayList<PhoneData> pd){
 		ArrayList<PhoneDataDB> whole = new ArrayList<PhoneDataDB>();
 		PhoneDataDB datapoint;
@@ -215,6 +239,7 @@ public class DataBaseOperations {
 		return whole;
 	}
 	
+	// converts a PhoneData object to a PhoneDataDB object
 	public PhoneDataDB convertToPhoneDataDB(PhoneData pd){
 		
 		PhoneDataDB datapoint;

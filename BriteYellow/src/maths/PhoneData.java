@@ -3,6 +3,8 @@ package maths;
 import java.sql.Timestamp;
 import java.util.Date;
 
+
+
 public class PhoneData{
 	//position x,y,z
 	public double x, y, z;

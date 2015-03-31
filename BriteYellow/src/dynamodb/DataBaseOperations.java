@@ -1,8 +1,9 @@
 package dynamodb;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+
+import maths.*;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
@@ -11,6 +12,8 @@ import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
@@ -35,15 +38,29 @@ import com.amazonaws.services.dynamodbv2.util.Tables;
 
 public class DataBaseOperations {
 
-	static AmazonDynamoDBClient dynamoDB;
+	static AmazonDynamoDBClient client;
+	static DynamoDB dynamo;
+	final static String tableName = "3D_Cloud_Pan_Data";
+	static DynamoDBMapper mapper;
 	
+	public static void main(String args[]) throws Exception{
+		DataBaseOperations DBO = new DataBaseOperations();
+		DataGetter DG = new DataGetter(7, "24th Sept ORDERED.CSV");
+		DataGetter DG2 = new DataGetter(7, "26th Sept ORDERED.CSV");
+		ArrayList<PhoneData> pd24 = DG.getFullPhoneDataList();
+		ArrayList<PhoneData> pd26 = DG2.getFullPhoneDataList();
+		
+		ArrayList<PhoneDataDB> pddb24 = DBO.convertToPhoneDataDB(pd24);
+		ArrayList<PhoneDataDB> pddb26 = DBO.convertToPhoneDataDB(pd26);
+		
+		DBO.batchSave(pddb24);
+		System.out.println("Done 24th");
+		DBO.batchSave(pddb26);
+		System.out.println("Done 26th");
+	}
 	
-	private static void init() throws Exception {
-        /*
-         * The ProfileCredentialsProvider will return your [default]
-         * credential profile by reading from the credentials file located at
-         * (/Users/thomas/.aws/credentials).
-         */
+	public DataBaseOperations() throws Exception {
+        
         AWSCredentials credentials = null;
         try {
             credentials = new ProfileCredentialsProvider("default").getCredentials();
@@ -54,61 +71,182 @@ public class DataBaseOperations {
                     "location (/Users/thomas/.aws/credentials), and is in valid format.",
                     e);
         }
-        dynamoDB = new AmazonDynamoDBClient(credentials);
+        client = new AmazonDynamoDBClient(credentials);
         //Region usWest2 = Region.getRegion(Regions.US_WEST_2);
         Region eur1 =  Region.getRegion(Regions.EU_WEST_1);
-        dynamoDB.setRegion(eur1);
+        client.setRegion(eur1);
+        dynamo = new DynamoDB(client);
+        mapper = new DynamoDBMapper(client);
     }
 	
-	public static void main(String args[]) throws Exception{
-		init();
-		String tableName = "3D_Cloud_Pan_Data";
-		
-		if (Tables.doesTableExist(dynamoDB, tableName)) {
-            System.out.println("Table " + tableName + " is already ACTIVE");
-        } else {
-		
-		CreateTableRequest createTableRequest = new CreateTableRequest().withTableName(tableName);
-		createTableRequest.setProvisionedThroughput(new ProvisionedThroughput().withReadCapacityUnits((long)5).withWriteCapacityUnits((long)5));
-		
-		//AttributeDefinitions
-		ArrayList<AttributeDefinition> attributeDefinitions= new ArrayList<AttributeDefinition>();
-		attributeDefinitions.add(new AttributeDefinition().withAttributeName("Phone_ID").withAttributeType("S"));
-		attributeDefinitions.add(new AttributeDefinition().withAttributeName("Timestamp").withAttributeType("N"));
-		attributeDefinitions.add(new AttributeDefinition().withAttributeName("Track_no").withAttributeType("N"));
+	public void createTable(String tableName) throws InterruptedException{
+		try{
+			
+			if (Tables.doesTableExist(client, tableName)) {
+	            System.out.println("Table " + tableName + " is already ACTIVE");
+	        } else {
+			
+			CreateTableRequest createTableRequest = new CreateTableRequest().withTableName(tableName);
+			createTableRequest.setProvisionedThroughput(new ProvisionedThroughput().withReadCapacityUnits((long)25).withWriteCapacityUnits((long)25));
+			
+			//AttributeDefinitions
+			ArrayList<AttributeDefinition> attributeDefinitions= new ArrayList<AttributeDefinition>();
+			attributeDefinitions.add(new AttributeDefinition().withAttributeName("Phone_ID").withAttributeType("S"));
+			attributeDefinitions.add(new AttributeDefinition().withAttributeName("Timestamp").withAttributeType("N"));
+			attributeDefinitions.add(new AttributeDefinition().withAttributeName("Track_no").withAttributeType("N"));
 
-		createTableRequest.setAttributeDefinitions(attributeDefinitions);
+			createTableRequest.setAttributeDefinitions(attributeDefinitions);
 
-		//KeySchema
-		ArrayList<KeySchemaElement> tableKeySchema = new ArrayList<KeySchemaElement>();
-		tableKeySchema.add(new KeySchemaElement().withAttributeName("Phone_ID").withKeyType(KeyType.HASH));
-		tableKeySchema.add(new KeySchemaElement().withAttributeName("Timestamp").withKeyType(KeyType.RANGE));
-		
-		createTableRequest.setKeySchema(tableKeySchema);
+			//KeySchema
+			ArrayList<KeySchemaElement> tableKeySchema = new ArrayList<KeySchemaElement>();
+			tableKeySchema.add(new KeySchemaElement().withAttributeName("Phone_ID").withKeyType(KeyType.HASH));
+			tableKeySchema.add(new KeySchemaElement().withAttributeName("Timestamp").withKeyType(KeyType.RANGE));
+			
+			createTableRequest.setKeySchema(tableKeySchema);
 
-		ArrayList<KeySchemaElement> indexKeySchema = new ArrayList<KeySchemaElement>();
-		indexKeySchema.add(new KeySchemaElement().withAttributeName("Phone_ID").withKeyType(KeyType.HASH));
-		indexKeySchema.add(new KeySchemaElement().withAttributeName("Track_no").withKeyType(KeyType.RANGE));
-		
-		Projection projection = new Projection().withProjectionType(ProjectionType.KEYS_ONLY);
-		
-		LocalSecondaryIndex localSecondaryIndex = new LocalSecondaryIndex()
-	    .withIndexName("AlbumTitleIndex").withKeySchema(indexKeySchema).withProjection(projection);
-		
-		ArrayList<LocalSecondaryIndex> localSecondaryIndexes = new ArrayList<LocalSecondaryIndex>();
-		localSecondaryIndexes.add(localSecondaryIndex);
-		createTableRequest.setLocalSecondaryIndexes(localSecondaryIndexes);
-		
-		TableDescription  createdTableDescription = dynamoDB.createTable(createTableRequest).getTableDescription();
-		System.out.println(createdTableDescription);
-
-		
+			ArrayList<KeySchemaElement> indexKeySchema = new ArrayList<KeySchemaElement>();
+			indexKeySchema.add(new KeySchemaElement().withAttributeName("Phone_ID").withKeyType(KeyType.HASH));
+			indexKeySchema.add(new KeySchemaElement().withAttributeName("Track_no").withKeyType(KeyType.RANGE));
+			
+			Projection projection = new Projection().withProjectionType(ProjectionType.KEYS_ONLY);
+			
+			LocalSecondaryIndex localSecondaryIndex = new LocalSecondaryIndex()
+		    .withIndexName("AlbumTitleIndex").withKeySchema(indexKeySchema).withProjection(projection);
+			
+			ArrayList<LocalSecondaryIndex> localSecondaryIndexes = new ArrayList<LocalSecondaryIndex>();
+			localSecondaryIndexes.add(localSecondaryIndex);
+			createTableRequest.setLocalSecondaryIndexes(localSecondaryIndexes);
+			
+			TableDescription  createdTableDescription = client.createTable(createTableRequest).getTableDescription();
+			System.out.println(createdTableDescription);
+			
+			System.out.println("Waiting for " + tableName + " to become ACTIVE...");
+	        Tables.awaitTableToBecomeActive(client, tableName);
+	        }
+				
+		} catch (AmazonServiceException ase) {
+            System.out.println("Caught an AmazonServiceException, which means your request made it "
+                    + "to AWS, but was rejected with an error response for some reason.");
+            System.out.println("Error Message:    " + ase.getMessage());
+            System.out.println("HTTP Status Code: " + ase.getStatusCode());
+            System.out.println("AWS Error Code:   " + ase.getErrorCode());
+            System.out.println("Error Type:       " + ase.getErrorType());
+            System.out.println("Request ID:       " + ase.getRequestId());
+        } catch (AmazonClientException ace) {
+            System.out.println("Caught an AmazonClientException, which means the client encountered "
+                    + "a serious internal problem while trying to communicate with AWS, "
+                    + "such as not being able to access the network.");
+            System.out.println("Error Message: " + ace.getMessage());
         }
-		
-		
-		
 		
 	}
 	
+	public void deleteTable(String tableName) {
+        Table table = dynamo.getTable(tableName);
+        try {
+            System.out.println("Issuing DeleteTable request for " + tableName);
+            table.delete();
+            System.out.println("Waiting for " + tableName
+                + " to be deleted...this may take a while...");
+            table.waitForDelete();
+
+        } catch (Exception e) {
+            System.err.println("DeleteTable request failed for " + tableName);
+            System.err.println(e.getMessage());
+        }
+    }
+	
+	public void addNewItem(PhoneDataDB pdb) {
+		
+		mapper.save(pdb);
+		
+		DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(tableName);
+        TableDescription tableDescription = client.describeTable(describeTableRequest).getTable();
+        System.out.println("Table Description: " + tableDescription);
+		
+    }
+	
+	public void batchSave(ArrayList<PhoneDataDB> pdb){
+		
+		mapper.batchSave(pdb);
+		
+		DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(tableName);
+        TableDescription tableDescription = client.describeTable(describeTableRequest).getTable();
+        System.out.println("Table Description: " + tableDescription);
+		
+	}
+	
+	public ArrayList<PhoneDataDB> convertToPhoneDataDB(ArrayList<PhoneData> pd){
+		ArrayList<PhoneDataDB> whole = new ArrayList<PhoneDataDB>();
+		PhoneDataDB datapoint;
+		
+		for(int i = 0; i< pd.size(); i++){
+			datapoint = new PhoneDataDB();
+			datapoint.setXPosition(pd.get(i).x);
+			datapoint.setYPosition(pd.get(i).y);
+			datapoint.setZPosition(pd.get(i).z);
+			datapoint.setWholeDate(pd.get(i).wholedate);
+			datapoint.setWholeDateString(pd.get(i).wholedatestring);
+			datapoint.setTimestamp(pd.get(i).ts);
+			datapoint.setTimestampDouble(pd.get(i).ts.getTime());
+			datapoint.setTimeBetween(pd.get(i).tb);
+			datapoint.setXDisplacement(pd.get(i).xdisp);
+			datapoint.setYDisplacement(pd.get(i).ydisp);
+			datapoint.setZDisplacement(pd.get(i).zdisp);
+			datapoint.setModDisplacement(pd.get(i).moddisp);
+			datapoint.setXSpeed(pd.get(i).rsx);
+			datapoint.setYSpeed(pd.get(i).rsy);
+			datapoint.setZSpeed(pd.get(i).rsz);
+			datapoint.setModSpeed(pd.get(i).modspd);
+			datapoint.setSpeedTheta(pd.get(i).spdtheta);
+			datapoint.setXAcceleration(pd.get(i).rax);
+			datapoint.setYAcceleration(pd.get(i).ray);
+			datapoint.setZAcceleration(pd.get(i).raz);
+			datapoint.setModAcceleration(pd.get(i).modacc);
+			datapoint.setAccelerationTheta(pd.get(i).acctheta);
+			datapoint.setPhoneID(pd.get(i).phone_id);
+			datapoint.setTrackNo(pd.get(i).track_no);
+			datapoint.setInterpolated(pd.get(i).interpolated);
+			
+			whole.add(datapoint);
+			
+		}
+		
+		return whole;
+	}
+	
+	public PhoneDataDB convertToPhoneDataDB(PhoneData pd){
+		
+		PhoneDataDB datapoint;
+		
+		datapoint = new PhoneDataDB();
+		datapoint.setXPosition(pd.x);
+		datapoint.setYPosition(pd.y);
+		datapoint.setZPosition(pd.z);
+		datapoint.setWholeDate(pd.wholedate);
+		datapoint.setWholeDateString(pd.wholedatestring);
+		datapoint.setTimestamp(pd.ts);
+		datapoint.setTimestampDouble(pd.ts.getTime());
+		datapoint.setTimeBetween(pd.tb);
+		datapoint.setXDisplacement(pd.xdisp);
+		datapoint.setYDisplacement(pd.ydisp);
+		datapoint.setZDisplacement(pd.zdisp);
+		datapoint.setModDisplacement(pd.moddisp);
+		datapoint.setXSpeed(pd.rsx);
+		datapoint.setYSpeed(pd.rsy);
+		datapoint.setZSpeed(pd.rsz);
+		datapoint.setModSpeed(pd.modspd);
+		datapoint.setSpeedTheta(pd.spdtheta);
+		datapoint.setXAcceleration(pd.rax);
+		datapoint.setYAcceleration(pd.ray);
+		datapoint.setZAcceleration(pd.raz);
+		datapoint.setModAcceleration(pd.modacc);
+		datapoint.setAccelerationTheta(pd.acctheta);
+		datapoint.setPhoneID(pd.phone_id);
+		datapoint.setTrackNo(pd.track_no);
+		datapoint.setInterpolated(pd.interpolated);
+		
+		return datapoint;
+	}
 	
 }

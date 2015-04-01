@@ -358,7 +358,6 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		internal_dialog2 = new JDialog();
 		internal_dialog2.add(jpanel3);
 		internal_dialog2.setUndecorated(true);
-		internal_dialog2.pack();
 		internal_dialog2.addWindowFocusListener(this);
 		
 	}
@@ -440,7 +439,6 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		internal_dialog = new JDialog();
 		internal_dialog.add(jpanel2);
 		internal_dialog.setUndecorated(true);
-		internal_dialog.pack();
 		internal_dialog.addWindowFocusListener(this);
 		
 		jpb = new JProgressBar();	//ProgressBar for showing the current time
@@ -791,6 +789,7 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 			playOrPause(true);
 			jspinner1.setValue(tl.getCurrentPoint()+1);
 			Point point = jlabel1.getLocationOnScreen();
+			internal_dialog.pack();
 			internal_dialog.setLocation(point.x, point.y+jlabel1.getHeight());
 			internal_dialog.setVisible(true);
 		} else if (but == jbuttonDone){
@@ -803,6 +802,7 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 			Point point = jlabelB.getLocationOnScreen();
 			jspinner2.setValue(current_track);
 			internal_dialog2.setLocation(point.x, point.y+jlabelB.getHeight());
+			internal_dialog2.pack();
 			internal_dialog2.setVisible(true);
 		} else if (but == jbuttonDone2){
 			internal_dialog2.setVisible(false);

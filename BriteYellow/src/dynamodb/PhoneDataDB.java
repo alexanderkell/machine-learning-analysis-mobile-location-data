@@ -10,7 +10,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
 
-@DynamoDBTable(tableName="3D_Cloud_Pan_Data") 
+@DynamoDBTable(tableName = DBName.dbname) 
 public class PhoneDataDB{
 	private double x, y, z;
 	private Date wholedate;
@@ -35,7 +35,7 @@ public class PhoneDataDB{
 	}
 	@DynamoDBAttribute(attributeName = "Y_Position")
 	public double getYPosition(){
-		return z;
+		return y;
 	}
 	public void setYPosition(double y){
 		this.y = y;

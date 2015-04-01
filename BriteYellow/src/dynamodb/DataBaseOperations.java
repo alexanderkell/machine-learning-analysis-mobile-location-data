@@ -40,11 +40,15 @@ public class DataBaseOperations {
 
 	static AmazonDynamoDBClient client;
 	static DynamoDB dynamo;
-	final static String tableName = "3D_Cloud_Pan_Data";
+	final static String tableName = DBName.dbname;
 	static DynamoDBMapper mapper;
 	
 	public static void main(String args[]) throws Exception{
+		
 		DataBaseOperations DBO = new DataBaseOperations();
+		//DBO.deleteTable(tableName);
+		//DBO.createTable(tableName);
+		//DBO.updateThroughput(tableName,1000L,1000L);
 		DataGetter DG = new DataGetter(7, "24th Sept ORDERED.CSV");
 		DataGetter DG2 = new DataGetter(7, "26th Sept ORDERED.CSV");
 		ArrayList<PhoneData> pd24 = DG.getFullPhoneDataList();
@@ -52,11 +56,13 @@ public class DataBaseOperations {
 		
 		ArrayList<PhoneDataDB> pddb24 = DBO.convertToPhoneDataDB(pd24);
 		ArrayList<PhoneDataDB> pddb26 = DBO.convertToPhoneDataDB(pd26);
-		
+		System.out.println("Writing 24th Values...");
 		DBO.batchSave(pddb24);
 		System.out.println("Done 24th");
+		System.out.println("Writing 26th Values...");
 		DBO.batchSave(pddb26);
 		System.out.println("Done 26th");
+		//DBO.updateThroughput(tableName,25L,25L);
 	}
 	
 	public DataBaseOperations() throws Exception {
@@ -272,6 +278,19 @@ public class DataBaseOperations {
 		datapoint.setInterpolated(pd.interpolated);
 		
 		return datapoint;
+	}
+	
+	public void updateThroughput(String tableName, long read, long write) throws InterruptedException{
+		Table table = dynamo.getTable(tableName);
+
+		ProvisionedThroughput provisionedThroughput = new ProvisionedThroughput()
+		    .withReadCapacityUnits(read)
+		    .withWriteCapacityUnits(write);
+
+		table.updateTable(provisionedThroughput);
+		System.out.println("Waiting for Update to Complete...");
+		table.waitForActive();
+		System.out.println("Finished Update");
 	}
 	
 }

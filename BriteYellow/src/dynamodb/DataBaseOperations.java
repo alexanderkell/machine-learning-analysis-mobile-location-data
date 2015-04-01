@@ -2,6 +2,7 @@ package dynamodb;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import maths.*;
 
@@ -48,7 +49,7 @@ public class DataBaseOperations {
 		DataBaseOperations DBO = new DataBaseOperations();
 		//DBO.deleteTable(tableName);
 		//DBO.createTable(tableName);
-		//DBO.updateThroughput(tableName,1000L,1000L);
+		//DBO.updateThroughput(tableName,25L,1000L);
 		DataGetter DG = new DataGetter(7, "24th Sept ORDERED.CSV");
 		DataGetter DG2 = new DataGetter(7, "26th Sept ORDERED.CSV");
 		ArrayList<PhoneData> pd24 = DG.getFullPhoneDataList();
@@ -278,6 +279,46 @@ public class DataBaseOperations {
 		datapoint.setInterpolated(pd.interpolated);
 		
 		return datapoint;
+	}
+	
+	public ArrayList<PhoneDataDB> convertToPhoneDataDB(PhoneData[] pda){
+		ArrayList<PhoneData> pd = new ArrayList<PhoneData>(Arrays.asList(pda));
+		ArrayList<PhoneDataDB> whole = new ArrayList<PhoneDataDB>();
+		PhoneDataDB datapoint;
+		
+		for(int i = 0; i< pd.size(); i++){
+			datapoint = new PhoneDataDB();
+			datapoint.setXPosition(pd.get(i).x);
+			datapoint.setYPosition(pd.get(i).y);
+			datapoint.setZPosition(pd.get(i).z);
+			datapoint.setWholeDate(pd.get(i).wholedate);
+			datapoint.setWholeDateString(pd.get(i).wholedatestring);
+			datapoint.setTimestamp(pd.get(i).ts);
+			datapoint.setTimestampDouble(pd.get(i).ts.getTime());
+			datapoint.setTimeBetween(pd.get(i).tb);
+			datapoint.setXDisplacement(pd.get(i).xdisp);
+			datapoint.setYDisplacement(pd.get(i).ydisp);
+			datapoint.setZDisplacement(pd.get(i).zdisp);
+			datapoint.setModDisplacement(pd.get(i).moddisp);
+			datapoint.setXSpeed(pd.get(i).rsx);
+			datapoint.setYSpeed(pd.get(i).rsy);
+			datapoint.setZSpeed(pd.get(i).rsz);
+			datapoint.setModSpeed(pd.get(i).modspd);
+			datapoint.setSpeedTheta(pd.get(i).spdtheta);
+			datapoint.setXAcceleration(pd.get(i).rax);
+			datapoint.setYAcceleration(pd.get(i).ray);
+			datapoint.setZAcceleration(pd.get(i).raz);
+			datapoint.setModAcceleration(pd.get(i).modacc);
+			datapoint.setAccelerationTheta(pd.get(i).acctheta);
+			datapoint.setPhoneID(pd.get(i).phone_id);
+			datapoint.setTrackNo(pd.get(i).track_no);
+			datapoint.setInterpolated(pd.get(i).interpolated);
+			
+			whole.add(datapoint);
+			
+		}
+		
+		return whole;
 	}
 	
 	public void updateThroughput(String tableName, long read, long write) throws InterruptedException{

@@ -63,8 +63,8 @@ public class DataBaseOperations {
 		DBO.batchSave(pddb26);
 		System.out.println("Done 26th");
 		//DBO.updateThroughput(tableName,25L,1L);
-	}
-	*/
+	}*/
+	
 	public DataBaseOperations() throws Exception {
         
         AWSCredentials credentials = null;
@@ -127,7 +127,7 @@ public class DataBaseOperations {
 			indexKeySchema.add(new KeySchemaElement().withAttributeName("Phone_ID").withKeyType(KeyType.HASH));
 			indexKeySchema.add(new KeySchemaElement().withAttributeName("Track_no").withKeyType(KeyType.RANGE));
 			
-			Projection projection = new Projection().withProjectionType(ProjectionType.KEYS_ONLY);
+			Projection projection = new Projection().withProjectionType(ProjectionType.ALL);
 			
 			LocalSecondaryIndex localSecondaryIndex = new LocalSecondaryIndex()
 		    .withIndexName("Track_no").withKeySchema(indexKeySchema).withProjection(projection);

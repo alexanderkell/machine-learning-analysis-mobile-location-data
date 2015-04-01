@@ -44,12 +44,12 @@ public class DataBaseOperations {
 	final static String tableName = DBName.dbname;
 	static DynamoDBMapper mapper;
 	
-	public static void main(String args[]) throws Exception{
+	/*public static void main(String args[]) throws Exception{
 		
 		DataBaseOperations DBO = new DataBaseOperations();
-		//DBO.deleteTable(tableName);
-		//DBO.createTable(tableName);
-		//DBO.updateThroughput(tableName,25L,1000L);
+		DBO.deleteTable(tableName);
+		DBO.createTable(tableName);
+		DBO.updateThroughput(tableName,25L,1000L);
 		DataGetter DG = new DataGetter(7, "24th Sept ORDERED.CSV");
 		DataGetter DG2 = new DataGetter(7, "26th Sept ORDERED.CSV");
 		ArrayList<PhoneData> pd24 = DG.getFullPhoneDataList();
@@ -63,8 +63,8 @@ public class DataBaseOperations {
 		System.out.println("Writing 26th Values...");
 		DBO.batchSave(pddb26);
 		System.out.println("Done 26th");
-		//DBO.updateThroughput(tableName,25L,25L);
-	}
+		DBO.updateThroughput(tableName,25L,25L);
+	}*/
 	
 	public DataBaseOperations() throws Exception {
         
@@ -88,7 +88,6 @@ public class DataBaseOperations {
 	
 	public void createInsertNewTable(PhoneData[] data) throws Exception{
 		DataBaseOperations DBO = new DataBaseOperations();
-		DBO.deleteTable(tableName);
 		DBO.createTable(tableName);
 		DBO.updateThroughput(tableName,25L,1000L);
 

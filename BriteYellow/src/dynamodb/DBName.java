@@ -6,5 +6,5 @@ package dynamodb;
  */
 
 public class DBName{
-	public static final String dbname = "3D_Cloud_Pan_Data";
+	public static final String dbname = "3D_Cloud_Pan_NEW DATA";
 }

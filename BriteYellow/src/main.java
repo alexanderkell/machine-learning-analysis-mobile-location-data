@@ -6,9 +6,8 @@ import java.util.Scanner;
 import maths.*;
 import mysql.*;
 import csvimport.*;
+import dynamodb.DataBaseOperations;
 import filters.*;
-import filters.DistanceVerify;
-import filters.FilterMain;
 import filters.jkalman.JKalmanHelper;
 import graphing.PlotTracks;
 import redundant.DataSorting2;
@@ -27,14 +26,14 @@ public class main {
 		System.out.println("Enter query (PhoneID = 'HT25TW5055273593c875a9898b00' AND TrackNo = 3):");
 		String query = sc.nextLine();
 		
-		ArrayList<PhoneData> output = new insertMySQL().query("RawData", query);
-		ArrayList<PhoneData> filtered= output;
+		ArrayList<PhoneData> output = new insertMySQL().query("FilteredData", query);
+		//ArrayList<PhoneData> filtered= output;
 		
 //		ArrayList<PhoneData> filtered = insertMySQL.query("FilteredData", query);
 //		ArrayList<PhoneData> output = filtered;
 		sc.close();
-/*
-		FilterMain filtering = new FilterMain(200, 5, 5);
+
+		FilterMain filtering = new FilterMain(200, 5, 5, 3);
 		ArrayList<PhoneData> filtered = filtering.FilterTot(output);
 		
 		// Reanalyse the filtered data using DataGetter and store the result in the "newdata" variable
@@ -43,10 +42,12 @@ public class main {
 	
 		
 		System.out.println(newdata.length);
-		insertMySQL input = new insertMySQL();
-		input.insertMyS(newdata, "FilteredData");
+		DataBaseOperations Insert = new DataBaseOperations();
+		Insert.createInsertNewTable(newdata);
+		//insertMySQL input = new insertMySQL();
+		//input.insertMyS(newdata, "FilteredData");
 
-*/		
+		
 		PlotTracks.plotTrack2(output.toArray(new PhoneData[output.size()]),filtered.toArray(new PhoneData[filtered.size()]), PlotTracks.X, PlotTracks.Y, 0.1f);
 	}
 }

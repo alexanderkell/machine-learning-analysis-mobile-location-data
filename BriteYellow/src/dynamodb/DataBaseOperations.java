@@ -86,6 +86,21 @@ public class DataBaseOperations {
         mapper = new DynamoDBMapper(client);
     }
 	
+	public void createInsertNewTable(PhoneData[] data) throws Exception{
+		DataBaseOperations DBO = new DataBaseOperations();
+		DBO.deleteTable(tableName);
+		DBO.createTable(tableName);
+		DBO.updateThroughput(tableName,25L,1000L);
+
+		ArrayList<PhoneDataDB> pddb24 = DBO.convertToPhoneDataDB(data);
+
+		System.out.println("Writing Values");
+		DBO.batchSave(pddb24);
+		System.out.println("Done writing values");
+
+		DBO.updateThroughput(tableName,25L,25L);
+	}
+	
 	public void createTable(String tableName) throws InterruptedException{
 		try{
 			

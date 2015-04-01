@@ -1,15 +1,11 @@
 package maths;
 
-import java.io.Serializable;
+
 import java.sql.Timestamp;
 import java.util.Date;
 
-public class PhoneData implements Serializable{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -3688773816761833405L;
-
+public class PhoneData{
+	
 	//position x,y,z
 	public double x, y, z;
 	

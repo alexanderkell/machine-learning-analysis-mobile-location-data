@@ -1,4 +1,4 @@
-package dynamodbquery;
+package dynamodb;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -19,13 +19,11 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import com.amazonaws.services.dynamodbv2.model.Condition;
 
-import dynamodb.DataBaseOperations;
-
 public class DataBaseQueries{
 	
 	static AmazonDynamoDBClient client;
 	static DynamoDB dynamo;
-	final static String tableName = QueryDBName.dbname;
+	final static String tableName = DBName.dbname;
 	static DynamoDBMapper mapper;
 	
 	/*public static void main(String args[]) throws Exception{

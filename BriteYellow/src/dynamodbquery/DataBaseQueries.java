@@ -20,7 +20,6 @@ import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import com.amazonaws.services.dynamodbv2.model.Condition;
 
 import dynamodb.DataBaseOperations;
-import dynamodb.PhoneDataDB;
 
 public class DataBaseQueries{
 	

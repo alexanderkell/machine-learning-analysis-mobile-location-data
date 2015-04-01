@@ -59,30 +59,38 @@ public class MySQLDownload{
 			FileOutputStream fout = new FileOutputStream(filename);
 			ObjectOutputStream oos = new ObjectOutputStream(fout);
 			oos.writeUTF(version);
+			oos.writeUTF(date);
+			oos.writeUTF(phoneid);
 			oos.writeInt(totaltrack);
 			oos.close();
 		} catch (Exception e){
 			e.printStackTrace();
 		}
 	}
-	public int checkProperties(final String phoneid, final String version, final String date) throws ClassNotFoundException, IOException{
-		boolean valid = false;
+	public int checkProperties(final String phoneid, final String version) throws ClassNotFoundException, IOException{
 		String filename = "Tracks/"+phoneid+"/"+phoneid+".properties";
 		if(!new File(filename).exists()){
-//			valid = false;
 			return -1;
 		}
 		
 		FileInputStream fout = new FileInputStream(filename);
 		ObjectInputStream oos = new ObjectInputStream(fout);
 
+		boolean valid = false;
 		int totaltracks = -1;
 		try{
-			String localversion = (String)oos.readUTF();
-			valid = version==null ? true : localversion.equals(version);
+//			JOptionPane.showMessageDialog(null, oos.readUTF());
 			
-			totaltracks = oos.readInt();
-			
+			String localversion = oos.readUTF();
+			System.out.println("Local version "+localversion);
+			date = oos.readUTF();
+			valid = version==null ? true : version.equals(localversion);
+			if(valid){
+				if(phoneid.equals(oos.readUTF())){
+					totaltracks = oos.readInt();
+					this.version = localversion;
+				}
+			}
 		} catch (IOException e){
 		} catch (Exception e){
 			
@@ -115,25 +123,37 @@ public class MySQLDownload{
 		try{
 			connect();
 			
+				
+			if(version == null)
+				throw new NullPointerException();
+			totaltracks = checkProperties(phoneid, version);
+			if(totaltracks == -1){
+				totaltracks = Integer.parseInt(singleItemQuery(phoneid, "max(TrackNo)"));
+				date = mysql.singleItemQuery("information_schema.tables", "TABLE_NAME = 'FilteredData'", "UPDATE_TIME");
+				serialiseProperies(phoneid, version, date, totaltracks);
+			}
+			System.out.println("Database table last updated: "+date);
+
 			if(ptm!=null){
 				ptm.statusUpdated(3, "Updating local copies of the tracks  for phone "+phoneid+ " from \n(Database version 10 ("+date+"))...");
 				ptm.stepProgressUpdated(3, 0);
 			}
-	
-			totaltracks = checkProperties(phoneid, version, date);
-			if(totaltracks == -1)
-				totaltracks = Integer.parseInt(singleItemQuery(phoneid, "max(TrackNo)"));
-			serialiseProperies(phoneid, version, date, totaltracks);
-	
+
+				
 			for(int i = 1; i <= totaltracks; i++){
+
 				if(!MySQLDownload.checkATrack(phoneid, i, version)){
 					if(ptm!=null){
+						if(date == null){
+							date = mysql.singleItemQuery("information_schema.tables", "TABLE_NAME = 'FilteredData'", "UPDATE_TIME");
+							System.out.println("Database table last updated: "+date);
+						}
 						ptm.statusUpdated(3, "Updating local copies of the tracks for phone "+phoneid+ " ("+(i)+"/"+totaltracks+") \n(Database version 10 ("+date+"))");
 						ptm.stepProgressUpdated(3, 100*(i)/totaltracks);
 					}
 					ArrayList<PhoneData> filtered = query("PhoneID = '"+phoneid+"' AND TrackNo = "+ (i));
 					PhoneData[] filteredarray = filtered.toArray(new PhoneData[filtered.size()]);
-					MySQLDownload.serialiseATrack(phoneid, i, filteredarray, version);					
+					serialiseATrack(phoneid, i, filteredarray, version);					
 				}
 	
 			}
@@ -141,7 +161,7 @@ public class MySQLDownload{
 			serialiseProperies(phoneid, version, date, totaltracks);
 			return true;
 		} catch (NullPointerException e){
-			totaltracks = checkProperties(phoneid, version, date);
+			totaltracks = checkProperties(phoneid, version);
 			if(totaltracks == -1){
 				e.printStackTrace();
 				throw new NullPointerException("Cannot connect to database and cannot verify the local version of tracks");
@@ -195,21 +215,20 @@ public class MySQLDownload{
 			mysql = new insertMySQL();
 			if(ptm!=null){
 				ptm.statusUpdated(2, "Checking database version ...");
-				ptm.stepProgressUpdated(2, 0);
+//				ptm.stepProgressUpdated(2, 0);
 			}
 			try{
 				version = mysql.singleItemQuery("information_schema.tables", "TABLE_NAME = '"+tablename+"'", "VERSION");
-				System.out.println("Table version: "+version);
-				if(ptm!=null)
+				System.out.println("Database table version: "+version);
+/*				if(ptm!=null)
 					ptm.stepProgressUpdated(2, 50);
-				date = mysql.singleItemQuery("information_schema.tables", "TABLE_NAME = 'FilteredData'", "UPDATE_TIME");
-				System.out.println("Table last updated: "+date);
-				if(ptm!=null)
+*/	//				System.out.println("Table size: "+mysql.singleItemQuery("information_schema.tables", "TABLE_NAME = 'FilteredData'", "DATA_LENGTH")+" byte(s)");
+				
+//				date = mysql.singleItemQuery("information_schema.tables", "TABLE_NAME = 'FilteredData'", "UPDATE_TIME");
+//				System.out.println("Database table last updated: "+date);
+/*				if(ptm!=null)	
 					ptm.stepProgressUpdated(2, 100);
-	//				System.out.println("Table size: "+mysql.singleItemQuery("information_schema.tables", "TABLE_NAME = 'FilteredData'", "DATA_LENGTH")+" byte(s)");
-	//			if(ptm!=null)	
-	//				ptm.stepProgressUpdated(2, 100);
-			} catch (NullPointerException e){
+*/			} catch (NullPointerException e){
 				
 			}
 		}

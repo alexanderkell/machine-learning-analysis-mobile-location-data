@@ -44,44 +44,40 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener{
 				
 	}
 
+	private int tracks_done = 0;
+	private int totaltracks = -1;
+	private boolean plotted = false;
+
+
+	private TrackChangeListener tcl;
+
+
+	private MySQLDownload msd;
+
 	private void plot(PTMListener ptm) throws SQLException, ClassNotFoundException, IOException{
 		
-		MySQLDownload msd = new MySQLDownload("FilteredData");
+		msd = new MySQLDownload("FilteredData");
 		msd.setPTMListener(ptm);
 
 		boolean success = msd.downloadAndSerialise(phoneid);
-		final int totaltracks = msd.getTotalTracks();
+		totaltracks  = msd.getTotalTracks();
 		if (!success)
-			JOptionPane.showMessageDialog(null, "Unable to connect to database and check for updates\nLocal copy of data will be used instead", "Unable to connect to database", JOptionPane.WARNING_MESSAGE);
-			
+			JOptionPane.showMessageDialog(null, 
+					"Unable to connect to database and check for updates\nLocal data copy will be used instead\nBe aware that local data copy might not be up-to-date", 
+					"Unable to connect to database", 
+					JOptionPane.WARNING_MESSAGE
+					);
+		// Update the number of tracks done
+		tracks_done = totaltracks;
 		ptm.statusUpdated(4, "Please wait ...");
 		ptm.stepProgressUpdated(4, -1);
-
 		
-		final TrackChangeListener tcl = new TrackChangeListener(){
-
-			@Override
-			public PhoneData[] setTrack(int index) {
-				// TODO Auto-generated method stub
-				if(index >= 1 && index <= totaltracks){
-					try {
-						return MySQLDownload.deserialise(phoneid, index);
-					} catch (ClassNotFoundException | IOException e) {
-						// TODO Auto-generated catch block
-						JOptionPane.showMessageDialog(null, "Cannot load phone \""+phoneid+"\" track "+index+"\n"+e.toString(), "Cannot load track "+index, JOptionPane.ERROR_MESSAGE);
-						e.printStackTrace();
-					}
-				}
-				return null;
-			}
-
-			
-		};
+		
 		if(totaltracks == 0)
 			System.err.println("There are no tracks associated with this phone id: "+phoneid);
-		else
-			PlotTracks.plotTrack2(PlotTracks.X, PlotTracks.Y, 0.1f, tcl, totaltracks);
-
+		else if(!plotted)
+			plottracks();
+		
 		ptm.finish(0, null);
 	}
 	
@@ -191,6 +187,31 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener{
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 			startTimer(System.currentTimeMillis());
+			
+			tcl = new TrackChangeListener(){
+
+				@Override
+				public PhoneData[] setTrack(int index) {
+					// TODO Auto-generated method stub
+					if(index >= 1 && index <= totaltracks){
+						try {
+							return MySQLDownload.deserialise(phoneid, index);
+						} catch (ClassNotFoundException | IOException e) {
+							// TODO Auto-generated catch block
+							System.out.println(tracks_done+" "+index);
+							if(tracks_done<index)
+								JOptionPane.showMessageDialog(null, "Track "+index+" is being downloaded and not yet available", "Track "+index+" not yet available", JOptionPane.ERROR_MESSAGE);
+							else
+								JOptionPane.showMessageDialog(null, "Cannot load phone \""+phoneid+"\" track "+index+"\n"+e.toString(), "Cannot load track "+index, JOptionPane.ERROR_MESSAGE);
+							e.printStackTrace();
+						}
+					}
+					return null;
+				}
+
+				
+			};
+			
 			plotthread = new Thread(){
 				public void run(){
 					try {
@@ -206,6 +227,8 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener{
 								oklabel.setHorizontalAlignment(JLabel.CENTER);
 								oklabel.setText(msg);
 								frame.pack();
+								frame.revalidate();
+								frame.repaint();
 							}
 
 							@Override
@@ -218,7 +241,18 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener{
 								} else {
 									jpb.setIndeterminate(true);
 								}
-							}
+/*								if(step == 3 && percent > 0){
+									totaltracks = msd.getTotalTracks();
+									if(totaltracks>0){
+										tracks_done = totaltracks*percent/100;
+										if(!plotted && tracks_done>=1){
+											plottracks();
+											plotted = true;
+										}
+										//System.out.println("tracks_done "+tracks_done);
+									}
+								}
+*/							}
 
 							@Override
 							public void finish(int exit, String msg) {
@@ -256,5 +290,9 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener{
 			System.err.println("User aborted");
 			System.exit(1);
 		}
+	}
+	public void plottracks(){
+		PlotTracks.plotTrack2(PlotTracks.X, PlotTracks.Y, 1f, tcl, totaltracks);
+
 	}
 }

@@ -312,12 +312,11 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		jbutton5 = new JButton(">>|");
 		
 		subpanel1a.setLayout(new BoxLayout(subpanel1a, BoxLayout.LINE_AXIS));
-		subpanel1a.add(Box.createHorizontalStrut(20));
+		subpanel1a.add(Box.createHorizontalGlue());
 		subpanel1a.add(jbutton4);
-		subpanel1a.add(Box.createHorizontalStrut(5));
 		subpanel1a.add(jlabelB);
-		subpanel1a.add(Box.createHorizontalStrut(5));
 		subpanel1a.add(jbutton5);
+		subpanel1a.add(Box.createHorizontalGlue());
 	
 
 		customiseButtons(jbutton4,3,2);
@@ -401,6 +400,8 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		jlabelA.setHorizontalAlignment(JLabel.RIGHT);
 		
 		jbutton1.setFont(labelFontLarge);
+		jbutton1.setPreferredSize(new Dimension(45,40));
+
 		jbutton2.setFont(labelFont);
 		jbutton3.setFont(labelFont);
 		jlabel1.setFont(labelFont);
@@ -450,25 +451,23 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 
 		subpanel1 = new JPanel();
 		subpanel1a = new JPanel();
-		subpanel1.setLayout(new BoxLayout(subpanel1, BoxLayout.LINE_AXIS));
+//		subpanel1a.setAlignmentX(Component.CENTER_ALIGNMENT);
+		subpanel1.setLayout(new BorderLayout());
 		subpanel1.setAlignmentX(Container.LEFT_ALIGNMENT);
-		subpanel1.add(Box.createHorizontalStrut(3));
-		subpanel1.add(jbutton1);
-		subpanel1.add(Box.createHorizontalStrut(20));
-		subpanel1.add(jbutton2);
-		subpanel1.add(Box.createHorizontalStrut(5));
-		subpanel1.add(jbutton3);
-		subpanel1.add(subpanel1a);
+		subpanel1.add(jbutton1, BorderLayout.WEST);
+		subpanel1.add(subpanel1a, BorderLayout.CENTER);
 		// Add a horizontal glue so that the jlabelA can be appear at the right hand side of the frame
-		subpanel1.add(Box.createHorizontalGlue());
-		subpanel1.add(jlabelA);
+		
+		subpanel1.add(jlabelA, BorderLayout.EAST);
 		
 		
 		// Create and configure components
 		JPanel subpanel2 = new JPanel();
 		subpanel2.setLayout(new BoxLayout(subpanel2, BoxLayout.LINE_AXIS));
 		subpanel2.setAlignmentX(Container.LEFT_ALIGNMENT);
+		subpanel2.add(jbutton2);
 		subpanel2.add(jlabel1);
+		subpanel2.add(jbutton3);
 		subpanel2.add(Box.createHorizontalStrut(20));
 		subpanel2.add(jlabel2);
 		if(points_or_time == TIME){
@@ -561,7 +560,7 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		customiseButtons(jlabel1,3,1);
 		jlabel1.setToolTipText("Click to change current point");
 		// Prevent the play button from changing size
-		jbutton1.setPreferredSize(new Dimension(jbutton1.getWidth()-5,jbutton1.getHeight()+5));
+//		jbutton1.setPreferredSize(new Dimension(jbutton1.getWidth(),jbutton1.getHeight()+5));
 		
 		jbutton2.setToolTipText("Previous Point (\u2190)");
 		jbutton3.setToolTipText("Next Point (\u2192)");

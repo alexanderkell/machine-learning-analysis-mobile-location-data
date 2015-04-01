@@ -358,6 +358,7 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		internal_dialog2 = new JDialog();
 		internal_dialog2.add(jpanel3);
 		internal_dialog2.setUndecorated(true);
+		internal_dialog2.pack();
 		internal_dialog2.addWindowFocusListener(this);
 		
 	}
@@ -802,7 +803,6 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 			Point point = jlabelB.getLocationOnScreen();
 			jspinner2.setValue(current_track);
 			internal_dialog2.setLocation(point.x, point.y+jlabelB.getHeight());
-			internal_dialog2.pack();
 			internal_dialog2.setVisible(true);
 		} else if (but == jbuttonDone2){
 			internal_dialog2.setVisible(false);

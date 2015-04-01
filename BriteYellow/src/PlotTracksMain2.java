@@ -241,7 +241,7 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener{
 								} else {
 									jpb.setIndeterminate(true);
 								}
-/*								if(step == 3 && percent > 0){
+								if(step == 3 && percent > 0){
 									totaltracks = msd.getTotalTracks();
 									if(totaltracks>0){
 										tracks_done = totaltracks*percent/100;
@@ -252,7 +252,7 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener{
 										//System.out.println("tracks_done "+tracks_done);
 									}
 								}
-*/							}
+							}
 
 							@Override
 							public void finish(int exit, String msg) {
@@ -292,7 +292,7 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener{
 		}
 	}
 	public void plottracks(){
-		PlotTracks.plotTrack2(PlotTracks.X, PlotTracks.Y, 1f, tcl, totaltracks);
+		PlotTracks.plotTrack2(PlotTracks.X, PlotTracks.Y, 0.1f, tcl, totaltracks);
 
 	}
 }

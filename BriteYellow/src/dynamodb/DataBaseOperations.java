@@ -49,7 +49,6 @@ public class DataBaseOperations {
 		DataBaseOperations DBO = new DataBaseOperations();
 		DBO.deleteTable(tableName);
 		DBO.createTable(tableName);
-		DBO.updateThroughput(tableName,25L,1000L);
 		DataGetter DG = new DataGetter(7, "24th Sept ORDERED.CSV");
 		DataGetter DG2 = new DataGetter(7, "26th Sept ORDERED.CSV");
 		ArrayList<PhoneData> pd24 = DG.getFullPhoneDataList();
@@ -63,9 +62,9 @@ public class DataBaseOperations {
 		System.out.println("Writing 26th Values...");
 		DBO.batchSave(pddb26);
 		System.out.println("Done 26th");
-		DBO.updateThroughput(tableName,25L,25L);
-	}*/
-	
+		//DBO.updateThroughput(tableName,25L,1L);
+	}
+	*/
 	public DataBaseOperations() throws Exception {
         
         AWSCredentials credentials = null;
@@ -89,7 +88,6 @@ public class DataBaseOperations {
 	public void createInsertNewTable(PhoneData[] data) throws Exception{
 		DataBaseOperations DBO = new DataBaseOperations();
 		DBO.createTable(tableName);
-		DBO.updateThroughput(tableName,25L,1000L);
 
 		ArrayList<PhoneDataDB> pddb24 = DBO.convertToPhoneDataDB(data);
 
@@ -132,7 +130,7 @@ public class DataBaseOperations {
 			Projection projection = new Projection().withProjectionType(ProjectionType.KEYS_ONLY);
 			
 			LocalSecondaryIndex localSecondaryIndex = new LocalSecondaryIndex()
-		    .withIndexName("AlbumTitleIndex").withKeySchema(indexKeySchema).withProjection(projection);
+		    .withIndexName("Track_no").withKeySchema(indexKeySchema).withProjection(projection);
 			
 			ArrayList<LocalSecondaryIndex> localSecondaryIndexes = new ArrayList<LocalSecondaryIndex>();
 			localSecondaryIndexes.add(localSecondaryIndex);
@@ -333,6 +331,79 @@ public class DataBaseOperations {
 		}
 		
 		return whole;
+	}
+	
+	
+	public ArrayList<PhoneData> convertFromPhoneDataDB(ArrayList<PhoneDataDB> pd){
+		ArrayList<PhoneData> whole = new ArrayList<PhoneData>();
+		PhoneData datapoint;
+		
+		for(int i = 0; i< pd.size(); i++){
+			datapoint = new PhoneData();
+			datapoint.x = pd.get(i).getXPosition();
+			datapoint.y = pd.get(i).getYPosition();
+			datapoint.z = pd.get(i).getZPosition();
+			datapoint.wholedate = pd.get(i).getWholeDate();
+			datapoint.wholedatestring = pd.get(i).getWholeDateString();
+			datapoint.ts = pd.get(i).getTimestamp();
+			datapoint.tb = pd.get(i).getTimeBetween();
+			datapoint.xdisp = pd.get(i).getXDisplacement();
+			datapoint.ydisp = pd.get(i).getYDisplacement();
+			datapoint.zdisp = pd.get(i).getZDisplacement();
+			datapoint.moddisp = pd.get(i).getModDisplacement();
+			datapoint.rsx = pd.get(i).getXSpeed();
+			datapoint.rsy = pd.get(i).getYSpeed();
+			datapoint.rsz = pd.get(i).getZSpeed();
+			datapoint.modspd = pd.get(i).getModSpeed();
+			datapoint.spdtheta = pd.get(i).getSpeedTheta();
+			datapoint.rax = pd.get(i).getXAcceleration();
+			datapoint.ray = pd.get(i).getYAcceleration();
+			datapoint.raz = pd.get(i).getZAcceleration();
+			datapoint.modacc = pd.get(i).getModAcceleration();
+			datapoint.acctheta = pd.get(i).getAccelerationTheta();
+			datapoint.phone_id = pd.get(i).getPhoneID();
+			datapoint.track_no = pd.get(i).getTrackNo();
+			datapoint.interpolated = pd.get(i).getInterpolated();
+			
+			whole.add(datapoint);
+			
+		}
+		
+		return whole;
+	}
+	
+	public PhoneData convertFromPhoneDataDB(PhoneDataDB pd){
+	
+		PhoneData datapoint;
+		
+		datapoint = new PhoneData();
+		datapoint.x = pd.getXPosition();
+		datapoint.y = pd.getYPosition();
+		datapoint.z = pd.getZPosition();
+		datapoint.wholedate = pd.getWholeDate();
+		datapoint.wholedatestring = pd.getWholeDateString();
+		datapoint.ts = pd.getTimestamp();
+		datapoint.tb = pd.getTimeBetween();
+		datapoint.xdisp = pd.getXDisplacement();
+		datapoint.ydisp = pd.getYDisplacement();
+		datapoint.zdisp = pd.getZDisplacement();
+		datapoint.moddisp = pd.getModDisplacement();
+		datapoint.rsx = pd.getXSpeed();
+		datapoint.rsy = pd.getYSpeed();
+		datapoint.rsz = pd.getZSpeed();
+		datapoint.modspd = pd.getModSpeed();
+		datapoint.spdtheta = pd.getSpeedTheta();
+		datapoint.rax = pd.getXAcceleration();
+		datapoint.ray = pd.getYAcceleration();
+		datapoint.raz = pd.getZAcceleration();
+		datapoint.modacc = pd.getModAcceleration();
+		datapoint.acctheta = pd.getAccelerationTheta();
+		datapoint.phone_id = pd.getPhoneID();
+		datapoint.track_no = pd.getTrackNo();
+		datapoint.interpolated = pd.getInterpolated();
+	
+		
+		return datapoint;
 	}
 	
 	public void updateThroughput(String tableName, long read, long write) throws InterruptedException{

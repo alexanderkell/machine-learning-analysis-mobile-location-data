@@ -25,11 +25,12 @@ public class DataBaseQueries{
 	static DynamoDB dynamo;
 	static DynamoDBMapper mapper;
 	
-	public static void main(String args[]) throws Exception{
+	/*public static void main(String args[]) throws Exception{
 		DataBaseQueries dbq = new DataBaseQueries();
 		DataBaseOperations dbo = new DataBaseOperations();
 		ArrayList<PhoneDataDB> result = dbq.queryRawTable("HT25TW5055273593c875a9898b00");
-	}
+		dbo.convertFromPhoneData(result);
+	}*/
 	
 	public DataBaseQueries() throws Exception {
 		AWSCredentials credentials = null;

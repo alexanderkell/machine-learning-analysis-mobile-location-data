@@ -44,7 +44,7 @@ public class DataBaseOperations {
 	static String tableName;
 	static DynamoDBMapper mapper;
 	
-	public static void main(String args[]) throws Exception{
+	/*public static void main(String args[]) throws Exception{
 		
 		DataBaseOperations DBO = new DataBaseOperations();
 		DBO.deleteTable("3D_Cloud_Pan_Data");
@@ -63,7 +63,9 @@ public class DataBaseOperations {
 		DBO.batchSaveRaw(pddb26);
 		System.out.println("Done 26th");
 		//DBO.updateThroughput(tableName,25L,1L);
-	}
+		
+		
+	}*/
 	
 	public void makeProcessedTable(PhoneData[] pd) throws InterruptedException{
 		createTable("Processed_Data");
@@ -429,7 +431,7 @@ public class DataBaseOperations {
 		datapoint.z = pd.getZPosition();
 		datapoint.wholedate = pd.getWholeDate();
 		datapoint.wholedatestring = pd.getWholeDateString();
-		datapoint.ts.setTime(pd.getTimestampLong());
+		datapoint.ts = new Timestamp(pd.getTimestampLong());
 		datapoint.tb = pd.getTimeBetween();
 		datapoint.xdisp = pd.getXDisplacement();
 		datapoint.ydisp = pd.getYDisplacement();
@@ -462,7 +464,7 @@ public class DataBaseOperations {
 		datapoint.z = pd.getZPosition();
 		datapoint.wholedate = pd.getWholeDate();
 		datapoint.wholedatestring = pd.getWholeDateString();
-		datapoint.ts.setTime(pd.getTimestampLong());
+		datapoint.ts = new Timestamp(pd.getTimestampLong());
 		datapoint.tb = pd.getTimeBetween();
 		datapoint.xdisp = pd.getXDisplacement();
 		datapoint.ydisp = pd.getYDisplacement();

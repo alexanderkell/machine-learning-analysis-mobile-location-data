@@ -6,9 +6,7 @@ import java.util.Scanner;
 import maths.*;
 import mysql.*;
 import csvimport.*;
-import dynamodb.DataBaseOperations;
-import dynamodb.PhoneDataDB;
-import dynamodbquery.DataBaseQueries;
+import dynamodb.*;
 import filters.*;
 import filters.jkalman.JKalmanHelper;
 import graphing.PlotTracks;
@@ -21,25 +19,22 @@ public class main {
 		System.out.println("Track machine learning 101");
 		Scanner sc  = new Scanner(System.in);
 
-/*		System.out.println("Enter data file path:");
-		String filePath = sc.nextLine();
-		insertMySQL.insertXDisp(filePath);
-*/
-		System.out.println("Enter PhoneID String eg: HT25TW5055273593c875a9898b00");
-		String query = sc.nextLine();
+		//System.out.println("Enter PhoneID String eg: HT25TW5055273593c875a9898b00");
+		//String query = sc.nextLine();
 		DataBaseOperations DBO = new DataBaseOperations();
 		
-		ArrayList<PhoneDataDB> outputPhoneDataDB = DBO.queryTable(query);
-		ArrayList<PhoneData> output = DBO.convertFromPhoneDataDB(outputPhoneDataDB);
-		
-		
-//		ArrayList<PhoneData> output = new insertMySQL().query("FilteredData", query);
-
-		
-//		ArrayList<PhoneData> filtered = insertMySQL.query("FilteredData", query);
+		dynamodb.DataBaseQueries QueryRaw = new dynamodb.DataBaseQueries();
+		System.out.println("Querying");
+		ArrayList<PhoneDataDB> outputDB = QueryRaw.queryRawTable("ZX1B23QFSP48abead89f52e3bb");
+		System.out.println("Converting");
+		ArrayList<PhoneData> output= DBO.convertFromPhoneData(outputDB);
 
 		sc.close();
-
+		for(int i=0; i<20; i++){
+		//	System.out.println(output.get(i).ts.getTime()+" ");
+			System.out.println("n :"+output.get(i).ts+" ");
+		}
+		System.out.println("Filtering");
 		FilterMain filtering = new FilterMain(200, 5, 5, 3);
 		ArrayList<PhoneData> filtered = filtering.FilterTot(output);
 		
@@ -50,10 +45,9 @@ public class main {
 		
 		System.out.println(newdata.length);
 		
-		DBO.createInsertNewTable(newdata);
-		//insertMySQL input = new insertMySQL();
-		//input.insertMyS(newdata, "FilteredData");
-
+		ArrayList<ProcessedDataDB> newdataDB = DBO.convertToProcessedDataDB(newdata);
+		
+		DBO.makeProcessedTable(newdata);
 		
 		PlotTracks.plotTrack2(output.toArray(new PhoneData[output.size()]),filtered.toArray(new PhoneData[filtered.size()]), PlotTracks.X, PlotTracks.Y, 0.1f);
 	}

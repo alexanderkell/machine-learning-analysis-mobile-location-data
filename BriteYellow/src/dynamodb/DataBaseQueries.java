@@ -19,7 +19,7 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import com.amazonaws.services.dynamodbv2.model.Condition;
 
-public class DataBaseQueries extends DataBaseOperations{
+public class DataBaseQueries{
 	
 	static AmazonDynamoDBClient client;
 	static DynamoDB dynamo;
@@ -28,12 +28,26 @@ public class DataBaseQueries extends DataBaseOperations{
 	/*public static void main(String args[]) throws Exception{
 		DataBaseQueries dbq = new DataBaseQueries();
 		DataBaseOperations dbo = new DataBaseOperations();
-		ArrayList<PhoneDataDB> result = dbq.queryTable("HT25TW5055273593c875a9898b00");
-		ArrayList<PhoneData> pd= dbo.convertFromPhoneDataDB(result);
-		}*/
+		ArrayList<PhoneDataDB> result = dbq.queryRawTable("HT25TW5055273593c875a9898b00");
+	}*/
 	
 	public DataBaseQueries() throws Exception {
-		super();
+		AWSCredentials credentials = null;
+        try {
+            credentials = new ProfileCredentialsProvider("default").getCredentials();
+        } catch (Exception e) {
+            throw new AmazonClientException(
+                    "Cannot load the credentials from the credential profiles file. " +
+                    "Please make sure that your credentials file is at the correct " +
+                    "location (/Users/thomas/.aws/credentials), and is in valid format.",
+                    e);
+        }
+        client = new AmazonDynamoDBClient(credentials);
+        //Region usWest2 = Region.getRegion(Regions.US_WEST_2);
+        Region eur1 =  Region.getRegion(Regions.EU_WEST_1);
+        client.setRegion(eur1);
+        dynamo = new DynamoDB(client);
+        mapper = new DynamoDBMapper(client);
 	}
 	
 	public PhoneDataDB loadFromRawTable(String phone_id, Timestamp ts){

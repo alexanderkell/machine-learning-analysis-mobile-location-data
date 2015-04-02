@@ -75,18 +75,6 @@ public class DataBaseQueries extends DataBaseOperations{
 		
 	}
 	
-	public ArrayList<ProcessedDataDB> queryInterpolatedTable(String phone_id){
-		ProcessedDataDB query = new ProcessedDataDB();
-		query.setPhoneID(phone_id);
-		DynamoDBQueryExpression<ProcessedDataDB> DDBE = new DynamoDBQueryExpression<ProcessedDataDB>()
-				.withHashKeyValues(query);
-		List<ProcessedDataDB> queryresult = mapper.query(ProcessedDataDB.class, DDBE);
-		ArrayList<ProcessedDataDB> queryresult2 = new ArrayList<ProcessedDataDB>(queryresult);
-		
-		return queryresult2;
-		
-	}
-	
 	public ArrayList<PhoneDataDB> queryRawTable(String phone_id, int track_no){
 		PhoneDataDB query = new PhoneDataDB();
 		query.setPhoneID(phone_id);

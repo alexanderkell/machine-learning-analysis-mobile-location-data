@@ -41,7 +41,7 @@ public class DataBaseOperations {
 
 	static AmazonDynamoDBClient client;
 	static DynamoDB dynamo;
-	final static String tableName = DBName.dbname;
+	static String tableName;
 	static DynamoDBMapper mapper;
 	
 	/*public static void main(String args[]) throws Exception{
@@ -65,6 +65,14 @@ public class DataBaseOperations {
 		//DBO.updateThroughput(tableName,25L,1L);
 	}*/
 	
+	public void makeProcessedTable(PhoneData[] pd) throws InterruptedException{
+		createTable("Processed_Data");
+		ArrayList<ProcessedDataDB> prddb = convertToProcessedDataDB(pd);
+		batchSaveProcessed(prddb);
+		
+		
+	}
+	
 	public DataBaseOperations() throws Exception {
         
         AWSCredentials credentials = null;
@@ -84,19 +92,6 @@ public class DataBaseOperations {
         dynamo = new DynamoDB(client);
         mapper = new DynamoDBMapper(client);
     }
-	
-	public void createInsertNewTable(PhoneData[] data) throws Exception{
-		DataBaseOperations DBO = new DataBaseOperations();
-		DBO.createTable(tableName);
-
-		ArrayList<PhoneDataDB> pddb24 = DBO.convertToPhoneDataDB(data);
-
-		System.out.println("Writing Values");
-		DBO.batchSave(pddb24);
-		System.out.println("Done writing values");
-
-		DBO.updateThroughput(tableName,25L,25L);
-	}
 	
 	public void createTable(String tableName) throws InterruptedException{
 		try{
@@ -181,18 +176,18 @@ public class DataBaseOperations {
 		
 		mapper.save(pdb);
 		
-		DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(tableName);
+		DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(pdb.tableName);
         TableDescription tableDescription = client.describeTable(describeTableRequest).getTable();
         System.out.println("Table Description: " + tableDescription);
 		
     }
 	
 	//to add or multiple values
-	public void batchSave(ArrayList<PhoneDataDB> pdb){
+	public void batchSaveRaw(ArrayList<PhoneDataDB> pdb){
 		
 		mapper.batchSave(pdb);
 		
-		DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(tableName);
+		DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(pdb.get(0).tableName);
         TableDescription tableDescription = client.describeTable(describeTableRequest).getTable();
         System.out.println("Table Description: " + tableDescription);
 		
@@ -202,13 +197,13 @@ public class DataBaseOperations {
 		
 		mapper.delete(pdb);
 		
-		DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(tableName);
+		DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(pdb.tableName);
         TableDescription tableDescription = client.describeTable(describeTableRequest).getTable();
         System.out.println("Table Description: " + tableDescription);
 		
     }
 	
-	public void batchDelete(ArrayList<PhoneDataDB> pdb){
+	public void batchDeleteRaw(ArrayList<PhoneDataDB> pdb){
 		
 		mapper.batchDelete(pdb);
 		
@@ -218,6 +213,50 @@ public class DataBaseOperations {
 		
 	}
 	
+	//to add a value or update a value with the same key
+		public void saveItem(ProcessedDataDB pdb) {
+			
+			mapper.save(pdb);
+			
+			DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(pdb.tableName);
+	        TableDescription tableDescription = client.describeTable(describeTableRequest).getTable();
+	        System.out.println("Table Description: " + tableDescription);
+			
+	    }
+		
+		//to add or multiple values
+		public void batchSaveProcessed(ArrayList<ProcessedDataDB> pdb){
+			
+			mapper.batchSave(pdb);
+			
+			DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(pdb.get(0).tableName);
+	        TableDescription tableDescription = client.describeTable(describeTableRequest).getTable();
+	        System.out.println("Table Description: " + tableDescription);
+			
+		}
+		
+		public void deleteItem(ProcessedDataDB pdb) {
+			
+			mapper.delete(pdb);
+			
+			DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(pdb.tableName);
+	        TableDescription tableDescription = client.describeTable(describeTableRequest).getTable();
+	        System.out.println("Table Description: " + tableDescription);
+			
+	    }
+		
+		public void batchDeleteProcessed(ArrayList<ProcessedDataDB> pdb){
+			
+			mapper.batchDelete(pdb);
+			
+			DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(tableName);
+	        TableDescription tableDescription = client.describeTable(describeTableRequest).getTable();
+	        System.out.println("Table Description: " + tableDescription);
+			
+		}
+	
+	
+	
 	//converts an Arraylist of PhoneData objects to PhoneDataDB objects
 	public ArrayList<PhoneDataDB> convertToPhoneDataDB(ArrayList<PhoneData> pd){
 		ArrayList<PhoneDataDB> whole = new ArrayList<PhoneDataDB>();
@@ -225,31 +264,7 @@ public class DataBaseOperations {
 		
 		for(int i = 0; i< pd.size(); i++){
 			datapoint = new PhoneDataDB();
-			datapoint.setXPosition(pd.get(i).x);
-			datapoint.setYPosition(pd.get(i).y);
-			datapoint.setZPosition(pd.get(i).z);
-			datapoint.setWholeDate(pd.get(i).wholedate);
-			datapoint.setWholeDateString(pd.get(i).wholedatestring);
-			datapoint.setTimestamp(pd.get(i).ts);
-			datapoint.setTimestampDouble(pd.get(i).ts.getTime());
-			datapoint.setTimeBetween(pd.get(i).tb);
-			datapoint.setXDisplacement(pd.get(i).xdisp);
-			datapoint.setYDisplacement(pd.get(i).ydisp);
-			datapoint.setZDisplacement(pd.get(i).zdisp);
-			datapoint.setModDisplacement(pd.get(i).moddisp);
-			datapoint.setXSpeed(pd.get(i).rsx);
-			datapoint.setYSpeed(pd.get(i).rsy);
-			datapoint.setZSpeed(pd.get(i).rsz);
-			datapoint.setModSpeed(pd.get(i).modspd);
-			datapoint.setSpeedTheta(pd.get(i).spdtheta);
-			datapoint.setXAcceleration(pd.get(i).rax);
-			datapoint.setYAcceleration(pd.get(i).ray);
-			datapoint.setZAcceleration(pd.get(i).raz);
-			datapoint.setModAcceleration(pd.get(i).modacc);
-			datapoint.setAccelerationTheta(pd.get(i).acctheta);
-			datapoint.setPhoneID(pd.get(i).phone_id);
-			datapoint.setTrackNo(pd.get(i).track_no);
-			datapoint.setInterpolated(pd.get(i).interpolated);
+			datapoint = convertToPhoneDataDB(pd.get(i));
 			
 			whole.add(datapoint);
 			
@@ -258,7 +273,23 @@ public class DataBaseOperations {
 		return whole;
 	}
 	
-	// converts a PhoneData object to a PhoneDataDB object
+	public ArrayList<PhoneDataDB> convertToPhoneDataDB(PhoneData[] pda){
+		ArrayList<PhoneData> pd = new ArrayList<PhoneData>(Arrays.asList(pda));
+		ArrayList<PhoneDataDB> whole = new ArrayList<PhoneDataDB>();
+		PhoneDataDB datapoint;
+		
+		for(int i = 0; i< pd.size(); i++){
+			datapoint = new PhoneDataDB();
+			datapoint = convertToPhoneDataDB(pd.get(i));
+			
+			whole.add(datapoint);
+			
+			
+		}
+		
+		return whole;
+	}
+	
 	public PhoneDataDB convertToPhoneDataDB(PhoneData pd){
 		
 		PhoneDataDB datapoint;
@@ -288,83 +319,85 @@ public class DataBaseOperations {
 		datapoint.setAccelerationTheta(pd.acctheta);
 		datapoint.setPhoneID(pd.phone_id);
 		datapoint.setTrackNo(pd.track_no);
-		datapoint.setInterpolated(pd.interpolated);
 		
 		return datapoint;
 	}
 	
-	public ArrayList<PhoneDataDB> convertToPhoneDataDB(PhoneData[] pda){
-		ArrayList<PhoneData> pd = new ArrayList<PhoneData>(Arrays.asList(pda));
-		ArrayList<PhoneDataDB> whole = new ArrayList<PhoneDataDB>();
-		PhoneDataDB datapoint;
-		
-		for(int i = 0; i< pd.size(); i++){
-			datapoint = new PhoneDataDB();
-			datapoint.setXPosition(pd.get(i).x);
-			datapoint.setYPosition(pd.get(i).y);
-			datapoint.setZPosition(pd.get(i).z);
-			datapoint.setWholeDate(pd.get(i).wholedate);
-			datapoint.setWholeDateString(pd.get(i).wholedatestring);
-			datapoint.setTimestamp(pd.get(i).ts);
-			datapoint.setTimestampDouble(pd.get(i).ts.getTime());
-			datapoint.setTimeBetween(pd.get(i).tb);
-			datapoint.setXDisplacement(pd.get(i).xdisp);
-			datapoint.setYDisplacement(pd.get(i).ydisp);
-			datapoint.setZDisplacement(pd.get(i).zdisp);
-			datapoint.setModDisplacement(pd.get(i).moddisp);
-			datapoint.setXSpeed(pd.get(i).rsx);
-			datapoint.setYSpeed(pd.get(i).rsy);
-			datapoint.setZSpeed(pd.get(i).rsz);
-			datapoint.setModSpeed(pd.get(i).modspd);
-			datapoint.setSpeedTheta(pd.get(i).spdtheta);
-			datapoint.setXAcceleration(pd.get(i).rax);
-			datapoint.setYAcceleration(pd.get(i).ray);
-			datapoint.setZAcceleration(pd.get(i).raz);
-			datapoint.setModAcceleration(pd.get(i).modacc);
-			datapoint.setAccelerationTheta(pd.get(i).acctheta);
-			datapoint.setPhoneID(pd.get(i).phone_id);
-			datapoint.setTrackNo(pd.get(i).track_no);
-			datapoint.setInterpolated(pd.get(i).interpolated);
+	
+	//converts an Arraylist of PhoneData objects to ProcessedDataDB objects
+		public ArrayList<ProcessedDataDB> convertToProcessedDataDB(ArrayList<PhoneData> pd){
+			ArrayList<ProcessedDataDB> whole = new ArrayList<ProcessedDataDB>();
+			ProcessedDataDB datapoint;
 			
-			whole.add(datapoint);
+			for(int i = 0; i< pd.size(); i++){
+				datapoint = new ProcessedDataDB();
+				datapoint = convertToProcessedDataDB(pd.get(i));
+				
+				whole.add(datapoint);
+				
+			}
 			
+			return whole;
 		}
 		
-		return whole;
-	}
+		public ArrayList<ProcessedDataDB> convertToProcessedDataDB(PhoneData[] pda){
+			ArrayList<PhoneData> pd = new ArrayList<PhoneData>(Arrays.asList(pda));
+			ArrayList<ProcessedDataDB> whole = new ArrayList<ProcessedDataDB>();
+			ProcessedDataDB datapoint;
+			
+			for(int i = 0; i< pd.size(); i++){
+				datapoint = new ProcessedDataDB();
+				datapoint = convertToProcessedDataDB(pd.get(i));
+				
+				whole.add(datapoint);
+				
+				
+			}
+			
+			return whole;
+		}
+		
+		public ProcessedDataDB convertToProcessedDataDB(PhoneData pd){
+			
+			ProcessedDataDB datapoint;
+			
+			datapoint = new ProcessedDataDB();
+			datapoint.setXPosition(pd.x);
+			datapoint.setYPosition(pd.y);
+			datapoint.setZPosition(pd.z);
+			datapoint.setWholeDate(pd.wholedate);
+			datapoint.setWholeDateString(pd.wholedatestring);
+			datapoint.setTimestamp(pd.ts);
+			datapoint.setTimestampDouble(pd.ts.getTime());
+			datapoint.setTimeBetween(pd.tb);
+			datapoint.setXDisplacement(pd.xdisp);
+			datapoint.setYDisplacement(pd.ydisp);
+			datapoint.setZDisplacement(pd.zdisp);
+			datapoint.setModDisplacement(pd.moddisp);
+			datapoint.setXSpeed(pd.rsx);
+			datapoint.setYSpeed(pd.rsy);
+			datapoint.setZSpeed(pd.rsz);
+			datapoint.setModSpeed(pd.modspd);
+			datapoint.setSpeedTheta(pd.spdtheta);
+			datapoint.setXAcceleration(pd.rax);
+			datapoint.setYAcceleration(pd.ray);
+			datapoint.setZAcceleration(pd.raz);
+			datapoint.setModAcceleration(pd.modacc);
+			datapoint.setAccelerationTheta(pd.acctheta);
+			datapoint.setPhoneID(pd.phone_id);
+			datapoint.setTrackNo(pd.track_no);
+			
+			return datapoint;
+		}
 	
 	
-	public ArrayList<PhoneData> convertFromPhoneDataDB(ArrayList<PhoneDataDB> pd){
+	public ArrayList<PhoneData> convertFromPhoneData(ArrayList<PhoneDataDB> pd){
 		ArrayList<PhoneData> whole = new ArrayList<PhoneData>();
 		PhoneData datapoint;
 		
 		for(int i = 0; i< pd.size(); i++){
 			datapoint = new PhoneData();
-			datapoint.x = pd.get(i).getXPosition();
-			datapoint.y = pd.get(i).getYPosition();
-			datapoint.z = pd.get(i).getZPosition();
-			datapoint.wholedate = pd.get(i).getWholeDate();
-			datapoint.wholedatestring = pd.get(i).getWholeDateString();
-			datapoint.ts = pd.get(i).getTimestamp();
-			datapoint.tb = pd.get(i).getTimeBetween();
-			datapoint.xdisp = pd.get(i).getXDisplacement();
-			datapoint.ydisp = pd.get(i).getYDisplacement();
-			datapoint.zdisp = pd.get(i).getZDisplacement();
-			datapoint.moddisp = pd.get(i).getModDisplacement();
-			datapoint.rsx = pd.get(i).getXSpeed();
-			datapoint.rsy = pd.get(i).getYSpeed();
-			datapoint.rsz = pd.get(i).getZSpeed();
-			datapoint.modspd = pd.get(i).getModSpeed();
-			datapoint.spdtheta = pd.get(i).getSpeedTheta();
-			datapoint.rax = pd.get(i).getXAcceleration();
-			datapoint.ray = pd.get(i).getYAcceleration();
-			datapoint.raz = pd.get(i).getZAcceleration();
-			datapoint.modacc = pd.get(i).getModAcceleration();
-			datapoint.acctheta = pd.get(i).getAccelerationTheta();
-			datapoint.phone_id = pd.get(i).getPhoneID();
-			datapoint.track_no = pd.get(i).getTrackNo();
-			datapoint.interpolated = pd.get(i).getInterpolated();
-			
+			datapoint = convertFrom(pd.get(i));
 			whole.add(datapoint);
 			
 		}
@@ -372,7 +405,22 @@ public class DataBaseOperations {
 		return whole;
 	}
 	
-	public PhoneData convertFromPhoneDataDB(PhoneDataDB pd){
+	public ArrayList<PhoneData> convertFromProcessedData(ArrayList<ProcessedDataDB> pd){
+		ArrayList<PhoneData> whole = new ArrayList<PhoneData>();
+		PhoneData datapoint;
+		
+		for(int i = 0; i< pd.size(); i++){
+			datapoint = new PhoneData();
+			datapoint = convertFrom(pd.get(i));
+			whole.add(datapoint);
+			
+		}
+		
+		return whole;
+	}
+	
+	
+	public PhoneData convertFrom(PhoneDataDB pd){
 	
 		PhoneData datapoint;
 		
@@ -400,11 +448,44 @@ public class DataBaseOperations {
 		datapoint.acctheta = pd.getAccelerationTheta();
 		datapoint.phone_id = pd.getPhoneID();
 		datapoint.track_no = pd.getTrackNo();
-		datapoint.interpolated = pd.getInterpolated();
 	
 		
 		return datapoint;
 	}
+	
+	public PhoneData convertFrom(ProcessedDataDB pd){
+		
+		PhoneData datapoint;
+		
+		datapoint = new PhoneData();
+		datapoint.x = pd.getXPosition();
+		datapoint.y = pd.getYPosition();
+		datapoint.z = pd.getZPosition();
+		datapoint.wholedate = pd.getWholeDate();
+		datapoint.wholedatestring = pd.getWholeDateString();
+		datapoint.ts = pd.getTimestamp();
+		datapoint.tb = pd.getTimeBetween();
+		datapoint.xdisp = pd.getXDisplacement();
+		datapoint.ydisp = pd.getYDisplacement();
+		datapoint.zdisp = pd.getZDisplacement();
+		datapoint.moddisp = pd.getModDisplacement();
+		datapoint.rsx = pd.getXSpeed();
+		datapoint.rsy = pd.getYSpeed();
+		datapoint.rsz = pd.getZSpeed();
+		datapoint.modspd = pd.getModSpeed();
+		datapoint.spdtheta = pd.getSpeedTheta();
+		datapoint.rax = pd.getXAcceleration();
+		datapoint.ray = pd.getYAcceleration();
+		datapoint.raz = pd.getZAcceleration();
+		datapoint.modacc = pd.getModAcceleration();
+		datapoint.acctheta = pd.getAccelerationTheta();
+		datapoint.phone_id = pd.getPhoneID();
+		datapoint.track_no = pd.getTrackNo();
+	
+		
+		return datapoint;
+	}
+	
 	
 	public void updateThroughput(String tableName, long read, long write) throws InterruptedException{
 		Table table = dynamo.getTable(tableName);

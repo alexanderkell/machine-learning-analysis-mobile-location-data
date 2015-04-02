@@ -11,9 +11,9 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
 
-@DynamoDBTable(tableName = "3D_Cloud_Pan_Data") 
-public class PhoneDataDB{
-	public final String tableName = "3D_Cloud_Pan_Data";
+@DynamoDBTable(tableName = "Processed_Data") 
+public class ProcessedDataDB{
+	public final String tableName = "Processed_Data";
 	private double x, y, z;
 	private Date wholedate;
 	private String wholedatestring;
@@ -209,6 +209,4 @@ public class PhoneDataDB{
 	public void setTrackNo(int track_no){
 		this.track_no = track_no;
 	}
-	
-	
 }

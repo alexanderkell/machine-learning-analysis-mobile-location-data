@@ -19,11 +19,10 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import com.amazonaws.services.dynamodbv2.model.Condition;
 
-public class DataBaseQueries{
+public class DataBaseQueries extends DataBaseOperations{
 	
 	static AmazonDynamoDBClient client;
 	static DynamoDB dynamo;
-	final static String tableName = DBName.dbname;
 	static DynamoDBMapper mapper;
 	
 	/*public static void main(String args[]) throws Exception{
@@ -34,32 +33,25 @@ public class DataBaseQueries{
 		}*/
 	
 	public DataBaseQueries() throws Exception {
-		AWSCredentials credentials = null;
-        try {
-            credentials = new ProfileCredentialsProvider("default").getCredentials();
-        } catch (Exception e) {
-            throw new AmazonClientException(
-                    "Cannot load the credentials from the credential profiles file. " +
-                    "Please make sure that your credentials file is at the correct " +
-                    "location (/Users/thomas/.aws/credentials), and is in valid format.",
-                    e);
-        }
-        client = new AmazonDynamoDBClient(credentials);
-        //Region usWest2 = Region.getRegion(Regions.US_WEST_2);
-        Region eur1 =  Region.getRegion(Regions.EU_WEST_1);
-        client.setRegion(eur1);
-        dynamo = new DynamoDB(client);
-        mapper = new DynamoDBMapper(client);
+		super();
 	}
 	
-	public PhoneDataDB loadFromTable(String phone_id, Timestamp ts){
+	public PhoneDataDB loadFromRawTable(String phone_id, Timestamp ts){
 		double tsd = ts.getTime();
 		PhoneDataDB result = mapper.load(PhoneDataDB.class, phone_id, tsd);
 		
 		return result;
 	}
 	
-	public ArrayList<PhoneDataDB> queryTable(String phone_id){
+	public ProcessedDataDB loadFromFilterTable(String phone_id, Timestamp ts){
+		double tsd = ts.getTime();
+		ProcessedDataDB result = mapper.load(ProcessedDataDB.class, phone_id, tsd);
+		
+		return result;
+	}
+	
+	
+	public ArrayList<PhoneDataDB> queryRawTable(String phone_id){
 		PhoneDataDB query = new PhoneDataDB();
 		query.setPhoneID(phone_id);
 		DynamoDBQueryExpression<PhoneDataDB> DDBE = new DynamoDBQueryExpression<PhoneDataDB>()
@@ -71,7 +63,31 @@ public class DataBaseQueries{
 		
 	}
 	
-	public ArrayList<PhoneDataDB> queryTable(String phone_id, int track_no){
+	public ArrayList<ProcessedDataDB> queryFilterTable(String phone_id){
+		ProcessedDataDB query = new ProcessedDataDB();
+		query.setPhoneID(phone_id);
+		DynamoDBQueryExpression<ProcessedDataDB> DDBE = new DynamoDBQueryExpression<ProcessedDataDB>()
+				.withHashKeyValues(query);
+		List<ProcessedDataDB> queryresult = mapper.query(ProcessedDataDB.class, DDBE);
+		ArrayList<ProcessedDataDB> queryresult2 = new ArrayList<ProcessedDataDB>(queryresult);
+		
+		return queryresult2;
+		
+	}
+	
+	public ArrayList<ProcessedDataDB> queryInterpolatedTable(String phone_id){
+		ProcessedDataDB query = new ProcessedDataDB();
+		query.setPhoneID(phone_id);
+		DynamoDBQueryExpression<ProcessedDataDB> DDBE = new DynamoDBQueryExpression<ProcessedDataDB>()
+				.withHashKeyValues(query);
+		List<ProcessedDataDB> queryresult = mapper.query(ProcessedDataDB.class, DDBE);
+		ArrayList<ProcessedDataDB> queryresult2 = new ArrayList<ProcessedDataDB>(queryresult);
+		
+		return queryresult2;
+		
+	}
+	
+	public ArrayList<PhoneDataDB> queryRawTable(String phone_id, int track_no){
 		PhoneDataDB query = new PhoneDataDB();
 		query.setPhoneID(phone_id);
 		Condition rangeKeyCondition = new Condition()
@@ -90,6 +106,27 @@ public class DataBaseQueries{
 		return queryresult2;
 		
 	}
+	
+	public ArrayList<ProcessedDataDB> queryFilterTable(String phone_id, int track_no){
+		ProcessedDataDB query = new ProcessedDataDB();
+		query.setPhoneID(phone_id);
+		Condition rangeKeyCondition = new Condition()
+			.withComparisonOperator(ComparisonOperator.EQ.toString())
+			.withAttributeValueList(new AttributeValue().withN(Integer.toString(track_no)));
+			
+		
+		
+		DynamoDBQueryExpression<ProcessedDataDB> DDBE = new DynamoDBQueryExpression<ProcessedDataDB>()
+				.withHashKeyValues(query)
+				.withRangeKeyCondition("Track_no", rangeKeyCondition);
+				
+		List<ProcessedDataDB> queryresult = mapper.query(ProcessedDataDB.class, DDBE);
+		ArrayList<ProcessedDataDB> queryresult2 = new ArrayList<ProcessedDataDB>(queryresult);
+		
+		return queryresult2;
+		
+	}
+	
 	
 
 

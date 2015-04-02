@@ -24,10 +24,46 @@ public class StatsGenerator extends ProbabilityList{
 	public final static int TIME_PER_STOP = 210;
 	public final static int FREQ_IN_AREA = 250;
 	
-	
+	final static int XSTILL = 50;	//Max x distance for determining whether
+									// the person is staying still
+	final static int YSTILL = 20;	//Max y distance for determining whether
+									// the person is staying still
 	private int length;
 	
+	private int xdirection = 0;	// +1 = moving to right, -1 = moving to left
+	private int ydirection = 0; // +1 = moving up, -1 = moving down
+	private int oldxdirection = 0;
+	private int oldydirection = 0;
+	public ?? isStandingStill(??){
 		
+	}
+	public void updateDirection(double xstart, double xend, double ystart, double yend){
+		// Store last direction
+		oldxdirection = xdirection;
+		oldydirection = ydirection;
+		if(xend>xstart)
+			xdirection = 1;
+		else if(xend<xstart)
+			xdirection = -1;
+		
+		if(yend>ystart)
+			ydirection = 1;
+		else if(yend<ystart)
+			ydirection = -1;
+	}
+	/** Return if the x y directions are changed 
+	 * 
+	 * @param xstart start point x
+	 * @param xend end point x
+	 * @param ystart start point y
+	 * @param yend end point y
+	 * @return true if at least 1 direction is changed, false if no directions are changed
+	 */
+	public boolean isDirectionChanged(double xstart, double xend, double ystart, double yend){
+		return oldxdirection == xdirection || oldydirection == ydirection;
+	}
+	
+	
 	public StatsGenerator(PhoneData[] phonedata) throws ParseException {
 		// TODO Auto-generated constructor stub
 		super(phonedata);

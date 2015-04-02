@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.SwingUtilities;
 
 import maths.*;
 import mysql.*;
@@ -22,7 +23,7 @@ import mysql.MySQLDownload.PTMListener;
 import graphing.PlotTracks;
 import graphing.TrackChangeListener;
 
-public class PlotTracksMain2 extends TimerTask implements ActionListener{
+public class PlotTracksMain2 extends TimerTask implements ActionListener, PTMListener{
 	
 
 	public final static String[] phones = {
@@ -132,6 +133,12 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener{
 
 	private Thread plotthread;
 
+
+	private JLabel oklabel;
+
+
+	private JProgressBar jpb;
+
 	public void startTimer(long starttime){
 		this.starttime = starttime;
 		timer = new Timer();
@@ -160,11 +167,11 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener{
 
 			panel.removeAll();
 			frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-			final JLabel oklabel = new JLabel("Please Wait ...");
+			oklabel = new JLabel("Please Wait ...");
 			oklabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 			panel.add(oklabel);
 			panel.add(Box.createVerticalStrut(5));
-			final JProgressBar jpb = new JProgressBar();
+			jpb = new JProgressBar();
 			jpb.setAlignmentX(Component.CENTER_ALIGNMENT);
 			panel.add(jpb);
 			panel.add(Box.createVerticalStrut(10));
@@ -216,55 +223,9 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener{
 				public void run(){
 					try {
 						
-						PTMListener ptm = new PTMListener(){
-
-							@Override
-							public void statusUpdated(int step, String msg) {
-								// TODO Auto-generated method stub
-								// Replace all \n with <br> and the whole message into
-								// html format
-								msg = "<html>"+msg.replaceAll("\n", "<br>")+"</html>";
-								oklabel.setHorizontalAlignment(JLabel.CENTER);
-								oklabel.setText(msg);
-								frame.pack();
-								frame.revalidate();
-								frame.repaint();
-							}
-
-							@Override
-							public void stepProgressUpdated(int step,
-									int percent) {
-								// TODO Auto-generated method stub
-								if(percent>=0){
-									jpb.setIndeterminate(false);
-									jpb.setValue(percent);
-								} else {
-									jpb.setIndeterminate(true);
-								}
-								if(step == 3 && percent > 0){
-									totaltracks = msd.getTotalTracks();
-									if(totaltracks>0){
-										tracks_done = totaltracks*percent/100;
-										if(!plotted && tracks_done>=1){
-											plottracks();
-											plotted = true;
-										}
-										//System.out.println("tracks_done "+tracks_done);
-									}
-								}
-							}
-
-							@Override
-							public void finish(int exit, String msg) {
-								// TODO Auto-generated method stub
-								finishTimer();
-								frame.dispose();
-							}
-							
-						};
 						frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 						phoneid = phones[cbox1.getSelectedIndex()];
-						plot(ptm);
+						plot(PlotTracksMain2.this);
 						
 					
 						
@@ -273,11 +234,12 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener{
 						if(this!=null && this.isAlive())
 							finishTimer();
 						StackTraceElement trace = e1.getStackTrace()[0];
-						oklabel.setText("<html>Oops! An error has occured: <br><font color = 'red'><i>"+e1.toString()+"<br> at line "+trace.getLineNumber()+
-								" in class \""+ trace.getClassName()+"\"</i></font><br><br>Please also check the console for the full error message</html>");
+						statusUpdated(0, "Oops! An error has occured: \n<font color = 'red'><i>"+e1.toString()+"\n at line "+trace.getLineNumber()+
+								" in class \""+ trace.getClassName()+"\"</i></font>\n\nPlease also check the console for the full error message");
+	//					oklabel.setText("<html>Oops! An error has occured: <br><font color = 'red'><i>"+e1.toString()+"<br> at line "+trace.getLineNumber()+
+	//							" in class \""+ trace.getClassName()+"\"</i></font><br><br>Please also check the console for the full error message</html>");
 						// Revalidate and repaint the label as it may have changed size
-						oklabel.revalidate();
-						frame.pack();
+
 						e1.printStackTrace();
 						frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 					}
@@ -291,6 +253,59 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener{
 			System.exit(1);
 		}
 	}
+	
+	@Override
+	public void statusUpdated(int step, String msg) {
+		// TODO Auto-generated method stub
+		// Replace all \n with <br> and the whole message into
+		// html format
+		final String newmsg = "<html>"+msg.replaceAll("\n", "<br>")+"</html>";
+		SwingUtilities.invokeLater(new Runnable(){
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				oklabel.setHorizontalAlignment(JLabel.CENTER);
+				oklabel.setText(newmsg);
+				frame.pack();
+			}
+			
+		});
+		
+		
+	}
+
+	@Override
+	public void stepProgressUpdated(int step,
+			int percent) {
+		// TODO Auto-generated method stub
+		if(percent>=0){
+			jpb.setIndeterminate(false);
+			jpb.setValue(percent);
+		} else {
+			jpb.setIndeterminate(true);
+		}
+		if(step == 3 && percent > 0){
+			totaltracks = msd.getTotalTracks();
+			if(totaltracks>0){
+				tracks_done = totaltracks*percent/100;
+				if(!plotted && tracks_done>=1){
+					plottracks();
+					plotted = true;
+				}
+				//System.out.println("tracks_done "+tracks_done);
+			}
+		}
+		frame.pack();
+	}
+
+	@Override
+	public void finish(int exit, String msg) {
+		// TODO Auto-generated method stub
+		finishTimer();
+		frame.dispose();
+	}
+	
 	public void plottracks(){
 		PlotTracks.plotTrack2(PlotTracks.X, PlotTracks.Y, 0.1f, tcl, totaltracks);
 

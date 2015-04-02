@@ -43,7 +43,7 @@ public class DataBaseQueries extends DataBaseOperations{
 		return result;
 	}
 	
-	public ProcessedDataDB loadFromFilterTable(String phone_id, Timestamp ts){
+	public ProcessedDataDB loadFromProcessedTable(String phone_id, Timestamp ts){
 		double tsd = ts.getTime();
 		ProcessedDataDB result = mapper.load(ProcessedDataDB.class, phone_id, tsd);
 		
@@ -63,7 +63,7 @@ public class DataBaseQueries extends DataBaseOperations{
 		
 	}
 	
-	public ArrayList<ProcessedDataDB> queryFilterTable(String phone_id){
+	public ArrayList<ProcessedDataDB> queryProcessedTable(String phone_id){
 		ProcessedDataDB query = new ProcessedDataDB();
 		query.setPhoneID(phone_id);
 		DynamoDBQueryExpression<ProcessedDataDB> DDBE = new DynamoDBQueryExpression<ProcessedDataDB>()
@@ -107,7 +107,7 @@ public class DataBaseQueries extends DataBaseOperations{
 		
 	}
 	
-	public ArrayList<ProcessedDataDB> queryFilterTable(String phone_id, int track_no){
+	public ArrayList<ProcessedDataDB> queryProcessedTable(String phone_id, int track_no){
 		ProcessedDataDB query = new ProcessedDataDB();
 		query.setPhoneID(phone_id);
 		Condition rangeKeyCondition = new Condition()

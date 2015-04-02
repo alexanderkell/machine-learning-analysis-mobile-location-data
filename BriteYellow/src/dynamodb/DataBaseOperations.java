@@ -70,7 +70,6 @@ public class DataBaseOperations {
 		ArrayList<ProcessedDataDB> prddb = convertToProcessedDataDB(pd);
 		batchSaveProcessed(prddb);
 		
-		
 	}
 	
 	public DataBaseOperations() throws Exception {

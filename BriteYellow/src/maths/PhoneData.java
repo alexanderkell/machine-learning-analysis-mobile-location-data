@@ -34,5 +34,7 @@ public class PhoneData{
 	
 	// Show if the point is added during interpolation
 	public boolean interpolated = false;
+
+	public boolean filtered = false;
 }
 

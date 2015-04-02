@@ -136,6 +136,7 @@ public class FilterMain {
 				newdata.phone_id = input.get(i).phone_id;
 				// Indicate this point is added from this interpolation method
 				newdata.interpolated = true;
+				newdata.filtered = true;
 				
 				result.add(newdata);		
 			}

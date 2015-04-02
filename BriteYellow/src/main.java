@@ -7,6 +7,8 @@ import maths.*;
 import mysql.*;
 import csvimport.*;
 import dynamodb.DataBaseOperations;
+import dynamodb.PhoneDataDB;
+import dynamodbquery.DataBaseQueries;
 import filters.*;
 import filters.jkalman.JKalmanHelper;
 import graphing.PlotTracks;
@@ -23,14 +25,19 @@ public class main {
 		String filePath = sc.nextLine();
 		insertMySQL.insertXDisp(filePath);
 */
-		System.out.println("Enter query (PhoneID = 'HT25TW5055273593c875a9898b00' AND TrackNo = 3):");
+		System.out.println("Enter PhoneID String eg: HT25TW5055273593c875a9898b00");
 		String query = sc.nextLine();
+		DataBaseOperations DBO = new DataBaseOperations();
 		
-		ArrayList<PhoneData> output = new insertMySQL().query("FilteredData", query);
-		//ArrayList<PhoneData> filtered= output;
+		ArrayList<PhoneDataDB> outputPhoneDataDB = DBO.queryTable(query);
+		ArrayList<PhoneData> output = DBO.convertFromPhoneDataDB(outputPhoneDataDB);
+		
+		
+//		ArrayList<PhoneData> output = new insertMySQL().query("FilteredData", query);
+
 		
 //		ArrayList<PhoneData> filtered = insertMySQL.query("FilteredData", query);
-//		ArrayList<PhoneData> output = filtered;
+
 		sc.close();
 
 		FilterMain filtering = new FilterMain(200, 5, 5, 3);
@@ -42,8 +49,8 @@ public class main {
 	
 		
 		System.out.println(newdata.length);
-		DataBaseOperations Insert = new DataBaseOperations();
-		Insert.createInsertNewTable(newdata);
+		
+		DBO.createInsertNewTable(newdata);
 		//insertMySQL input = new insertMySQL();
 		//input.insertMyS(newdata, "FilteredData");
 

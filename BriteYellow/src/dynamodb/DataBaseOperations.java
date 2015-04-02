@@ -44,11 +44,11 @@ public class DataBaseOperations {
 	static String tableName;
 	static DynamoDBMapper mapper;
 	
-	/*public static void main(String args[]) throws Exception{
+	public static void main(String args[]) throws Exception{
 		
 		DataBaseOperations DBO = new DataBaseOperations();
-		DBO.deleteTable(tableName);
-		DBO.createTable(tableName);
+		DBO.deleteTable("3D_Cloud_Pan_Data");
+		DBO.createTable("3D_Cloud_Pan_Data");
 		DataGetter DG = new DataGetter(7, "24th Sept ORDERED.CSV");
 		DataGetter DG2 = new DataGetter(7, "26th Sept ORDERED.CSV");
 		ArrayList<PhoneData> pd24 = DG.getFullPhoneDataList();
@@ -57,13 +57,13 @@ public class DataBaseOperations {
 		ArrayList<PhoneDataDB> pddb24 = DBO.convertToPhoneDataDB(pd24);
 		ArrayList<PhoneDataDB> pddb26 = DBO.convertToPhoneDataDB(pd26);
 		System.out.println("Writing 24th Values...");
-		DBO.batchSave(pddb24);
+		DBO.batchSaveRaw(pddb24);
 		System.out.println("Done 24th");
 		System.out.println("Writing 26th Values...");
-		DBO.batchSave(pddb26);
+		DBO.batchSaveRaw(pddb26);
 		System.out.println("Done 26th");
 		//DBO.updateThroughput(tableName,25L,1L);
-	}*/
+	}
 	
 	public void makeProcessedTable(PhoneData[] pd) throws InterruptedException{
 		createTable("Processed_Data");
@@ -300,7 +300,7 @@ public class DataBaseOperations {
 		datapoint.setWholeDate(pd.wholedate);
 		datapoint.setWholeDateString(pd.wholedatestring);
 		datapoint.setTimestamp(pd.ts);
-		datapoint.setTimestampDouble(pd.ts.getTime());
+		datapoint.setTimestampLong(pd.ts.getTime());
 		datapoint.setTimeBetween(pd.tb);
 		datapoint.setXDisplacement(pd.xdisp);
 		datapoint.setYDisplacement(pd.ydisp);
@@ -367,7 +367,7 @@ public class DataBaseOperations {
 			datapoint.setWholeDate(pd.wholedate);
 			datapoint.setWholeDateString(pd.wholedatestring);
 			datapoint.setTimestamp(pd.ts);
-			datapoint.setTimestampDouble(pd.ts.getTime());
+			datapoint.setTimestampLong(pd.ts.getTime());
 			datapoint.setTimeBetween(pd.tb);
 			datapoint.setXDisplacement(pd.xdisp);
 			datapoint.setYDisplacement(pd.ydisp);
@@ -429,7 +429,7 @@ public class DataBaseOperations {
 		datapoint.z = pd.getZPosition();
 		datapoint.wholedate = pd.getWholeDate();
 		datapoint.wholedatestring = pd.getWholeDateString();
-		datapoint.ts = pd.getTimestamp();
+		datapoint.ts.setTime(pd.getTimestampLong());
 		datapoint.tb = pd.getTimeBetween();
 		datapoint.xdisp = pd.getXDisplacement();
 		datapoint.ydisp = pd.getYDisplacement();
@@ -462,7 +462,7 @@ public class DataBaseOperations {
 		datapoint.z = pd.getZPosition();
 		datapoint.wholedate = pd.getWholeDate();
 		datapoint.wholedatestring = pd.getWholeDateString();
-		datapoint.ts = pd.getTimestamp();
+		datapoint.ts.setTime(pd.getTimestampLong());
 		datapoint.tb = pd.getTimeBetween();
 		datapoint.xdisp = pd.getXDisplacement();
 		datapoint.ydisp = pd.getYDisplacement();

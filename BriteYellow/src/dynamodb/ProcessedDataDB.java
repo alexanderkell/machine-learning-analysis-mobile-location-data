@@ -13,12 +13,13 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
 @DynamoDBTable(tableName = "Processed_Data") 
 public class ProcessedDataDB{
+	
 	public final String tableName = "Processed_Data";
 	private double x, y, z;
 	private Date wholedate;
 	private String wholedatestring;
 	private Timestamp ts;
-	private double tsd;
+	private Long tsl;
 	private double tb;
 	private double xdisp, ydisp, zdisp, moddisp;
 	private double rsx, rsy, rsz, modspd, spdtheta;
@@ -72,11 +73,11 @@ public class ProcessedDataDB{
 		this.ts = ts;
 	}
 	@DynamoDBRangeKey(attributeName = "Timestamp")
-	public double getTimestampDouble(){
-		return tsd;
+	public long getTimestampLong(){
+		return tsl;
 	}
-	public void setTimestampDouble(double tsd){
-		this.tsd = tsd;
+	public void setTimestampLong(long tsl){
+		this.tsl = tsl;
 	}
 	
 	
@@ -209,4 +210,6 @@ public class ProcessedDataDB{
 	public void setTrackNo(int track_no){
 		this.track_no = track_no;
 	}
+	
+	
 }

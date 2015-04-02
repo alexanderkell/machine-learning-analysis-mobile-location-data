@@ -18,7 +18,7 @@ public class PhoneDataDB{
 	private Date wholedate;
 	private String wholedatestring;
 	private Timestamp ts;
-	private double tsd;
+	private Long tsl;
 	private double tb;
 	private double xdisp, ydisp, zdisp, moddisp;
 	private double rsx, rsy, rsz, modspd, spdtheta;
@@ -72,11 +72,11 @@ public class PhoneDataDB{
 		this.ts = ts;
 	}
 	@DynamoDBRangeKey(attributeName = "Timestamp")
-	public double getTimestampDouble(){
-		return tsd;
+	public long getTimestampLong(){
+		return tsl;
 	}
-	public void setTimestampDouble(double tsd){
-		this.tsd = tsd;
+	public void setTimestampLong(long tsl){
+		this.tsl = tsl;
 	}
 	
 	

@@ -9,13 +9,17 @@ import java.util.TimerTask;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import maths.*;
 import mysql.*;
@@ -23,7 +27,7 @@ import mysql.MySQLDownload.PTMListener;
 import graphing.PlotTracks;
 import graphing.TrackChangeListener;
 
-public class PlotTracksMain2 extends TimerTask implements ActionListener, PTMListener{
+public class PlotTracksMain2 extends TimerTask implements ActionListener, ChangeListener, PTMListener{
 	
 
 	public final static String[] phones = {
@@ -55,14 +59,15 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, PTMLis
 
 	private MySQLDownload msd;
 
-	private void plot(PTMListener ptm) throws SQLException, ClassNotFoundException, IOException{
+	private void plot(PTMListener ptm, boolean offline) throws SQLException, ClassNotFoundException, IOException{
 		
 		msd = new MySQLDownload("FilteredData");
 		msd.setPTMListener(ptm);
 
-		boolean success = msd.downloadAndSerialise(phoneid);
+		boolean success = msd.downloadAndSerialise(phoneid, offline);
 		totaltracks  = msd.getTotalTracks();
-		if (!success)
+		
+		if (!offline && !success)
 			JOptionPane.showMessageDialog(null, 
 					"Unable to connect to database and check for updates\nLocal data copy will be used instead\nBe aware that local data copy might not be up-to-date", 
 					"Unable to connect to database", 
@@ -89,8 +94,11 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, PTMLis
 	private JComboBox<String> cbox1;
 
 	private JButton okbutton;
+	private JCheckBox offlinecheckbox;
 
 	private JPanel panel;
+	
+	private JLabel offlinelabel;
 
 	private void getPhoneIDAndPlot() {
 		// TODO Auto-generated method stub
@@ -106,6 +114,14 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, PTMLis
 		okbutton = new JButton("Plot it");
 		okbutton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
+		offlinecheckbox = new JCheckBox("Offline mode");
+		offlinecheckbox.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		offlinelabel = new JLabel("<html><font color = 'red'><i>Local data copy will be used if available<br>" +
+				"Be aware that it might not be up-to-date</font></i></html>");
+		offlinelabel.setVisible(offlinecheckbox.isSelected());
+		offlinelabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
 		panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 		panel.add(selectlabel);
@@ -113,7 +129,10 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, PTMLis
 		panel.add(cbox1);
 		panel.add(Box.createVerticalStrut(15));
 		panel.add(okbutton);
+		panel.add(offlinecheckbox);
+		panel.add(offlinelabel);
 		okbutton.addActionListener(this);
+		offlinecheckbox.addChangeListener(this);
 		
 		frame.setTitle("Select axis - StatsReader");
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -162,7 +181,7 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, PTMLis
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		JButton button = (JButton)e.getSource();
+		final JButton button = (JButton)e.getSource();
 		if(button == okbutton){
 
 			panel.removeAll();
@@ -225,7 +244,7 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, PTMLis
 						
 						frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 						phoneid = phones[cbox1.getSelectedIndex()];
-						plot(PlotTracksMain2.this);
+						plot(PlotTracksMain2.this, offlinecheckbox.isSelected());
 						
 					
 						
@@ -309,5 +328,23 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, PTMLis
 	public void plottracks(){
 		PlotTracks.plotTrack2(PlotTracks.X, PlotTracks.Y, 0.1f, tcl, totaltracks);
 
+	}
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		// TODO Auto-generated method stub
+		JComponent component = (JComponent)e.getSource();
+		if(component == offlinecheckbox){
+			SwingUtilities.invokeLater(new Runnable(){
+
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					offlinelabel.setVisible(offlinecheckbox.isSelected());
+					frame.pack();
+				}
+				
+			});
+					
+		}
 	}
 }

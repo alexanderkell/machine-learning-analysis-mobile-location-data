@@ -118,10 +118,11 @@ public class MySQLDownload{
 		oos.close();
 		return pd;
 	}
-	public boolean downloadAndSerialise(String phoneid) throws SQLException, ClassNotFoundException, IOException{
+	public boolean downloadAndSerialise(String phoneid, boolean offline) throws SQLException, ClassNotFoundException, IOException{
 		
 		try{
-			connect();
+			if(!offline)
+				connect();
 			
 				
 			if(version == null)
@@ -163,11 +164,21 @@ public class MySQLDownload{
 		} catch (NullPointerException e){
 			totaltracks = checkProperties(phoneid, version);
 			if(totaltracks == -1){
-				e.printStackTrace();
-				throw new NullPointerException("Cannot connect to database and cannot verify the local version of tracks");
-			} else{
-				return false;
+				int i = 0;
+				while(checkATrack(phoneid, ++i, version)){
+					totaltracks = i;
+				}
+				if(totaltracks == -1){
+					e.printStackTrace();
+					if(offline)
+						throw new NullPointerException("Please make sure the tracks are numbered in sequence starting from 1");
+					else
+						throw new NullPointerException("Cannot connect to database and cannot verify the local version of tracks");
+				}
+				
 			}
+			return false;
+			
 		}
 		
 
@@ -190,7 +201,11 @@ public class MySQLDownload{
 			// Skip the phonedata object
 			oos.readObject();
 			// Check version, phone id and track
-			result = (version.equals(oos.readUTF()) && phoneid.equals(oos.readUTF()) && track == oos.readInt());
+			if(version == null){
+				oos.readUTF();
+				result = ( phoneid.equals(oos.readUTF()) && track == oos.readInt());
+			} else
+				result = (version.equals(oos.readUTF()) && phoneid.equals(oos.readUTF()) && track == oos.readInt());
 			oos.close();
 		} catch (Exception e){}
 /*		} catch (ClassNotFoundException e){

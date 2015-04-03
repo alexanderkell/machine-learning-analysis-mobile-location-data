@@ -229,7 +229,7 @@ public class StatGeneratorMain extends TimerTask implements ActionListener, PTML
 			msd.setPTMListener(this);
 	
 			for(int i = 0; i<phones.length; i++){
-				boolean success = msd.downloadAndSerialise(phones[i]);
+				boolean success = msd.downloadAndSerialise(phones[i], false);
 				totaltracks[i] = msd.getTotalTracks();
 				if (!success)
 					JOptionPane.showMessageDialog(null, "Unable to connect to database and check for updates\nLocal copy of data will be used instead", "Unable to connect to database", JOptionPane.WARNING_MESSAGE);

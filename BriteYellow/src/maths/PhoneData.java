@@ -42,5 +42,20 @@ public class PhoneData implements Serializable{
 	public boolean interpolated = false;
 
 	public boolean filtered = false;
+
+	@Override
+	public String toString() {
+		return "PhoneData [x=" + x + ", y=" + y + ", z=" + z + ", wholedate="
+				+ wholedate + ", wholedatestring=" + wholedatestring + ", ts="
+				+ ts + ", tb=" + tb + ", xdisp=" + xdisp + ", ydisp=" + ydisp
+				+ ", zdisp=" + zdisp + ", moddisp=" + moddisp + ", rsx=" + rsx
+				+ ", rsy=" + rsy + ", rsz=" + rsz + ", modspd=" + modspd
+				+ ", spdtheta=" + spdtheta + ", rax=" + rax + ", ray=" + ray
+				+ ", raz=" + raz + ", modacc=" + modacc + ", acctheta="
+				+ acctheta + ", phone_id=" + phone_id + ", track_no="
+				+ track_no + ", interpolated=" + interpolated + ", filtered="
+				+ filtered + "]";
+	}
+	
 }
 

@@ -42,8 +42,7 @@ public class StatsGenerator extends ProbabilityList{
 		for(int i=0; i<pd.size()-2; i++){
 			if(pd.get(i+1).x-pd.get(i).x<XSTILL && pd.get(i+1).y-pd.get(i).y<YSTILL && isDirectionChanged(pd.get(i).x,pd.get(i+1).x,pd.get(i).y,pd.get(i+1).x)){
 				int j = 2;
-				store.addLast(i);
-				while(pd.get(i+j).x-pd.get(i).x < XSTILL || pd.get(i+j).y-pd.get(i).y < YSTILL && isDirectionChanged(pd.get(i+j).x,pd.get(i+j-1).x,pd.get(i+j).x,pd.get(i+j-1).x)){
+				while(pd.get(i+j).x-pd.get(i).x < XSTILL && pd.get(i+j).y-pd.get(i).y < YSTILL && isDirectionChanged(pd.get(i+j).x,pd.get(i+j+1).x,pd.get(i+j).x,pd.get(i+j+1).x)){
 					store.addLast(j);
 					j++;
 				}

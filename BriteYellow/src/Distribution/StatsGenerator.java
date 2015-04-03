@@ -2,6 +2,7 @@ package Distribution;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import maths.PhoneData;
 
@@ -35,7 +36,31 @@ public class StatsGenerator extends ProbabilityList{
 	private int oldxdirection = 0;
 	private int oldydirection = 0;
 	
-	private int 
+	private double[] stoodStill(ArrayList<PhoneData> pd){
+		
+		LinkedList store = new LinkedList();
+		for(int i=0; i<pd.size()-2; i++){
+			double x1 = pd.get(i).x;
+			double x2 = pd.get(i+1).x;
+			double x3 = pd.get(i+2).x;
+			double y1 = pd.get(i).y;
+			double y2 = pd.get(i+1).y;
+			double y3 = pd.get(i+2).y;
+			
+			
+			if(x2-x1<XSTILL && y2-y1<YSTILL && isDirectionChanged(x1,x2,y1,y2)){
+				if(x3-x1<XSTILL && y3-y1<YSTILL && isDirectionChanged(x2,x3,y2,y3)){
+					if(store.contains(i)==false){
+						store.addLast(i);
+					}
+					if(store.contains(i+1)==false){
+						store.addLast(i+1);
+					}	
+				}
+			
+			}
+		}
+	}
 	
 	public int isStandingStill(int property, double xstart, double xend, double ystart, double yend){
 		

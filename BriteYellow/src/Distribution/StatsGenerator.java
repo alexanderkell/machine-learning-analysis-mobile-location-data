@@ -40,17 +40,10 @@ public class StatsGenerator extends ProbabilityList{
 		
 		LinkedList store = new LinkedList();
 		for(int i=0; i<pd.size()-2; i++){
-			double x1 = pd.get(i).x;
-			double x2 = pd.get(i+1).x;
-			double x3 = pd.get(i+2).x;
-			double y1 = pd.get(i).y;
-			double y2 = pd.get(i+1).y;
-			double y3 = pd.get(i+2).y;
-			
 			if(pd.get(i+1).x-pd.get(i).x<XSTILL && pd.get(i+1).y-pd.get(i).y<YSTILL && isDirectionChanged(pd.get(i).x,pd.get(i+1).x,pd.get(i).y,pd.get(i+1).x)){
 				int j = 2;
 				store.addLast(i);
-				while(pd.get(i+j).x-pd.get(i).x < XSTILL || pd.get(i+j).y-pd.get(i).y < YSTILL && isDirectionChanged(pd.get(i).x,pd.get(i+j).x,pd.get(i).x,pd.get(i+j).x)){
+				while(pd.get(i+j).x-pd.get(i).x < XSTILL || pd.get(i+j).y-pd.get(i).y < YSTILL && isDirectionChanged(pd.get(i+j).x,pd.get(i+j-1).x,pd.get(i+j).x,pd.get(i+j-1).x)){
 					store.addLast(j);
 					j++;
 				}

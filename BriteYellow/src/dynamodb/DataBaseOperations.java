@@ -3,6 +3,8 @@ package dynamodb;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import maths.*;
 
@@ -14,6 +16,8 @@ import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
@@ -41,14 +45,15 @@ public class DataBaseOperations {
 
 	static AmazonDynamoDBClient client;
 	static DynamoDB dynamo;
-	static String tableName;
+	private String tableName;
 	static DynamoDBMapper mapper;
+	private DynamoDBMapperConfig DDB_CONFIG;
 	
 	/*public static void main(String args[]) throws Exception{
 		
-		DataBaseOperations DBO = new DataBaseOperations();
-		DBO.deleteTable("3D_Cloud_Pan_Data");
-		DBO.createTable("3D_Cloud_Pan_Data");
+		DataBaseOperations DBO = new DataBaseOperations("Processed_Data");
+		DBO.deleteTable();
+		DBO.createTable();
 		DataGetter DG = new DataGetter(7, "24th Sept ORDERED.CSV");
 		DataGetter DG2 = new DataGetter(7, "26th Sept ORDERED.CSV");
 		ArrayList<PhoneData> pd24 = DG.getFullPhoneDataList();
@@ -57,25 +62,21 @@ public class DataBaseOperations {
 		ArrayList<PhoneDataDB> pddb24 = DBO.convertToPhoneDataDB(pd24);
 		ArrayList<PhoneDataDB> pddb26 = DBO.convertToPhoneDataDB(pd26);
 		System.out.println("Writing 24th Values...");
-		DBO.batchSaveRaw(pddb24);
+		DBO.batchWrite(pddb24);
 		System.out.println("Done 24th");
 		System.out.println("Writing 26th Values...");
-		DBO.batchSaveRaw(pddb26);
+		DBO.batchWrite(pddb26);
 		System.out.println("Done 26th");
 		//DBO.updateThroughput(tableName,25L,1L);
 		
 		
 	}*/
 	
-	public void makeProcessedTable(PhoneData[] pd) throws InterruptedException{
-		createTable("Processed_Data");
-		ArrayList<ProcessedDataDB> prddb = convertToProcessedDataDB(pd);
-		batchSaveProcessed(prddb);
+	public DataBaseOperations(String tableName) throws Exception {
+       
+		this.tableName = tableName;
+		DDB_CONFIG = new DynamoDBMapperConfig(new TableNameOverride(tableName));
 		
-	}
-	
-	public DataBaseOperations() throws Exception {
-        
         AWSCredentials credentials = null;
         try {
             credentials = new ProfileCredentialsProvider("default").getCredentials();
@@ -92,9 +93,10 @@ public class DataBaseOperations {
         client.setRegion(eur1);
         dynamo = new DynamoDB(client);
         mapper = new DynamoDBMapper(client);
+        
     }
 	
-	public void createTable(String tableName) throws InterruptedException{
+	public void createTable() throws InterruptedException{
 		try{
 			
 			if (Tables.doesTableExist(client, tableName)) {
@@ -157,7 +159,7 @@ public class DataBaseOperations {
 	}
 	
 	//deletes a table with a given name
-	public void deleteTable(String tableName) {
+	public void deleteTable() {
         Table table = dynamo.getTable(tableName);
         try {
             System.out.println("Issuing DeleteTable request for " + tableName);
@@ -175,38 +177,18 @@ public class DataBaseOperations {
 	//to add a value or update a value with the same key
 	public void saveItem(PhoneDataDB pdb) {
 		
-		mapper.save(pdb);
+		mapper.save(pdb, DDB_CONFIG);
 		
-		DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(pdb.tableName);
+		DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(tableName);
         TableDescription tableDescription = client.describeTable(describeTableRequest).getTable();
         System.out.println("Table Description: " + tableDescription);
 		
     }
 	
-	//to add or multiple values
-	public void batchSaveRaw(ArrayList<PhoneDataDB> pdb){
-		
-		mapper.batchSave(pdb);
-		
-		DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(pdb.get(0).tableName);
-        TableDescription tableDescription = client.describeTable(describeTableRequest).getTable();
-        System.out.println("Table Description: " + tableDescription);
-		
-	}
-	
-	public void deleteItem(PhoneDataDB pdb) {
-		
-		mapper.delete(pdb);
-		
-		DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(pdb.tableName);
-        TableDescription tableDescription = client.describeTable(describeTableRequest).getTable();
-        System.out.println("Table Description: " + tableDescription);
-		
-    }
-	
-	public void batchDeleteRaw(ArrayList<PhoneDataDB> pdb){
-		
-		mapper.batchDelete(pdb);
+	//to add multiple values
+	public void batchWrite(ArrayList<PhoneDataDB> pdb){
+		List<PhoneDataDB> myEntitiesToDelete = Collections.<PhoneDataDB> emptyList();
+		mapper.batchWrite(pdb, myEntitiesToDelete, DDB_CONFIG);
 		
 		DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(tableName);
         TableDescription tableDescription = client.describeTable(describeTableRequest).getTable();
@@ -214,47 +196,25 @@ public class DataBaseOperations {
 		
 	}
 	
-	//to add a value or update a value with the same key
-		public void saveItem(ProcessedDataDB pdb) {
-			
-			mapper.save(pdb);
-			
-			DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(pdb.tableName);
-	        TableDescription tableDescription = client.describeTable(describeTableRequest).getTable();
-	        System.out.println("Table Description: " + tableDescription);
-			
-	    }
+	public void deleteItem(PhoneDataDB pdb) {
 		
-		//to add or multiple values
-		public void batchSaveProcessed(ArrayList<ProcessedDataDB> pdb){
-			
-			mapper.batchSave(pdb);
-			
-			DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(pdb.get(0).tableName);
-	        TableDescription tableDescription = client.describeTable(describeTableRequest).getTable();
-	        System.out.println("Table Description: " + tableDescription);
-			
-		}
+		mapper.delete(pdb, DDB_CONFIG);
 		
-		public void deleteItem(ProcessedDataDB pdb) {
-			
-			mapper.delete(pdb);
-			
-			DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(pdb.tableName);
-	        TableDescription tableDescription = client.describeTable(describeTableRequest).getTable();
-	        System.out.println("Table Description: " + tableDescription);
-			
-	    }
+		DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(tableName);
+        TableDescription tableDescription = client.describeTable(describeTableRequest).getTable();
+        System.out.println("Table Description: " + tableDescription);
 		
-		public void batchDeleteProcessed(ArrayList<ProcessedDataDB> pdb){
-			
-			mapper.batchDelete(pdb);
-			
-			DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(tableName);
-	        TableDescription tableDescription = client.describeTable(describeTableRequest).getTable();
-	        System.out.println("Table Description: " + tableDescription);
-			
-		}
+    }
+	
+	public void batchDelete(ArrayList<PhoneDataDB> pdb){
+		
+		mapper.batchDelete(pdb, DDB_CONFIG);
+		
+		DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(tableName);
+        TableDescription tableDescription = client.describeTable(describeTableRequest).getTable();
+        System.out.println("Table Description: " + tableDescription);
+		
+	}
 	
 	
 	
@@ -325,88 +285,7 @@ public class DataBaseOperations {
 	}
 	
 	
-	//converts an Arraylist of PhoneData objects to ProcessedDataDB objects
-		public ArrayList<ProcessedDataDB> convertToProcessedDataDB(ArrayList<PhoneData> pd){
-			ArrayList<ProcessedDataDB> whole = new ArrayList<ProcessedDataDB>();
-			ProcessedDataDB datapoint;
-			
-			for(int i = 0; i< pd.size(); i++){
-				datapoint = new ProcessedDataDB();
-				datapoint = convertToProcessedDataDB(pd.get(i));
-				
-				whole.add(datapoint);
-				
-			}
-			
-			return whole;
-		}
-		
-		public ArrayList<ProcessedDataDB> convertToProcessedDataDB(PhoneData[] pda){
-			ArrayList<PhoneData> pd = new ArrayList<PhoneData>(Arrays.asList(pda));
-			ArrayList<ProcessedDataDB> whole = new ArrayList<ProcessedDataDB>();
-			ProcessedDataDB datapoint;
-			
-			for(int i = 0; i< pd.size(); i++){
-				datapoint = new ProcessedDataDB();
-				datapoint = convertToProcessedDataDB(pd.get(i));
-				
-				whole.add(datapoint);
-				
-				
-			}
-			
-			return whole;
-		}
-		
-		public ProcessedDataDB convertToProcessedDataDB(PhoneData pd){
-			
-			ProcessedDataDB datapoint;
-			
-			datapoint = new ProcessedDataDB();
-			datapoint.setXPosition(pd.x);
-			datapoint.setYPosition(pd.y);
-			datapoint.setZPosition(pd.z);
-			datapoint.setWholeDate(pd.wholedate);
-			datapoint.setWholeDateString(pd.wholedatestring);
-			datapoint.setTimestamp(pd.ts);
-			datapoint.setTimestampLong(pd.ts.getTime());
-			datapoint.setTimeBetween(pd.tb);
-			datapoint.setXDisplacement(pd.xdisp);
-			datapoint.setYDisplacement(pd.ydisp);
-			datapoint.setZDisplacement(pd.zdisp);
-			datapoint.setModDisplacement(pd.moddisp);
-			datapoint.setXSpeed(pd.rsx);
-			datapoint.setYSpeed(pd.rsy);
-			datapoint.setZSpeed(pd.rsz);
-			datapoint.setModSpeed(pd.modspd);
-			datapoint.setSpeedTheta(pd.spdtheta);
-			datapoint.setXAcceleration(pd.rax);
-			datapoint.setYAcceleration(pd.ray);
-			datapoint.setZAcceleration(pd.raz);
-			datapoint.setModAcceleration(pd.modacc);
-			datapoint.setAccelerationTheta(pd.acctheta);
-			datapoint.setPhoneID(pd.phone_id);
-			datapoint.setTrackNo(pd.track_no);
-			
-			return datapoint;
-		}
-	
-	
-	public ArrayList<PhoneData> convertFromPhoneData(ArrayList<PhoneDataDB> pd){
-		ArrayList<PhoneData> whole = new ArrayList<PhoneData>();
-		PhoneData datapoint;
-		
-		for(int i = 0; i< pd.size(); i++){
-			datapoint = new PhoneData();
-			datapoint = convertFrom(pd.get(i));
-			whole.add(datapoint);
-			
-		}
-		
-		return whole;
-	}
-	
-	public ArrayList<PhoneData> convertFromProcessedData(ArrayList<ProcessedDataDB> pd){
+	public ArrayList<PhoneData> convertFrom(ArrayList<PhoneDataDB> pd){
 		ArrayList<PhoneData> whole = new ArrayList<PhoneData>();
 		PhoneData datapoint;
 		
@@ -423,39 +302,6 @@ public class DataBaseOperations {
 	
 	public PhoneData convertFrom(PhoneDataDB pd){
 	
-		PhoneData datapoint;
-		
-		datapoint = new PhoneData();
-		datapoint.x = pd.getXPosition();
-		datapoint.y = pd.getYPosition();
-		datapoint.z = pd.getZPosition();
-		datapoint.wholedate = pd.getWholeDate();
-		datapoint.wholedatestring = pd.getWholeDateString();
-		datapoint.ts = new Timestamp(pd.getTimestampLong());
-		datapoint.tb = pd.getTimeBetween();
-		datapoint.xdisp = pd.getXDisplacement();
-		datapoint.ydisp = pd.getYDisplacement();
-		datapoint.zdisp = pd.getZDisplacement();
-		datapoint.moddisp = pd.getModDisplacement();
-		datapoint.rsx = pd.getXSpeed();
-		datapoint.rsy = pd.getYSpeed();
-		datapoint.rsz = pd.getZSpeed();
-		datapoint.modspd = pd.getModSpeed();
-		datapoint.spdtheta = pd.getSpeedTheta();
-		datapoint.rax = pd.getXAcceleration();
-		datapoint.ray = pd.getYAcceleration();
-		datapoint.raz = pd.getZAcceleration();
-		datapoint.modacc = pd.getModAcceleration();
-		datapoint.acctheta = pd.getAccelerationTheta();
-		datapoint.phone_id = pd.getPhoneID();
-		datapoint.track_no = pd.getTrackNo();
-	
-		
-		return datapoint;
-	}
-	
-	public PhoneData convertFrom(ProcessedDataDB pd){
-		
 		PhoneData datapoint;
 		
 		datapoint = new PhoneData();

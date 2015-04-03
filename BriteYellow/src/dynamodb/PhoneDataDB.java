@@ -11,9 +11,8 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
 
-@DynamoDBTable(tableName = "3D_Cloud_Pan_Data") 
+@DynamoDBTable(tableName = "REPLACED_BY_VALUE_IN_PROPERTIES_FILE") 
 public class PhoneDataDB{
-	public final String tableName = "3D_Cloud_Pan_Data";
 	private double x, y, z;
 	private Date wholedate;
 	private String wholedatestring;

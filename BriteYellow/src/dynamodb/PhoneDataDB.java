@@ -11,20 +11,19 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
 
-@DynamoDBTable(tableName = DBName.dbname) 
+@DynamoDBTable(tableName = "REPLACED_BY_VALUE_IN_PROPERTIES_FILE") 
 public class PhoneDataDB{
 	private double x, y, z;
 	private Date wholedate;
 	private String wholedatestring;
 	private Timestamp ts;
-	private double tsd;
+	private Long tsl;
 	private double tb;
 	private double xdisp, ydisp, zdisp, moddisp;
 	private double rsx, rsy, rsz, modspd, spdtheta;
 	private double rax, ray, raz, modacc, acctheta;
 	private String phone_id;
 	private int track_no;
-	private boolean interpolated = false;
 	
 	
 	@DynamoDBAttribute(attributeName = "X_Position")
@@ -72,11 +71,11 @@ public class PhoneDataDB{
 		this.ts = ts;
 	}
 	@DynamoDBRangeKey(attributeName = "Timestamp")
-	public double getTimestampDouble(){
-		return tsd;
+	public long getTimestampLong(){
+		return tsl;
 	}
-	public void setTimestampDouble(double tsd){
-		this.tsd = tsd;
+	public void setTimestampLong(long tsl){
+		this.tsl = tsl;
 	}
 	
 	
@@ -208,15 +207,6 @@ public class PhoneDataDB{
 	}
 	public void setTrackNo(int track_no){
 		this.track_no = track_no;
-	}
-	
-	
-	@DynamoDBIgnore
-	public boolean getInterpolated(){
-		return interpolated;
-	}
-	public void setInterpolated(boolean interpolated){
-		this.interpolated = interpolated;
 	}
 	
 	

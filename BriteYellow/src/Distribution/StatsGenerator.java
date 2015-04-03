@@ -1,4 +1,4 @@
-package distribution;
+package Distribution;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -34,10 +34,21 @@ public class StatsGenerator extends ProbabilityList{
 	private int ydirection = 0; // +1 = moving up, -1 = moving down
 	private int oldxdirection = 0;
 	private int oldydirection = 0;
-	public ?? isStandingStill(??){
+	
+	private int 
+	
+	public int isStandingStill(int property, double xstart, double xend, double ystart, double yend){
+		
+		if(isDirectionChanged(xstart, xend, ystart, yend)==true){
+			if(xstart-xend > XSTILL && ystart-yend > YSTILL){
+				
+			}
+		}
+	
+		
 		
 	}
-	public void updateDirection(double xstart, double xend, double ystart, double yend){
+	public void updateDirection(int property, double xstart, double xend, double ystart, double yend){
 		// Store last direction
 		oldxdirection = xdirection;
 		oldydirection = ydirection;

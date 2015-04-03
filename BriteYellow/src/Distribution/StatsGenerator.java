@@ -36,7 +36,7 @@ public class StatsGenerator extends ProbabilityList{
 	private int oldxdirection = 0;
 	private int oldydirection = 0;
 	
-	private double[] stoodStill(ArrayList<PhoneData> pd){
+	private LinkedList stoodStill(ArrayList<PhoneData> pd){
 		
 		LinkedList store = new LinkedList();
 		for(int i=0; i<pd.size()-2; i++){
@@ -47,32 +47,22 @@ public class StatsGenerator extends ProbabilityList{
 			double y2 = pd.get(i+1).y;
 			double y3 = pd.get(i+2).y;
 			
-			
-			if(x2-x1<XSTILL && y2-y1<YSTILL && isDirectionChanged(x1,x2,y1,y2)){
-				if(x3-x1<XSTILL && y3-y1<YSTILL && isDirectionChanged(x2,x3,y2,y3)){
-					if(store.contains(i)==false){
-						store.addLast(i);
-					}
-					if(store.contains(i+1)==false){
-						store.addLast(i+1);
-					}	
+			if(pd.get(i+1).x-pd.get(i).x<XSTILL && pd.get(i+1).y-pd.get(i).y<YSTILL && isDirectionChanged(pd.get(i).x,pd.get(i+1).x,pd.get(i).y,pd.get(i+1).x)){
+				int j = 2;
+				store.addLast(i);
+				while(pd.get(i+j).x-pd.get(i).x < XSTILL || pd.get(i+j).y-pd.get(i).y < YSTILL && isDirectionChanged(pd.get(i).x,pd.get(i+j).x,pd.get(i).x,pd.get(i+j).x)){
+					store.addLast(j);
+					j++;
 				}
-			
+				i=j;
 			}
+
 		}
 	}
 	
-	public int isStandingStill(int property, double xstart, double xend, double ystart, double yend){
 		
-		if(isDirectionChanged(xstart, xend, ystart, yend)==true){
-			if(xstart-xend > XSTILL && ystart-yend > YSTILL){
-				
-			}
-		}
+		
 	
-		
-		
-	}
 	public void updateDirection(int property, double xstart, double xend, double ystart, double yend){
 		// Store last direction
 		oldxdirection = xdirection;

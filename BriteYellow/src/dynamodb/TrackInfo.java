@@ -1,11 +1,15 @@
 package dynamodb;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
 @DynamoDBTable(tableName = "REPLACED_BY_VALUE_IN_PROPERTIES_FILE")
 public class TrackInfo {
 	
+	private String PHONE_ID;
+	private int TRACK_NO;
 	private int PATH_LENGTH;
 	private int TIME_STOPPED; 
 	private int NO_STOPS; 
@@ -19,6 +23,22 @@ public class TrackInfo {
 	private int Y1;
 	private int X2;
 	private int Y2;
+	
+	@DynamoDBHashKey
+	public String getPHONE_ID() {
+		return PHONE_ID;
+	}
+	public void setPHONE_ID(String pHONE_ID) {
+		PHONE_ID = pHONE_ID;
+	}
+	
+	@DynamoDBRangeKey
+	public int getTRACK_NO() {
+		return TRACK_NO;
+	}
+	public void setTRACK_NO(int tRACK_NO) {
+		TRACK_NO = tRACK_NO;
+	}
 	
 	@DynamoDBAttribute
 	public int getX1() {

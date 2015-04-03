@@ -158,6 +158,54 @@ public class DataBaseOperations {
 		
 	}
 	
+	public void createTracksTable() throws InterruptedException{
+		try{
+			
+			if (Tables.doesTableExist(client, tableName)) {
+	            System.out.println("Table " + tableName + " is already ACTIVE");
+	        } else {
+			
+			CreateTableRequest createTableRequest = new CreateTableRequest().withTableName(tableName);
+			createTableRequest.setProvisionedThroughput(new ProvisionedThroughput().withReadCapacityUnits((long)25).withWriteCapacityUnits((long)25));
+			
+			//AttributeDefinitions
+			ArrayList<AttributeDefinition> attributeDefinitions= new ArrayList<AttributeDefinition>();
+			attributeDefinitions.add(new AttributeDefinition().withAttributeName("PHONE_ID").withAttributeType("S"));
+			attributeDefinitions.add(new AttributeDefinition().withAttributeName("TRACK_NO").withAttributeType("N"));
+
+			createTableRequest.setAttributeDefinitions(attributeDefinitions);
+
+			//KeySchema
+			ArrayList<KeySchemaElement> tableKeySchema = new ArrayList<KeySchemaElement>();
+			tableKeySchema.add(new KeySchemaElement().withAttributeName("PHONE_ID").withKeyType(KeyType.HASH));
+			tableKeySchema.add(new KeySchemaElement().withAttributeName("TRACK_NO").withKeyType(KeyType.RANGE));
+			
+			createTableRequest.setKeySchema(tableKeySchema);
+			
+			TableDescription  createdTableDescription = client.createTable(createTableRequest).getTableDescription();
+			System.out.println(createdTableDescription);
+			
+			System.out.println("Waiting for " + tableName + " to become ACTIVE...");
+	        Tables.awaitTableToBecomeActive(client, tableName);
+	        }
+				
+		} catch (AmazonServiceException ase) {
+            System.out.println("Caught an AmazonServiceException, which means your request made it "
+                    + "to AWS, but was rejected with an error response for some reason.");
+            System.out.println("Error Message:    " + ase.getMessage());
+            System.out.println("HTTP Status Code: " + ase.getStatusCode());
+            System.out.println("AWS Error Code:   " + ase.getErrorCode());
+            System.out.println("Error Type:       " + ase.getErrorType());
+            System.out.println("Request ID:       " + ase.getRequestId());
+        } catch (AmazonClientException ace) {
+            System.out.println("Caught an AmazonClientException, which means the client encountered "
+                    + "a serious internal problem while trying to communicate with AWS, "
+                    + "such as not being able to access the network.");
+            System.out.println("Error Message: " + ace.getMessage());
+        }
+		
+	}
+	
 	//deletes a table with a given name
 	public void deleteTable() {
         Table table = dynamo.getTable(tableName);

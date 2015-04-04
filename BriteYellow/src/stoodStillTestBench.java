@@ -34,6 +34,7 @@ public class stoodStillTestBench {
 		int XSTILL=2;
 		int YSTILL=2;
 		
+		//Create test track in PhoneData format
 		ArrayList<PhoneData> pd = new ArrayList<PhoneData>();
 		for(int i=0; i<x.length; i++){
 			PhoneData pdIn = new PhoneData();
@@ -43,28 +44,33 @@ public class stoodStillTestBench {
 		}
 
 		LinkedList store = new LinkedList();
+		
+		//Run through track
 		for(int i=0; i<pd.size()-2; i++){
-
+			//If we find a slowing down of equal value to XSTILL, YSTILL then continue
 			if(Math.abs(pd.get(i).x-pd.get(i+1).x)<=XSTILL && Math.abs(pd.get(i).y-pd.get(i+1).y)<=YSTILL){
 				System.out.println(i+" is the first stopping point");
 				int j = 2;
-				
+				//If there is a second point that remains within XSTILL, YSTILL radius of first stopping then continue
 				if(Math.abs(pd.get(i+j).x-pd.get(i).x)<=XSTILL && Math.abs(pd.get(i+j).y-pd.get(i).y)<=YSTILL){
 					j++;
+					//If there is a 3rd point that remains within XSTILL, YSTILL radius of first stopping point then we have stopped
 					if(Math.abs(pd.get(i+j).x-pd.get(i).x)<=XSTILL && Math.abs(pd.get(i+j).y-pd.get(i).y)<=YSTILL){
 						j++;
-						store.addLast(i+j-4);
+						//Now we can add all previous points as have confirmed stopped
+						store.addLast(i+j-4); 
 						store.addLast(i+j-3);
 						store.addLast(i+j-2);
 						store.addLast(i+j-1);
+						//Add all successive points which remain within the stopping point radius
 						while(Math.abs(pd.get(i+j).x-pd.get(i).x) <= XSTILL && Math.abs(pd.get(i+j).y-pd.get(i).y) <= YSTILL){
 							store.addLast(i+j);
 							j++;
 
 						}
+						//The following coordinate has left the stopping point radius
 						System.out.println(i+j+ " is the leaving point");	
 						i=i+j++;
-
 					}else
 						continue;
 				}else
@@ -73,5 +79,4 @@ public class stoodStillTestBench {
 		}
 		System.out.printf("We were stopped at points: "+store.toString());
 	}
-
 }

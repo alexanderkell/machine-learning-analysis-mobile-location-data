@@ -2,6 +2,7 @@ package dynamodb;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,11 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.ItemCollection;
+import com.amazonaws.services.dynamodbv2.document.PutItemOutcome;
+import com.amazonaws.services.dynamodbv2.document.QueryOutcome;
+import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import com.amazonaws.services.dynamodbv2.model.Condition;
@@ -32,10 +38,10 @@ public class DataBaseQueries{
 	
 	
 	//view main method in comments for details
-	/*public static void main(String args[]) throws Exception{
+	public static void main(String args[]) throws Exception{
 		DataBaseQueries dbq = new DataBaseQueries("3D_Cloud_Pan_Data");
 		
-		ArrayList<PhoneDataDB> ppp = dbq.scanTable("Track_no", -1, ComparisonOperator.EQ.toString());
+		/*ArrayList<PhoneDataDB> ppp = dbq.scanTable("Track_no", -1, ComparisonOperator.EQ.toString());
 		ArrayList<PhoneDataDB> ppp2 = dbq.queryTable("HT25TW5055273593c875a9898b00");
 		
 		for(int i = 0; i < ppp.size(); i++){
@@ -46,8 +52,12 @@ public class DataBaseQueries{
 			System.out.println(ppp2.get(0).toString());
 		}
 		
+		int max = dbq.findMaxTrackNo("HT25TW5055273593c875a9898b00");
+		System.out.println(max);*/
 		
-	}*/
+		//System.out.println(dbq.readStats());
+		
+	}
 	
 	public DataBaseQueries(String tableName) throws Exception {
 		this.tableName = tableName;
@@ -159,6 +169,36 @@ public class DataBaseQueries{
 		List<PhoneDataDB> scanresult = mapper.scan(PhoneDataDB.class, scanExpression, DDB_CONFIG);
 		ArrayList<PhoneDataDB> scanresult2 = new ArrayList<PhoneDataDB>(scanresult);
 		return scanresult2;
+	}
+	
+	
+	public int findMaxTrackNo(String PHONE_ID){
+		int max = 0;
+		ArrayList<PhoneDataDB> test = queryTable(PHONE_ID);
+		int comp;
+		
+		for(int i = 0; i < test.size(); i++){
+			
+			comp = test.get(i).getTrackNo();
+			if(comp > max){
+				max = comp;
+			}
+			
+		}
+		
+		return max;
+	}
+	
+	
+	public Timestamp readStats(){
+		Table table = dynamo.getTable("Write_Stats");
+		ItemCollection<QueryOutcome> items = table.query("Table_Name", tableName);
+		Iterator<Item> iterator = items.iterator();
+		Item thisItem = iterator.next();
+		Long timestamplong = thisItem.getLong("Timestamp");	
+		Timestamp result = new Timestamp(timestamplong);
+		
+		return result;
 	}
 	
 	

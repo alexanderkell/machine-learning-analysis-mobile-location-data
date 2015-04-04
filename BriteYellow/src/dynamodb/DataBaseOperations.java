@@ -51,27 +51,6 @@ public class DataBaseOperations {
 	static DynamoDBMapper mapper;
 	private DynamoDBMapperConfig DDB_CONFIG;
 	
-	public static void main(String args[]) throws Exception{
-		
-		DataBaseOperations DBO = new DataBaseOperations("Processed_Data");
-		/*DBO.deleteTable();
-		DBO.createTable();
-		DataGetter DG = new DataGetter(7, "24th Sept ORDERED.CSV");
-		DataGetter DG2 = new DataGetter(7, "26th Sept ORDERED.CSV");
-		ArrayList<PhoneData> pd24 = DG.getFullPhoneDataList();
-		ArrayList<PhoneData> pd26 = DG2.getFullPhoneDataList();
-		
-		ArrayList<PhoneDataDB> pddb24 = DBO.convertToPhoneDataDB(pd24);
-		ArrayList<PhoneDataDB> pddb26 = DBO.convertToPhoneDataDB(pd26);
-		System.out.println("Writing 24th Values...");
-		DBO.batchWrite(pddb24);
-		System.out.println("Done 24th");
-		System.out.println("Writing 26th Values...");
-		DBO.batchWrite(pddb26);
-		System.out.println("Done 26th");
-		//DBO.updateThroughput(tableName,25L,1L);*/
-
-	}
 	
 	public DataBaseOperations(String tableName) throws Exception {
        

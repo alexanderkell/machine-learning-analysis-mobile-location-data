@@ -1,8 +1,7 @@
-package Distribution;
+package distribution;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 import maths.PhoneData;
 
@@ -36,26 +35,70 @@ public class StatsGenerator extends ProbabilityList{
 	private int oldxdirection = 0;
 	private int oldydirection = 0;
 	
-	private LinkedList stoodStill(ArrayList<PhoneData> pd){
+	private ArrayList<Integer> processStoodStill(){
 		
-		LinkedList store = new LinkedList();
-		for(int i=0; i<pd.size()-2; i++){
-			if(pd.get(i+1).x-pd.get(i).x<XSTILL && pd.get(i+1).y-pd.get(i).y<YSTILL && isDirectionChanged(pd.get(i).x,pd.get(i+1).x,pd.get(i).y,pd.get(i+1).x)){
-				int j = 2;
-				while(pd.get(i+j).x-pd.get(i).x < XSTILL && pd.get(i+j).y-pd.get(i).y < YSTILL && isDirectionChanged(pd.get(i+j).x,pd.get(i+j+1).x,pd.get(i+j).x,pd.get(i+j+1).x)){
-					store.addLast(j);
-					j++;
-				}
-				i=j;
+		ArrayList<Integer> store = new ArrayList<Integer>();
+		PhoneData[] pd = getFullPhoneData();
+		for(int i=0; i<pd.length-1; i++){
+			// Find 1st turning point
+			double x1 = pd[i].x;
+			double x2 = pd[i+1].x;
+			double y1 = pd[i].y;
+			double y2 = pd[i+1].y;
+			
+			// Update direction
+			updateDirection(x1,x2,y1,y2);
+			if(i == 0){
+				oldxdirection = xdirection;
+				oldydirection = ydirection;
 			}
-
+			
+			
+			if(isDirectionChanged()){
+				int firsttpointindex = i;
+				int lasttpointindex = firsttpointindex;
+				for(int j = i+1; j < pd.length-1; j++){
+					// Find further turning points
+					double x3 = pd[j].x;
+					double x4 = pd[j+1].x;
+					double y3 = pd[j].y;
+					double y4 = pd[j+1].y;
+					updateDirection(x3,x4,y3,y4);
+					
+					if(isDirectionChanged()){
+						// If the consecutive turning point is within distance 
+						// XSTILL and YSTILL, all point between i and j are considered
+						// standing still
+						if(Math.abs(x3-x1)<XSTILL && Math.abs(y3-y1)<YSTILL){
+							for(int k = lasttpointindex; k < j; k++){
+								store.add(k);
+							}
+							// Update the last turning point
+							lasttpointindex = j;
+						} else{
+							break;
+						}
+					}
+						
+					
+				}
+			}	
 		}
+		return store;
 	}
 	
+/*	public int isStandingStill(int property, double xstart, double xend, double ystart, double yend){
 		
-		
+		if(isDirectionChanged(xstart, xend, ystart, yend)==true){
+			if(xstart-xend > XSTILL && ystart-yend > YSTILL){
+				
+			}
+		}
 	
-	public void updateDirection(int property, double xstart, double xend, double ystart, double yend){
+		
+		
+	}
+*/	public void updateDirection(double xstart, double xend, double ystart, double yend){
 		// Store last direction
 		oldxdirection = xdirection;
 		oldydirection = ydirection;
@@ -77,7 +120,7 @@ public class StatsGenerator extends ProbabilityList{
 	 * @param yend end point y
 	 * @return true if at least 1 direction is changed, false if no directions are changed
 	 */
-	public boolean isDirectionChanged(double xstart, double xend, double ystart, double yend){
+	public boolean isDirectionChanged(){
 		return oldxdirection == xdirection || oldydirection == ydirection;
 	}
 	
@@ -298,6 +341,10 @@ public class StatsGenerator extends ProbabilityList{
 			return presult;
 		}
 		
+		ArrayList<Integer> stopsindex = null;
+		if(property == TIME_STOPPED || property == NO_STOPS){
+			stopsindex = processStoodStill();
+		}
 		ArrayList<Double> al = new ArrayList<Double>();
 		
 		boolean is_in = false;	// Show whether the ending point of the path segment is in the wanted area
@@ -327,15 +374,16 @@ public class StatsGenerator extends ProbabilityList{
 					result += getDistanceBetween(i) * fraction;
 			} else if(property == TIME_STOPPED){
 				if(fraction > 0){
-					if (isStandingStill(i))
+					if(stopsindex.contains(i))
 						result += getTimeBetweenValue(i);
 				}
 			} else if(property == NO_STOPS){
 				if(fraction > 0){
-					if (isStandingStill(i)){
-						if(!was_still)
+					if(stopsindex.contains(i)){
+						if(!was_still){
 							result ++;
-						was_still = true;
+							was_still = true;
+						}
 					} else 
 						was_still = false;
 						

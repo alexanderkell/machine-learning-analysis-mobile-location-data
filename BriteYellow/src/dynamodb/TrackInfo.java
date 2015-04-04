@@ -142,9 +142,18 @@ public class TrackInfo {
 	}
 	public void setSTHETAINOUT(int sTHETAINOUT) {
 		STHETAINOUT = sTHETAINOUT;
+	}
+	@Override
+	public String toString() {
+		return "TrackInfo [PHONE_ID=" + PHONE_ID + ", TRACK_NO=" + TRACK_NO
+				+ ", PATH_LENGTH=" + PATH_LENGTH + ", TIME_STOPPED="
+				+ TIME_STOPPED + ", NO_STOPS=" + NO_STOPS + ", TIME_SPENT="
+				+ TIME_SPENT + ", INACTIVE_TIME=" + INACTIVE_TIME
+				+ ", STHETACHANGE=" + STHETACHANGE + ", STHETAIN=" + STHETAIN
+				+ ", STHETAOUT=" + STHETAOUT + ", STHETAINOUT=" + STHETAINOUT
+				+ ", X1=" + X1 + ", Y1=" + Y1 + ", X2=" + X2 + ", Y2=" + Y2
+				+ "]";
 	} 
-	
-	
 	
 
 }

@@ -212,6 +212,8 @@ public class DataFormatOperations{
 					cdcalc2[l].rax = rax;
 					cdcalc2[l].ray = ray;
 					cdcalc2[l].raz = raz;
+					cdcalc2[l].modacc = (cdcalc2[l].modspd - cdcalc2[l-1].modspd);
+
 				} else {
 					cdcalc2[l].rax = rax/ cdcalc2[l].tb;
 					cdcalc2[l].ray = ray/ cdcalc2[l].tb;

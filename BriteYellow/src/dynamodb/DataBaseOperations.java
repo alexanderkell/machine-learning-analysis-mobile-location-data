@@ -19,6 +19,8 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.PutItemOutcome;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
@@ -45,7 +47,7 @@ public class DataBaseOperations {
 
 	static AmazonDynamoDBClient client;
 	static DynamoDB dynamo;
-	private String tableName;
+	private static String tableName;
 	static DynamoDBMapper mapper;
 	private DynamoDBMapperConfig DDB_CONFIG;
 	
@@ -74,7 +76,7 @@ public class DataBaseOperations {
 	
 	public DataBaseOperations(String tableName) throws Exception {
        
-		this.tableName = tableName;
+		DataBaseOperations.tableName = tableName;
 		DDB_CONFIG = new DynamoDBMapperConfig(new TableNameOverride(tableName));
 		
         AWSCredentials credentials = null;
@@ -139,6 +141,7 @@ public class DataBaseOperations {
 			
 			System.out.println("Waiting for " + tableName + " to become ACTIVE...");
 	        Tables.awaitTableToBecomeActive(client, tableName);
+	        writeStats();
 	        }
 				
 		} catch (AmazonServiceException ase) {
@@ -187,6 +190,7 @@ public class DataBaseOperations {
 			
 			System.out.println("Waiting for " + tableName + " to become ACTIVE...");
 	        Tables.awaitTableToBecomeActive(client, tableName);
+	        writeStats();
 	        }
 				
 		} catch (AmazonServiceException ase) {
@@ -215,11 +219,13 @@ public class DataBaseOperations {
             System.out.println("Waiting for " + tableName
                 + " to be deleted...this may take a while...");
             table.waitForDelete();
+            writeStats();
 
         } catch (Exception e) {
             System.err.println("DeleteTable request failed for " + tableName);
             System.err.println(e.getMessage());
         }
+        
     }
 	
 	//to add a value or update a value with the same key
@@ -230,7 +236,7 @@ public class DataBaseOperations {
 		DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(tableName);
         TableDescription tableDescription = client.describeTable(describeTableRequest).getTable();
         System.out.println("Table Description: " + tableDescription);
-		
+        writeStats();
     }
 	
 	//to add multiple values
@@ -241,7 +247,7 @@ public class DataBaseOperations {
 		DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(tableName);
         TableDescription tableDescription = client.describeTable(describeTableRequest).getTable();
         System.out.println("Table Description: " + tableDescription);
-		
+        writeStats();
 	}
 	
 	public void deleteItem(PhoneDataDB pdb) {
@@ -251,7 +257,7 @@ public class DataBaseOperations {
 		DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(tableName);
         TableDescription tableDescription = client.describeTable(describeTableRequest).getTable();
         System.out.println("Table Description: " + tableDescription);
-		
+        writeStats();
     }
 	
 	public void batchDelete(ArrayList<PhoneDataDB> pdb){
@@ -261,7 +267,7 @@ public class DataBaseOperations {
 		DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(tableName);
         TableDescription tableDescription = client.describeTable(describeTableRequest).getTable();
         System.out.println("Table Description: " + tableDescription);
-		
+        writeStats();
 	}
 	
 	
@@ -393,6 +399,17 @@ public class DataBaseOperations {
 		System.out.println("Waiting for Update to Complete...");
 		table.waitForActive();
 		System.out.println("Finished Update");
+		writeStats();
+	}
+	
+	private static void writeStats(){
+		Timestamp NOW = new Timestamp(System.currentTimeMillis());
+		
+		Table table = dynamo.getTable("Write_Stats");
+		Item item = new Item()
+		.withPrimaryKey("Table_Name" , tableName)
+		.withNumber("Timestamp", NOW.getTime());
+		PutItemOutcome outcome = table.putItem(item);
 	}
 	
 }

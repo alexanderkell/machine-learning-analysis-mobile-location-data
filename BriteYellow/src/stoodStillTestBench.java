@@ -7,7 +7,9 @@ import Distribution.*;
 
 public class stoodStillTestBench {
 	public static void main(String args[]) throws ParseException{
-//				   0 T1  2  3  4  5 L6  7   8  9   10  11T 12  13 14  15  16L  17
+		
+//TEST TRACKS		
+		
 		//Test for only one point slowing down (Stopping point = 2)
 //		int[] x = {0, 5, 10, 11, 15, 20};
 //		int[] y = {5, 5, 5,  4,  5,  5,};
@@ -20,7 +22,6 @@ public class stoodStillTestBench {
 		//Test for 10 points of slow down
 //		int[] x = {0,5,10, 11, 9, 10, 9, 10, 11, 11, 12, 40, 45, 50, 55,0,5,10, 11, 9, 10, 9, 10, 11, 11, 12, 40, 45, 50, 55,0,5,10, 11, 9, 10, 9, 10, 11, 11, 12, 40, 45, 50, 55,0,5,10, 11, 9, 10, 9, 10, 11, 11, 12, 40, 45, 50, 55};
 //		int[] y = {5,5,5,  5,  5, 4,  5, 6,  6,   3, 3,  40, 40, 40, 40, 5,5,5,  5,  5, 4,  5, 6,  6,   3, 3,  40, 40, 40, 40, 5,5,5,  5,  5, 4,  5, 6,  6,   3, 3,  40, 40, 40, 40, 5,5,5,  5,  5, 4,  5, 6,  6,   3, 3,  40, 40, 40, 40};
-		
 		//Test for quading up one slow down point
 //		int[] x = {0, 5, 10, 11, 15, 20, 0, 5, 10, 11, 15, 20, 0, 5, 10, 11, 15, 20, 0, 5, 10, 11, 15, 20};
 //		int[] y = {5, 5, 5,  4,  5,  5,5, 5, 5,  4,  5,  5, 5, 5, 5,  4,  5,  5,5, 5, 5,  4,  5,  5};
@@ -34,7 +35,7 @@ public class stoodStillTestBench {
 		int XSTILL=2;
 		int YSTILL=2;
 		
-		//Create test track in PhoneData format
+		//Import test track into PhoneData format
 		ArrayList<PhoneData> pd = new ArrayList<PhoneData>();
 		for(int i=0; i<x.length; i++){
 			PhoneData pdIn = new PhoneData();
@@ -43,6 +44,8 @@ public class stoodStillTestBench {
 			pd.add(pdIn);
 		}
 
+		//HERE IS ALGORITHM!
+		
 		LinkedList store = new LinkedList();
 		
 		//Run through track
@@ -70,6 +73,7 @@ public class stoodStillTestBench {
 						}
 						//The following coordinate has left the stopping point radius
 						System.out.println(i+j+ " is the leaving point");	
+						//Resume checking entire thing again from leaving point
 						i=i+j++;
 					}else
 						continue;

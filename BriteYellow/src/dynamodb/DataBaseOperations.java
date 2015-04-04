@@ -51,10 +51,10 @@ public class DataBaseOperations {
 	static DynamoDBMapper mapper;
 	private DynamoDBMapperConfig DDB_CONFIG;
 	
-	/*public static void main(String args[]) throws Exception{
+	public static void main(String args[]) throws Exception{
 		
 		DataBaseOperations DBO = new DataBaseOperations("Processed_Data");
-		DBO.deleteTable();
+		/*DBO.deleteTable();
 		DBO.createTable();
 		DataGetter DG = new DataGetter(7, "24th Sept ORDERED.CSV");
 		DataGetter DG2 = new DataGetter(7, "26th Sept ORDERED.CSV");
@@ -69,10 +69,9 @@ public class DataBaseOperations {
 		System.out.println("Writing 26th Values...");
 		DBO.batchWrite(pddb26);
 		System.out.println("Done 26th");
-		//DBO.updateThroughput(tableName,25L,1L);
-		
-		
-	}*/
+		//DBO.updateThroughput(tableName,25L,1L);*/
+
+	}
 	
 	public DataBaseOperations(String tableName) throws Exception {
        

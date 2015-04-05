@@ -24,21 +24,42 @@ public class StatsGenerator extends ProbabilityList{
 	public final static int TIME_PER_STOP = 210;
 	public final static int FREQ_IN_AREA = 250;
 	
-	final static int XSTILL = 50;	//Max x distance for determining whether
+	final static int XSTILL = 30;	//Max x distance for determining whether
 									// the person is staying still
-	final static int YSTILL = 20;	//Max y distance for determining whether
+	final static int YSTILL = 6;	//Max y distance for determining whether
 									// the person is staying still
 	private int length;
 	
-	private int xdirection = 0;	// +1 = moving to right, -1 = moving to left
-	private int ydirection = 0; // +1 = moving up, -1 = moving down
-	private int oldxdirection = 0;
-	private int oldydirection = 0;
+	private static int xdirection = 1;	// +1 = moving to right, -1 = moving to left
+	private static int ydirection = 1; // +1 = moving up, -1 = moving down
+	private static int oldxdirection = 1;
+	private static int oldydirection = 1;
 	
-	private ArrayList<Integer> processStoodStill(){
+	public static void main(String args[]) throws ParseException{
+		//																					18				22									31
+		int[] x = {266,262,255,249,245,242,239,236,234,232,231,230,228,227,226,225,223,222,220,223,231,240,243,242,239,237,236,234,229,228,228,224,212,200, 188};
+		int[] y = {318,316,313,310,308,307,306,304,303,302,301,301,300,299,298,298,298,297,296,297,299,301,302,301,301,300,299,299,299,299,299,299,299,298, 297};
+
+		
+		PhoneData[] pd = new PhoneData[x.length];
+		for(int i = 0 ; i < x.length; i++){
+			pd[i] = new PhoneData();
+			pd[i].x = x[i];
+			pd[i].y = y[i];
+		}
+		ArrayList<Integer> result = StatsGenerator.processStoodStill(pd);
+		for(int i = 0 ; i < result.size(); i++){
+			System.out.print(result.get(i)+"\t");
+		}
+		
+		
+	}
+	
+	/*
+	 * private static ArrayList<Integer> processStoodStill(PhoneData[] pd){
 		
 		ArrayList<Integer> store = new ArrayList<Integer>();
-		PhoneData[] pd = getFullPhoneData();
+//		PhoneData[] pd = getFullPhoneData();
 		for(int i=0; i<pd.length-1; i++){
 			// Find 1st turning point
 			double x1 = pd[i].x;
@@ -52,7 +73,6 @@ public class StatsGenerator extends ProbabilityList{
 				oldxdirection = xdirection;
 				oldydirection = ydirection;
 			}
-			
 			
 			if(isDirectionChanged()){
 				int firsttpointindex = i;
@@ -76,6 +96,7 @@ public class StatsGenerator extends ProbabilityList{
 							// Update the last turning point
 							lasttpointindex = j;
 						} else{
+							i = j;
 							break;
 						}
 					}
@@ -86,19 +107,98 @@ public class StatsGenerator extends ProbabilityList{
 		}
 		return store;
 	}
-	
-/*	public int isStandingStill(int property, double xstart, double xend, double ystart, double yend){
+	 */
+	private static ArrayList<Integer> processStoodStill(PhoneData[] pd){
 		
-		if(isDirectionChanged(xstart, xend, ystart, yend)==true){
-			if(xstart-xend > XSTILL && ystart-yend > YSTILL){
-				
+		ArrayList<Integer> t_points = new ArrayList<Integer>();
+
+//		PhoneData[] pd = getFullPhoneData();
+		
+		int index = 0;
+		
+			// Find all turning points
+			while(index < pd.length){
+					
+				int temp = findnextturningpoint(pd,index); //1st turning point
+				if(temp == -1){
+					break;
+				} else {
+					t_points.add(temp);
+					index = temp+1;
+				}
+			}
+			
+			ArrayList<Integer> store = new ArrayList<Integer>();
+			
+			try{
+				int i = 0;
+				while(i < t_points.size()){
+					// 1st turning point index
+					int tp1 = t_points.get(i);	// i = initial index
+					// 2nd turning point index
+					int tp2 = t_points.get(++i);	// i = initial index + 1
+					// Check whether 2nd turning point is close 1st turning point
+					if(isWithin(pd[tp1],pd[tp2])){
+						int j = tp1;
+						for(; j<=tp2; j++)
+							store.add(j);
+						// Now, j = tp2+1;
+						// All consecutive points are considered standing still and are added to the result
+						// if they are close to 1st turning point
+						i++; // i = initial index + 2
+						while(j<pd.length && isWithin(pd[tp1],pd[j])){
+							store.add(j);
+							// If the current point j has passed another turning point, increment i (switch i
+							// to next turning point)
+							if(i<t_points.size() && j > t_points.get(i)){
+								i++;
+							}
+//							System.out.println("tp1 is "+j);
+							j++;
+							
+						}
+						
+					}
+					
+				}
+			}catch (IndexOutOfBoundsException e){
+				// If the loop reaches here, this means that the last turning point or last point is reached
+				// This is completely normal
+			}
+		return store;
+	}
+	
+	public static boolean isWithin(PhoneData pd1, PhoneData pd2){
+		double x1 = pd1.x;
+		double x2 = pd2.x;
+		double y1 = pd1.y;
+		double y2 = pd2.y;
+		return Math.abs(x2-x1)<=XSTILL && Math.abs(y2-y1)<=YSTILL;
+	}
+	public static boolean isWithin(PhoneData[] pd, int point1_index, int point2_index){
+		return isWithin(pd[point1_index], pd[point2_index]);
+	}
+	public static int findnextturningpoint(PhoneData[] pd, int current_index){
+		for(int i=current_index; i<pd.length-1; i++){
+			// Find 1st turning point
+			double x1 = pd[i].x;
+			double x2 = pd[i+1].x;
+			double y1 = pd[i].y;
+			double y2 = pd[i+1].y;
+//			System.out.println(x1+" "+x2+" "+y1+" "+y2);
+			// Update direction
+			updateDirection(x1,x2,y1,y2);
+
+			
+			if(isDirectionChanged()){
+				return i;
 			}
 		}
-	
-		
-		
+		return -1;
 	}
-*/	public void updateDirection(double xstart, double xend, double ystart, double yend){
+		
+	
+	public static void updateDirection(double xstart, double xend, double ystart, double yend){
 		// Store last direction
 		oldxdirection = xdirection;
 		oldydirection = ydirection;
@@ -111,6 +211,7 @@ public class StatsGenerator extends ProbabilityList{
 			ydirection = 1;
 		else if(yend<ystart)
 			ydirection = -1;
+//		System.out.println(oldxdirection+" "+xdirection+" "+oldydirection+" "+ydirection);
 	}
 	/** Return if the x y directions are changed 
 	 * 
@@ -120,8 +221,8 @@ public class StatsGenerator extends ProbabilityList{
 	 * @param yend end point y
 	 * @return true if at least 1 direction is changed, false if no directions are changed
 	 */
-	public boolean isDirectionChanged(){
-		return oldxdirection == xdirection || oldydirection == ydirection;
+	public static boolean isDirectionChanged(){
+		return oldxdirection != xdirection || oldydirection != ydirection;
 	}
 	
 	
@@ -343,7 +444,7 @@ public class StatsGenerator extends ProbabilityList{
 		
 		ArrayList<Integer> stopsindex = null;
 		if(property == TIME_STOPPED || property == NO_STOPS){
-			stopsindex = processStoodStill();
+			stopsindex = processStoodStill(getFullPhoneData());
 		}
 		ArrayList<Double> al = new ArrayList<Double>();
 		

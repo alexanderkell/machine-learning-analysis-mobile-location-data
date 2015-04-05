@@ -14,9 +14,6 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 @DynamoDBTable(tableName = "REPLACED_BY_VALUE_IN_PROPERTIES_FILE") 
 public class PhoneDataDB{
 	private double x, y, z;
-	private Date wholedate;
-	private String wholedatestring;
-	private Timestamp ts;
 	private Long tsl;
 	private double tb;
 	private double xdisp, ydisp, zdisp, moddisp;
@@ -49,27 +46,6 @@ public class PhoneDataDB{
 	}
 	
 	
-	@DynamoDBIgnore
-	public Date getWholeDate(){
-		return wholedate;
-	}
-	public void setWholeDate(Date wholedate){
-		this.wholedate = wholedate;
-	}
-	@DynamoDBIgnore
-	public String getWholeDateString(){
-		return wholedatestring;
-	}
-	public void setWholeDateString(String wholedatestring){
-		this.wholedatestring = wholedatestring;
-	}
-	@DynamoDBIgnore
-	public Timestamp getTimestamp(){
-		return ts;
-	}
-	public void setTimestamp(Timestamp ts){
-		this.ts = ts;
-	}
 	@DynamoDBRangeKey(attributeName = "Timestamp")
 	public long getTimestampLong(){
 		return tsl;
@@ -209,18 +185,20 @@ public class PhoneDataDB{
 		this.track_no = track_no;
 	}
 	
+	
 	@Override
 	public String toString() {
-		return "PhoneDataDB [x=" + x + ", y=" + y + ", z=" + z + ", wholedate="
-				+ wholedate + ", wholedatestring=" + wholedatestring + ", ts="
-				+ ts + ", tsl=" + tsl + ", tb=" + tb + ", xdisp=" + xdisp
-				+ ", ydisp=" + ydisp + ", zdisp=" + zdisp + ", moddisp="
-				+ moddisp + ", rsx=" + rsx + ", rsy=" + rsy + ", rsz=" + rsz
-				+ ", modspd=" + modspd + ", spdtheta=" + spdtheta + ", rax="
-				+ rax + ", ray=" + ray + ", raz=" + raz + ", modacc=" + modacc
-				+ ", acctheta=" + acctheta + ", phone_id=" + phone_id
-				+ ", track_no=" + track_no + "]";
+		return "PhoneDataDB [x=" + x + ", y=" + y + ", z=" + z + ", tsl=" + tsl
+				+ ", tb=" + tb + ", xdisp=" + xdisp + ", ydisp=" + ydisp
+				+ ", zdisp=" + zdisp + ", moddisp=" + moddisp + ", rsx=" + rsx
+				+ ", rsy=" + rsy + ", rsz=" + rsz + ", modspd=" + modspd
+				+ ", spdtheta=" + spdtheta + ", rax=" + rax + ", ray=" + ray
+				+ ", raz=" + raz + ", modacc=" + modacc + ", acctheta="
+				+ acctheta + ", phone_id=" + phone_id + ", track_no="
+				+ track_no + "]";
 	}
+	
+	
 	
 	
 }

@@ -1,12 +1,20 @@
 package dynamodb;
 
+import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 
 import maths.PhoneData;
 
 public class ObjectConversion {
+	
+	static DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.ENGLISH);
+	
+	
 	//converts an Arraylist of PhoneData objects to PhoneDataDB objects
 	public static ArrayList<PhoneDataDB> convertToPhoneDataDB(ArrayList<PhoneData> pd){
 		ArrayList<PhoneDataDB> whole = new ArrayList<PhoneDataDB>();
@@ -48,9 +56,6 @@ public class ObjectConversion {
 		datapoint.setXPosition(pd.x);
 		datapoint.setYPosition(pd.y);
 		datapoint.setZPosition(pd.z);
-		datapoint.setWholeDate(pd.wholedate);
-		datapoint.setWholeDateString(pd.wholedatestring);
-		datapoint.setTimestamp(pd.ts);
 		datapoint.setTimestampLong(pd.ts.getTime());
 		datapoint.setTimeBetween(pd.tb);
 		datapoint.setXDisplacement(pd.xdisp);
@@ -97,9 +102,9 @@ public class ObjectConversion {
 		datapoint.x = pd.getXPosition();
 		datapoint.y = pd.getYPosition();
 		datapoint.z = pd.getZPosition();
-		datapoint.wholedate = pd.getWholeDate();
-		datapoint.wholedatestring = pd.getWholeDateString();
 		datapoint.ts = new Timestamp(pd.getTimestampLong());
+		datapoint.wholedate = new Date(pd.getTimestampLong());
+		datapoint.wholedatestring = df.format(datapoint.wholedate);
 		datapoint.tb = pd.getTimeBetween();
 		datapoint.xdisp = pd.getXDisplacement();
 		datapoint.ydisp = pd.getYDisplacement();

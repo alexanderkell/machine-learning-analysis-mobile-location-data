@@ -3,28 +3,45 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import maths.*;
 import csvexport.*;
+import dynamodb.*;
 
 
 public class DoubleCSVMaker {
+	private String PHONE_ID;
+	static ArrayList<PhoneData> PDAL;
+	private static PhoneData[] PD;
+	static int length;
+	static int MAX_TRACK_NUMBER;
 	
-	static int opt = 1;
-	static String fn = new String("");
-	
-	public static void main(String[] args) throws ParseException{
-		speedWriter();
-		speedPositionWriter();
+	public static void main(String[] args) throws Exception{
+		DoubleCSVMaker CSV = new DoubleCSVMaker("HT25TW5055273593c875a9898b00");
+		CSV.speedWriter();
 		
 	}
 	
-	public static void speedWriter() throws ParseException{
-		int length;
-		DataGetter DG = new DataGetter(opt,fn);
-		length = DG.getLength();
-		PhoneData[] PD = DG.getFullPhoneData();
-		int maxtn = PD[length-1].track_no;
+	public DoubleCSVMaker(String PHONE_ID) throws Exception{
+		System.out.println("Setting Phone ID...");
+		this.PHONE_ID = PHONE_ID;
+		System.out.println("Querying Database...");
+		DataBaseQueries Queries = new DataBaseQueries("Processed_Data");
+		ArrayList<PhoneDataDB> PDDB =
+					Queries.queryTable(PHONE_ID,'a');
+		System.out.println("Done Querying.");
+		System.out.println("Converting...");
+		PDAL = ObjectConversion.convertFrom(PDDB);
+		PD = new PhoneData[PDAL.size()];
+		PD = PDAL.toArray(PD);
+		System.out.println("Done Converting.");
+		length = PD.length;
+	}
+	
+	public void speedWriter() throws ParseException{
+		
+		
 		int tn = 1;
 		double [] temp1 = new double[5];
 		ArrayList<double[]> temp2 = new ArrayList<double[]>();
@@ -46,7 +63,7 @@ public class DoubleCSVMaker {
 				else if(tn == PD[j].track_no-1){
 					
 					temp3 = toArray(temp2);
-					title = String.format("Phone No. %d track no %d", opt, tn);
+					title = String.format("Phone: %s track: %d", PHONE_ID, tn);
 					writeArray(temp3, title);
 					temp3 = new double [temp2.size()][];
 					tn++;
@@ -62,19 +79,15 @@ public class DoubleCSVMaker {
 				
 			}	
 			temp3 = toArray(temp2);
-			title = String.format("Phone No. %d track no %d", opt, tn);
+			title = String.format("Phone No. %s track no %d", PHONE_ID, tn);
 			writeArray(temp3, title);
 			temp3 = new double [temp2.size()][];
 		
 		
 	}
 	
-	public static void speedPositionWriter() throws ParseException{
-		int length;
-		DataGetter DG = new DataGetter(opt,fn);
-		length = DG.getLength();
-		PhoneData[] PD = DG.getFullPhoneData();
-		int maxtn = PD[length-1].track_no;
+	public void speedPositionWriter() throws ParseException{
+		
 		int tn = 1;
 		double [] temp1 = new double[5];
 		ArrayList<double[]> temp2 = new ArrayList<double[]>();
@@ -96,7 +109,7 @@ public class DoubleCSVMaker {
 				else if(tn == PD[j].track_no-1){
 					
 					temp3 = toArray(temp2);
-					title = String.format("Speed Map of Phone No. %d track no %d", opt, tn);
+					title = String.format("Speed Map of Phone %s track no %d", PHONE_ID, tn);
 					double[][] pmat = toPositionMap(temp3);
 					writeArray(pmat, title);
 					temp3 = new double [temp2.size()][];
@@ -114,7 +127,7 @@ public class DoubleCSVMaker {
 				
 			}	
 			temp3 = toArray(temp2);
-			title = String.format("Speed Map of Phone No. %d track no %d", opt, tn);
+			title = String.format("Speed Map of Phone No. %s track no %d", PHONE_ID, tn);
 			double[][] pmat = toPositionMap(temp3);
 			writeArray(pmat, title);
 			temp3 = new double [temp2.size()][];

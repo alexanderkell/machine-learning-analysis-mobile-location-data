@@ -52,8 +52,8 @@ public class DataBaseQueries{
 			System.out.println(ppp2.get(0).toString());
 		}*/
 		
-		/*int max = dbq.findMaxTrackNo("ZX1B23QBS53771758c578bbd85");
-		System.out.println(max);*/
+		int max = dbq.findMaxTrackNo("HT25TW5055273593c875a9898b00");
+		System.out.println(max);
 		
 		//System.out.println(dbq.readStats());
 		
@@ -189,18 +189,15 @@ public class DataBaseQueries{
 	public int findMaxTrackNo(String PHONE_ID){
 		int max = 0;
 		ArrayList<PhoneDataDB> test = queryTable(PHONE_ID, 'a');
-		int comp;
-		
-		for(int i = 0; i < test.size(); i++){
-			
-			comp = test.get(i).getTrackNo();
-			if(comp > max){
-				max = comp;
+		for(int i = test.size()-1; i > 0; i--){
+			max = test.get(i).getTrackNo();
+			if(max != -1){
+				return max;
 			}
-			
 		}
 		
-		return max;
+		
+		return 0;
 	}
 	
 	

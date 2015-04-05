@@ -11,7 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import dynamodb.DataBaseOperations;
+
 import dynamodb.DataBaseQueries;
 import dynamodb.ObjectConversion;
 import maths.*;
@@ -69,6 +69,8 @@ public class PlotTracksMain {
 			PlotTracks.plotTrack2(PlotTracks.X, PlotTracks.Y, 0.1f, tcl, totaltracks);
 
 	}
+	
+	
 	private static void getPhoneIDAndPlot() {
 		// TODO Auto-generated method stub
 		final JFrame frame = new JFrame();

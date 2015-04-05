@@ -9,7 +9,7 @@ import csvimport.PhoneNames;
 
 public class CommonOperations {
 	
-	public void reWriteRawData() throws Exception{
+	public static void reWriteRawData() throws Exception{
 		DataBaseOperations DBO = new DataBaseOperations("3D_Cloud_Pan_Data");
 		DBO.deleteTable();
 		DBO.createTable();
@@ -32,7 +32,7 @@ public class CommonOperations {
 		
 	}
 	
-	public void reWriteProcessedData() throws Exception{
+	public static void reWriteProcessedData() throws Exception{
 		PhoneNames phoneNames = new PhoneNames();
 		String PhoneID;
 		DataBaseQueries QueryRaw = new DataBaseQueries("3D_Cloud_Pan_Data");
@@ -44,7 +44,7 @@ public class CommonOperations {
 			
 			PhoneID = phoneNames.numberToName(i);
 			System.out.println("Querying tracks for phone: " + PhoneID);
-			ArrayList<PhoneDataDB> outputDB = QueryRaw.queryTable(PhoneID);
+			ArrayList<PhoneDataDB> outputDB = QueryRaw.queryTable(PhoneID, 'a');
 			System.out.println("Converting tracks for phone: " + PhoneID);
 			ArrayList<PhoneData> output= ObjectConversion.convertFrom(outputDB);
 		

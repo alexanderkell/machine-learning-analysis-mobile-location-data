@@ -36,6 +36,7 @@ public class StatsGenerator extends ProbabilityList{
 	private static int oldydirection = 1;
 	
 	public static void main(String args[]) throws ParseException{
+		// Extract from real data
 		//																					18				22									31
 		int[] x = {266,262,255,249,245,242,239,236,234,232,231,230,228,227,226,225,223,222,220,223,231,240,243,242,239,237,236,234,229,228,228,224,212,200, 188};
 		int[] y = {318,316,313,310,308,307,306,304,303,302,301,301,300,299,298,298,298,297,296,297,299,301,302,301,301,300,299,299,299,299,299,299,299,298, 297};
@@ -48,66 +49,14 @@ public class StatsGenerator extends ProbabilityList{
 			pd[i].y = y[i];
 		}
 		ArrayList<Integer> result = StatsGenerator.processStoodStill(pd);
+		System.out.print("StoodStillindices:\n");
 		for(int i = 0 ; i < result.size(); i++){
-			System.out.print(result.get(i)+"\t");
+			System.out.print(result.get(i)+"  ");
 		}
 		
 		
 	}
-	
-	/*
-	 * private static ArrayList<Integer> processStoodStill(PhoneData[] pd){
-		
-		ArrayList<Integer> store = new ArrayList<Integer>();
-//		PhoneData[] pd = getFullPhoneData();
-		for(int i=0; i<pd.length-1; i++){
-			// Find 1st turning point
-			double x1 = pd[i].x;
-			double x2 = pd[i+1].x;
-			double y1 = pd[i].y;
-			double y2 = pd[i+1].y;
-			
-			// Update direction
-			updateDirection(x1,x2,y1,y2);
-			if(i == 0){
-				oldxdirection = xdirection;
-				oldydirection = ydirection;
-			}
-			
-			if(isDirectionChanged()){
-				int firsttpointindex = i;
-				int lasttpointindex = firsttpointindex;
-				for(int j = i+1; j < pd.length-1; j++){
-					// Find further turning points
-					double x3 = pd[j].x;
-					double x4 = pd[j+1].x;
-					double y3 = pd[j].y;
-					double y4 = pd[j+1].y;
-					updateDirection(x3,x4,y3,y4);
-					
-					if(isDirectionChanged()){
-						// If the consecutive turning point is within distance 
-						// XSTILL and YSTILL, all point between i and j are considered
-						// standing still
-						if(Math.abs(x3-x1)<XSTILL && Math.abs(y3-y1)<YSTILL){
-							for(int k = lasttpointindex; k < j; k++){
-								store.add(k);
-							}
-							// Update the last turning point
-							lasttpointindex = j;
-						} else{
-							i = j;
-							break;
-						}
-					}
-						
-					
-				}
-			}	
-		}
-		return store;
-	}
-	 */
+
 	private static ArrayList<Integer> processStoodStill(PhoneData[] pd){
 		
 		ArrayList<Integer> t_points = new ArrayList<Integer>();

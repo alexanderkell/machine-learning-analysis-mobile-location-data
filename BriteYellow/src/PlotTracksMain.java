@@ -2,6 +2,7 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -12,7 +13,7 @@ import javax.swing.JPanel;
 
 import dynamodb.DataBaseOperations;
 import dynamodb.DataBaseQueries;
-
+import dynamodb.ObjectConversion;
 import maths.*;
 import graphing.PlotTracks;
 import graphing.TrackChangeListener;
@@ -37,7 +38,8 @@ public class PlotTracksMain {
 
 	private static void plot(final String phoneid) throws Exception{
 
-		final DataBaseQueries mysql = new DataBaseQueries("Processed_Data");
+		final DataBaseQueries nosql = new DataBaseQueries("Processed_Data");
+		
 				
 		final TrackChangeListener tcl = new TrackChangeListener(){
 
@@ -47,7 +49,7 @@ public class PlotTracksMain {
 				if(index >= 1 && index <= totaltracks){
 					try {
 						
-						ArrayList<PhoneData> filtered = DataBaseOperations.convertFrom(mysql.queryTable(phoneid, index));
+						ArrayList<PhoneData> filtered = ObjectConversion.convertFrom(nosql.queryTable(phoneid, index, 'a'));
 						return filtered.toArray(new PhoneData[filtered.size()]);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
@@ -60,7 +62,7 @@ public class PlotTracksMain {
 
 			
 		};
-		totaltracks = mysql.findMaxTrackNo(phoneid);
+		totaltracks = nosql.findMaxTrackNo(phoneid);
 		if(totaltracks == 0)
 			System.err.println("There are no tracks associated with this phone id: "+phoneid);
 		else

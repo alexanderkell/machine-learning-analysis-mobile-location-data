@@ -17,7 +17,7 @@ public class CommonOperations {
 		for(int i = 0; i < 6; i++){
 			DataGetter DG = new DataGetter(i, "24th Sept ORDERED.CSV");
 			ArrayList<PhoneData> pd24 = DG.getFullPhoneDataList();
-			ArrayList<PhoneDataDB> pddb24 = DBO.convertToPhoneDataDB(pd24);
+			ArrayList<PhoneDataDB> pddb24 = ObjectConversion.convertToPhoneDataDB(pd24);
 			System.out.println("Writing 24th Septh Values for phone " + i + "... ");
 			DBO.batchWrite(pddb24);
 		}
@@ -25,7 +25,7 @@ public class CommonOperations {
 		for(int i = 1; i < 7; i++){
 			DataGetter DG = new DataGetter(i, "26th Sept ORDERED.CSV");
 			ArrayList<PhoneData> pd24 = DG.getFullPhoneDataList();
-			ArrayList<PhoneDataDB> pddb24 = DBO.convertToPhoneDataDB(pd24);
+			ArrayList<PhoneDataDB> pddb24 = ObjectConversion.convertToPhoneDataDB(pd24);
 			System.out.println("Writing 26th Septh Values for phone " + i + "... ");
 			DBO.batchWrite(pddb24);
 		}
@@ -46,7 +46,7 @@ public class CommonOperations {
 			System.out.println("Querying tracks for phone: " + PhoneID);
 			ArrayList<PhoneDataDB> outputDB = QueryRaw.queryTable(PhoneID);
 			System.out.println("Converting tracks for phone: " + PhoneID);
-			ArrayList<PhoneData> output= DBO.convertFrom(outputDB);
+			ArrayList<PhoneData> output= ObjectConversion.convertFrom(outputDB);
 		
 			System.out.println("Filtering tracks for phone: " + PhoneID);
 			FilterMain filtering = new FilterMain(200, 5, 5, 3);
@@ -56,7 +56,7 @@ public class CommonOperations {
 			DataGetter newdg = new DataGetter(filtered.toArray(new PhoneData[filtered.size()]));
 			PhoneData[] newdata = newdg.getFullPhoneData();
 		
-			ArrayList<PhoneDataDB> pddb = DBO.convertToPhoneDataDB(newdata);
+			ArrayList<PhoneDataDB> pddb = ObjectConversion.convertToPhoneDataDB(newdata);
 			System.out.println("Saving data for phone: " + PhoneID + "...");
 			DBO.batchWrite(pddb);
 			System.out.println("Done saving data for phone: " + PhoneID + ".");

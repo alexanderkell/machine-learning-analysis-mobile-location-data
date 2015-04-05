@@ -106,11 +106,18 @@ public class DataBaseQueries{
 	 * @return
 	 */
 	
-	public ArrayList<PhoneDataDB> queryTable(String phone_id){
+	public ArrayList<PhoneDataDB> queryTable(String phone_id, char order){
 		PhoneDataDB query = new PhoneDataDB();
 		query.setPhoneID(phone_id);
 		DynamoDBQueryExpression<PhoneDataDB> DDBE = new DynamoDBQueryExpression<PhoneDataDB>()
 				.withHashKeyValues(query);
+		if(order == 'a'){
+			DDBE.setScanIndexForward(true);
+		}
+		else if(order == 'd'){
+			DDBE.setScanIndexForward(false);
+		}
+		
 		List<PhoneDataDB> queryresult = mapper.query(PhoneDataDB.class, DDBE, DDB_CONFIG);
 		ArrayList<PhoneDataDB> queryresult2 = new ArrayList<PhoneDataDB>(queryresult);
 		
@@ -126,7 +133,7 @@ public class DataBaseQueries{
 	 * @return
 	 */
 	
-	public ArrayList<PhoneDataDB> queryTable(String phone_id, int track_no){
+	public ArrayList<PhoneDataDB> queryTable(String phone_id, int track_no, char order){
 		PhoneDataDB query = new PhoneDataDB();
 		query.setPhoneID(phone_id);
 		Condition rangeKeyCondition = new Condition()
@@ -136,6 +143,13 @@ public class DataBaseQueries{
 		DynamoDBQueryExpression<PhoneDataDB> DDBE = new DynamoDBQueryExpression<PhoneDataDB>()
 				.withHashKeyValues(query)
 				.withRangeKeyCondition("Track_no", rangeKeyCondition);
+		
+		if(order == 'a'){
+			DDBE.setScanIndexForward(true);
+		}
+		else if(order == 'd'){
+			DDBE.setScanIndexForward(false);
+		}
 				
 		List<PhoneDataDB> queryresult = mapper.query(PhoneDataDB.class, DDBE, DDB_CONFIG);
 		ArrayList<PhoneDataDB> queryresult2 = new ArrayList<PhoneDataDB>(queryresult);
@@ -174,7 +188,7 @@ public class DataBaseQueries{
 	
 	public int findMaxTrackNo(String PHONE_ID){
 		int max = 0;
-		ArrayList<PhoneDataDB> test = queryTable(PHONE_ID);
+		ArrayList<PhoneDataDB> test = queryTable(PHONE_ID, 'a');
 		int comp;
 		
 		for(int i = 0; i < test.size(); i++){

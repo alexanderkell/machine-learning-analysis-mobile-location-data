@@ -11,8 +11,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import dynamodb.DataBaseOperations;
+import dynamodb.DataBaseQueries;
+
 import maths.*;
-import mysql.*;
 import graphing.PlotTracks;
 import graphing.TrackChangeListener;
 
@@ -34,21 +36,21 @@ public class PlotTracksMain {
 				
 	}
 
-	private static void plot(final String phoneid) throws SQLException{
+	private static void plot(final String phoneid) throws Exception{
 
-		final insertMySQL mysql = new insertMySQL();
+		final DataBaseQueries mysql = new DataBaseQueries("3D_Cloud_Pan_Data");
 				
 		final TrackChangeListener tcl = new TrackChangeListener(){
 
 			@Override
 			public PhoneData[] setTrack(int index) {
 				// TODO Auto-generated method stub
-				if(index >= 1 && index <= totaltracks){
+				if(index >= 1 && index <= 100){
 					try {
 						
-						ArrayList<PhoneData> filtered = mysql.query("FilteredData", "PhoneID = '"+phoneid+"' AND TrackNo = "+ index);
+						ArrayList<PhoneData> filtered = DataBaseOperations.convertFrom(mysql.queryTable(phoneid, index));
 						return filtered.toArray(new PhoneData[filtered.size()]);
-					} catch (SQLException e) {
+					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
@@ -59,11 +61,11 @@ public class PlotTracksMain {
 
 			
 		};
-		totaltracks = Integer.parseInt(mysql.singleItemQuery("FilteredData", "PhoneID = '"+phoneid+"'", "max(TrackNo)"));
+/*		totaltracks = Integer.parseInt(mysql.singleItemQuery("FilteredData", "PhoneID = '"+phoneid+"'", "max(TrackNo)"));
 		if(totaltracks == 0)
 			System.err.println("There are no tracks associated with this phone id: "+phoneid);
 		else
-			PlotTracks.plotTrack2(PlotTracks.X, PlotTracks.Y, 0.1f, tcl, totaltracks);
+*/			PlotTracks.plotTrack2(PlotTracks.X, PlotTracks.Y, 0.1f, tcl, 100);
 
 	}
 	private static void getPhoneIDAndPlot() {

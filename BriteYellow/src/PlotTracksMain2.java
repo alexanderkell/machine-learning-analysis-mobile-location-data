@@ -2,7 +2,6 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -21,13 +20,14 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import dynamodb.NoSQLDownload;
+import dynamodb.NoSQLDownload.SQLListener;
+
 import maths.*;
-import mysql.*;
-import mysql.MySQLDownload.PTMListener;
 import graphing.PlotTracks;
 import graphing.TrackChangeListener;
 
-public class PlotTracksMain2 extends TimerTask implements ActionListener, ChangeListener, PTMListener{
+public class PlotTracksMain2 extends TimerTask implements ActionListener, ChangeListener, SQLListener{
 	
 
 	public final static String[] phones = {
@@ -57,11 +57,10 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, Change
 	private TrackChangeListener tcl;
 
 
-	private MySQLDownload msd;
+	private NoSQLDownload msd;
 
-	private void plot(PTMListener ptm, boolean offline) throws SQLException, ClassNotFoundException, IOException{
-		
-		msd = new MySQLDownload("FilteredData");
+	private void plot(SQLListener ptm, boolean offline) throws Exception{
+		msd = new NoSQLDownload("Processed_Data");
 		msd.setPTMListener(ptm);
 
 		boolean success = msd.downloadAndSerialise(phoneid, offline);
@@ -221,7 +220,7 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, Change
 					// TODO Auto-generated method stub
 					if(index >= 1 && index <= totaltracks){
 						try {
-							return MySQLDownload.deserialise(phoneid, index);
+							return NoSQLDownload.deserialise(phoneid, index);
 						} catch (ClassNotFoundException | IOException e) {
 							// TODO Auto-generated catch block
 							System.out.println(tracks_done+" "+index);

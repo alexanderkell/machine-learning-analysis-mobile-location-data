@@ -1,7 +1,6 @@
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -38,14 +37,14 @@ public class PlotTracksMain {
 
 	private static void plot(final String phoneid) throws Exception{
 
-		final DataBaseQueries mysql = new DataBaseQueries("3D_Cloud_Pan_Data");
+		final DataBaseQueries mysql = new DataBaseQueries("Processed_Data");
 				
 		final TrackChangeListener tcl = new TrackChangeListener(){
 
 			@Override
 			public PhoneData[] setTrack(int index) {
 				// TODO Auto-generated method stub
-				if(index >= 1 && index <= 100){
+				if(index >= 1 && index <= totaltracks){
 					try {
 						
 						ArrayList<PhoneData> filtered = DataBaseOperations.convertFrom(mysql.queryTable(phoneid, index));
@@ -61,11 +60,11 @@ public class PlotTracksMain {
 
 			
 		};
-/*		totaltracks = Integer.parseInt(mysql.singleItemQuery("FilteredData", "PhoneID = '"+phoneid+"'", "max(TrackNo)"));
+		totaltracks = mysql.findMaxTrackNo(phoneid);
 		if(totaltracks == 0)
 			System.err.println("There are no tracks associated with this phone id: "+phoneid);
 		else
-*/			PlotTracks.plotTrack2(PlotTracks.X, PlotTracks.Y, 0.1f, tcl, 100);
+			PlotTracks.plotTrack2(PlotTracks.X, PlotTracks.Y, 0.1f, tcl, totaltracks);
 
 	}
 	private static void getPhoneIDAndPlot() {

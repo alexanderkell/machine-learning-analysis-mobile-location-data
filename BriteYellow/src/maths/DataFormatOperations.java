@@ -198,7 +198,7 @@ public class DataFormatOperations{
 					cdcalc2[k].spdtheta = Math.atan(rsy/rsx);
 				
 				
-				cdcalc2[k].modspd = Math.sqrt(rsx*rsx + rsy*rsy);
+				cdcalc2[k].modspd = Math.sqrt(rsx*rsx + rsy*rsy +rsz*rsz);
 			}
 			
 			//working out relative acceleration in all directions
@@ -218,6 +218,8 @@ public class DataFormatOperations{
 					cdcalc2[l].rax = rax/ cdcalc2[l].tb;
 					cdcalc2[l].ray = ray/ cdcalc2[l].tb;
 					cdcalc2[l].raz = raz/ cdcalc2[l].tb;
+					cdcalc2[l].modacc = (cdcalc2[l].modspd - cdcalc2[l-1].modspd) / cdcalc2[l].tb;
+
 				}
 				
 				// If the person is not moving (zero speed), assume the angle is
@@ -228,8 +230,7 @@ public class DataFormatOperations{
 				}else{
 					cdcalc2[l].acctheta = Math.atan(ray/rax);
 				}
-				cdcalc2[l].modacc = (cdcalc2[l].modspd - cdcalc2[l-1].modspd) / cdcalc2[l].tb;
-
+				
 			}
 			
 	}

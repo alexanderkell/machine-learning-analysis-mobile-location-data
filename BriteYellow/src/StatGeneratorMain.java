@@ -1,6 +1,7 @@
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -11,11 +12,16 @@ import java.util.TimerTask;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import csvexport.CSVWriter;
 
@@ -26,7 +32,7 @@ import dynamodb.NoSQLDownload.SQLListener;
 import maths.PhoneData;
 
 
-public class StatGeneratorMain extends TimerTask implements ActionListener, SQLListener{
+public class StatGeneratorMain extends TimerTask implements ActionListener, ChangeListener, SQLListener{
 
 	public final static String[] phones = {
 		"HT25TW5055273593c875a9898b00",
@@ -95,7 +101,36 @@ public class StatGeneratorMain extends TimerTask implements ActionListener, SQLL
 	private JPanel panel;
 
 	private JButton cancelbutton;
-	public void setupGUI(){
+
+	private JFrame jframe2;
+
+	private JCheckBox offlinecheckbox;
+
+	private JLabel offlinelabel;
+
+	private JButton startbutton;
+	public void setupWelcomeGUI(){
+		jframe2 = new JFrame();
+		jframe2.setLayout(new GridLayout(0,1));
+		jframe2.setTitle("Start screen - StatsGeneratorMain");
+		jframe2.add(new JLabel("Press \"start\" to begin downloading tracks and generating stats"));
+		offlinecheckbox = new JCheckBox("Offline mode");
+		offlinecheckbox.addChangeListener(this);
+		offlinelabel = new JLabel("<html><font color = 'red'><i>Local data copy will be used if available<br>" +
+				"Be aware that it might not be up-to-date</font></i></html>");
+		offlinelabel.setVisible(offlinecheckbox.isSelected());
+		
+		jframe2.add(offlinecheckbox);
+		jframe2.add(offlinelabel);
+		startbutton = new JButton("Start");
+		startbutton.addActionListener(this);
+		jframe2.add(startbutton);
+		jframe2.pack();
+		jframe2.setResizable(false);
+		jframe2.setLocationRelativeTo(null);
+		jframe2.setVisible(true);
+	}
+	public void setupProcessGUI(){
 		jpb = new JProgressBar();
 		statuslabel = new JLabel("<html>Preparing ...<br> &nbsp</html>");
 		timelabel = new JLabel(" ");
@@ -131,7 +166,7 @@ public class StatGeneratorMain extends TimerTask implements ActionListener, SQLL
 		jframe.setTitle("Generating stats - StatsGeneratorMain");
 		jframe.add(panel, BorderLayout.CENTER);
 		jframe.pack();
-		jframe.setLocationRelativeTo(null);
+		jframe.setLocationRelativeTo(jframe2);
 		jframe.setResizable(false);
 		jframe.setMinimumSize(new Dimension(500,170));
 		jframe.setVisible(true);
@@ -213,12 +248,15 @@ public class StatGeneratorMain extends TimerTask implements ActionListener, SQLL
 	public static void main(String[] args) throws ParseException, IOException {
 		new StatGeneratorMain();
 	}
+	
 	public StatGeneratorMain(){
 		// TODO Auto-generated method stub
 		System.out.println("StatGenerator main method");
 		// set up the GUI
-		setupGUI();
-		
+		setupWelcomeGUI();
+	}
+
+	private void processStatGen(boolean offline){
 		final int[] totaltracks = new int[phones.length];
 		
 		// Create connection to the mySQL server
@@ -226,9 +264,9 @@ public class StatGeneratorMain extends TimerTask implements ActionListener, SQLL
 			NoSQLDownload msd = new NoSQLDownload("Processed_Data");
 			
 			msd.setPTMListener(this);
-	
+			
 			for(int i = 0; i<phones.length; i++){
-				boolean success = msd.downloadAndSerialise(phones[i], false);
+				boolean success = msd.downloadAndSerialise(phones[i], offline);
 				totaltracks[i] = msd.getTotalTracks();
 				if (!success)
 					JOptionPane.showMessageDialog(null, "Unable to connect to database and check for updates\nLocal copy of data will be used instead", "Unable to connect to database", JOptionPane.WARNING_MESSAGE);
@@ -302,15 +340,49 @@ public class StatGeneratorMain extends TimerTask implements ActionListener, SQLL
 		} catch (Exception e){
 			finish(1, e.toString()+" (at line "+e.getStackTrace()[0].getLineNumber()+")");
 		}
-	}
 
+	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		if(e.getSource() == cancelbutton){
+		JButton but = (JButton)e.getSource();
+		if(but == cancelbutton){
 			jframe.dispose();
 			System.err.println("User aborted");
 			System.exit(1);
+		} else if(but == startbutton){
+			// Dispose the welcome screen
+			jframe2.dispose();
+			// Prepare the process screen
+			setupProcessGUI();
+			// Run the actual process
+			// New thread is necessary to allow the process screen to initalise before
+			// this actual process is run
+			new Thread(){
+				public void run(){
+					processStatGen(offlinecheckbox.isSelected());
+				}
+			}.start();
+			
+		}
+	}
+
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		// TODO Auto-generated method stub
+		JComponent component = (JComponent)e.getSource();
+		if(component == offlinecheckbox){
+			SwingUtilities.invokeLater(new Runnable(){
+
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					offlinelabel.setVisible(offlinecheckbox.isSelected());
+					jframe2.pack();
+				}
+				
+			});
+					
 		}
 	}
 

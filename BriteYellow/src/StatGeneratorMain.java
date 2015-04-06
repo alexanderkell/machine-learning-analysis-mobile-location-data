@@ -41,23 +41,23 @@ public class StatGeneratorMain extends TimerTask implements ActionListener, Chan
         "YT910K6675876ded0861342065",
         "ZX1B23QFSP48abead89f52e3bb",
 	};
-/*	
+	
 	public static int[] xbounds = {
 		200,850
 	};
 	public static int[] ybounds = {
 		302,364
 	};
-*/	
-	public int phoneindexcount = 0;
 	
+	public int phoneindexcount = 0;
+	/*
 	public static int[] xbounds = {
 		200,330,460,590,720,850
 	};
 	public static int[] ybounds = {
 		302,322,344,364
 	};
-	
+	*/
 	public static int[] property = {
 		StatsGenerator.PATH_LENGTH,	//gettotalaverage
 		StatsGenerator.TIME_STOPPED, //gettotalaverage

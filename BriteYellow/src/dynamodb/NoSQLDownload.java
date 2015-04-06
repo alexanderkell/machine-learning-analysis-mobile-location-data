@@ -128,8 +128,8 @@ public class NoSQLDownload{
 //			System.out.println("Total tracks: "+dbq.findMaxTrackNo(phoneid));
 			totaltracks = checkProperties(phoneid, date);
 			if(totaltracks == -1){
-				totaltracks = dbq.findMaxTrackNo(phoneid);
-//				totaltracks = 100;
+//				totaltracks = dbq.findMaxTrackNo(phoneid);
+				totaltracks = 100;
 				System.out.println(totaltracks);
 				serialiseProperies(phoneid, date, totaltracks);
 			}
@@ -143,11 +143,15 @@ public class NoSQLDownload{
 
 				if(!NoSQLDownload.checkATrack(phoneid, i, date)){
 					ArrayList<PhoneData> filtered = query(phoneid,i);
-					PhoneData[] filteredarray = filtered.toArray(new PhoneData[filtered.size()]);
-					serialiseATrack(phoneid, i, filteredarray, date);	
-					if(ptm!=null){
-						ptm.statusUpdated(3, "Updating local copies of the tracks for phone "+phoneid+ " ("+(i)+"/"+totaltracks+") \n(Database version 10 ("+date+"))");
-						ptm.stepProgressUpdated(3, 100*(i)/totaltracks);
+					if(filtered!= null){
+						PhoneData[] filteredarray = filtered.toArray(new PhoneData[filtered.size()]);
+						serialiseATrack(phoneid, i, filteredarray, date);	
+						if(ptm!=null){
+							ptm.statusUpdated(3, "Updating local copies of the tracks for phone "+phoneid+ " ("+(i)+"/"+totaltracks+") \n(Database version 10 ("+date+"))");
+							ptm.stepProgressUpdated(3, 100*(i)/totaltracks);
+						}
+					} else {
+						break;
 					}
 				}
 	

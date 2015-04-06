@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -21,13 +20,13 @@ import javax.swing.JProgressBar;
 import csvexport.CSVWriter;
 
 import distribution.StatsGenerator;
+import dynamodb.NoSQLDownload;
+import dynamodb.NoSQLDownload.SQLListener;
 
 import maths.PhoneData;
-import mysql.MySQLDownload;
-import mysql.MySQLDownload.PTMListener;
 
 
-public class StatGeneratorMain extends TimerTask implements ActionListener, PTMListener{
+public class StatGeneratorMain extends TimerTask implements ActionListener, SQLListener{
 
 	public final static String[] phones = {
 		"HT25TW5055273593c875a9898b00",
@@ -211,7 +210,7 @@ public class StatGeneratorMain extends TimerTask implements ActionListener, PTML
 	 * @throws SQLException 
 	 * @throws IOException 
 	 */
-	public static void main(String[] args) throws ParseException, SQLException, IOException {
+	public static void main(String[] args) throws ParseException, IOException {
 		new StatGeneratorMain();
 	}
 	public StatGeneratorMain(){
@@ -224,7 +223,7 @@ public class StatGeneratorMain extends TimerTask implements ActionListener, PTML
 		
 		// Create connection to the mySQL server
 		try{
-			MySQLDownload msd = new MySQLDownload("FilteredData");
+			NoSQLDownload msd = new NoSQLDownload("Processed_Data");
 			
 			msd.setPTMListener(this);
 	
@@ -270,7 +269,7 @@ public class StatGeneratorMain extends TimerTask implements ActionListener, PTML
 				for(int track = 1; track <= totaltracks[i]; track++){
 					
 					// Generate stats
-					PhoneData[] data = MySQLDownload.deserialise(phones[i], track);
+					PhoneData[] data = NoSQLDownload.deserialise(phones[i], track);
 					if(data.length > 0){
 						StatsGenerator sg = new StatsGenerator(data);
 						for(int j = 0; j < xbounds.length-1; j++){

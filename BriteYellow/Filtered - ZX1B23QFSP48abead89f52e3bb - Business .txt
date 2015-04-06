@@ -14,3 +14,11 @@ Good
 
 Bad
 1, 2, 6, 7, 9
+
+
+ZX1B23QFSP48abead89f52e3bb - Business
+Good
+4, 8, 
+
+Bad
+1, 2, 3, 5, 6, 7, 9, 10, 11, 

@@ -2,8 +2,8 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import distribution.*;
 import maths.PhoneData;
-import Distribution.*;
 
 public class stoodStillTestBench {
 	public static void main(String args[]) throws ParseException{

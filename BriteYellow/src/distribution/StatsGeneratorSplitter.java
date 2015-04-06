@@ -1,4 +1,4 @@
-package Distribution;
+package distribution;
 
 public class StatsGeneratorSplitter {
 	public 

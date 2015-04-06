@@ -128,8 +128,8 @@ public class NoSQLDownload{
 //			System.out.println("Total tracks: "+dbq.findMaxTrackNo(phoneid));
 			totaltracks = checkProperties(phoneid, date);
 			if(totaltracks == -1){
-//				totaltracks = dbq.findMaxTrackNo(phoneid);
-				totaltracks = 100;
+				totaltracks = dbq.findMaxTrackNo(phoneid);
+//				totaltracks = 500;
 				System.out.println(totaltracks);
 				serialiseProperies(phoneid, date, totaltracks);
 			}

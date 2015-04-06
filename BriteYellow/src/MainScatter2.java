@@ -5,12 +5,11 @@ import java.text.ParseException;
 import java.util.ArrayList;
 
 import csvexport.CSVWriter;
+import distribution.Ratios;
+import distribution.Ratios1;
 import filters.DistanceVerify;
 import maths.PhoneData;
 import mysql.insertMySQL;
-import Distribution.Ratios;
-import Distribution.Ratios1;
-//for each point
 
 public class MainScatter2 {
 	final static String ph1n = "HT25TW5055273593c875a9898b00";//variables denoting phone IDs

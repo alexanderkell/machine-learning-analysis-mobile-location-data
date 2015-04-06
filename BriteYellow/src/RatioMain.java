@@ -4,11 +4,10 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import Distribution.Ratios;
-
 import maths.*;
 import mysql.*;
 import csvimport.*;
+import distribution.Ratios;
 import filters.DistanceVerify;
 import filters.jkalman.JKalmanHelper;
 import graphing.PlotTracks;

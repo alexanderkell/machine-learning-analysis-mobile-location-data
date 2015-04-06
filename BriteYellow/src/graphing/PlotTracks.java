@@ -825,17 +825,19 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 					
 					if(index>=1 && index <= max_tracks){
 						PhoneData[] newtrack = tcl.setTrack(index);
-						// Check if the track is empty
-						if(newtrack == null){
-							System.err.println("Track "+index+" is empty");
-							jlabelB.setText(old_name);
-							return;
-						} else {
+						// Check if the track is empty	
+						try{
 							jlabelB.setText("Track "+index+" / "+max_tracks+" ("+
 									newtrack[0].ts.toString()+" - "+newtrack[newtrack.length-1].ts.toString()+")");
 							changeTrack(newtrack, null);
 							current_track = index;
+						} catch (NullPointerException | ArrayIndexOutOfBoundsException e){
+							e.printStackTrace();
+							System.err.println("Track "+index+" is empty");
+							jlabelB.setText(old_name);
+							return;
 						}
+					
 					} else {
 						jlabelB.setText(old_name);
 					}

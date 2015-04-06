@@ -27,13 +27,28 @@ public class TrackCSVMapper {
 	
 	public static void main(String[] args) throws Exception{
 		
-		int[] test = {1 ,2, 3,4,5,6,13,14,17,19,21,22,23,24,25,26,27,28,30,31,32,36,37};
-		String phone = "HT25TW5055273593c875a9898b00";
+		/*int[] test = {1 ,2, 3,4,5,6,13,14,17,19,21,22,23,24,25,26,27,28,30,31,32,36,37};
+		String phone = "HT25TW5055273593c875a9898b00";*/
+		
+		/*int[] test = {4,5,7,9,12,13,15,18,20,22,2,3,11,19};
+		String phone = "ZX1B23QBS53771758c578bbd85";*/
+		
+		/*int[] test = {4, 8, 11, 12, 15, 17, 18, 19, 21, 22, 26, 28, 30, 31, 32, 33, 34, 39, 41, 42,
+				43, 44, 45, 48, 49, 50, 51, 53, 54, 57, 59, 63, 65, 66, 67, 68, 69, 71, 72, 73,
+				76, 77, 78, 79, 80, 81, 86, 88, 89, 90, 94, 95, 96, 98, 99};
+		String phone = "ZX1B23QFSP48abead89f52e3bb";*/
+		
+		/*int[] test = {1, 3, 4, 7, 10};
+		String phone = "YT910K6675876ded0861342065";*/
+		
+		int[] test = {3,6,9,22,24,28,32,33,36};
+		String phone = "YT910K6675876ded0861342065";
+	
 		
 		TrackCSVMapper TCM = new TrackCSVMapper(phone, test, 200, 267);
-		//TCM.writeSpeedMap();
-		//TCM.writeOnesMap();
-		TCM.makeSpeedHeatMap();
+		TCM.writeSpeedMap();
+		TCM.writeOnesMap();
+		//TCM.makeSpeedHeatMap();
 		
 	}
 	

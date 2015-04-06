@@ -1,4 +1,4 @@
-function From200330to302322 = importfile(filename, startRow, endRow)
+function From200330to302322 = importCSV(filename, startRow, endRow)
 %IMPORTFILE Import numeric data from a text file as a matrix.
 %   FROM200330TO302322 = IMPORTFILE(FILENAME) Reads data from text file
 %   FILENAME for the default selection.

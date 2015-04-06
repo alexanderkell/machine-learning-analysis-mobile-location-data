@@ -1,0 +1,1 @@
+M = csvread('/Users/Alexander/4th-year-project/BriteYellow/Matlab/Statistics/From (200, 330) to (302, 322).csv')

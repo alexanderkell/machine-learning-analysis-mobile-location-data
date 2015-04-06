@@ -181,7 +181,7 @@ public class NoSQLDownload{
 		return totaltracks;
 	}
 	public ArrayList<PhoneData> query(String phone_id, int track){
-		return ObjectConversion.convertFrom(dbq.queryTable(phone_id, track, 'a'));
+		return ObjectConversion.convertFrom(dbq.queryTable(phone_id, track));
 	}
 	
 	public static boolean checkATrack(final String phoneid, final int track, final String date){

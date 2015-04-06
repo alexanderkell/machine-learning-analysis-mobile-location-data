@@ -49,7 +49,7 @@ public class PlotTracksMain {
 				if(index >= 1 && index <= totaltracks){
 					try {
 						
-						ArrayList<PhoneData> filtered = ObjectConversion.convertFrom(nosql.queryTable(phoneid, index, 'a'));
+						ArrayList<PhoneData> filtered = ObjectConversion.convertFrom(nosql.queryTable(phoneid, index));
 						return filtered.toArray(new PhoneData[filtered.size()]);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block

@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Locale;
 
 import maths.PhoneData;
@@ -125,6 +126,15 @@ public class ObjectConversion {
 	
 		
 		return datapoint;
+	}
+	
+	public static ArrayList<PhoneDataDB> listSorter(ArrayList<PhoneDataDB> input){
+		
+		QuerySort QS = new QuerySort();
+		Collections.sort(input, QS);
+		
+		return input;
+		
 	}
 	
 }

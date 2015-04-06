@@ -9,17 +9,17 @@ public class TimeProver {
 	
 	public static void main (String[] args) throws Exception{
 		
-		Printer("HT25TW5055273593c875a9898b00");
+		Printer("HT25TW5055273593c875a9898b00", 1);
 		
 		
 		
 	}
 	
-	public static void Printer(String PHONE_ID) throws Exception{
+	public static void Printer(String PHONE_ID, int Track_No) throws Exception{
 		
 		DataBaseQueries Queries = new DataBaseQueries("Processed_Data");
 		ArrayList<PhoneDataDB> PDDB =
-					Queries.queryTable(PHONE_ID,'a');
+					Queries.queryTable(PHONE_ID, Track_No);
 		ArrayList<PhoneData> PD = ObjectConversion.convertFrom(PDDB);
 		
 		

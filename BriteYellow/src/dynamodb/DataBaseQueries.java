@@ -133,7 +133,7 @@ public class DataBaseQueries{
 	 * @return
 	 */
 	
-	public ArrayList<PhoneDataDB> queryTable(String phone_id, int track_no, char order){
+	public ArrayList<PhoneDataDB> queryTable(String phone_id, int track_no){
 		PhoneDataDB query = new PhoneDataDB();
 		query.setPhoneID(phone_id);
 		Condition rangeKeyCondition = new Condition()
@@ -143,16 +143,10 @@ public class DataBaseQueries{
 		DynamoDBQueryExpression<PhoneDataDB> DDBE = new DynamoDBQueryExpression<PhoneDataDB>()
 				.withHashKeyValues(query)
 				.withRangeKeyCondition("Track_no", rangeKeyCondition);
-		
-		if(order == 'a'){
-			DDBE.setScanIndexForward(true);
-		}
-		else if(order == 'd'){
-			DDBE.setScanIndexForward(false);
-		}
-				
+			
 		List<PhoneDataDB> queryresult = mapper.query(PhoneDataDB.class, DDBE, DDB_CONFIG);
 		ArrayList<PhoneDataDB> queryresult2 = new ArrayList<PhoneDataDB>(queryresult);
+		queryresult2 = new ArrayList<PhoneDataDB>(ObjectConversion.listSorter(queryresult2));
 		
 		return queryresult2;
 		
@@ -182,6 +176,7 @@ public class DataBaseQueries{
 
 		List<PhoneDataDB> scanresult = mapper.scan(PhoneDataDB.class, scanExpression, DDB_CONFIG);
 		ArrayList<PhoneDataDB> scanresult2 = new ArrayList<PhoneDataDB>(scanresult);
+		scanresult2 = new ArrayList<PhoneDataDB>(ObjectConversion.listSorter(scanresult2));
 		return scanresult2;
 	}
 	

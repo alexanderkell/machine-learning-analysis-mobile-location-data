@@ -39,7 +39,7 @@ public class DataBaseQueries{
 	
 	//view main method in comments for details
 	public static void main(String args[]) throws Exception{
-		DataBaseQueries dbq = new DataBaseQueries("3D_Cloud_Pan_Data");
+		//DataBaseQueries dbq = new DataBaseQueries("3D_Cloud_Pan_Data");
 		
 		/*ArrayList<PhoneDataDB> ppp = dbq.scanTable("Track_no", -1, ComparisonOperator.EQ.toString());
 		ArrayList<PhoneDataDB> ppp2 = dbq.queryTable("HT25TW5055273593c875a9898b00");
@@ -51,9 +51,9 @@ public class DataBaseQueries{
 		for(int i = 0; i < ppp2.size(); i++){
 			System.out.println(ppp2.get(0).toString());
 		}*/
-		
+		/*
 		int max = dbq.findMaxTrackNo("HT25TW5055273593c875a9898b00");
-		System.out.println(max);
+		System.out.println(max);*/
 		
 		//System.out.println(dbq.readStats());
 		

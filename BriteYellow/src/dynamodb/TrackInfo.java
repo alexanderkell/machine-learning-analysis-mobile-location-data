@@ -9,138 +9,172 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 public class TrackInfo {
 	
 	private String PHONE_ID;
-	private int TRACK_NO;
-	private int PATH_LENGTH;
-	private int TIME_STOPPED; 
-	private int NO_STOPS; 
-	private int TIME_SPENT; 
-	private int INACTIVE_TIME; 
-	private int STHETACHANGE; 
-	private int STHETAIN; 
-	private int STHETAOUT; 
-	private int STHETAINOUT;
-	private int X1;
-	private int Y1;
-	private int X2;
-	private int Y2;
+	private double TRACK_NO;
+	private double PATH_LENGTH;
+	private double TIME_STOPPED; 
+	private double NO_STOPS; 
+	private double TIME_SPENT; 
+	private double INACTIVE_TIME; 
+	private double STHETACHANGE; 
+	private double STHETAIN; 
+	private double STHETAOUT; 
+	private double STHETAINOUT;
+	private double TIMEPERSTOP;
+	private double TOTAVRGSPEED;
+	private double TIMESSTOPPEDHERE;
+	
+	
+	private double X1;
+	private double Y1;
+	private double X2;
+	private double Y2;
 	
 	@DynamoDBHashKey
 	public String getPHONE_ID() {
 		return PHONE_ID;
 	}
+	
+
+	public void setTIMESSTOPPEDHERE(double tIMESSTOPPEDHERE){
+		TIMESSTOPPEDHERE = tIMESSTOPPEDHERE;
+	}
+	public double getTIMESSTOPPEDHERE() {
+		return TIMESSTOPPEDHERE;
+	}
+	
+		
+	public void setTOTAVRGSPEED(double tOTAVRGSPEED){
+		TOTAVRGSPEED = tOTAVRGSPEED;
+	}
+	public double getTOTAVRGSPEED() {
+		return TOTAVRGSPEED;
+	}
+	
+	
+	
+	public void setTIMEPERSTOP(double tIMEPERSTOP){
+		TIMEPERSTOP = tIMEPERSTOP;
+	}
+	public double getTIMEPERSTOP() {
+		return TIMEPERSTOP;
+	}
+	
+	
+	
+	
 	public void setPHONE_ID(String pHONE_ID) {
 		PHONE_ID = pHONE_ID;
 	}
 	
 	@DynamoDBRangeKey
-	public int getTRACK_NO() {
+	public double getTRACK_NO() {
 		return TRACK_NO;
 	}
-	public void setTRACK_NO(int tRACK_NO) {
+	public void setTRACK_NO(double tRACK_NO) {
 		TRACK_NO = tRACK_NO;
 	}
 	
 	@DynamoDBAttribute
-	public int getX1() {
+	public double getX1() {
 		return X1;
 	}
-	public void setX1(int x1) {
+	public void setX1(double x1) {
 		X1 = x1;
 	}
 	
 	@DynamoDBAttribute
-	public int getY1() {
+	public double getY1() {
 		return Y1;
 	}
-	public void setY1(int y1) {
+	public void setY1(double y1) {
 		Y1 = y1;
 	}
 	
 	@DynamoDBAttribute
-	public int getX2() {
+	public double getX2() {
 		return X2;
 	}
-	public void setX2(int x2) {
+	public void setX2(double x2) {
 		X2 = x2;
 	}
 	
 	@DynamoDBAttribute
-	public int getY2() {
+	public double getY2() {
 		return Y2;
 	}
-	public void setY2(int y2) {
+	public void setY2(double y2) {
 		Y2 = y2;
 	}
 	
 	@DynamoDBAttribute
-	public int getPATH_LENGTH() {
+	public double getPATH_LENGTH() {
 		return PATH_LENGTH;
 	}
-	public void setPATH_LENGTH(int pATH_LENGTH) {
+	public void setPATH_LENGTH(double pATH_LENGTH) {
 		PATH_LENGTH = pATH_LENGTH;
 	}
 	
 	@DynamoDBAttribute
-	public int getTIME_STOPPED() {
+	public double getTIME_STOPPED() {
 		return TIME_STOPPED;
 	}
-	public void setTIME_STOPPED(int tIME_STOPPED) {
+	public void setTIME_STOPPED(double tIME_STOPPED) {
 		TIME_STOPPED = tIME_STOPPED;
 	}
 	
 	@DynamoDBAttribute
-	public int getNO_STOPS() {
+	public double getNO_STOPS() {
 		return NO_STOPS;
 	}
-	public void setNO_STOPS(int nO_STOPS) {
+	public void setNO_STOPS(double nO_STOPS) {
 		NO_STOPS = nO_STOPS;
 	}
 	
 	@DynamoDBAttribute
-	public int getTIME_SPENT() {
+	public double getTIME_SPENT() {
 		return TIME_SPENT;
 	}
-	public void setTIME_SPENT(int tIME_SPENT) {
+	public void setTIME_SPENT(double tIME_SPENT) {
 		TIME_SPENT = tIME_SPENT;
 	}
 	
 	@DynamoDBAttribute
-	public int getINACTIVE_TIME() {
+	public double getINACTIVE_TIME() {
 		return INACTIVE_TIME;
 	}
-	public void setINACTIVE_TIME(int iNACTIVE_TIME) {
+	public void setINACTIVE_TIME(double iNACTIVE_TIME) {
 		INACTIVE_TIME = iNACTIVE_TIME;
 	}
 	
 	@DynamoDBAttribute
-	public int getSTHETACHANGE() {
+	public double getSTHETACHANGE() {
 		return STHETACHANGE;
 	}
-	public void setSTHETACHANGE(int sTHETACHANGE) {
+	public void setSTHETACHANGE(double sTHETACHANGE) {
 		STHETACHANGE = sTHETACHANGE;
 	}
 	
 	@DynamoDBAttribute
-	public int getSTHETAIN() {
+	public double getSTHETAIN() {
 		return STHETAIN;
 	}
-	public void setSTHETAIN(int sTHETAIN) {
+	public void setSTHETAIN(double sTHETAIN) {
 		STHETAIN = sTHETAIN;
 	}
 	
 	@DynamoDBAttribute
-	public int getSTHETAOUT() {
+	public double getSTHETAOUT() {
 		return STHETAOUT;
 	}
-	public void setSTHETAOUT(int sTHETAOUT) {
+	public void setSTHETAOUT(double sTHETAOUT) {
 		STHETAOUT = sTHETAOUT;
 	}
 	
 	@DynamoDBAttribute
-	public int getSTHETAINOUT() {
+	public double getSTHETAINOUT() {
 		return STHETAINOUT;
 	}
-	public void setSTHETAINOUT(int sTHETAINOUT) {
+	public void setSTHETAINOUT(double sTHETAINOUT) {
 		STHETAINOUT = sTHETAINOUT;
 	}
 	@Override

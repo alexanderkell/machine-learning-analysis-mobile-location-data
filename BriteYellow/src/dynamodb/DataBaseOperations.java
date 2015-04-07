@@ -42,7 +42,6 @@ import com.amazonaws.services.dynamodbv2.model.ScanResult;
 import com.amazonaws.services.dynamodbv2.model.TableDescription;
 import com.amazonaws.services.dynamodbv2.util.Tables;
 
-
 public class DataBaseOperations {
 
 	static AmazonDynamoDBClient client;

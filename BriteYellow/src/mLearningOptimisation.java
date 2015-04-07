@@ -69,22 +69,24 @@ public class mLearningOptimisation {
 		
 		// Reanalyse the filtered data using DataGetter and store the result in the "newdata" variable
 		DataGetter newdg = new DataGetter(filtered.toArray(new PhoneData[filtered.size()]));
-		final PhoneData[] newdata = newdg.getFullPhoneData();
+		PhoneData[] newdata = newdg.getFullPhoneData();
 		
 		//TrackSelect TS = new TrackSelect();
 		
 		ArrayList<TrackInfo> totalTI = new ArrayList<TrackInfo>();
+		int TOTAL_TRACKS = TrackSelect.getTotalTracks(newdata);
+		PhoneData[] track;
+		
 		
 		for(int j = 0; j<xbounds.length-1; j++){
 			for(int k =0; k<ybounds.length-1; k++){	
-				TrackSelect TS = new TrackSelect();
-
-				for(int i=1; i<=TS.getTotalTracks(newdata); i++){
+				int TOTAL_TRACKS2 = TrackSelect.getTotalTracks(newdata);
+				for(int i=1; i<=TOTAL_TRACKS; i++){
+					//This is where the track numbers turn to 1 when k = 2 
 					System.out.println("newdata length = "+newdata.length);
-					PhoneData[] track = TS.selecter(newdata, i);
+					track = TrackSelect.selecter(newdata, i);
 					System.out.println("track length = "+track.length);
 					System.out.println("i = "+i);
-					
 					StatsGenerator statGen = new StatsGenerator(track);
 					
 					System.out.println(statGen.getTotalAverage(StatsGenerator.INACTIVE_TIME, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1])+": "+xbounds[j]+", "+xbounds[j+1]+", "+ybounds[k]+", "+ybounds[k+1]);

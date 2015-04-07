@@ -45,7 +45,7 @@ public class NewDataScaling {
 	}
 	
 	public static void main(String args[]) throws Exception{
-		final String filename = "HT25TW5055273593c875a9898b00.csv";
+		final String filename = "ZX1B23QFSP48abead89f52e3bb.csv";
 		ArrayList<PhoneData> pd1_list = new CSVReaders(filename).getUncategorisedDataObjectList();
 		ArrayList<PhoneData> pd2_list = scaleAndCalcNewData(pd1_list);
 		

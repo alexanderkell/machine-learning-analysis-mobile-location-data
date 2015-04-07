@@ -46,7 +46,6 @@ public class DataFormatOperations{
 		
 		//Read and store the phone data
 		Read = new CSVReaders(fn);
-
 		cdcalc = Read.myPhone(opt);
 		processData1();
 		makeTimeStamp();

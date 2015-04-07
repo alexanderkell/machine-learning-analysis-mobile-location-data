@@ -1,15 +1,11 @@
 package splitting;
 
+import java.util.ArrayList;
+
 import maths.PhoneData;
 
 public class TrackSelect
 {
-	String[][] newdat;
-
-	String[][] fn;
-	static int opt = 1;
-	static int select=1;
-	static int length;
 
 	public static String[][] selecter(String[][] fn,int select)
 	{
@@ -63,30 +59,19 @@ public class TrackSelect
 	}
 	public static PhoneData[] selecter(PhoneData[] fn,int select)
 	{
-		int r=0;
-		double x;
-		int start = -1;
-		
+		ArrayList<PhoneData> pdlist = new ArrayList<PhoneData>();
 		for(int i = 0; i<fn.length; i++){
 			
-				x = fn[i].track_no;
-				if(x==select){
-					if(start== -1){
-						start = i;
-					}
-					r++;
+			if(fn[i].track_no == select){
+				
+				pdlist.add(fn[i]);
+				if(fn[i].track_no == -1){
+					System.out.println("Hello");
 				}
+			}
 			
 		}
-		
-		PhoneData[] newerdat = new PhoneData[r];
-		
-
-		for(int i = 0; i<r; i++){		
-			newerdat[i] = fn[start+i];
-			
-		}
-		return newerdat;
+		return pdlist.toArray(new PhoneData[pdlist.size()]);
 		
 	}
 }

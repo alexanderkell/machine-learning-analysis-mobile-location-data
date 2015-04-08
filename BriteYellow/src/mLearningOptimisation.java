@@ -16,7 +16,12 @@ import objects.TrackInfo;
 
 import com.sun.org.apache.bcel.internal.generic.IXOR;
 
+import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
+
 import splitting.*;
+
+
+
 
 public class mLearningOptimisation {
 /*	
@@ -63,8 +68,6 @@ public class mLearningOptimisation {
 
 		System.out.println("What is the max speed, x-Kalman Factor, y-Kalman Factor, and Interpolation value?");
 		int speed = sc.nextInt(), xkalm = sc.nextInt(), ykalm = sc.nextInt(), Interp = sc.nextInt();
-		
-		//int maxSpeed, int xMesNoise, int yMesNoise, int interpolNo
 		FilterMain filtering = new FilterMain(speed, xkalm, ykalm, Interp);
 		ArrayList<PhoneData> filtered = filtering.FilterTot(raw);
 		
@@ -72,127 +75,21 @@ public class mLearningOptimisation {
 		DataGetter newdg = new DataGetter(filtered.toArray(new PhoneData[filtered.size()]));
 		final PhoneData[] newdata = newdg.getFullPhoneData();
 		
-		TrackSelect TS = new TrackSelect();
+		ArrayList<TrackInfo> TrackAnalysis=writeTrackStats(newdata);
 		
-		ArrayList<TrackInfo> totalTI = new ArrayList<TrackInfo>();
-		
-		System.out.println(TS.getTotalTracks(newdata));
-/*		
-		for(int i=1; i<=TS.getTotalTracks(newdata); i++){
-			PhoneData[] track = TS.selecter(newdata, i);
-			System.out.println("track length = "+track.length);
-			System.out.println("i = "+i);
-			
-//			StatsGenerator statGen = new StatsGenerator(track);
-			
-//			System.out.println(statGen.getTotalAverage(StatsGenerator.INACTIVE_TIME, xbounds[1], xbounds[1+1], ybounds[1], ybounds[1+1])+": "+xbounds[1]+", "+xbounds[1+1]+", "+ybounds[1]+", "+ybounds[1+1]);
-		}
-		for(int i=1; i<=TS.getTotalTracks(newdata); i++){
-			PhoneData[] track = TS.selecter(newdata, i);
-			System.out.println("track length = "+track.length);
-			System.out.println("i = "+i);
-			
-			StatsGenerator statGen = new StatsGenerator(track);
-			
-			System.out.println(statGen.getTotalAverage(StatsGenerator.INACTIVE_TIME, xbounds[2], xbounds[2+1], ybounds[1], ybounds[1+1])+": "+xbounds[2]+", "+xbounds[2+1]+", "+ybounds[1]+", "+ybounds[1+1]);
-		}
-		for(int i=1; i<=TS.getTotalTracks(newdata); i++){
-			PhoneData[] track = TS.selecter(newdata, i);
-			System.out.println("track length = "+track.length);
-			System.out.println("i = "+i);
-			
-			StatsGenerator statGen = new StatsGenerator(track);
-			
-			System.out.println(statGen.getTotalAverage(StatsGenerator.INACTIVE_TIME, xbounds[3], xbounds[3+1], ybounds[1], ybounds[1+1])+": "+xbounds[3]+", "+xbounds[3+1]+", "+ybounds[1]+", "+ybounds[1+1]);
-		}
-*/		
-		
-		
-		
-		for(int j = 0; j<xbounds.length-1; j++){
-			for(int k =0; k<ybounds.length-1; k++){	
-				for(int i=1; i<=TS.getTotalTracks(newdata); i++){
-					PhoneData[] track = TS.selecter(newdata, i);
-					System.out.println("track length = "+track.length);
-					System.out.println("i = "+i);
-					
-					StatsGenerator statGen = new StatsGenerator(track);
-					
-					System.out.println(statGen.getTotalAverage(StatsGenerator.INACTIVE_TIME, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1])+": "+xbounds[j]+", "+xbounds[j+1]+", "+ybounds[k]+", "+ybounds[k+1]);
-/*				
-					//Setting of data
-					TrackInfo TI = new TrackInfo();
-					TI.setINACTIVE_TIME(statGen.getTotalAverage(StatsGenerator.INACTIVE_TIME, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
-					TI.setNO_STOPS(statGen.getTotalAverage(StatsGenerator.NO_STOPS, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
-					TI.setPATH_LENGTH(statGen.getTotalAverage(StatsGenerator.PATH_LENGTH, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
-					TI.setPHONE_ID(newdata[i].phone_id);
-					TI.setSTHETACHANGE(statGen.getTotalAverage(StatsGenerator.STHETACHANGE, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
-//					TI.setSTHETAIN(statGen.getTotalAverage(property[1], 200, 850, 302, 364));
-//					TI.setSTHETAINOUT(statGen.getTotalAverage(property[1], 200, 850, 302, 364));
-//					TI.setSTHETAOUT(statGen.getTotalAverage(property[1], 200, 850, 302, 364));
-//					TI.setTIME_SPENT(statGen.getTotalAverage(property[1], 200, 850, 302, 364));
-//					TI.setTIME_STOPPED(statGen.getTotalAverage(property[1], 200, 850, 302, 364));
-					TI.setTIMEPERSTOP(statGen.getTotalAverage(StatsGenerator.TIME_PER_STOP, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
-					TI.setTIMESSTOPPEDHERE(statGen.getTotalAverage(StatsGenerator.FREQ_IN_AREA, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
-					TI.setTOTAVRGSPEED(statGen.getTotalAverage(StatsGenerator.AVERAGE_SPEED, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
-					TI.setTRACK_NO(i);
-					TI.setX1(xbounds[j]);
-					TI.setX2(xbounds[j+1]);
-					TI.setY1(ybounds[k]);
-					TI.setY2(ybounds[k+1]);
-*/			
-				}
-			}
-		}
-		
-		
+		DataBaseOperations DBO = new DataBaseOperations("The_Big_Track_Analysis");
+		//DBO.createTable();
+		//DBO.batchWrite(StatsDB);
+		//DBO.
 
 		
-		
-		
-/*
-		double[] x = statGen.get(100, 200, 330, 302, 322);
-		statGen.getPhoneID(1);
-		for(int i=0; i<x.length; i++){
-			System.out.printf();
-		}
-*/
-/*
-
-	
-//		public int phoneindexcount = 0;
-		
-
-	*/		
-		
-		/*
-		
-		for(int j = 0; j < xbounds.length-1; j++){
-			for(int k = 0; k < ybounds.length-1; k++){
-				int index = j*(ybounds.length-1) + k;
-				
-				String[] results = new String[property.length+property2.length+2];
-				results[0] = phones[i];
-				results[1] = String.valueOf(track);
-				for(int l = 0; l < property.length; l++){
-					results[l+2] = String.valueOf(sg.getTotalAverage(property[l], xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
-				}
-				for(int m = 0; m < property2.length; m++){
-					results[m+property.length+2] = String.valueOf(sg.getTotalFreqAt(property2[m][0], property2[m][1],property2[m][2],xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
-				}
-				// Write the stats
-				cw[index].write(results);
-			}
-		}
-		
-		*/
 	}
 	
 	public static ArrayList<PhoneData> getAllPhoneDB() throws Exception{
 		DataBaseQueries DBQ= new DataBaseQueries("3D_Cloud_Pan_Data");
 		PhoneNames phoneNames = new PhoneNames();
 		ArrayList<PhoneDataDB> rawTotUn = new ArrayList<PhoneDataDB>();
-		for(int i = 1; i < 2; i++){ 
+		for(int i = 1; i < 7; i++){ 
 			String PhoneID = phoneNames.numberToName(i); 
 			System.out.println("Querying tracks for phone: " + PhoneID); 
 			ArrayList<PhoneDataDB> outputDB = DBQ.queryTable(PhoneID, 'd'); 
@@ -205,5 +102,41 @@ public class mLearningOptimisation {
 		rawTot=ObjectConversion.listSorter(rawTotUn);
 		ArrayList<PhoneData> raw = ObjectConversion.convertFrom(rawTot);
 		return raw;
+	}
+	
+	public static ArrayList<TrackInfo> writeTrackStats(PhoneData[] newdata) throws ParseException, java.text.ParseException{
+		TrackSelect TS = new TrackSelect();
+		ArrayList<TrackInfo> totalTI = new ArrayList<TrackInfo>();
+		for(int i=1; i<=TS.getTotalTracks(newdata); i++){
+			PhoneData[] track = TS.selecter(newdata, i);
+			StatsGenerator statGen = new StatsGenerator(track);
+			for(int j = 0; j<xbounds.length-1; j++){
+				for(int k =0; k<ybounds.length-1; k++){	
+					//Setting of data					
+					TrackInfo TI = new TrackInfo();
+					TI.setINACTIVE_TIME(statGen.getTotalAverage(StatsGenerator.INACTIVE_TIME, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
+					TI.setNO_STOPS(statGen.getTotalAverage(StatsGenerator.NO_STOPS, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
+					TI.setPATH_LENGTH(statGen.getTotalAverage(StatsGenerator.PATH_LENGTH, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
+					TI.setPHONE_ID(newdata[i].phone_id);
+					TI.setSTHETACHANGE(statGen.getTotalAverage(StatsGenerator.STHETACHANGE, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
+//					TI.setSTHETAIN(statGen.getTotalAverage(property[1], 200, 850, 302, 364));
+//					TI.setSTHETAOUT(statGen.getTotalAverage(property[1], 200, 850, 302, 364));
+//					TI.setTIME_STOPPED(statGen.getTotalAverage(property[1], 200, 850, 302, 364));
+//					TI.setSTHETAINOUT(statGen.getTotalAverage(StatsGenerator.STHETACHANGE_NO, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
+					TI.setTIMEPERSTOP(statGen.getTotalAverage(StatsGenerator.TIME_PER_STOP, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
+					TI.setTIMESSTOPPEDHERE(statGen.getTotalAverage(StatsGenerator.FREQ_IN_AREA, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
+					TI.setTOTAVRGSPEED(statGen.getTotalAverage(StatsGenerator.AVERAGE_SPEED, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
+					TI.setTIMESSTOPPEDHERE(statGen.getTotalAverage(StatsGenerator.TIME_STOPPED, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
+					TI.setTIME_SPENT(statGen.getTotalAverage(StatsGenerator.TIME_SPENT, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
+					TI.setTRACK_NO(i);
+					TI.setX1(xbounds[j]);
+					TI.setX2(xbounds[j+1]);
+					TI.setY1(ybounds[k]);
+					TI.setY2(ybounds[k+1]);
+					totalTI.add(TI);
+				}
+			}
+		}
+		return totalTI;
 	}
 }

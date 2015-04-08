@@ -85,7 +85,7 @@ public class DataBaseOperations {
 	        } else {
 			
 			CreateTableRequest createTableRequest = new CreateTableRequest().withTableName(tableName);
-			createTableRequest.setProvisionedThroughput(new ProvisionedThroughput().withReadCapacityUnits((long)100).withWriteCapacityUnits((long)100));
+			createTableRequest.setProvisionedThroughput(new ProvisionedThroughput().withReadCapacityUnits((long)10).withWriteCapacityUnits((long)100));
 			
 			//AttributeDefinitions
 			ArrayList<AttributeDefinition> attributeDefinitions= new ArrayList<AttributeDefinition>();
@@ -148,7 +148,7 @@ public class DataBaseOperations {
 	        } else {
 			
 	        	CreateTableRequest createTableRequest = new CreateTableRequest().withTableName(tableName);
-				createTableRequest.setProvisionedThroughput(new ProvisionedThroughput().withReadCapacityUnits((long)50).withWriteCapacityUnits((long)50));
+				createTableRequest.setProvisionedThroughput(new ProvisionedThroughput().withReadCapacityUnits((long)10).withWriteCapacityUnits((long)50));
 				
 				//AttributeDefinitions
 				ArrayList<AttributeDefinition> attributeDefinitions= new ArrayList<AttributeDefinition>();
@@ -172,7 +172,7 @@ public class DataBaseOperations {
 				
 				GlobalSecondaryIndex globalSecondaryIndex = new GlobalSecondaryIndex()
 				.withProvisionedThroughput(new ProvisionedThroughput()
-		        .withReadCapacityUnits((long) 50)
+		        .withReadCapacityUnits((long) 10)
 		        .withWriteCapacityUnits((long) 50))
 			    .withIndexName("Phone_Index")
 			    .withKeySchema(indexKeySchema)

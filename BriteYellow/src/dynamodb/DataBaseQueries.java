@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 
+import objects.DataBaseObject;
 import objects.PhoneDataDB;
 import objects.TrackInfo;
 
@@ -18,8 +19,10 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.Builder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.ConsistentReads;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
@@ -42,10 +45,15 @@ public class DataBaseQueries{
 	
 	//view main method in comments for details
 	public static void main(String args[]) throws Exception{
-		//DataBaseQueries dbq = new DataBaseQueries("3D_Cloud_Pan_Data");
+		/*DataBaseQueries dbq = new DataBaseQueries("The_Big_Track_Analysis");
+		ArrayList<TrackInfo> ppp2 = dbq.queryTrackTable("HT25TW5055273593c875a9898b00", 1);
+		for(int i = 0; i < ppp2.size(); i++){
+			System.out.println(ppp2.get(i).toString());
+		}*/
 		
+		//DataBaseQueries dbq = new DataBaseQueries("3D_Cloud_Pan_Data");
 		/*ArrayList<PhoneDataDB> ppp = dbq.scanTable("Track_no", -1, ComparisonOperator.EQ.toString());
-		ArrayList<PhoneDataDB> ppp2 = dbq.queryTable("HT25TW5055273593c875a9898b00");
+		
 		
 		for(int i = 0; i < ppp.size(); i++){
 			System.out.println(ppp.get(0).toString());
@@ -64,7 +72,10 @@ public class DataBaseQueries{
 	
 	public DataBaseQueries(String tableName) throws Exception {
 		this.tableName = tableName;
-		DDB_CONFIG = new DynamoDBMapperConfig(new TableNameOverride(tableName));
+		Builder builder = new DynamoDBMapperConfig.Builder()
+		.withConsistentReads(ConsistentReads.EVENTUAL)
+		.withTableNameOverride(new TableNameOverride(tableName));
+		DDB_CONFIG = builder.build();
 		
 		AWSCredentials credentials = null;
         try {
@@ -101,12 +112,6 @@ public class DataBaseQueries{
 		return result;
 	}
 	
-	public TrackInfo loadFromTable(String phone_id, int track_no){
-		
-		TrackInfo result = mapper.load(TrackInfo.class, phone_id, track_no, DDB_CONFIG);
-		
-		return result;
-	}
 	
 	/**
 	 * 
@@ -134,6 +139,28 @@ public class DataBaseQueries{
 		return queryresult2;
 		
 	}
+	
+	public ArrayList<TrackInfo> queryTrackTable(String phone_id, char order){
+		TrackInfo query = new TrackInfo();
+		query.setPHONE_ID(phone_id);
+		DynamoDBQueryExpression<TrackInfo> DDBE = new DynamoDBQueryExpression<TrackInfo>()
+				.withHashKeyValues(query)
+				.withConsistentRead(false);
+		if(order == 'a'){
+			DDBE.setScanIndexForward(true);
+		}
+		else if(order == 'd'){
+			DDBE.setScanIndexForward(false);
+		}
+		
+		List<TrackInfo> queryresult = mapper.query(TrackInfo.class, DDBE, DDB_CONFIG);
+		ArrayList<TrackInfo> queryresult2 = new ArrayList<TrackInfo>(queryresult);
+		
+		return queryresult2;
+		
+	}
+	
+	
 	/**
 	 * Queries from table by the phone_id and track_no
 	 * 
@@ -157,6 +184,26 @@ public class DataBaseQueries{
 		List<PhoneDataDB> queryresult = mapper.query(PhoneDataDB.class, DDBE, DDB_CONFIG);
 		ArrayList<PhoneDataDB> queryresult2 = new ArrayList<PhoneDataDB>(queryresult);
 		queryresult2 = new ArrayList<PhoneDataDB>(ObjectConversion.listSorter(queryresult2));
+		
+		return queryresult2;
+		
+	}
+	
+	public ArrayList<TrackInfo> queryTrackTable(String phone_id, int track_no){
+		
+		TrackInfo query = new TrackInfo();
+		query.setPHONE_ID(phone_id);
+		Condition rangeKeyCondition = new Condition()
+			.withComparisonOperator(ComparisonOperator.EQ.toString())
+			.withAttributeValueList(new AttributeValue().withN(Integer.toString(track_no)));
+			
+		DynamoDBQueryExpression<TrackInfo> DDBE = new DynamoDBQueryExpression<TrackInfo>()
+				.withHashKeyValues(query)
+				.withRangeKeyCondition("Track_no", rangeKeyCondition)
+				.withConsistentRead(false);
+			
+		List<TrackInfo> queryresult = mapper.query(TrackInfo.class, DDBE, DDB_CONFIG);
+		ArrayList<TrackInfo> queryresult2 = new ArrayList<TrackInfo>(queryresult);
 		
 		return queryresult2;
 		

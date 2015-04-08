@@ -4,12 +4,12 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 
+import objects.PhoneData;
 import csvexport.CSVWriter;
 import filters.DistanceVerify;
 import mysql.insertMySQL;
 import Distribution.Ratios;
 //for whole divided area
-import Objects.PhoneData;
 
 public class MainScatter1 {
 	final static String ph1n = "HT25TW5055273593c875a9898b00";//variables denoting phone IDs

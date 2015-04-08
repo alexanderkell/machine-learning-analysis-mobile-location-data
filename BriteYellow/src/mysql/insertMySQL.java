@@ -3,7 +3,7 @@ package mysql;
 import java.sql.*;
 import java.util.ArrayList;
 
-import Objects.PhoneData;
+import objects.PhoneData;
 import maths.*;
 
 public class insertMySQL {

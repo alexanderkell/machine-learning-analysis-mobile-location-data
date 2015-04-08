@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.sql.Timestamp;
 
-import Objects.PhoneData;
+import objects.PhoneData;
 import maths.DataFormatOperations;
 
 public class DataGetter extends DataFormatOperations{

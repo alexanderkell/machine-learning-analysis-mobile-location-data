@@ -3,7 +3,7 @@ package dynamodb;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
-import Objects.*;
+import objects.*;
 import filters.FilterMain;
 import maths.DataGetter;
 import csvimport.CSVReaders;
@@ -78,11 +78,11 @@ public class CommonOperations {
 		DBO.deleteTable();
 		DBO.createTable();
 		
-		for(int i = 0; i < 6; i++){
+		for(int i = 1; i < 6; i++){
 			DataGetter DG = new DataGetter(i, "24th Sept ORDERED.CSV");
 			ArrayList<PhoneData> pd24 = DG.getFullPhoneDataList();
 			ArrayList<PhoneDataDB> pddb24 = ObjectConversion.convertToPhoneDataDB(pd24);
-			System.out.println("Writing 24th Septh Values for phone " + i + "... ");
+			System.out.println("Writing 24th Sept Values for phone " + i + "... ");
 			DBO.batchWrite(pddb24);
 		}
 		
@@ -90,7 +90,7 @@ public class CommonOperations {
 			DataGetter DG = new DataGetter(i, "26th Sept ORDERED.CSV");
 			ArrayList<PhoneData> pd24 = DG.getFullPhoneDataList();
 			ArrayList<PhoneDataDB> pddb24 = ObjectConversion.convertToPhoneDataDB(pd24);
-			System.out.println("Writing 26th Septh Values for phone " + i + "... ");
+			System.out.println("Writing 26th Sept Values for phone " + i + "... ");
 			DBO.batchWrite(pddb24);
 		}
 		

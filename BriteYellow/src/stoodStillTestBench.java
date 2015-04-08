@@ -2,7 +2,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import Objects.PhoneData;
+import objects.PhoneData;
 import distribution.*;
 
 public class stoodStillTestBench {

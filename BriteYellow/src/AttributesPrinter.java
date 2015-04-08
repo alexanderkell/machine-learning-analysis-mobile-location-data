@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-import Objects.PhoneData;
+import objects.PhoneData;
 import csvexport.CSVWriter;
 import filters.FilterMain;
 import maths.DataGetter;

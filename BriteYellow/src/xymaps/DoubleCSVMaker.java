@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import Objects.PhoneData;
-import Objects.PhoneDataDB;
+import objects.PhoneData;
+import objects.PhoneDataDB;
 import maths.*;
 import csvexport.*;
 import dynamodb.*;

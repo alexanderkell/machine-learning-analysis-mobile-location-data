@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 
-import Objects.PhoneData;
+import objects.PhoneData;
 import csvexport.CSVWriter;
 
 public class Ratios extends ProbabilityList{

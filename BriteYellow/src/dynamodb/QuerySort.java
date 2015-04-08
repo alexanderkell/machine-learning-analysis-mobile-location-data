@@ -2,7 +2,7 @@ package dynamodb;
 
 import java.util.Comparator;
 
-import Objects.PhoneDataDB;
+import objects.PhoneDataDB;
 
 public class QuerySort implements Comparator<PhoneDataDB>{
 	

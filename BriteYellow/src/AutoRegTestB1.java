@@ -1,8 +1,8 @@
 
 import java.util.ArrayList;
 
+import objects.PhoneData;
 import maths.*;
-import Objects.PhoneData;
 import autoregression.*;
 
 public class AutoRegTestB1 {

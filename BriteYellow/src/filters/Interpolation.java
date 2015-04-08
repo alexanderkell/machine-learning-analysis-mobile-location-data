@@ -5,7 +5,7 @@ import interpolation.CHSpline;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
-import Objects.PhoneData;
+import objects.PhoneData;
 	
 public class Interpolation{
 	final static int tstep = 20;

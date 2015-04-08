@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 
-import Objects.PhoneData;
-import Objects.PhoneDataDB;
+import objects.PhoneData;
+import objects.PhoneDataDB;
 import csvexport.CSVWriter;
 import dynamodb.DataBaseQueries;
 import dynamodb.ObjectConversion;

@@ -4,7 +4,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import Objects.PhoneData;
+import objects.PhoneData;
 import maths.*;
 import mysql.*;
 import csvimport.*;

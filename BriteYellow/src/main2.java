@@ -4,13 +4,13 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import objects.PhoneData;
 import csvexport.CSVWriter;
 import filters.DistanceVerify;
 import maths.DataGetter;
 import mysql.insertMySQL;
 import Distribution.ProbabilityList;
 import Distribution.ProbabilityList.Labels;
-import Objects.PhoneData;
 
 
 public class main2 {

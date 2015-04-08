@@ -3,7 +3,7 @@ package distribution;
 import java.text.ParseException;
 import java.util.ArrayList;
 
-import Objects.PhoneData;
+import objects.PhoneData;
 
 public class StatsGenerator extends ProbabilityList{
 

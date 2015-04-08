@@ -6,7 +6,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 
-import Objects.PhoneData;
+import objects.PhoneData;
 import filters.jkalman.JKalmanHelper;
 
 public class FilterMain {

@@ -1,7 +1,7 @@
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
-import Objects.PhoneData;
+import objects.PhoneData;
 import filters.jkalman.JKalman;
 import graphing.PlotTracks;
 import jama.Matrix;

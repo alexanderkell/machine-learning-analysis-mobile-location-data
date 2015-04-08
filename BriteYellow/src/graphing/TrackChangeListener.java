@@ -1,6 +1,6 @@
 package graphing;
 
-import Objects.PhoneData;
+import objects.PhoneData;
 
 public interface TrackChangeListener {
 	public abstract PhoneData[] setTrack(int index);

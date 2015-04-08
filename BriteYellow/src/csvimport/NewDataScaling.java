@@ -10,7 +10,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import Objects.PhoneData;
+import objects.PhoneData;
 import csvexport.CSVWriter;
 import splitting.TrackSelect;
 import maths.DataGetter;

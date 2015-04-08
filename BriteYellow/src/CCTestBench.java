@@ -1,7 +1,7 @@
 
 import java.util.ArrayList;
 
-import Objects.PhoneData;
+import objects.PhoneData;
 import maths.DataGetter;
 import crosscorrelation.*;
 

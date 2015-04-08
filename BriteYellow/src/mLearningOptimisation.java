@@ -5,13 +5,14 @@ import dynamodb.NoSQLDownload;
 import dynamodb.ObjectConversion;
 import filters.FilterMain;
 import maths.DataGetter;
-import Objects.PhoneData;
-import Objects.PhoneDataDB;
-import Objects.TrackInfo;
 import csvimport.*;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import objects.PhoneData;
+import objects.PhoneDataDB;
+import objects.TrackInfo;
 
 import com.sun.org.apache.bcel.internal.generic.IXOR;
 

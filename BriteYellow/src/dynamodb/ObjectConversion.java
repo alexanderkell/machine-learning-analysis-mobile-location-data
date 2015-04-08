@@ -9,8 +9,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Locale;
 
-import Objects.PhoneData;
-import Objects.PhoneDataDB;
+import objects.PhoneData;
+import objects.PhoneDataDB;
 
 public class ObjectConversion {
 	

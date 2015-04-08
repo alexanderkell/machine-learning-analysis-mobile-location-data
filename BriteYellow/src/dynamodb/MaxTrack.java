@@ -11,7 +11,7 @@ public class MaxTrack {
 		if(test.get(1).getTimestampLong()>test.get(0).getTimestampLong()){
 		
 			for(int i = test.size()-1; i > 0; i--){
-				max = test.get(i).getTrackNo();
+				max = test.get(i).getTRACK_NO();
 				if(max != -1){
 					return max;
 				}

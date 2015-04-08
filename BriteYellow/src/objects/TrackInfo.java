@@ -8,8 +8,6 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 @DynamoDBTable(tableName = "REPLACED_BY_VALUE_IN_PROPERTIES_FILE")
 public class TrackInfo extends DataBaseObject {
 	
-	private String PHONE_ID;
-	private double TRACK_NO;
 	private double PATH_LENGTH;
 	private double TIME_STOPPED; 
 	private double NO_STOPS; 
@@ -33,44 +31,42 @@ public class TrackInfo extends DataBaseObject {
 	public String getPHONE_ID() {
 		return PHONE_ID;
 	}
-	
-
-	public void setTIMESSTOPPEDHERE(double tIMESSTOPPEDHERE){
-		TIMESSTOPPEDHERE = tIMESSTOPPEDHERE;
+	public void setPHONE_ID(String phone_id){
+		this.PHONE_ID = phone_id;
 	}
+	
+	@DynamoDBAttribute
 	public double getTIMESSTOPPEDHERE() {
 		return TIMESSTOPPEDHERE;
 	}
+	public void setTIMESSTOPPEDHERE(double tIMESSTOPPEDHERE){
+		TIMESSTOPPEDHERE = tIMESSTOPPEDHERE;
+	}
 	
-		
+	
+	@DynamoDBAttribute
+	public double getTOTAVRGSPEED() {
+		return TOTAVRGSPEED;
+	}	
 	public void setTOTAVRGSPEED(double tOTAVRGSPEED){
 		TOTAVRGSPEED = tOTAVRGSPEED;
 	}
-	public double getTOTAVRGSPEED() {
-		return TOTAVRGSPEED;
-	}
 	
 	
-	
-	public void setTIMEPERSTOP(double tIMEPERSTOP){
-		TIMEPERSTOP = tIMEPERSTOP;
-	}
+	@DynamoDBAttribute
 	public double getTIMEPERSTOP() {
 		return TIMEPERSTOP;
 	}
-	
-	
-	
-	
-	public void setPHONE_ID(String pHONE_ID) {
-		PHONE_ID = pHONE_ID;
+	public void setTIMEPERSTOP(double tIMEPERSTOP){
+		TIMEPERSTOP = tIMEPERSTOP;
 	}
+	
 	
 	@DynamoDBRangeKey
-	public double getTRACK_NO() {
+	public int getTRACK_NO() {
 		return TRACK_NO;
 	}
-	public void setTRACK_NO(double tRACK_NO) {
+	public void setTRACK_NO(int tRACK_NO) {
 		TRACK_NO = tRACK_NO;
 	}
 	

@@ -110,7 +110,7 @@ public class DataBaseQueries{
 	
 	public ArrayList<PhoneDataDB> queryTable(String phone_id, char order){
 		PhoneDataDB query = new PhoneDataDB();
-		query.setPhoneID(phone_id);
+		query.setPHONE_ID(phone_id);
 		DynamoDBQueryExpression<PhoneDataDB> DDBE = new DynamoDBQueryExpression<PhoneDataDB>()
 				.withHashKeyValues(query);
 		if(order == 'a'){
@@ -137,7 +137,7 @@ public class DataBaseQueries{
 	
 	public ArrayList<PhoneDataDB> queryTable(String phone_id, int track_no){
 		PhoneDataDB query = new PhoneDataDB();
-		query.setPhoneID(phone_id);
+		query.setPHONE_ID(phone_id);
 		Condition rangeKeyCondition = new Condition()
 			.withComparisonOperator(ComparisonOperator.EQ.toString())
 			.withAttributeValueList(new AttributeValue().withN(Integer.toString(track_no)));
@@ -187,7 +187,7 @@ public class DataBaseQueries{
 		int max = 0;
 		ArrayList<PhoneDataDB> test = queryTable(PHONE_ID, 'a');
 		for(int i = test.size()-1; i > 0; i--){
-			max = test.get(i).getTrackNo();
+			max = test.get(i).getTRACK_NO();
 			if(max != -1){
 				return max;
 			}

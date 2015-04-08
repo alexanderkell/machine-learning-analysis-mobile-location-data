@@ -1,8 +1,5 @@
 package objects;
 
-import java.sql.Timestamp;
-import java.util.*;
-
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIgnore;
@@ -19,8 +16,6 @@ public class PhoneDataDB extends DataBaseObject{
 	private double xdisp, ydisp, zdisp, moddisp;
 	private double rsx, rsy, rsz, modspd, spdtheta;
 	private double rax, ray, raz, modacc, acctheta;
-	private String PHONE_ID;
-	private int TRACK_NO;
 	
 	
 	@DynamoDBAttribute(attributeName = "X_Position")
@@ -168,20 +163,20 @@ public class PhoneDataDB extends DataBaseObject{
 	}
 	
 	
-	 @DynamoDBHashKey(attributeName="Phone_ID")
-	public String getPhoneID(){
+	@DynamoDBHashKey(attributeName="Phone_ID")
+	public String getPHONE_ID(){
 		return PHONE_ID;
 	}
-	public void setPhoneID(String phone_id){
+	public void setPHONE_ID(String phone_id){
 		this.PHONE_ID = phone_id;
 	}
 	
 	
 	@DynamoDBIndexRangeKey(attributeName= "Track_no", localSecondaryIndexName="Track_no")
-	public int getTrackNo(){
+	public int getTRACK_NO(){
 		return TRACK_NO;
 	}
-	public void setTrackNo(int track_no){
+	public void setTRACK_NO(int track_no){
 		this.TRACK_NO = track_no;
 	}
 	

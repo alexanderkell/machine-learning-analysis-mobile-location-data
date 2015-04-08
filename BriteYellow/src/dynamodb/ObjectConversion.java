@@ -74,8 +74,8 @@ public class ObjectConversion {
 		datapoint.setZAcceleration(pd.raz);
 		datapoint.setModAcceleration(pd.modacc);
 		datapoint.setAccelerationTheta(pd.acctheta);
-		datapoint.setPhoneID(pd.phone_id);
-		datapoint.setTrackNo(pd.track_no);
+		datapoint.setPHONE_ID(pd.phone_id);
+		datapoint.setTRACK_NO(pd.track_no);
 		
 		return datapoint;
 	}
@@ -122,8 +122,8 @@ public class ObjectConversion {
 		datapoint.raz = pd.getZAcceleration();
 		datapoint.modacc = pd.getModAcceleration();
 		datapoint.acctheta = pd.getAccelerationTheta();
-		datapoint.phone_id = pd.getPhoneID();
-		datapoint.track_no = pd.getTrackNo();
+		datapoint.phone_id = pd.getPHONE_ID();
+		datapoint.track_no = pd.getTRACK_NO();
 	
 		
 		return datapoint;

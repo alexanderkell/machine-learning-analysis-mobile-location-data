@@ -2,6 +2,7 @@
 import java.util.ArrayList;
 
 import maths.*;
+import Objects.PhoneData;
 import autoregression.*;
 
 public class AutoRegTestB1 {

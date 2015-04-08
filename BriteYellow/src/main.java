@@ -2,8 +2,8 @@
 import java.sql.Connection;
 import java.util.ArrayList;
 
+import Objects.PhoneData;
 import dynamodb.*;
-import maths.PhoneData;
 import mysql.*;
 
 public class main {

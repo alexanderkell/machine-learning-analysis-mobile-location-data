@@ -1,7 +1,7 @@
 package autoregression;
 import java.util.ArrayList;
 
-import maths.PhoneData;
+import Objects.PhoneData;
 
 
 public class ARDataFeed {

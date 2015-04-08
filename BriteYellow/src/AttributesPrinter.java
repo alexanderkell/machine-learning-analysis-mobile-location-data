@@ -1,8 +1,9 @@
 import java.util.ArrayList;
+
+import Objects.PhoneData;
 import csvexport.CSVWriter;
 import filters.FilterMain;
 import maths.DataGetter;
-import maths.PhoneData;
 
 
 public class AttributesPrinter {

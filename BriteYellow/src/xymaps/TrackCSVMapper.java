@@ -8,11 +8,11 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 
-import maths.PhoneData;
+import Objects.PhoneData;
+import Objects.PhoneDataDB;
 import csvexport.CSVWriter;
 import dynamodb.DataBaseQueries;
 import dynamodb.ObjectConversion;
-import dynamodb.PhoneDataDB;
 
 public class TrackCSVMapper {
 	

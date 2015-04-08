@@ -3,9 +3,9 @@ package dynamodb;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
+import Objects.*;
 import filters.FilterMain;
 import maths.DataGetter;
-import maths.PhoneData;
 import csvimport.CSVReaders;
 import csvimport.PhoneNames;
 import csvimport.NewDataScaling;

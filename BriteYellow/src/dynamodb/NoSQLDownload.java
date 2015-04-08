@@ -9,7 +9,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
-import maths.PhoneData;
+import Objects.PhoneData;
 
 public class NoSQLDownload{
 	public interface SQLListener{

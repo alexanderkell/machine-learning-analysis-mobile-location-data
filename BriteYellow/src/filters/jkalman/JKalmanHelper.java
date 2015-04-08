@@ -4,7 +4,7 @@ import jama.Matrix;
 
 import java.util.ArrayList;
 
-import maths.PhoneData;
+import Objects.PhoneData;
 
 public class JKalmanHelper extends JKalman{
 	

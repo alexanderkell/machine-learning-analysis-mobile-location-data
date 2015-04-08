@@ -2,7 +2,8 @@ package dynamodb;
 
 import java.util.ArrayList;
 
-import maths.PhoneData;
+import Objects.PhoneData;
+import Objects.PhoneDataDB;
 
 public class TimeProver {
 	

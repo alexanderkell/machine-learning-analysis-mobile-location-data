@@ -42,10 +42,10 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.plaf.basic.BasicProgressBarUI;
 
-import maths.PhoneData;
-
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.plot.XYPlot;
+
+import Objects.PhoneData;
 
 public class PlotTracks implements ActionListener,ChangeListener, KeyListener,MouseListener,MouseMotionListener, WindowFocusListener{
 	

@@ -2,6 +2,8 @@ package dynamodb;
 
 import java.util.Comparator;
 
+import Objects.PhoneDataDB;
+
 public class QuerySort implements Comparator<PhoneDataDB>{
 	
 	@Override

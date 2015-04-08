@@ -1,9 +1,9 @@
 import java.text.ParseException;
 import java.util.ArrayList;
 
+import Objects.PhoneData;
 import csvimport.CSVReaders;
 import maths.DataGetter;
-import maths.PhoneData;
 import graphing.PlotTracks;
 
 

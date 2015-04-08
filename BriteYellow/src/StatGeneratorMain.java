@@ -23,13 +23,11 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import Objects.PhoneData;
 import csvexport.CSVWriter;
-
 import distribution.StatsGenerator;
 import dynamodb.NoSQLDownload;
 import dynamodb.NoSQLDownload.SQLListener;
-
-import maths.PhoneData;
 
 
 public class StatGeneratorMain extends TimerTask implements ActionListener, ChangeListener, SQLListener{

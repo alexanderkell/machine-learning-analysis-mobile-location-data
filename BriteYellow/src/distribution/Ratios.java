@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 
+import Objects.PhoneData;
 import csvexport.CSVWriter;
-import maths.PhoneData;
 
 public class Ratios extends ProbabilityList{
 

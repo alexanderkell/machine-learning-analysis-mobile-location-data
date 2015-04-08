@@ -1,7 +1,7 @@
 import java.text.ParseException;
 import java.util.ArrayList;
 
-import maths.PhoneData;
+import Objects.PhoneData;
 import csvimport.CSVReaders;
 import csvimport.NewDataScaling;
 

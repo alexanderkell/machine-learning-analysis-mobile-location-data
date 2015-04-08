@@ -4,11 +4,11 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 
+import Objects.PhoneData;
 import csvexport.CSVWriter;
 import distribution.Ratios;
 import distribution.Ratios1;
 import filters.DistanceVerify;
-import maths.PhoneData;
 import mysql.insertMySQL;
 
 public class MainScatter2 {

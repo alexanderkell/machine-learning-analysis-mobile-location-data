@@ -2,7 +2,7 @@ package filters;
 
 import java.util.ArrayList;
 
-import maths.PhoneData;
+import Objects.PhoneData;
 
 public class DistanceVerify {
 	private ArrayList<PhoneData> ph;

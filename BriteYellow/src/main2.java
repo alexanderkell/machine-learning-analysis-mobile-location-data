@@ -7,10 +7,10 @@ import java.util.Scanner;
 import csvexport.CSVWriter;
 import filters.DistanceVerify;
 import maths.DataGetter;
-import maths.PhoneData;
 import mysql.insertMySQL;
 import Distribution.ProbabilityList;
 import Distribution.ProbabilityList.Labels;
+import Objects.PhoneData;
 
 
 public class main2 {

@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 import maths.*;
+import Objects.DataBaseObject;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
@@ -206,7 +207,7 @@ public class DataBaseOperations {
     }
 	
 	//to add a value or update a value with the same key
-	public void saveItem(PhoneDataDB pdb) {
+	public void saveItem(DataBaseObject pdb) {
 		
 		mapper.save(pdb, DDB_CONFIG);
 		
@@ -217,8 +218,8 @@ public class DataBaseOperations {
     }
 	
 	//to add multiple values
-	public void batchWrite(ArrayList<PhoneDataDB> pdb){
-		List<PhoneDataDB> myEntitiesToDelete = Collections.<PhoneDataDB> emptyList();
+	public void batchWrite(ArrayList<? extends DataBaseObject> pdb){
+		List<DataBaseObject> myEntitiesToDelete = Collections.<DataBaseObject> emptyList();
 		mapper.batchWrite(pdb, myEntitiesToDelete, DDB_CONFIG);
 		
 		DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(tableName);
@@ -227,7 +228,7 @@ public class DataBaseOperations {
         writeStats();
 	}
 	
-	public void deleteItem(PhoneDataDB pdb) {
+	public void deleteItem(DataBaseObject pdb) {
 		
 		mapper.delete(pdb, DDB_CONFIG);
 		
@@ -237,7 +238,7 @@ public class DataBaseOperations {
         writeStats();
     }
 	
-	public void batchDelete(ArrayList<PhoneDataDB> pdb){
+	public void batchDelete(ArrayList<? extends DataBaseObject> pdb){
 		
 		mapper.batchDelete(pdb, DDB_CONFIG);
 		
@@ -246,7 +247,6 @@ public class DataBaseOperations {
         System.out.println("Table Description: " + tableDescription);
         writeStats();
 	}
-	
 	
 	public void updateThroughput(String tableName, long read, long write) throws InterruptedException{
 		Table table = dynamo.getTable(tableName);

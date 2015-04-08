@@ -1,4 +1,4 @@
-package dynamodb;
+package Objects;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -12,15 +12,15 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
 
 @DynamoDBTable(tableName = "REPLACED_BY_VALUE_IN_PROPERTIES_FILE") 
-public class PhoneDataDB{
+public class PhoneDataDB extends DataBaseObject{
 	private double x, y, z;
 	private Long tsl;
 	private double tb;
 	private double xdisp, ydisp, zdisp, moddisp;
 	private double rsx, rsy, rsz, modspd, spdtheta;
 	private double rax, ray, raz, modacc, acctheta;
-	private String phone_id;
-	private int track_no;
+	private String PHONE_ID;
+	private int TRACK_NO;
 	
 	
 	@DynamoDBAttribute(attributeName = "X_Position")
@@ -170,19 +170,19 @@ public class PhoneDataDB{
 	
 	 @DynamoDBHashKey(attributeName="Phone_ID")
 	public String getPhoneID(){
-		return phone_id;
+		return PHONE_ID;
 	}
 	public void setPhoneID(String phone_id){
-		this.phone_id = phone_id;
+		this.PHONE_ID = phone_id;
 	}
 	
 	
 	@DynamoDBIndexRangeKey(attributeName= "Track_no", localSecondaryIndexName="Track_no")
 	public int getTrackNo(){
-		return track_no;
+		return TRACK_NO;
 	}
 	public void setTrackNo(int track_no){
-		this.track_no = track_no;
+		this.TRACK_NO = track_no;
 	}
 	
 	
@@ -194,8 +194,8 @@ public class PhoneDataDB{
 				+ ", rsy=" + rsy + ", rsz=" + rsz + ", modspd=" + modspd
 				+ ", spdtheta=" + spdtheta + ", rax=" + rax + ", ray=" + ray
 				+ ", raz=" + raz + ", modacc=" + modacc + ", acctheta="
-				+ acctheta + ", phone_id=" + phone_id + ", track_no="
-				+ track_no + "]";
+				+ acctheta + ", phone_id=" + PHONE_ID + ", track_no="
+				+ TRACK_NO + "]";
 	}
 	
 	

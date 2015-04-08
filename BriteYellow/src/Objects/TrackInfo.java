@@ -1,4 +1,4 @@
-package dynamodb;
+package Objects;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
@@ -6,7 +6,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
 @DynamoDBTable(tableName = "REPLACED_BY_VALUE_IN_PROPERTIES_FILE")
-public class TrackInfo {
+public class TrackInfo extends DataBaseObject {
 	
 	private String PHONE_ID;
 	private double TRACK_NO;

@@ -1,10 +1,9 @@
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
+import Objects.PhoneData;
 import filters.jkalman.JKalman;
 import graphing.PlotTracks;
-
-import maths.PhoneData;
 import jama.Matrix;
 
 

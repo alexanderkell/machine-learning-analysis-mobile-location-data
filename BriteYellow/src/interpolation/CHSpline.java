@@ -7,8 +7,8 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.ArrayList;
 
+import Objects.PhoneData;
 import maths.DataGetter;
-import maths.PhoneData;
 
 public class CHSpline {
 	

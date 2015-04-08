@@ -1,10 +1,9 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import Objects.PhoneData;
 import filters.jkalman.JKalmanHelper;
 import graphing.PlotTracks;
-
-import maths.PhoneData;
 import mysql.insertMySQL;
 
 

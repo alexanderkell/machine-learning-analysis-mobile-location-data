@@ -6,8 +6,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 
+import Objects.PhoneData;
 import filters.jkalman.JKalmanHelper;
-import maths.PhoneData;
 
 public class FilterMain {
 	int maxSpeed=200;

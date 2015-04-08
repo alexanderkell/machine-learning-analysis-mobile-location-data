@@ -3,11 +3,11 @@ import dynamodb.DataBaseOperations;
 import dynamodb.DataBaseQueries;
 import dynamodb.NoSQLDownload;
 import dynamodb.ObjectConversion;
-import dynamodb.PhoneDataDB;
-import dynamodb.TrackInfo;
 import filters.FilterMain;
 import maths.DataGetter;
-import maths.PhoneData;
+import Objects.PhoneData;
+import Objects.PhoneDataDB;
+import Objects.TrackInfo;
 import csvimport.*;
 
 import java.util.ArrayList;

@@ -28,6 +28,15 @@ public class TrackInfo extends DataBaseObject {
 	private double Y1;
 	private double X2;
 	private double Y2;
+	private int Characteristic;
+	
+	
+	public int getCharacteristic() {
+		return Characteristic;
+	}
+	public void setCharacteristic(int characteristic) {
+		Characteristic = characteristic;
+	}
 	
 	
     @DynamoDBHashKey(attributeName = "ID")

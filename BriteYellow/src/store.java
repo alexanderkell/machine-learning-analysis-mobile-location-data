@@ -71,41 +71,30 @@ public class mLearningOptimisation {
 		DataGetter newdg = new DataGetter(filtered.toArray(new PhoneData[filtered.size()]));
 		final PhoneData[] newdata = newdg.getFullPhoneData();
 		
+		ObjectConversion OC = new ObjectConversion();
+		System.out.println("Converting to DB Format");
+		ArrayList<PhoneDataDB> pdb = OC.convertToPhoneDataDB(newdata);
+		DataBaseOperations DBO = new DataBaseOperations("Machine_Learning_Filtered_D");
+		System.out.println("Writing to Machine Learning Database");
+		DBO.batchWrite(pdb);
+		
+		DataBaseQueries DBQ = new DataBaseQueries("Machine_Learning_Filtered_D");
+		PhoneNames phoneNames = new PhoneNames();
+		String PhoneID = phoneNames.numberToName(1); 
+		System.out.println("Querying for track");
+		ArrayList<PhoneDataDB> track = DBQ.queryTable(PhoneID, 2);
+		System.out.println(track.size());
+		System.out.println("Finding maximum track number");
+		int maxTNo = DBQ.findMaxTrackNo(PhoneID);
+		System.out.println(maxTNo);
+		/*
+		
 		TrackSelect TS = new TrackSelect();
 		
 		ArrayList<TrackInfo> totalTI = new ArrayList<TrackInfo>();
 		
 		System.out.println(TS.getTotalTracks(newdata));
-/*		
-		for(int i=1; i<=TS.getTotalTracks(newdata); i++){
-			PhoneData[] track = TS.selecter(newdata, i);
-			System.out.println("track length = "+track.length);
-			System.out.println("i = "+i);
-			
-//			StatsGenerator statGen = new StatsGenerator(track);
-			
-//			System.out.println(statGen.getTotalAverage(StatsGenerator.INACTIVE_TIME, xbounds[1], xbounds[1+1], ybounds[1], ybounds[1+1])+": "+xbounds[1]+", "+xbounds[1+1]+", "+ybounds[1]+", "+ybounds[1+1]);
-		}
-		for(int i=1; i<=TS.getTotalTracks(newdata); i++){
-			PhoneData[] track = TS.selecter(newdata, i);
-			System.out.println("track length = "+track.length);
-			System.out.println("i = "+i);
-			
-			StatsGenerator statGen = new StatsGenerator(track);
-			
-			System.out.println(statGen.getTotalAverage(StatsGenerator.INACTIVE_TIME, xbounds[2], xbounds[2+1], ybounds[1], ybounds[1+1])+": "+xbounds[2]+", "+xbounds[2+1]+", "+ybounds[1]+", "+ybounds[1+1]);
-		}
-		for(int i=1; i<=TS.getTotalTracks(newdata); i++){
-			PhoneData[] track = TS.selecter(newdata, i);
-			System.out.println("track length = "+track.length);
-			System.out.println("i = "+i);
-			
-			StatsGenerator statGen = new StatsGenerator(track);
-			
-			System.out.println(statGen.getTotalAverage(StatsGenerator.INACTIVE_TIME, xbounds[3], xbounds[3+1], ybounds[1], ybounds[1+1])+": "+xbounds[3]+", "+xbounds[3+1]+", "+ybounds[1]+", "+ybounds[1+1]);
-		}
-*/		
-		
+
 		
 		
 		for(int j = 0; j<xbounds.length-1; j++){
@@ -139,13 +128,13 @@ public class mLearningOptimisation {
 					TI.setX2(xbounds[j+1]);
 					TI.setY1(ybounds[k]);
 					TI.setY2(ybounds[k+1]);
-*/			
+		
 				}
 			}
 		}
 		
 		
-
+*/
 		
 		
 		

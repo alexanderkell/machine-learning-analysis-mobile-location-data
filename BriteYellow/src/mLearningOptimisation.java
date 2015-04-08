@@ -74,7 +74,7 @@ public class mLearningOptimisation {
         DataGetter newdg = new DataGetter(filtered.toArray(new PhoneData[filtered.size()]));
         final PhoneData[] newdata = newdg.getFullPhoneData();
         
-        ArrayList<TrackInfo> TrackAnalysis=writeTrackStats(newdata);
+        ArrayList<TrackInfo> TrackAnalysis = writeTrackStats(newdata);
        // double[][] path_length = new double[TrackAnalysis.size()][TrackAnalysis.];
         
         
@@ -115,7 +115,9 @@ public class mLearningOptimisation {
         DBO.createTracksTable();
         System.out.println(DBO.toString());
         System.out.println("Writing to Database");
-        DBO.batchWrite(TrackAnalysis);
+        for(int i=0; i<TrackAnalysis.size(); i++){
+            	DBO.saveItem(TrackAnalysis.get(i));
+           }
         System.out.println("Write complete");
     }
     
@@ -148,7 +150,6 @@ public class mLearningOptimisation {
                     TI.setX2(xbounds[j+1]);
                     TI.setY1(ybounds[k]);
                     TI.setY2(ybounds[k+1]);
-                    TI.setCharacteristic(characteristicType(newdata[i].phone_id));
                     totalTI.add(TI);
                 }
             }

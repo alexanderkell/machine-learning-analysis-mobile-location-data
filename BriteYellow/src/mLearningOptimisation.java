@@ -15,11 +15,10 @@ import objects.PhoneDataDB;
 import objects.TrackInfo;
 
 import com.sun.org.apache.bcel.internal.generic.IXOR;
-
 import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
 
 import splitting.*;
-
+import graphing.*;
 
 
 
@@ -76,13 +75,21 @@ public class mLearningOptimisation {
 		final PhoneData[] newdata = newdg.getFullPhoneData();
 		
 		ArrayList<TrackInfo> TrackAnalysis=writeTrackStats(newdata);
-		
-		DataBaseOperations DBO = new DataBaseOperations("The_Big_Track_Analysis");
-		//DBO.createTable();
-		//DBO.batchWrite(StatsDB);
-		//DBO.
+		double[][] path_length = new double[TrackAnalysis.size()][TrackAnalysis.];
 
 		
+		for(int i=0; i<TrackAnalysis.size(); i++){
+			path_length[i] = TrackAnalysis.get(i).getPATH_LENGTH();
+		}
+		
+		
+		scatterGraph sG = new scatterGraph(path_length[], );
+		
+		
+		
+		
+		
+		writeToDB(TrackAnalysis);
 	}
 	
 	public static ArrayList<PhoneData> getAllPhoneDB() throws Exception{
@@ -94,7 +101,6 @@ public class mLearningOptimisation {
 			System.out.println("Querying tracks for phone: " + PhoneID); 
 			ArrayList<PhoneDataDB> outputDB = DBQ.queryTable(PhoneID, 'd'); 
 			System.out.println("Converting tracks for phone: " + PhoneID); 
-			//ArrayList<PhoneData> raw = ObjectConversion.convertFrom(outputDB);
 			rawTotUn.addAll(outputDB);
 			System.out.println("Converted: "+i+"/6");
 		}
@@ -102,6 +108,15 @@ public class mLearningOptimisation {
 		rawTot=ObjectConversion.listSorter(rawTotUn);
 		ArrayList<PhoneData> raw = ObjectConversion.convertFrom(rawTot);
 		return raw;
+	}
+	
+	public static void writeToDB(ArrayList<TrackInfo> TrackAnalysis) throws Exception{
+		DataBaseOperations DBO = new DataBaseOperations("The_Big_Track_Analysis");
+		//DBO.createTracksTable();
+		System.out.println(DBO.toString());
+		System.out.println("Writing to Database");
+		DBO.batchWrite(TrackAnalysis);
+		System.out.println("Write complete");
 	}
 	
 	public static ArrayList<TrackInfo> writeTrackStats(PhoneData[] newdata) throws ParseException, java.text.ParseException{
@@ -133,10 +148,26 @@ public class mLearningOptimisation {
 					TI.setX2(xbounds[j+1]);
 					TI.setY1(ybounds[k]);
 					TI.setY2(ybounds[k+1]);
+					TI.setCharacteristic(characteristicType(newdata[i].phone_id));
 					totalTI.add(TI);
 				}
 			}
 		}
 		return totalTI;
+	}
+	public static String characteristicType(String phoneID){
+		String type = null;
+		if(phoneID.contentEquals("HT25TW5055273593c875a9898b00")){
+			type = "Business";
+		}else if(phoneID.contentEquals("ZX1B23QBS53771758c578bbd85")){
+			type = "Security";
+		}else if(phoneID.contentEquals("TA92903URNf067ff16fcf8e045")){
+			type = "Shopper";
+		}else if(phoneID.contentEquals("YT910K6675876ded0861342065")){
+			type = "Shopper";
+		}else if(phoneID.contentEquals("ZX1B23QFSP48abead89f52e3bb")){
+			type = "Security";
+		}
+		return type;
 	}
 }

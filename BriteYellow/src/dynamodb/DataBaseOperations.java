@@ -29,6 +29,7 @@ import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import com.amazonaws.services.dynamodbv2.model.Condition;
 import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.DescribeTableRequest;
+import com.amazonaws.services.dynamodbv2.model.GlobalSecondaryIndex;
 import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
 import com.amazonaws.services.dynamodbv2.model.KeyType;
 import com.amazonaws.services.dynamodbv2.model.LocalSecondaryIndex;
@@ -146,29 +147,47 @@ public class DataBaseOperations {
 	            System.out.println("Table " + tableName + " is already ACTIVE");
 	        } else {
 			
-			CreateTableRequest createTableRequest = new CreateTableRequest().withTableName(tableName);
-			createTableRequest.setProvisionedThroughput(new ProvisionedThroughput().withReadCapacityUnits((long)100).withWriteCapacityUnits((long)100));
-			
-			//AttributeDefinitions
-			ArrayList<AttributeDefinition> attributeDefinitions= new ArrayList<AttributeDefinition>();
-			attributeDefinitions.add(new AttributeDefinition().withAttributeName("PHONE_ID").withAttributeType("S"));
-			attributeDefinitions.add(new AttributeDefinition().withAttributeName("TRACK_NO").withAttributeType("N"));
+	        	CreateTableRequest createTableRequest = new CreateTableRequest().withTableName(tableName);
+				createTableRequest.setProvisionedThroughput(new ProvisionedThroughput().withReadCapacityUnits((long)50).withWriteCapacityUnits((long)50));
+				
+				//AttributeDefinitions
+				ArrayList<AttributeDefinition> attributeDefinitions= new ArrayList<AttributeDefinition>();
+				attributeDefinitions.add(new AttributeDefinition().withAttributeName("ID").withAttributeType("S"));
+				attributeDefinitions.add(new AttributeDefinition().withAttributeName("Phone_ID").withAttributeType("S"));
+				attributeDefinitions.add(new AttributeDefinition().withAttributeName("Track_no").withAttributeType("N"));
 
-			createTableRequest.setAttributeDefinitions(attributeDefinitions);
+				createTableRequest.setAttributeDefinitions(attributeDefinitions);
 
-			//KeySchema
-			ArrayList<KeySchemaElement> tableKeySchema = new ArrayList<KeySchemaElement>();
-			tableKeySchema.add(new KeySchemaElement().withAttributeName("PHONE_ID").withKeyType(KeyType.HASH));
-			tableKeySchema.add(new KeySchemaElement().withAttributeName("TRACK_NO").withKeyType(KeyType.RANGE));
-			
-			createTableRequest.setKeySchema(tableKeySchema);
-			
-			TableDescription  createdTableDescription = client.createTable(createTableRequest).getTableDescription();
-			System.out.println(createdTableDescription);
-			
-			System.out.println("Waiting for " + tableName + " to become ACTIVE...");
-	        Tables.awaitTableToBecomeActive(client, tableName);
-	        writeStats();
+				//KeySchema
+				ArrayList<KeySchemaElement> tableKeySchema = new ArrayList<KeySchemaElement>();
+				tableKeySchema.add(new KeySchemaElement().withAttributeName("ID").withKeyType(KeyType.HASH));
+				
+				createTableRequest.setKeySchema(tableKeySchema);
+
+				ArrayList<KeySchemaElement> indexKeySchema = new ArrayList<KeySchemaElement>();
+				indexKeySchema.add(new KeySchemaElement().withAttributeName("Phone_ID").withKeyType(KeyType.HASH));
+				indexKeySchema.add(new KeySchemaElement().withAttributeName("Track_no").withKeyType(KeyType.RANGE));
+				
+				Projection projection = new Projection().withProjectionType(ProjectionType.ALL);
+				
+				GlobalSecondaryIndex globalSecondaryIndex = new GlobalSecondaryIndex()
+				.withProvisionedThroughput(new ProvisionedThroughput()
+		        .withReadCapacityUnits((long) 50)
+		        .withWriteCapacityUnits((long) 50))
+			    .withIndexName("Phone_Index")
+			    .withKeySchema(indexKeySchema)
+			    .withProjection(projection);
+				
+				ArrayList<GlobalSecondaryIndex> globalSecondaryIndexes = new ArrayList<GlobalSecondaryIndex>();
+				globalSecondaryIndexes.add(globalSecondaryIndex);
+				createTableRequest.setGlobalSecondaryIndexes(globalSecondaryIndexes);
+				
+				TableDescription  createdTableDescription = client.createTable(createTableRequest).getTableDescription();
+				System.out.println(createdTableDescription);
+				
+				System.out.println("Waiting for " + tableName + " to become ACTIVE...");
+		        Tables.awaitTableToBecomeActive(client, tableName);
+		        writeStats();
 	        }
 				
 		} catch (AmazonServiceException ase) {

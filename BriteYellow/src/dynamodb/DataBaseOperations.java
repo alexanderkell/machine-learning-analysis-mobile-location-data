@@ -83,7 +83,7 @@ public class DataBaseOperations {
 	        } else {
 			
 			CreateTableRequest createTableRequest = new CreateTableRequest().withTableName(tableName);
-			createTableRequest.setProvisionedThroughput(new ProvisionedThroughput().withReadCapacityUnits((long)25).withWriteCapacityUnits((long)25));
+			createTableRequest.setProvisionedThroughput(new ProvisionedThroughput().withReadCapacityUnits((long)100).withWriteCapacityUnits((long)100));
 			
 			//AttributeDefinitions
 			ArrayList<AttributeDefinition> attributeDefinitions= new ArrayList<AttributeDefinition>();
@@ -146,7 +146,7 @@ public class DataBaseOperations {
 	        } else {
 			
 			CreateTableRequest createTableRequest = new CreateTableRequest().withTableName(tableName);
-			createTableRequest.setProvisionedThroughput(new ProvisionedThroughput().withReadCapacityUnits((long)25).withWriteCapacityUnits((long)25));
+			createTableRequest.setProvisionedThroughput(new ProvisionedThroughput().withReadCapacityUnits((long)100).withWriteCapacityUnits((long)100));
 			
 			//AttributeDefinitions
 			ArrayList<AttributeDefinition> attributeDefinitions= new ArrayList<AttributeDefinition>();

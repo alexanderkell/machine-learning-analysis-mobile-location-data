@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import objects.PhoneDataDB;
+import objects.TrackInfo;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.auth.AWSCredentials;
@@ -96,6 +97,13 @@ public class DataBaseQueries{
 	public PhoneDataDB loadFromTable(String phone_id, Timestamp ts){
 		double tsd = ts.getTime();
 		PhoneDataDB result = mapper.load(PhoneDataDB.class, phone_id, tsd, DDB_CONFIG);
+		
+		return result;
+	}
+	
+	public TrackInfo loadFromTable(String phone_id, int track_no){
+		
+		TrackInfo result = mapper.load(TrackInfo.class, phone_id, track_no, DDB_CONFIG);
 		
 		return result;
 	}

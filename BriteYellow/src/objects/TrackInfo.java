@@ -27,7 +27,7 @@ public class TrackInfo extends DataBaseObject {
 	private double X2;
 	private double Y2;
 	
-	@DynamoDBHashKey
+	@DynamoDBHashKey(attributeName="PHONE_ID")
 	public String getPHONE_ID() {
 		return PHONE_ID;
 	}
@@ -62,7 +62,7 @@ public class TrackInfo extends DataBaseObject {
 	}
 	
 	
-	@DynamoDBRangeKey
+	@DynamoDBRangeKey(attributeName = "TRACK_NO")
 	public int getTRACK_NO() {
 		return TRACK_NO;
 	}

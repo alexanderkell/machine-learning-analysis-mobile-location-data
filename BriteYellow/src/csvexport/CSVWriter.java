@@ -29,6 +29,14 @@ public class CSVWriter {
 		
 		fw.append("\n");
 	}
+	
+	public void write(String[] data, boolean prep) throws IOException{
+		
+		for(int i=0; i<data.length; i++){
+			fw.append(data[i]);
+		}
+	}
+	
 	public void write(Object[] data) throws IOException{
 		String[] str_data = new String[data.length];
 		for(int i=0; i<data.length; i++){

@@ -120,6 +120,7 @@ public class DataBaseOperations {
 			
 			System.out.println("Waiting for " + tableName + " to become ACTIVE...");
 	        Tables.awaitTableToBecomeActive(client, tableName);
+	        System.out.println(tableName + " NOW ACTIVE.");
 	        writeStats();
 	        }
 				
@@ -187,6 +188,7 @@ public class DataBaseOperations {
 				
 				System.out.println("Waiting for " + tableName + " to become ACTIVE...");
 		        Tables.awaitTableToBecomeActive(client, tableName);
+		        System.out.println(tableName + " NOW ACTIVE.");
 		        writeStats();
 	        }
 				

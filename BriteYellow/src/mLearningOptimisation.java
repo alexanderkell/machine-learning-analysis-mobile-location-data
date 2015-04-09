@@ -78,12 +78,12 @@ public class mLearningOptimisation {
 		//double[][] path_length = new double[TrackAnalysis.size()][TrackAnalysis.];
 		
 
-		float[][] y = getYCoords(TrackAnalysis);
+		/*float[][] y = getYCoords(TrackAnalysis);
 		float[][] x = getXCoords(TrackAnalysis);
 				
 		xyScatterP plotObj = new xyScatterP();
 		plotObj.plot(x,y, "test", "test","test","test","test");
-		plotObj.plot(x, y, "Number of stops Vs Path Length", "Compare", "Number of Stops", "Path Length", "Comparison");
+		plotObj.plot(x, y, "Number of stops Vs Path Length", "Compare", "Number of Stops", "Path Length", "Comparison");*/
 		writeToDB(TrackAnalysis);
 	}
 	

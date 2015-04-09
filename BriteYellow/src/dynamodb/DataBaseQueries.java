@@ -12,6 +12,7 @@ import objects.PhoneDataDB;
 import objects.TrackInfo;
 
 import com.amazonaws.AmazonClientException;
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Region;
@@ -45,8 +46,8 @@ public class DataBaseQueries{
 	
 	//view main method in comments for details
 	public static void main(String args[]) throws Exception{
-		/*DataBaseQueries dbq = new DataBaseQueries("The_Big_Track_Analysis");
-		ArrayList<TrackInfo> ppp2 = dbq.queryTrackTable("HT25TW5055273593c875a9898b00", 1);
+		//DataBaseQueries dbq = new DataBaseQueries("The_Big_Track_Analysis");
+		/*ArrayList<TrackInfo> ppp2 = dbq.queryTrackTable("HT25TW5055273593c875a9898b00", 1);
 		for(int i = 0; i < ppp2.size(); i++){
 			System.out.println(ppp2.get(i).toString());
 		}*/
@@ -62,9 +63,9 @@ public class DataBaseQueries{
 		for(int i = 0; i < ppp2.size(); i++){
 			System.out.println(ppp2.get(0).toString());
 		}*/
-		/*
-		int max = dbq.findMaxTrackNo("HT25TW5055273593c875a9898b00");
-		System.out.println(max);*/
+		
+		//int max = dbq.findMaxTrackNo("HT25TW5055273593c875a9898b00");
+		//System.out.println(max)
 		
 		//System.out.println(dbq.readStats());
 		
@@ -240,7 +241,12 @@ public class DataBaseQueries{
 	
 	public int findMaxTrackNo(String PHONE_ID){
 		int max = 0;
-		ArrayList<PhoneDataDB> test = queryTable(PHONE_ID, 'a');
+		ArrayList<? extends DataBaseObject> test;
+		try{
+			test = queryTable(PHONE_ID, 'a');
+		}catch(AmazonServiceException e){
+			test = queryTrackTable(PHONE_ID, 'a');
+		}
 		for(int i = test.size()-1; i > 0; i--){
 			max = test.get(i).getTRACK_NO();
 			if(max != -1){

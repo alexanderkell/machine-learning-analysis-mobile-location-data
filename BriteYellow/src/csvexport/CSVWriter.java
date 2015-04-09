@@ -30,7 +30,7 @@ public class CSVWriter {
 		fw.append("\n");
 	}
 	
-	public void write(String[] data, boolean prep) throws IOException{
+	public void write(String[] data, boolean prepared) throws IOException{
 		
 		for(int i=0; i<data.length; i++){
 			fw.append(data[i]);

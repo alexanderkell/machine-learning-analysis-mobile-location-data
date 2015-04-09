@@ -181,6 +181,7 @@ public class mLearningOptimisation {
 		}
 		return totalTI;
 	}
+	//
 	public static int characteristicType(String phoneID){
 		int type = 0;
 		if(phoneID.contentEquals("HT25TW5055273593c875a9898b00")){

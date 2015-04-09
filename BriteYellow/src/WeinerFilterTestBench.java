@@ -18,8 +18,6 @@ public class main {
 			in1[i] = i+1;
 		}
 				
-		XYPlot plotObj = new XYPlot();
-		plotObj.plot(in1, output, in1, reference, in1, input, "Wiener Filter", "Use of Wiener Filter to remove noise with use of reference signal", "Y-Distance", "X-Distance", "saved2345");
 		
 	}
 }

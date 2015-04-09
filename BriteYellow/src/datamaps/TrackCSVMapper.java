@@ -1,4 +1,4 @@
-package xymaps;
+package datamaps;
 
 import heatmap.HeatChart;
 

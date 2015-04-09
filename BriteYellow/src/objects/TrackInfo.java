@@ -211,7 +211,19 @@ public class TrackInfo extends DataBaseObject {
 				+ "," + STHETAOUT + "," + STHETAINOUT
 				+ "," + TIMEPERSTOP + ","
 				+ TOTAVRGSPEED + "," + TIMESSTOPPEDHERE
-				+ "," + X1 + "," + Y1 + "," + X2 + "," + Y2 + "\n"
+				+ "," + X1 + "," + Y1 + "," + X2 + "," + Y2
+				 ;
+	}
+	
+	public String toCSVNoRef() {
+		return 	PATH_LENGTH + ","
+				+ TIME_STOPPED + "," + NO_STOPS + ","
+				+ TIME_SPENT + "," + INACTIVE_TIME
+				+ "," + STHETACHANGE + "," + STHETAIN
+				+ "," + STHETAOUT + "," + STHETAINOUT
+				+ "," + TIMEPERSTOP + ","
+				+ TOTAVRGSPEED + "," + TIMESSTOPPEDHERE
+				+ "," + X1 + "," + Y1 + "," + X2 + "," + Y2
 				 ;
 	}
 	

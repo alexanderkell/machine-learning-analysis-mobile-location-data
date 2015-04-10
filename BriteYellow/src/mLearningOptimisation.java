@@ -12,6 +12,7 @@ import java.util.Scanner;
 
 import objects.PhoneData;
 import objects.PhoneDataDB;
+import objects.SmartTrackInfo;
 import objects.TrackInfo;
 
 import com.sun.org.apache.bcel.internal.generic.IXOR;
@@ -181,7 +182,7 @@ public class mLearningOptimisation {
 		}
 		return totalTI;
 	}
-	//
+	
 	public static int characteristicType(String phoneID){
 		int type = 0;
 		if(phoneID.contentEquals("HT25TW5055273593c875a9898b00")){
@@ -198,30 +199,25 @@ public class mLearningOptimisation {
 		return type;
 	}
 	
-	public static float[][] getXCoords(ArrayList<TrackInfo> TrackAnalysis){
-		float x[][] = new float[3][TrackAnalysis.size()];
-		for(int i = 0; i<x[0].length; i++){
-			if(TrackAnalysis.get(i).getCharacteristic()==1){
-				x[0][i] = (float) TrackAnalysis.get(i).getNO_STOPS();
-			}else if(TrackAnalysis.get(i).getCharacteristic()==2){
-				x[1][i] = (float) TrackAnalysis.get(i).getNO_STOPS();
-			}else if(TrackAnalysis.get(i).getCharacteristic()==2)
-				x[2][i] = (float) TrackAnalysis.get(i).getNO_STOPS();
+	/**Get coordinates
+	 * 
+	 * @param TrackAnalysis: TrackInfo in ArrayList
+	 * @param property: the attribute name of type double
+	 * @return
+	 */
+	public static float[][] getCoords(ArrayList<TrackInfo> TrackAnalysis, int property){
+		float result[][] = new float[3][TrackAnalysis.size()];
+		for(int i = 0; i<result[0].length; i++){
+			// Convert TrackInfo to SmartTrackInfo
+			SmartTrackInfo sti = new SmartTrackInfo(TrackAnalysis.get(i));
+			if(sti.getInt(SmartTrackInfo.Characteristic)==1){
+				result[0][i] = (float) sti.getDouble(property);
+			}else if(sti.getInt(SmartTrackInfo.Characteristic)==2){
+				result[1][i] = (float) sti.getDouble(property);
+			}else if(sti.getInt(SmartTrackInfo.Characteristic)==3)
+				result[2][i] = (float) sti.getDouble(property);
 		}
-		return x;
-	}
-	
-	public static float[][] getYCoords(ArrayList<TrackInfo> TrackAnalysis){
-		float y[][] = new float[3][TrackAnalysis.size()];
-		for(int i = 0; i<y[0].length; i++){
-			if(TrackAnalysis.get(i).getCharacteristic()==1){
-				y[0][i] = (float) TrackAnalysis.get(i).getPATH_LENGTH();
-			}else if(TrackAnalysis.get(i).getCharacteristic()==2){
-				y[1][i] = (float) TrackAnalysis.get(i).getPATH_LENGTH();
-			}else if(TrackAnalysis.get(i).getCharacteristic()==2)
-				y[2][i] = (float) TrackAnalysis.get(i).getPATH_LENGTH();
-		}
-		return y;
+		return result;
 	}
 	
 }

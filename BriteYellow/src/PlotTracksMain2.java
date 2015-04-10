@@ -23,7 +23,6 @@ import javax.swing.event.ChangeListener;
 import objects.PhoneData;
 import dynamodb.NoSQLDownload;
 import dynamodb.NoSQLDownload.SQLListener;
-import maths.*;
 import graphing.PlotTracks;
 import graphing.TrackChangeListener;
 

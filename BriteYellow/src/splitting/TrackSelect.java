@@ -80,6 +80,22 @@ public class TrackSelect
 			
 		}
 		return pdlist.toArray(new PhoneData[pdlist.size()]);
-		
+	}
+	
+	public static ArrayList<PhoneData> selecter(ArrayList<PhoneData> fn,int select)
+	{
+		ArrayList<PhoneData> pdlist = new ArrayList<PhoneData>();
+		for(int i = 0; i<fn.size(); i++){
+			
+			if(fn.get(i).track_no == select){
+				
+				pdlist.add(fn.get(i));
+				if(fn.get(i).track_no == -1){
+					System.out.println("Hello");
+				}
+			}
+			
+		}
+		return pdlist;
 	}
 }

@@ -1,12 +1,12 @@
 package autoregression;
-import Jama.*;
+import jama.*;
 
 
 /**
  * 
  * class to build an autoregressive model and calculate the AR coefficients
  * This  was found on GitHub as an open source project and I have used it to aid our workflow
- * @author Christian Mšnnig
+ * @author Christian Mï¿½nnig
  *https://github.com/knowing/activity-intensity/blob/master/Intensity/src/importedAlgorithms/AutoRegression.java
  */
 
@@ -142,7 +142,7 @@ public class AutoregressionCalc {
 		   	}
 			
 			Matrix matrix = new Matrix(mat);
-			Matrix coefficients = new Jama.Matrix(order,1);
+			Matrix coefficients = new jama.Matrix(order,1);
 			for(int i=0;i<order;i++){
 				coefficients.set(i, 0, coef[i]);
 			}

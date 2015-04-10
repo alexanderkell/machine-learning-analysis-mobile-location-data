@@ -8,7 +8,9 @@ import dynamodb.DataBaseQueries;
 
 
 public class TrackInfoToCSV {
-
+	
+	final static String FILE_LOCATION = "trackdatafiles/";
+	
 	public static void main(String[] args) throws Exception{
 		writeCSV();
 		writeZonedCSV();
@@ -25,7 +27,6 @@ public class TrackInfoToCSV {
 		ArrayList<TrackInfo> TI = new ArrayList<TrackInfo>();
 		ArrayList<String> TIString = new ArrayList<String>();
 		ArrayList<String> output = new ArrayList<String>();
-		String fileLoc = "trackdatafiles/";
 
 		TIString.add("PHONE_ID ,TRACK_NO,PATH_LENGTH,TIME_STOPPED,NO_STOPS,TIME_SPENT,INACTIVE_TIME,STHETACHANGE,STHETAIN,STHETAOUT,STHETAINOUT,TIMEPERSTOP,TOTAVRGSPEED,TIMESSTOPPEDHERE,X1,Y1,X2,Y2\n");
 		output.add("Businessman,Shopper,Security"+"\n");
@@ -65,10 +66,10 @@ public class TrackInfoToCSV {
 			System.out.println("Done phone: "+ phone_id+".");
 		}
 		
-		csv = new CSVWriter(fileLoc+"input");
+		csv = new CSVWriter(FILE_LOCATION+"input");
 		csv.write(TIString.toArray(new String[TIString.size()]), true);
 		csv.finish();
-		csv = new CSVWriter(fileLoc+"output");
+		csv = new CSVWriter(FILE_LOCATION+"output");
 		csv.write(output.toArray(new String[output.size()]), true);
 		csv.finish();
 		System.out.println("Finished Writing.");
@@ -82,7 +83,6 @@ public class TrackInfoToCSV {
 		ArrayList<TrackInfo> TI = new ArrayList<TrackInfo>();
 		ArrayList<String> TIString = new ArrayList<String>();
 		ArrayList<String> output = new ArrayList<String>();
-		String fileLoc = "trackdatafiles/";
 		String title = "PHONE_ID ,TRACK_NO,PATH_LENGTH,TIME_STOPPED,NO_STOPS,TIME_SPENT,INACTIVE_TIME,STHETACHANGE,STHETAIN,STHETAOUT,STHETAINOUT,TIMEPERSTOP,TOTAVRGSPEED,TIMESSTOPPEDHERE,X1,Y1,X2,Y2";
 		String titlewithout = ",PATH_LENGTH,TIME_STOPPED,NO_STOPS,TIME_SPENT,INACTIVE_TIME,STHETACHANGE,STHETAIN,STHETAOUT,STHETAINOUT,TIMEPERSTOP,TOTAVRGSPEED,TIMESSTOPPEDHERE,X1,Y1,X2,Y2";
 		
@@ -144,10 +144,10 @@ public class TrackInfoToCSV {
 
 		}
 		
-		csv = new CSVWriter(fileLoc+"zonedinput");
+		csv = new CSVWriter(FILE_LOCATION+"zonedinput");
 		csv.write(TIString.toArray(new String[TIString.size()]), true);
 		csv.finish();
-		csv = new CSVWriter(fileLoc+"zonedoutput");
+		csv = new CSVWriter(FILE_LOCATION+"zonedoutput");
 		csv.write(output.toArray(new String[output.size()]), true);
 		csv.finish();
 		System.out.println("Finished Writing.");
@@ -161,7 +161,6 @@ public class TrackInfoToCSV {
 		ArrayList<TrackInfo> TI = new ArrayList<TrackInfo>();
 		ArrayList<String> TIString = new ArrayList<String>();
 		ArrayList<String> output = new ArrayList<String>();
-		String fileLoc = "trackdatafiles/";
 		String title = "PHONE_ID ,TRACK_NO,PATH_LENGTH,TIME_STOPPED,NO_STOPS,TIME_SPENT,INACTIVE_TIME,STHETACHANGE,STHETAIN,STHETAOUT,STHETAINOUT,TIMEPERSTOP,TOTAVRGSPEED,TIMESSTOPPEDHERE";
 		String titlewithout = ",PATH_LENGTH,TIME_STOPPED,NO_STOPS,TIME_SPENT,INACTIVE_TIME,STHETACHANGE,STHETAIN,STHETAOUT,STHETAINOUT,TIMEPERSTOP,TOTAVRGSPEED,TIMESSTOPPEDHERE";
 		
@@ -223,10 +222,10 @@ public class TrackInfoToCSV {
 
 		}
 		
-		csv = new CSVWriter(fileLoc+"zonedinput noXY");
+		csv = new CSVWriter(FILE_LOCATION+"zonedinput noXY");
 		csv.write(TIString.toArray(new String[TIString.size()]), true);
 		csv.finish();
-		csv = new CSVWriter(fileLoc+"zonedoutput noXY");
+		csv = new CSVWriter(FILE_LOCATION+"zonedoutput noXY");
 		csv.write(output.toArray(new String[output.size()]), true);
 		csv.finish();
 		System.out.println("Finished Writing.");

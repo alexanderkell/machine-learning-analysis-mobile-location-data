@@ -10,6 +10,7 @@ import java.util.List;
 import objects.DataBaseObject;
 import objects.PhoneDataDB;
 import objects.TrackInfo;
+import objects.TrackInfoNoXY;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
@@ -46,8 +47,8 @@ public class DataBaseQueries{
 	
 	//view main method in comments for details
 	public static void main(String args[]) throws Exception{
-		//DataBaseQueries dbq = new DataBaseQueries("The_Big_Track_Analysis");
-		/*ArrayList<TrackInfo> ppp2 = dbq.queryTrackTable("HT25TW5055273593c875a9898b00", 1);
+		/*DataBaseQueries dbq = new DataBaseQueries("The_Big_Track_Analysis");
+		ArrayList<TrackInfoNoXY> ppp2 = dbq.queryTrackTableNoXY("HT25TW5055273593c875a9898b00", 1);
 		for(int i = 0; i < ppp2.size(); i++){
 			System.out.println(ppp2.get(i).toString());
 		}*/
@@ -209,6 +210,27 @@ public class DataBaseQueries{
 		return queryresult2;
 		
 	}
+	
+	public ArrayList<TrackInfoNoXY> queryTrackTableNoXY(String phone_id, int track_no){
+		
+		TrackInfoNoXY query = new TrackInfoNoXY();
+		query.setPHONE_ID(phone_id);
+		Condition rangeKeyCondition = new Condition()
+			.withComparisonOperator(ComparisonOperator.EQ.toString())
+			.withAttributeValueList(new AttributeValue().withN(Integer.toString(track_no)));
+			
+		DynamoDBQueryExpression<TrackInfoNoXY> DDBE = new DynamoDBQueryExpression<TrackInfoNoXY>()
+				.withHashKeyValues(query)
+				.withRangeKeyCondition("Track_no", rangeKeyCondition)
+				.withConsistentRead(false);
+			
+		List<TrackInfoNoXY> queryresult = mapper.query(TrackInfoNoXY.class, DDBE, DDB_CONFIG);
+		ArrayList<TrackInfoNoXY> queryresult2 = new ArrayList<TrackInfoNoXY>(queryresult);
+		
+		return queryresult2;
+		
+	}
+	
 	/**
 	 * Scans table for a value of your choice from a chosen column, remember to spell
 	 * it exactly how it appears in the table, refer to DataBase for confirmation

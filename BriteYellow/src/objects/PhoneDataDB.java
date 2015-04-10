@@ -165,19 +165,19 @@ public class PhoneDataDB extends DataBaseObject{
 	
 	@DynamoDBHashKey(attributeName="Phone_ID")
 	public String getPHONE_ID(){
-		return PHONE_ID;
+		return phone_id;
 	}
 	public void setPHONE_ID(String phone_id){
-		this.PHONE_ID = phone_id;
+		this.phone_id = phone_id;
 	}
 	
 	
 	@DynamoDBIndexRangeKey(attributeName= "Track_no", localSecondaryIndexName="Track_no")
 	public int getTRACK_NO(){
-		return TRACK_NO;
+		return track_no;
 	}
 	public void setTRACK_NO(int track_no){
-		this.TRACK_NO = track_no;
+		this.track_no = track_no;
 	}
 	
 	
@@ -189,8 +189,8 @@ public class PhoneDataDB extends DataBaseObject{
 				+ ", rsy=" + rsy + ", rsz=" + rsz + ", modspd=" + modspd
 				+ ", spdtheta=" + spdtheta + ", rax=" + rax + ", ray=" + ray
 				+ ", raz=" + raz + ", modacc=" + modacc + ", acctheta="
-				+ acctheta + ", phone_id=" + PHONE_ID + ", track_no="
-				+ TRACK_NO + "]";
+				+ acctheta + ", phone_id=" + phone_id + ", track_no="
+				+ track_no + "]";
 	}
 	
 	

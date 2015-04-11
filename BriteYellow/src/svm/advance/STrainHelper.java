@@ -55,6 +55,7 @@ public class STrainHelper extends SParam{
 	// svm training and predicting
 	private StrNumConverter snc;
 	private String file_name = new File("").getAbsolutePath()+"/src/svm/models/new";
+	private int[] columns = null;
 	
 	public STrainHelper(String[] str_labels, double[][] train){
 		super();
@@ -78,7 +79,11 @@ public class STrainHelper extends SParam{
 	public svm_model getModel(){
 		return model;
 	}
-	public svm_model svmTrain() throws IOException {
+	public svm_model svmTrain(int... columns) throws IOException {
+		if(columns.length == 0)
+			throw new IllegalArgumentException("Input arguments cannot be null");
+		
+		this.columns = columns;
 	    prob = new svm_problem();
 	    int dataCount = train.length;
 	    total_dots += dataCount;
@@ -86,20 +91,19 @@ public class STrainHelper extends SParam{
 	    prob.l = dataCount;
 	    prob.x = new svm_node[dataCount][];     
 
-	    maxbounds = new double[train[0].length];
-	    minbounds = new double[train[0].length];
+	    maxbounds = new double[columns.length];
+	    minbounds = new double[columns.length];
 	    
 
-	    for (int i = 0; i < dataCount; i++){            
-	        double[] features = train[i];
-	        prob.x[i] = new svm_node[features.length];
-	        for (int j = 0; j < features.length; j++){
-	            svm_node node = new svm_node();
+	    for (int i = 0; i < dataCount; i++){
+	    	prob.x[i] = new svm_node[columns.length];
+	    	for (int j = 0; j < columns.length; j++){
+	    		svm_node node = new svm_node();
 	            node.index = j;
-	            node.value = features[j];
+	            node.value = train[i][columns[j]];
 	            prob.x[i][j] = node;
 	            
-	            // Set the maximum and minimum bounds
+	         // Set the maximum and minimum bounds
 	    	    if(i == 0){
 	    	    	maxbounds[j] = minbounds[j] = node.value;
 	    	    } else {
@@ -111,11 +115,9 @@ public class STrainHelper extends SParam{
 	    	    }
 	        }
 	        prob.y[i] = num_labels[i];
-	        
-			
-	    }                
+	    }
 
-	    System.out.println("Training...");
+	    System.out.println("Training "+ dataCount+" records...");
 	    model = svm.svm_train(prob, super.getParam());
 	    File parent = new File(file_name).getParentFile();
 	    if(!parent.exists()){
@@ -127,11 +129,15 @@ public class STrainHelper extends SParam{
 	    return model;
 	}
 	
-	public double[][] getTrainData(){
-		double[][] result = new double[train.length][2];
+	public double[][] getTrainedData(){
+		if(columns == null || columns.length == 0){
+			throw new NullPointerException("Read training data first using svm_train");
+		}
+		double[][] result = new double[train.length][columns.length];
 		for(int i=0; i<result.length; i++){
-			result[i][0] = train[i][0];
-			result[i][1] = train[i][1];
+			for(int j=0; j<columns.length; j++){
+				result[i][j] = train[i][columns[j]];
+			}
 		}
 		return result;
 	}
@@ -164,8 +170,8 @@ public class STrainHelper extends SParam{
 	 * @param y_dimen Number of dots in the y axis
 	 * @return
 	 */
-	public double[][] generateDots(int x_dimen, int y_dimen){
-		if(maxbounds == null)
+	private double[][] generateDots(int x_dimen, int y_dimen){
+		if(columns == null)
 			throw new NullPointerException("Read training data first, " +
 					"see readTrainData(String input_file_name)");
 
@@ -215,7 +221,7 @@ public class STrainHelper extends SParam{
 	public void plot_graph(final String axis_name1, final String axis_name2, 
 			final CustomChartProgressListener progress_listener){
 		
-		if(train[0].length != 2)
+		if(columns.length != 2)
 			throw new IllegalArgumentException("This plot graph only works with data with 2 axis");
 		
 		final JLabel error_label = new JLabel();
@@ -308,7 +314,7 @@ public class STrainHelper extends SParam{
 					cp.setVisible(false);
 					
 					
-					
+					System.out.println(xymm[0][0]+" "+xymm[0][1]+" "+xymm[1][0]+" "+xymm[1][1]);
 					demo.setAxisRange(xymm[0][0],xymm[0][1],xymm[1][0],xymm[1][1]);
 					Shape shapeCir  = new Ellipse2D.Double(-2.5,-2.5,5,5);
 					    				
@@ -345,7 +351,7 @@ public class STrainHelper extends SParam{
 					dots_drawn = 0;
 					
 					for(int i=0; i<train.length; i++){
-						demo.addData(str_labels[i]+ POINTS, train[i][0], train[i][1]);
+						demo.addData(str_labels[i]+ POINTS, train[i][columns[0]], train[i][columns[1]]);
 						dots_drawn ++;
 					}
 					
@@ -380,6 +386,7 @@ public class STrainHelper extends SParam{
 								timer.cancel();
 								load_frame.setVisible(false);
 								System.out.print("Done plotting graph");
+								
 							}
 						}
 				    };
@@ -417,23 +424,23 @@ public class STrainHelper extends SParam{
 		String[] a = new String[]{"A", "A", "A", "A", "B", "B", "A", "A", "C", "C", "C", "C"};
 		
 		double[][] b = new double[][]{
-				{2, 0},
-				{2, 1},
-				{2, 2},
-				{2, 3},
-				{1, 3},
-				{1, 5},
-				{2, 4},
-				{2, 5},
-				{4, 0},
-				{4, 2},
-				{4, 4},
-				{4, 6}
+				{2, 2, 0},
+				{2, 2, 1},
+				{2, 2, 2},
+				{2, 2, 3},
+				{1, 1, 3},
+				{1, 1, 5},
+				{2, 2, 4},
+				{2, 2, 5},
+				{4, 4, 0},
+				{4, 4, 2},
+				{4, 4, 4},
+				{4, 4, 6}
 		};
 		
 		STrainHelper t = new STrainHelper(a, b);
 		t.setParam(_t, LINEAR);
-		t.svmTrain();
+		t.svmTrain(0,2);
 		t.plot_graph("Axis 1", "Axis 2", null);
 		
 		SPredictHelper h = new SPredictHelper(t.getModelFileName(), t.getSNCFileName());

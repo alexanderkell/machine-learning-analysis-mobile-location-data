@@ -11,6 +11,8 @@ public class SPredictHelper{
 	private svm_model model;
 	private StrNumConverter snc;
 	
+	private int correct = 0;
+	private int total = 0;
 
 	public SPredictHelper(svm_model model, StrNumConverter snc){
 		this.model = model;
@@ -54,6 +56,23 @@ public class SPredictHelper{
 	 */
 	public double predict(svm_node[] x){
 		return svm.svm_predict(model,x);
+	}
+	
+	public String predict(String expected, double[] point){
+		String result = predict(point);
+		if(result.equals(expected))
+			correct++;
+		total++;
+		return result;
+	}
+	public float getAcurracy(){
+		return (float)correct / (float)total;
+	}
+	public int getTotal(){
+		return total;
+	}
+	public int getCorrect(){
+		return correct;
 	}
 	
 }

@@ -9,6 +9,7 @@ import dynamodb.DataBaseQueries;
 
 public class TrackInfoToCSV {
 	
+	final static String TABLE_NAME = "Sample_Track_Set";
 	final static String FILE_LOCATION = "trackdatafiles/";
 	
 	public static void main(String[] args) throws Exception{
@@ -20,7 +21,7 @@ public class TrackInfoToCSV {
 	
 	
 	public static void writeCSV() throws Exception{
-		DataBaseQueries DBQ = new DataBaseQueries("The_Big_Track_Analysis");
+		DataBaseQueries DBQ = new DataBaseQueries(TABLE_NAME);
 		String phone_id;
 		PhoneNames pn = new PhoneNames();
 		CSVWriter csv;
@@ -66,17 +67,17 @@ public class TrackInfoToCSV {
 			System.out.println("Done phone: "+ phone_id+".");
 		}
 		
-		csv = new CSVWriter(FILE_LOCATION+"input");
+		csv = new CSVWriter(TABLE_NAME+"/"+FILE_LOCATION+"input");
 		csv.write(TIString.toArray(new String[TIString.size()]), true);
 		csv.finish();
-		csv = new CSVWriter(FILE_LOCATION+"output");
+		csv = new CSVWriter(TABLE_NAME+"/"+FILE_LOCATION+"output");
 		csv.write(output.toArray(new String[output.size()]), true);
 		csv.finish();
 		System.out.println("Finished Writing.");
 	}
 	
 	public static void writeZonedCSV() throws Exception{
-		DataBaseQueries DBQ = new DataBaseQueries("The_Big_Track_Analysis");
+		DataBaseQueries DBQ = new DataBaseQueries(TABLE_NAME);
 		String phone_id;
 		PhoneNames pn = new PhoneNames();
 		CSVWriter csv;
@@ -144,17 +145,17 @@ public class TrackInfoToCSV {
 
 		}
 		
-		csv = new CSVWriter(FILE_LOCATION+"zonedinput");
+		csv = new CSVWriter(TABLE_NAME+"/"+FILE_LOCATION+"zonedinput");
 		csv.write(TIString.toArray(new String[TIString.size()]), true);
 		csv.finish();
-		csv = new CSVWriter(FILE_LOCATION+"zonedoutput");
+		csv = new CSVWriter(TABLE_NAME+"/"+FILE_LOCATION+"zonedoutput");
 		csv.write(output.toArray(new String[output.size()]), true);
 		csv.finish();
 		System.out.println("Finished Writing.");
 	}
 	
 	public static void writeZonedCSVNoXY() throws Exception{
-		DataBaseQueries DBQ = new DataBaseQueries("The_Big_Track_Analysis");
+		DataBaseQueries DBQ = new DataBaseQueries(TABLE_NAME);
 		String phone_id;
 		PhoneNames pn = new PhoneNames();
 		CSVWriter csv;
@@ -222,10 +223,10 @@ public class TrackInfoToCSV {
 
 		}
 		
-		csv = new CSVWriter(FILE_LOCATION+"zonedinput noXY");
+		csv = new CSVWriter(TABLE_NAME+"/"+FILE_LOCATION+"zonedinput noXY");
 		csv.write(TIString.toArray(new String[TIString.size()]), true);
 		csv.finish();
-		csv = new CSVWriter(FILE_LOCATION+"zonedoutput noXY");
+		csv = new CSVWriter(TABLE_NAME+"/"+FILE_LOCATION+"zonedoutput noXY");
 		csv.write(output.toArray(new String[output.size()]), true);
 		csv.finish();
 		System.out.println("Finished Writing.");

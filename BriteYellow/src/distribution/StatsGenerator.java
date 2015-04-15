@@ -444,12 +444,12 @@ public class StatsGenerator extends ProbabilityList{
 					result += getDistanceBetween(i) * fraction;
 			} else if(property == TIME_STOPPED){
 				if(fraction > 0){
-					if(stopsindex.contains(i))
+					if(stopsindex.contains(new Integer(i)))
 						result += getTimeBetweenValue(i);
 				}
 			} else if(property == NO_STOPS){
 				if(fraction > 0){
-					if(stopsindex.contains(i)){
+					if(stopsindex.contains(new Integer(i))){
 						if(!was_still){
 							result ++;
 							was_still = true;

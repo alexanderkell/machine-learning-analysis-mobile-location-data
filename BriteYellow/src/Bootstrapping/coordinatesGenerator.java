@@ -92,13 +92,13 @@ public class coordinatesGenerator {
 	public ArrayList<Coordinates> createPoint(ArrayList<Coordinates> last, double newX, double newY){
 		Coordinates co = new Coordinates();
 		
-		double time = last.get(last.size()-1).timestamp;
+		Timestamp time = last.get(last.size()-1).timestamp;
 		double x = last.get(last.size()-1).x;
 		double y = last.get(last.size()-1).y;
 
 		double x_new = x+newX;
 		double y_new = y+newY;
-		double time_new = time+1;
+		Timestamp time_new = time+1;
 		
 		if(y_new < 302 || y_new > 364){ //Reflect if bigger than shop
 			// x_new = x-newX;

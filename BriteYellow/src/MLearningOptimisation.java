@@ -78,17 +78,17 @@ public class MLearningOptimisation {
 		MLearningOptimisation ml = new MLearningOptimisation(speed, xkalm, ykalm, Interp);
 		
 		ArrayList<TrackInfo> data = ml.queryAndProcess();
-		
+		/*
 		float[][] x =getCoords(data, SmartTrackInfo.TOTAVRGSPEED);
 		float[][] y = getCoords(data, SmartTrackInfo.NO_STOPS);
 		
 		xyScatterP plot = new xyScatterP();
 		plot.plot(x, y, "Total Average Speed vs Number of Stops", "Total Average Speed vs Number of Stops", "Total Average Speed", "Number of Stops", "plot");
+		*/
 		
 		
-		
-		//ArrayList<TrackInfo> toWrite = ml.queryAndProcess();
-		//ml.writeToDB(toWrite);
+		ArrayList<TrackInfo> toWrite = ml.queryAndProcess();
+		ml.writeToDB(toWrite);
 		
 
 				
@@ -187,8 +187,8 @@ public class MLearningOptimisation {
 	
 	public void writeToDB(ArrayList<TrackInfo> TrackAnalysis) throws Exception{
 		DataBaseOperations DBO = new DataBaseOperations("The_Big_Track_Analysis");
-		//DBO.deleteTable();
-		//DBO.createTracksTable();
+		DBO.deleteTable();
+		DBO.createTracksTable();
 		System.out.println("Writing to Database");
 		DBO.batchWrite(TrackAnalysis);
 		System.out.println("Write complete");
@@ -254,6 +254,15 @@ public class MLearningOptimisation {
 							TI.setTRACK_NO(i);
 						else
 							TI.setTRACK_NO(-1);
+						if(Double.isFinite(statGen.getTotalAverage(StatsGenerator.PATH_PER_SHORTEST_PATH, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1])))
+							TI.setPathPerShortest(statGen.getTotalAverage(StatsGenerator.PATH_PER_SHORTEST_PATH, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
+						else
+							TI.setPathPerShortest(0);
+						if(Double.isFinite(statGen.getTotalAverage(StatsGenerator.SHORTEST_PATH_LENGTH, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1])))
+							TI.setTimePerShortest(statGen.getTotalAverage(StatsGenerator.SHORTEST_PATH_LENGTH, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
+						else
+							TI.setTimePerShortest(0);
+						
 						TI.setX1(xbounds[j]);
 						TI.setX2(xbounds[j+1]);
 						TI.setY1(ybounds[k]);

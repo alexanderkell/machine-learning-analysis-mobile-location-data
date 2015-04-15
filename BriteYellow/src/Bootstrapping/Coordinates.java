@@ -1,10 +1,12 @@
 package Bootstrapping;
 
+import java.sql.Timestamp;
+
 public class Coordinates {
 	
 	double x;
 	double y;
-	double timestamp;
+	Timestamp timestamp;
 	int character;
 	
 	public double getX() {
@@ -19,10 +21,10 @@ public class Coordinates {
 	public void setY(double y) {
 		this.y = y;
 	}
-	public double getTimestamp() {
+	public Timestamp getTimestamp() {
 		return timestamp;
 	}
-	public void setTimestamp(double timestamp) {
+	public void setTimestamp(Timestamp timestamp) {
 		this.timestamp = timestamp;
 	}
 	public int getCharacter() {

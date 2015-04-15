@@ -9,6 +9,8 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIndexRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
+import distribution.StatsGenerator;
+
 @DynamoDBTable(tableName = "REPLACED_BY_VALUE_IN_PROPERTIES_FILE")
 public class TrackInfo extends DataBaseObject {
 	
@@ -25,12 +27,26 @@ public class TrackInfo extends DataBaseObject {
 	private double timePerStop;
 	private double totAvrgSpeed;
 	private double timesStoppedHere;
+	private double pathPerShortest;
+	private double timePerShortest;
 	private double x1;
 	private double y1;
 	private double x2;
 	private double y2;
 	private int characteristic;
-	
+
+	public double getPathPerShortest() {
+		return pathPerShortest;
+	}
+	public void setPathPerShortest(double pathPerShortest) {
+		this.pathPerShortest = pathPerShortest;
+	}
+	public double getTimePerShortest() {
+		return timePerShortest;
+	}
+	public void setTimePerShortest(double timePerShortest) {
+		this.timePerShortest = timePerShortest;
+	}
 	@DynamoDBAttribute (attributeName = "Characteristic")
 	public int getCharacteristic() {
 		return characteristic;
@@ -192,15 +208,16 @@ public class TrackInfo extends DataBaseObject {
 	}
 	@Override
 	public String toString() {
-		return "TrackInfo [PATH_LENGTH=" + pathLength + ", TIME_STOPPED="
-				+ timeStopped + ", NO_STOPS=" + noStops + ", TIME_SPENT="
-				+ timeSpent + ", INACTIVE_TIME=" + inactiveTime
-				+ ", STHETACHANGE=" + sThetaChange + ", STHETAIN=" + sThetaIn
-				+ ", STHETAOUT=" + sThetaOut + ", STHETAINOUT=" + sThetaInOut
-				+ ", TIMEPERSTOP=" + timePerStop + ", TOTAVRGSPEED="
-				+ totAvrgSpeed + ", TIMESSTOPPEDHERE=" + timesStoppedHere
-				+ ", X1=" + x1 + ", Y1=" + y1 + ", X2=" + x2 + ", Y2=" + y2
-				+ ", PHONE_ID=" + phone_id + ", TRACK_NO=" + track_no + "]";
+		return "TrackInfo [id=" + id + ", pathLength=" + pathLength
+				+ ", timeStopped=" + timeStopped + ", noStops=" + noStops
+				+ ", timeSpent=" + timeSpent + ", inactiveTime=" + inactiveTime
+				+ ", sThetaChange=" + sThetaChange + ", sThetaIn=" + sThetaIn
+				+ ", sThetaOut=" + sThetaOut + ", sThetaInOut=" + sThetaInOut
+				+ ", timePerStop=" + timePerStop + ", totAvrgSpeed="
+				+ totAvrgSpeed + ", timesStoppedHere=" + timesStoppedHere
+				+ ", pathPerShortest=" + pathPerShortest + ", timePerShortest="
+				+ timePerShortest + ", x1=" + x1 + ", y1=" + y1 + ", x2=" + x2
+				+ ", y2=" + y2 + ", characteristic=" + characteristic + "]";
 	}
 	
 	public String toCSV() {

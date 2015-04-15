@@ -1,6 +1,6 @@
 package filters.jkalman;
 
-import jama.Matrix;
+import Jama2.Matrix;
 
 import java.util.ArrayList;
 

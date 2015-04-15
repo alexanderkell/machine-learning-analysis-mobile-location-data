@@ -10,7 +10,6 @@ import java.util.List;
 import objects.DataBaseObject;
 import objects.PhoneDataDB;
 import objects.TrackInfo;
-import objects.TrackInfoNoXY;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
@@ -206,26 +205,6 @@ public class DataBaseQueries{
 			
 		List<TrackInfo> queryresult = mapper.query(TrackInfo.class, DDBE, DDB_CONFIG);
 		ArrayList<TrackInfo> queryresult2 = new ArrayList<TrackInfo>(queryresult);
-		
-		return queryresult2;
-		
-	}
-	
-	public ArrayList<TrackInfoNoXY> queryTrackTableNoXY(String phone_id, int track_no){
-		
-		TrackInfoNoXY query = new TrackInfoNoXY();
-		query.setPHONE_ID(phone_id);
-		Condition rangeKeyCondition = new Condition()
-			.withComparisonOperator(ComparisonOperator.EQ.toString())
-			.withAttributeValueList(new AttributeValue().withN(Integer.toString(track_no)));
-			
-		DynamoDBQueryExpression<TrackInfoNoXY> DDBE = new DynamoDBQueryExpression<TrackInfoNoXY>()
-				.withHashKeyValues(query)
-				.withRangeKeyCondition("Track_no", rangeKeyCondition)
-				.withConsistentRead(false);
-			
-		List<TrackInfoNoXY> queryresult = mapper.query(TrackInfoNoXY.class, DDBE, DDB_CONFIG);
-		ArrayList<TrackInfoNoXY> queryresult2 = new ArrayList<TrackInfoNoXY>(queryresult);
 		
 		return queryresult2;
 		

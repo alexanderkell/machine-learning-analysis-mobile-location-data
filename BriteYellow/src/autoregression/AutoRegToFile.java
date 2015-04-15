@@ -29,16 +29,17 @@ public class AutoRegToFile {
 		}*/
 		CSVWriter CSV;
 		double[] r;
-		final int ORDER = 5;
+		final int ORDER = 10;
 		ArrayList<PhoneData> PDAL;
 		ArrayList<PhoneData> PDAL2;
 		DataBaseQueries DBQ = new DataBaseQueries("Processed_Data");
 		String phone_id;
 		PhoneNames PN = new PhoneNames();
 		int max;
-		String attributes;
+		String coefficients = new String();
+		String attributes = new String();
 		ArrayList<String> att = new ArrayList<String>();
-		final char P1 = 'a';
+		final char P1 = 'p';
 		final char P2 = 'x';
 		String behaviour = "0,0,0\n";
 		ArrayList<String> output = new ArrayList<String>();
@@ -79,7 +80,11 @@ public class AutoRegToFile {
 				ARDF.setOrder(ORDER);
 				r = ARDF.runAR();
 				try{
-					attributes = phone_id + "," + i + "," + r[0]+ "," + r[1] +"," + r[2] +"," + r[3] + "," + r[4] + "\n";
+					coefficients = ","+r[0]; 
+					for(int j = 1; j<ORDER; j++){
+						coefficients += ","+r[j];
+					}
+					attributes = phone_id + "," + i + coefficients + "\n";
 					att.add(attributes);
 					output.add(behaviour);
 					
@@ -106,10 +111,10 @@ public class AutoRegToFile {
 		    System.out.print(value);
 		}
 		
-		CSV = new CSVWriter(FILE_LOCATION + P1 + " vs " + P2);
+		CSV = new CSVWriter(FILE_LOCATION + "measured parameter= " + P1 + " in the= " + P2 + " order= " + ORDER);
 		CSV.write(att.toArray(new String[att.size()]), true);
 		CSV.finish();
-		CSV = new CSVWriter(FILE_LOCATION+"output");
+		CSV = new CSVWriter(FILE_LOCATION + "output" + " measured parameter= " + P1 + " in the= " + P2  + " order= " + ORDER);
 		CSV.write(output.toArray(new String[output.size()]), true);
 		CSV.finish();
 		System.out.println("Finished Writing.");

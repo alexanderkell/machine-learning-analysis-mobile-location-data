@@ -227,6 +227,26 @@ public class TrackInfo extends DataBaseObject {
 				 ;
 	}
 	
+	public String toCSVNoXY() {
+		return phone_id + "," + track_no + "," + pathLength + ","
+				+ timeStopped + "," + noStops + ","
+				+ timeSpent + "," + inactiveTime
+				+ "," + sThetaChange + "," + sThetaIn
+				+ "," + sThetaOut + "," + sThetaInOut
+				+ "," + timePerStop + ","
+				+ totAvrgSpeed + "," + timesStoppedHere;
+	}
+	
+	public String toCSVNoXYNoRef() {
+		return pathLength + ","
+				+ timeStopped + "," + noStops + ","
+				+ timeSpent + "," + inactiveTime
+				+ "," + sThetaChange + "," + sThetaIn
+				+ "," + sThetaOut + "," + sThetaInOut
+				+ "," + timePerStop + ","
+				+ totAvrgSpeed + "," + timesStoppedHere;
+	}
+	
 	
 
 }

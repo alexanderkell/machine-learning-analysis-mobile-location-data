@@ -1,6 +1,5 @@
-package jama;
+package Jama2;
 
-import jama.util.Maths;
 
 import java.text.NumberFormat;
 import java.text.DecimalFormat;
@@ -11,6 +10,8 @@ import java.util.Locale;
 import java.io.PrintWriter;
 import java.io.BufferedReader;
 import java.io.StreamTokenizer;
+
+import Jama2.util.Maths;
 
 /**
    Jama = Java Matrix class.
@@ -808,7 +809,7 @@ Matrix implements Cloneable, java.io.Serializable {
 
     /**LU Decomposition
      * @return LUDecomposition
-     * @see jama.LUDecomposition
+     * @see Jama2.LUDecomposition
      */
     public
 
@@ -818,7 +819,7 @@ Matrix implements Cloneable, java.io.Serializable {
 
     /**QR Decomposition
      * @return QRDecomposition
-     * @see jama.QRDecomposition
+     * @see Jama2.QRDecomposition
      */
     public
 
@@ -828,7 +829,7 @@ Matrix implements Cloneable, java.io.Serializable {
 
     /**Cholesky Decomposition
      * @return CholeskyDecomposition
-     * @see jama.CholeskyDecomposition
+     * @see Jama2.CholeskyDecomposition
      */
     public
 
@@ -838,7 +839,7 @@ Matrix implements Cloneable, java.io.Serializable {
 
     /**Singular Value Decomposition
      * @return SingularValueDecomposition
-     * @see jama.SingularValueDecomposition
+     * @see Jama2.SingularValueDecomposition
      */
     public
 
@@ -848,7 +849,7 @@ Matrix implements Cloneable, java.io.Serializable {
 
     /**Eigenvalue Decomposition
      * @return EigenvalueDecomposition
-     * @see jama.EigenvalueDecomposition
+     * @see Jama2.EigenvalueDecomposition
      */
     public
 

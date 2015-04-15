@@ -4,12 +4,12 @@ package objects;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
-
+/** A class for storing the attributes of a position data on a track
+ * 
+ *
+ */
 public class PhoneData implements Serializable{
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -3688773816761833405L;
 
 	//position x,y,z

@@ -1,4 +1,4 @@
-package jama.util;
+package Jama2.util;
 
 public class Maths {
    /** sqrt(a^2 + b^2) without under/overflow. **/

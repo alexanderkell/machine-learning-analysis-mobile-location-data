@@ -1,4 +1,4 @@
-package jama;
+package Jama2;
 
    /** Cholesky Decomposition.
    <P>

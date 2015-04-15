@@ -1,6 +1,7 @@
 package svm.advance;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import comirva.util.*;
 
@@ -19,7 +20,7 @@ public class MainTestBench {
 	// For PCA analysis
 	final static int pca_dimension = 6;
 	final static int[] pca_columns = new int[]{
-			3,6
+			2,4
 	};
 	// 1,3
 	// For normal analysis
@@ -61,17 +62,33 @@ public class MainTestBench {
 				pca_result2[i][j+1] = pca_result[i][j];
 			}
 		}
-		System.out.println(types.length);
+		System.out.println("Number of records to be trained: "+types.length);
+		
+		// For filtering points with non-wanted values
+		ArrayList<String> alString = new ArrayList<String>();
+		ArrayList<double[]> al = new ArrayList<double[]>();
+		for(int i = 0; i < pca_result2.length; i++){
+			if(!(pca_result2[i][columns[0]] > -17  && 
+					pca_result2[i][columns[1]] > -65 && 
+					pca_result2[i][columns[1]] < 42)){
+					
+				alString.add(types[i]);
+				al.add(pca_result2[i]);
+				
+			}
+		}
 		
 		STrainHelper sth = new STrainHelper(types, pca_result2);
-		sth.setParam(STrainHelper._t, STrainHelper.RBF);
+//		STrainHelper sth = new STrainHelper(alString.toArray(new String[alString.size()]), al.toArray(new double[al.size()][]));
+
+		sth.setParam(STrainHelper._t, STrainHelper.LINEAR);
 		sth.setParam(STrainHelper._h, 0);
 		sth.svmTrain(columns);
 		
 		
 		// For plotting hyperplanes
 //		String[] headers = tir.getHeaders();
-		sth.plot_graph("PCA analysis of tracks from ("+xy[0][0]+","+xy[0][1]+") to ("+xy[1][0]+","+xy[1][1]+")" ,"PCA column "+String.valueOf(columns[0]), "PCA column "+String.valueOf(columns[1]), null);
+		sth.plot_graph("PCA analysis ("+ pca_dimension +" dimensions) of tracks from ("+xy[0][0]+","+xy[0][1]+") to ("+xy[1][0]+","+xy[1][1]+")" ,"PCA column "+String.valueOf(columns[0]), "PCA column "+String.valueOf(columns[1]), null);
 	}
 	
 	public static void plot(String[] types, double[][] data, TrackInfoReader tir) throws IOException{

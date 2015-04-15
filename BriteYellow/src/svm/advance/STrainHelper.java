@@ -193,7 +193,7 @@ public class STrainHelper extends SParam{
 			for(int j=0; j<y_dimen; j++){
 				result[i*y_dimen +j ][0] = xcur;
 				result[i*y_dimen +j ][1] = ycur;
-				ycur-=yinc;	//increment y
+				ycur-=yinc;	//decrement y
 			}
 			xcur+=xinc;	//increment x
 			ycur = ymax;	//reset y
@@ -225,7 +225,7 @@ public class STrainHelper extends SParam{
 		
 		if(columns.length != 2)
 			throw new IllegalArgumentException("This plot graph only works with data with 2 axis");
-		
+		System.out.println("Plotting graph...");
 		final JLabel error_label = new JLabel();
 		final Thread b = new Thread(){
 			final JFrame load_frame = new JFrame("Plotting graph...");

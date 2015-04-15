@@ -8,6 +8,7 @@ import objects.PhoneData;
 public class StatsGenerator extends ProbabilityList{
 
 	public final static int PATH_LENGTH = 100;
+	public final static int SHORTEST_PATH_LENGTH = 101;
 	public final static int TIME_STOPPED = 110;
 	public final static int NO_STOPS = 111;
 	
@@ -23,6 +24,8 @@ public class StatsGenerator extends ProbabilityList{
 	
 	public final static int TIME_PER_STOP = 210;
 	public final static int FREQ_IN_AREA = 250;
+	public final static int PATH_PER_SHORTEST_PATH = 260;	// PATH_LENGTH / SHORTEST_PATH_LENGTH
+	public final static int TIME_PER_SHORTEST_PATH = 270;	// TIME_SPENT / SHORTEST_PATH_LENGTH
 	
 	final static int XSTILL = 30;	//Max x distance for determining whether
 									// the person is staying still
@@ -195,9 +198,11 @@ public class StatsGenerator extends ProbabilityList{
 	 */
 	public double getTotalAverage(int property, double xstart, double xend, double ystart, double yend){
 		if(property == TIME_PER_STOP){
+			// Get the number of stops
 			double stops = getTotalAverage(NO_STOPS, xstart, xend, ystart, yend);
 			if(stops == 0)
 				return 0;
+			// Get and return time_stopped / no_of_stops
 			return getTotalAverage(TIME_STOPPED, xstart, xend, ystart, yend) /
 					stops;
 			
@@ -210,14 +215,25 @@ public class StatsGenerator extends ProbabilityList{
 			}
 			
 		} else if(property == AVERAGE_SPEED){
+			// Get the time_spent
 			double time = getTotalAverage(TIME_SPENT, xstart, xend, ystart, yend);
 			if(time == 0)
 				return 0;
+			// Get and return path_length / time_spent
 			return getTotalAverage(PATH_LENGTH, xstart, xend, ystart, yend) /
 					time;
+		} else if(property == PATH_PER_SHORTEST_PATH || property == TIME_PER_SHORTEST_PATH){
+			// Get the shortest_path
+			double shortest_path = getTotalAverage(SHORTEST_PATH_LENGTH, xstart, xend, ystart, yend);
+			if(shortest_path == 0)
+				return 0;
+			// Get and return either path_length / shortest_path or time_spent / shortest_path
+			return getTotalAverage(property, xstart, xend, ystart, yend) / 
+					shortest_path;
 			
 		} else if(property == PATH_LENGTH || property == TIME_SPENT || property == INACTIVE_TIME ||
-				property == NO_STOPS || property == TIME_STOPPED || property == STHETACHANGE){
+				property == NO_STOPS || property == TIME_STOPPED || property == STHETACHANGE ||
+				property == SHORTEST_PATH_LENGTH){
 			double[] p1 = get(property, xstart, xend, ystart, yend);
 			double p1total = 0;
 			
@@ -401,6 +417,8 @@ public class StatsGenerator extends ProbabilityList{
 		boolean was_in = false; // Show whether the ending point of the previous path segment was in the wanted area
 		boolean was_still = false; //Show whether the person was standing still at the previous point
 		double result = 0;	// variable for storing the results of property
+		
+		double[] firstpoint = null;
 		final int starting_index = 2;
 		for(int i=starting_index; i<length; i++){
 			double x1 = getXYZValue(i-1)[0];
@@ -416,7 +434,9 @@ public class StatsGenerator extends ProbabilityList{
 				// If the ending point of the last path segment (or starting point of current
 				// path segment) is inside the area the following function will return 1.0
 				is_in = (getIntersectFraction(x1,x1,y1,y1, xstart,xend,ystart,yend) == 1.0);
-				was_in = is_in;
+				// ****** changed was_in = is_in to was_in = false
+				//was_in = is_in;
+				was_in = false;
 			}
 //			System.out.println(fraction);
 			if(property == PATH_LENGTH){
@@ -424,12 +444,12 @@ public class StatsGenerator extends ProbabilityList{
 					result += getDistanceBetween(i) * fraction;
 			} else if(property == TIME_STOPPED){
 				if(fraction > 0){
-					if(stopsindex.contains(i))
+					if(stopsindex.contains(new Integer(i)))
 						result += getTimeBetweenValue(i);
 				}
 			} else if(property == NO_STOPS){
 				if(fraction > 0){
-					if(stopsindex.contains(i)){
+					if(stopsindex.contains(new Integer(i))){
 						if(!was_still){
 							result ++;
 							was_still = true;
@@ -456,6 +476,22 @@ public class StatsGenerator extends ProbabilityList{
 			} else if(property == STHETAOUT){
 				if(is_in && fraction > 0)
 					result = getSThetaValue(i);
+			} else if(property == SHORTEST_PATH_LENGTH){
+				if(is_in && !was_in){
+					firstpoint = super.getXYZValue(i);
+				} else if(was_in && !is_in){
+					double[] lastpoint = super.getXYZValue(i);
+					if(firstpoint == null)
+						System.err.println("Oops :( something unexpected has occured (line 470 - StatsGenerator)");
+					// Calculate the modulus distance between the first and last point
+					// 1. calculate the sum of square of x y z distance between 
+					for(int d = 0; d < lastpoint.length; d++){
+						double diff = lastpoint[i] - firstpoint[i];
+						result += diff*diff;
+					}
+					// 2. square root the result
+					result = Math.sqrt(result);
+				}
 			} else
 				throw new IllegalArgumentException("Invalid property argument");
 			

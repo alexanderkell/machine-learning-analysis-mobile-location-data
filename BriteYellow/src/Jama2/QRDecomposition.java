@@ -1,6 +1,6 @@
-package jama;
+package Jama2;
 
-import jama.util.Maths;
+import Jama2.util.Maths;
 
 /** QR Decomposition.
 <P>

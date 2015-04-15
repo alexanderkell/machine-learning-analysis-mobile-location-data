@@ -120,6 +120,7 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 	private int col;
 	private PlotHelper plot;
 	private JFrame frame;
+	private JProgressBar durationbar;
 	
 	// For the change track functions
 	private int max_tracks;
@@ -306,8 +307,8 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		jlabelB.setFont(labelFont);
 		jlabelB.setText("Track "+current_track+" / "+max_tracks+" ("+
 				before[0].ts.toString()+" - "+before[before.length-1].ts.toString()+")");
-
-
+		
+		
 		jbutton4 = new JButton("|<<");
 		jbutton5 = new JButton(">>|");
 		
@@ -445,6 +446,8 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		jpb = new JProgressBar();	//ProgressBar for showing the current time
 		jpb.setStringPainted(true);
 		jpb.setFont(labelFont);
+		
+		
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 
@@ -475,8 +478,16 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 			subpanel2.add(Box.createHorizontalStrut(5));
 			subpanel2.add(jlabel3);
 		}
+		
+		durationbar = new JProgressBar();
+		durationbar.setPreferredSize(new Dimension(durationbar.getWidth(), 4));
+		durationbar.setForeground(new Color(50,50,255));
+		durationbar.setBorderPainted(false);
+		
+		panel.add(durationbar);
 		panel.add(subpanel2);
 		panel.add(subpanel1);
+		
 		jpb.setForeground(new Color(100,100,255));
 		jpb.setBackground(Color.WHITE);
 		jpb.setBorder(BorderFactory.createLineBorder(subpanel2.getBackground()));
@@ -486,40 +497,11 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		      protected Color getSelectionForeground() { return Color.WHITE; }
 		    });
 		
-		final TimerEventsListener tel = new TimerEventsListener(){
-
-			@Override
-			public void currentTimeUpdated(Timestamp curr_time, int percent) {
-				// TODO Auto-generated method stub
-				// Set current time
-				jpb.setString(curr_time.toString());
-				jpb.setValue(percent);
-				jpb.revalidate();
-				jpb.repaint();
-			}
-
-			@Override
-			public void pointsUpdated(int index) {
-				// TODO Auto-generated method stub
-				if(index<before.length - 1){
-					jlabel3.setText(before[index+1].ts.toString());
-				}
-				jlabel1.setText("Point "+(index+1)+" / "+before.length);
-				jlabel2.setText(before[index].ts.toString());
-			}
-
-			@Override
-			public void timerStopped() {
-				// TODO Auto-generated method stub
-				timer.cancel();
-				paused = true;
-				jbutton1.setText(PLAYSYMBOL);
-				jbutton1.setToolTipText("Play from beginning (space)");
-				jlabelA.setText(STOP);
-			}
-		};
-		
+	
+		TimerEventsListener tel = setupTEL();
 		tl = new TimeLine(before, after, (int)(100/period), tel, row, col, label[0], label[1], label[2], label[3]);
+
+		
 		// Get and configure the plot
 		plot = tl.getPlot();
 		plot.setSeriesRenderingOrder(false);
@@ -567,6 +549,9 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		jbutton1.addActionListener(this);
 		jbutton2.addMouseListener(this);
 		jbutton3.addMouseListener(this);
+		
+
+		
 		// Pack the frame again in case something doesn't fit well in the frame
 		frame.pack();
 		frame.addKeyListener(this);
@@ -577,32 +562,22 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		play();
 	}
 
-
-	/**To be called from the updateTrackLabel() method only
-	 * 
-	 * @param before	PhoneData before filtering
-	 * @param after		PhoneData after filtering
-	 */
-	private void changeTrack(final PhoneData[] before, final PhoneData[] after){
-	
-		// For the pop up dialog
-		SpinnerModel spinnerModel =
-		         new SpinnerNumberModel(1, //initial value
-		            1, //min
-		            before.length, //max
-		            1);//step
-		jspinner1.setModel(spinnerModel);
-		jlabel5.setText(" / "+before.length);
+	private TimerEventsListener setupTEL(){
 		final TimerEventsListener tel = new TimerEventsListener(){
-
+			
 			@Override
 			public void currentTimeUpdated(Timestamp curr_time, int percent) {
 				// TODO Auto-generated method stub
 				// Set current time
+				
 				jpb.setString(curr_time.toString());
 				jpb.setValue(percent);
 				jpb.revalidate();
 				jpb.repaint();
+				
+				long duration = tl.getEndTime() - tl.getStartTime();
+				long elasped = tl.getCurrentTime() - tl.getStartTime();
+				durationbar.setValue((int) (elasped*100/duration));
 			}
 
 			@Override
@@ -626,7 +601,27 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 			}
 		};
 		
+//		tl = new TimeLine(before, after, (int)(100/period), tel, row, col, label[0], label[1], label[2], label[3]);
+		return tel;
 		
+	}
+	/**To be called from the updateTrackLabel() method only
+	 * 
+	 * @param before	PhoneData before filtering
+	 * @param after		PhoneData after filtering
+	 */
+	private void changeTrack(final PhoneData[] before, final PhoneData[] after){
+		this.before = before;
+		// For the pop up dialog
+		SpinnerModel spinnerModel =
+		         new SpinnerNumberModel(1, //initial value
+		            1, //min
+		            before.length, //max
+		            1);//step
+		jspinner1.setModel(spinnerModel);
+		jlabel5.setText(" / "+before.length);
+		TimerEventsListener tel = setupTEL();
+
 		for(int i = 0; i<label.length; i++)
 			plot.clearData(label[i]);
 		// Pause the player if it is currently playing otherwise the old data will keep playing, causing unpredictable behaviour
@@ -634,7 +629,6 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 			playOrPause(true);
 		tl = new TimeLine(before, after, (int)(100/period), tel, row, col, label[0], label[1], label[2], label[3], plot);
 		tl.setCurrentPoint(before.length-1);
-		
 	}
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
@@ -1094,6 +1088,12 @@ class TimeLine{
 	public long getCurrentTime(){
 		return current_time;
 	}
+	public long getStartTime(){
+		return before[0].ts.getTime();
+	}
+	public long getEndTime(){
+		return before[before.length-1].ts.getTime();
+	}
 	public int getCurrentPoint(){
 		//If the first point hasn't been plotted (i.e. index = -1), set index = 0
 		return ibefore == 0 ? 0 : ibefore-1;
@@ -1130,10 +1130,15 @@ class TimeLine{
 				etel.pointsUpdated(ibefore);
 				
 				// Get the attributes
-				Double r = PlotTracks.getAttributeDouble(before[ibefore], row);	  
-				Double c = PlotTracks.getAttributeDouble(before[ibefore], col);
+				double r = PlotTracks.getAttributeDouble(before[ibefore], row);	  
+				double c = PlotTracks.getAttributeDouble(before[ibefore], col);
 				plot.addData(labels[0], r, c);
-				ibefore++;
+/*				if(!before[ibefore].interpolated){
+					String[] splitted_date = before[ibefore].ts.toString().split("-| ");
+					String mod_date = splitted_date[2]+"/"+splitted_date[1]+"/"+splitted_date[0]+" "+splitted_date[3];
+					System.out.println((int)r+","+(int)c+","+"0,"+ mod_date +","+before[ibefore].phone_id);
+				}
+*/				ibefore++;
 				
 				// Find out if the track has reached an end (for estimating new position purposes)
 				finished = ibefore == before.length;

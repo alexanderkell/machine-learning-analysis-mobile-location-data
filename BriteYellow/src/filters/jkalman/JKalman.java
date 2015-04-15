@@ -11,7 +11,7 @@
 
 package filters.jkalman;
 
-import jama.Matrix;
+import Jama2.Matrix;
 
 /**
  * Kalman filter (state).

@@ -40,6 +40,7 @@ public class TrackInfoToCSV {
 			System.out.println("Querying phone: "+ phone_id);
 			TI = DBQ.queryTrackTable(phone_id, 'a');
 			
+			
 			//Businessman,Shopper,Security
 			if(phone_id.equalsIgnoreCase("TA92903URNf067ff16fcf8e045")){
 				behaviour = "0,1,0\n";

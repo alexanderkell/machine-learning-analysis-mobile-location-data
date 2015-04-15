@@ -20,7 +20,6 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.chart.ChartUtilities; 
-//Need to import JFreeChart library 
 
 
 public class scatterGraph extends ApplicationFrame{

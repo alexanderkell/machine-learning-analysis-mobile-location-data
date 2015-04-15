@@ -1,5 +1,5 @@
-package jama;
-import jama.util.*;
+package Jama2;
+import Jama2.util.*;
 
 /** Singular Value Decomposition.
    <P>

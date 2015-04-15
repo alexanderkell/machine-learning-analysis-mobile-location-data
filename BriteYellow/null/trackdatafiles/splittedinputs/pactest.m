@@ -1,10 +1,10 @@
 legends = {'Business', 'Security', 'Shopper'};
 
-coeff = pca(Untitled, 2);
-x = 3;
-y = 5;
+coeff = pca(Untitled, 3);
+x = 1;
+y = 2;
 
-tit = 'From (590,344) to (720,364)';
+tit = 'From (200,302) to (330,322)';
 business = [];
 security = [];
 shopper = [];

@@ -15,9 +15,11 @@ import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.event.ChartProgressEvent;
@@ -218,7 +220,7 @@ public class STrainHelper extends SParam{
 		return resultSV;
 	}
 	
-	public void plot_graph(final String axis_name1, final String axis_name2, 
+	public void plot_graph(final String title, final String axis_name1, final String axis_name2, 
 			final CustomChartProgressListener progress_listener){
 		
 		if(columns.length != 2)
@@ -236,18 +238,26 @@ public class STrainHelper extends SParam{
 			}
 			public void run(){
 				// For the loading dialog
-				load_frame.setLayout(new BorderLayout());
+				JPanel load_panel = new JPanel();
+				load_panel.setLayout(new BorderLayout());
+				load_frame.setUndecorated(true);
 				final JProgressBar pbar = new JProgressBar();
 				pbar.setStringPainted(true);
 				pbar.setString("Loading ...");
 				final JButton load_button = new JButton("Cancel");
-				load_frame.add(pbar, BorderLayout.CENTER);
-				load_frame.add(load_button, BorderLayout.EAST);
-				load_frame.add(error_label, BorderLayout.SOUTH);
+				
+				// Set up the loading frame
+				load_panel.add(pbar, BorderLayout.CENTER);
+				load_panel.add(new JLabel("Plotting graph..."), BorderLayout.NORTH);
+				load_panel.add(load_button, BorderLayout.EAST);
+				load_panel.add(error_label, BorderLayout.SOUTH);
+				load_panel.setBorder(BorderFactory.createLineBorder(Color.BLUE, 3));
+
+				load_frame.add(load_panel);
 				load_frame.pack();
+				load_frame.setLocationRelativeTo(null);
 				load_frame.setVisible(true);
 				load_frame.setAlwaysOnTop(true);
-				load_frame.setLocationRelativeTo(null);
 				
 				try{
 					TimerTask timertask = new TimerTask(){
@@ -266,6 +276,7 @@ public class STrainHelper extends SParam{
 					
 					final JFrame dia2 = new JFrame();
 					dia2.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+					dia2.setTitle("Plotting \""+title+"\". Please wait ...");
 					dia2.setLayout(new BorderLayout());
 					
 					
@@ -291,7 +302,7 @@ public class STrainHelper extends SParam{
 	//				System.out.println("x max: "+xymm[0]+"\nx min: "+xymm[1]+"\ny max: "+xymm[2]+"\ny min: "+xymm[3]);
 					
 	
-					
+				
 					int[] num_label = model.label;
 					String[] s_label = new String[num_label.length*2+1];
 					for(int i=0; i<num_label.length; i++){
@@ -301,20 +312,17 @@ public class STrainHelper extends SParam{
 					
 					s_label[s_label.length-1] = "Support Vectors";
 					
-					final PlotHelper demo = new PlotHelper("Sample Plot", axis_name1, axis_name2, s_label);
+					final PlotHelper demo = new PlotHelper(title, axis_name1, axis_name2, s_label);
 					
 					final ChartPanel cp = demo.getChartPanel();
 					
 					dia2.add(cp, BorderLayout.CENTER);
-					
-	
 					dia2.pack();
+					dia2.setLocationRelativeTo(null);
 					dia2.setVisible(true);
 					
 					cp.setVisible(false);
 					
-					
-					System.out.println(xymm[0][0]+" "+xymm[0][1]+" "+xymm[1][0]+" "+xymm[1][1]);
 					demo.setAxisRange(xymm[0][0],xymm[0][1],xymm[1][0],xymm[1][1]);
 					Shape shapeCir  = new Ellipse2D.Double(-2.5,-2.5,5,5);
 					    				
@@ -384,6 +392,7 @@ public class STrainHelper extends SParam{
 							if(first_time && arg0.getType() == ChartProgressEvent.DRAWING_FINISHED){
 								first_time = false;
 								timer.cancel();
+								dia2.setTitle(title);
 								load_frame.setVisible(false);
 								System.out.print("Done plotting graph");
 								
@@ -440,8 +449,9 @@ public class STrainHelper extends SParam{
 		
 		STrainHelper t = new STrainHelper(a, b);
 		t.setParam(_t, LINEAR);
+//		t.setParam(_h, 0);
 		t.svmTrain(0,2);
-		t.plot_graph("Axis 1", "Axis 2", null);
+		t.plot_graph("Sample Plot","Axis 1", "Axis 2", null);
 		
 		SPredictHelper h = new SPredictHelper(t.getModelFileName(), t.getSNCFileName());
 		System.out.println(h.predict(b[4]));		

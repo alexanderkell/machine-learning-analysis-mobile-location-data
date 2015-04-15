@@ -72,6 +72,18 @@ public class TrackInfoReader {
 				
 		}
 	}
+	public double[][] getExtractedColumns(int... cols){
+		double[][] result = new double[filtereddata.size()][cols.length];
+		for(int i = 0; i < filtereddata.size(); i++){
+			double[] subdata = filtereddata.get(i);
+//			System.out.println(subdata[X1]+" "+subdata[X2]+" "+subdata[Y1]+" "+subdata[Y2]);
+			for(int j = 0; j < cols.length; j++){
+				result[i][j] = subdata[cols[j]];
+			}
+				
+		}
+		return result;
+	}
 	public String[] getTypes(){
 		return filteredtypes.toArray(new String[filteredtypes.size()]);
 	}

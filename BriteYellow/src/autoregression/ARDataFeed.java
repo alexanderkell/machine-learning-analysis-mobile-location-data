@@ -57,11 +57,11 @@ public class ARDataFeed {
 				}
 			}
 			else{
-				System.out.println("Reset the Parameter Options");
+				System.err.println("Reset the Parameter Options");
 			}
 		}
 		
-		else if(mp == 's'){
+		else if(mp == 's'){//speed
 			if(xyz == 'x'){
 				for(int i = 0; i<length; i++){
 					data[i] = PD.get(i).rsx;
@@ -88,11 +88,11 @@ public class ARDataFeed {
 				}
 			}
 			else{
-				System.out.println("Reset the Parameter Options");
+				System.err.println("Reset the Parameter Options");
 			}
 		}
 		
-		else if(mp == 'a'){
+		else if(mp == 'a'){//acceleration
 			if(xyz == 'x'){
 				for(int i = 0; i<length; i++){
 					data[i] = PD.get(i).rax;
@@ -119,12 +119,12 @@ public class ARDataFeed {
 				}
 			}
 			else{
-				System.out.println("Reset the Parameter Options");
+				System.err.println("Reset the Parameter Options");
 			}
 		}
 		
 		else{
-			System.out.println("Reset the Parameter Options");
+			System.err.println("Reset the Parameter Options");
 		}
 		
 	}

@@ -10,7 +10,7 @@ import dynamodb.DataBaseQueries;
 public class TrackInfoToCSV {
 	
 	final static String TABLE_NAME = "The_Big_Track_Analysis";
-	final static String FILE_LOCATION = "trackdatafiles/";
+	final static String FILE_LOCATION = "trackdatanew";
 	
 	public static void main(String[] args) throws Exception{
 		writeCSV();
@@ -68,12 +68,13 @@ public class TrackInfoToCSV {
 			System.out.println("Done phone: "+ phone_id+".");
 		}
 		
-		csv = new CSVWriter(TABLE_NAME+"/"+FILE_LOCATION+"input");
+		csv = new CSVWriter(TABLE_NAME+"/"+FILE_LOCATION+ "/" +"input");
 		csv.write(TIString.toArray(new String[TIString.size()]), true);
 		csv.finish();
-		csv = new CSVWriter(TABLE_NAME+"/"+FILE_LOCATION+"output");
+		csv = new CSVWriter(TABLE_NAME+"/"+FILE_LOCATION+ "/" +"output");
 		csv.write(output.toArray(new String[output.size()]), true);
 		csv.finish();
+		System.out.println("Stored in: " + TABLE_NAME+"/"+FILE_LOCATION);
 		System.out.println("Finished Writing.");
 	}
 	
@@ -146,12 +147,13 @@ public class TrackInfoToCSV {
 
 		}
 		
-		csv = new CSVWriter(TABLE_NAME+"/"+FILE_LOCATION+"zonedinput");
+		csv = new CSVWriter(TABLE_NAME+"/"+FILE_LOCATION+ "/" +"zonedinput");
 		csv.write(TIString.toArray(new String[TIString.size()]), true);
 		csv.finish();
-		csv = new CSVWriter(TABLE_NAME+"/"+FILE_LOCATION+"zonedoutput");
+		csv = new CSVWriter(TABLE_NAME+"/"+FILE_LOCATION+ "/" +"zonedoutput");
 		csv.write(output.toArray(new String[output.size()]), true);
 		csv.finish();
+		System.out.println("Stored in: " + TABLE_NAME+"/"+FILE_LOCATION);
 		System.out.println("Finished Writing.");
 	}
 	
@@ -224,12 +226,13 @@ public class TrackInfoToCSV {
 
 		}
 		
-		csv = new CSVWriter(TABLE_NAME+"/"+FILE_LOCATION+"zonedinput noXY");
+		csv = new CSVWriter(TABLE_NAME+"/"+FILE_LOCATION+ "/" +"zonedinput noXY");
 		csv.write(TIString.toArray(new String[TIString.size()]), true);
 		csv.finish();
-		csv = new CSVWriter(TABLE_NAME+"/"+FILE_LOCATION+"zonedoutput noXY");
+		csv = new CSVWriter(TABLE_NAME+"/"+FILE_LOCATION+ "/" +"zonedoutput noXY");
 		csv.write(output.toArray(new String[output.size()]), true);
 		csv.finish();
+		System.out.println("Stored in: " + TABLE_NAME+"/"+FILE_LOCATION);
 		System.out.println("Finished Writing.");
 	}
 	

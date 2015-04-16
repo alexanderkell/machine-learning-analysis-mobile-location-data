@@ -60,6 +60,11 @@ public class MLearningOptimisation {
 		StatsGenerator.PATH_PER_SHORTEST_PATH,
 		StatsGenerator.TIME_PER_SHORTEST_PATH
 	};
+	
+	public double[][] property2 = {
+		{ StatsGenerator.AVERAGE_SPEED, 10, Double.POSITIVE_INFINITY},	// Speed > 10 points/sec
+		{ StatsGenerator.AVERAGE_SPEED, 0, 3},	// Speed < 3 points/sec
+	};
 	final  int XSTILL = 30;	//Max x distance for determining whether
 									// the person is staying still
 	final  int YSTILL = 6;	//Max y distance for determining whether
@@ -262,6 +267,16 @@ public class MLearningOptimisation {
 							TI.setTimePerShortest(statGen.getTotalAverage(StatsGenerator.SHORTEST_PATH_LENGTH, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
 						else
 							TI.setTimePerShortest(0);
+						double speedlessthan3 = statGen.getTotalFreqAt(StatsGenerator.AVERAGE_SPEED, 0, 3, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]);
+						if(Double.isFinite(speedlessthan3))
+							TI.setSpeedLessThan3(speedlessthan3);
+						else
+							TI.setSpeedLessThan3(0);
+						double speedlargerthan10 = statGen.getTotalFreqAt(StatsGenerator.AVERAGE_SPEED, 10, Double.POSITIVE_INFINITY, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]);
+						if(Double.isFinite(speedlargerthan10))
+							TI.setSpeedLargerThan10(speedlargerthan10);
+						else
+							TI.setSpeedLargerThan10(0);
 						
 						TI.setX1(xbounds[j]);
 						TI.setX2(xbounds[j+1]);

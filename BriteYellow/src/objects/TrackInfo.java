@@ -29,12 +29,26 @@ public class TrackInfo extends DataBaseObject {
 	private double timesStoppedHere;
 	private double pathPerShortest;
 	private double timePerShortest;
+	private double speedLessThan3;
+	private double speedLargerThan10;
 	private double x1;
 	private double y1;
 	private double x2;
 	private double y2;
 	private int characteristic;
 
+	public double getSpeedLessThan3(){
+		return speedLessThan3;
+	}
+	public void setSpeedLessThan3(double speedLessThan3){
+		this.speedLessThan3 = speedLessThan3;
+	}
+	public double getSpeedLargerThan10(){
+		return speedLargerThan10;
+	}
+	public void setSpeedLargerThan10(double speedLargerThan10){
+		this.speedLargerThan10 = speedLargerThan10;
+	}
 	public double getPathPerShortest() {
 		return pathPerShortest;
 	}

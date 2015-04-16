@@ -6,8 +6,9 @@ public class Coordinates {
 	
 	double x;
 	double y;
-	Timestamp timestamp;
+	long tsLong;
 	int character;
+	Timestamp timestamp;
 	
 	public double getX() {
 		return x;
@@ -21,12 +22,24 @@ public class Coordinates {
 	public void setY(double y) {
 		this.y = y;
 	}
-	public Timestamp getTimestamp() {
-		return timestamp;
+	public long getTsLong() {
+		return tsLong;
 	}
-	public void setTimestamp(Timestamp timestamp) {
+	public void setTsLong(long l) {
+		this.tsLong = l;
+	}
+	public void setTimestamp(long tsLong){
+		Timestamp timestamp = new Timestamp(tsLong);
+		timestamp.setTime(tsLong);
 		this.timestamp = timestamp;
 	}
+	
+	public Timestamp getTimestamp(){
+		Timestamp one = new Timestamp(tsLong);
+		return one;
+		
+	}
+	
 	public int getCharacter() {
 		return character;
 	}

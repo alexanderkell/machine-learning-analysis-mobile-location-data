@@ -1,21 +1,24 @@
 package Bootstrapping;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
+import maths.DataFormatOperations;
+import maths.DataGetter;
 import objects.PhoneData;
 
 public class CoordinatestoPhoneData {
-	public ArrayList<PhoneData> convertToPhoneData(ArrayList<Coordinates> co, String phoneID){
-		ArrayList<PhoneData> pd = new ArrayList<PhoneData>();
+	public PhoneData[] convertToPhoneData(ArrayList<Coordinates> co, String phoneID){
+		PhoneData pd[] = new PhoneData[co.size()];
 		for(int i = 0; i<co.size(); i++){
-			PhoneData pdOne = new PhoneData();
-			pdOne.x = co.get(i).x;
-			pdOne.y = co.get(i).y;
-			pdOne.z = 0;
-			pdOne.ts = co.get(i).timestamp;
-			pdOne.phone_id = phoneID;
-			pd.add(pdOne);
+//			pd[i].ts = co.get(i).getTimestamp();
+			pd[i].ts = co.get(i).timestamp;
+			pd[i].x = co.get(i).x;
+			pd[i].y = co.get(i).y;
+			pd[i].z = 0;
+			pd[i].phone_id = phoneID;
 		}
 		return pd;
 	}
+	
 }

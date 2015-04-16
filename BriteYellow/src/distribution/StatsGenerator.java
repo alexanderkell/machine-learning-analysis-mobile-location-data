@@ -60,7 +60,12 @@ public class StatsGenerator extends ProbabilityList{
 		
 	}
 
-	private static ArrayList<Integer> processStoodStill(PhoneData[] pd){
+	/**Find out which points in the track are stood still
+	 * 
+	 * @param pd The track in PhoneData[]
+	 * @return the indices of the points that are stood still in ArrayList<Integer> format 
+	 */
+	public static ArrayList<Integer> processStoodStill(PhoneData[] pd){
 		
 		ArrayList<Integer> t_points = new ArrayList<Integer>();
 
@@ -71,10 +76,13 @@ public class StatsGenerator extends ProbabilityList{
 			// Find all turning points
 			while(index < pd.length){
 					
-				int temp = findnextturningpoint(pd,index); //1st turning point
+				int temp = findnextturningpoint(pd,index);
+				// If there are no more turning points (temp = -1), exit the loop 
 				if(temp == -1){
 					break;
-				} else {
+				} 
+				// Otherwise store the turning point 
+				else {
 					t_points.add(temp);
 					index = temp+1;
 				}
@@ -260,7 +268,7 @@ public class StatsGenerator extends ProbabilityList{
 	 * @param yend
 	 * @return
 	 */
-	public double getTotalFreqAt(double property, double low, double high, double xstart, double xend, double ystart, double yend){
+	public double getTotalFreqAt(int property, double low, double high, double xstart, double xend, double ystart, double yend){
 		double[] p1 = getFreqAt(property, low, high, xstart, xend, ystart, yend);
 		double p1total = 0;
 		
@@ -282,7 +290,7 @@ public class StatsGenerator extends ProbabilityList{
 	 * @param yend
 	 * @return
 	 */
-	public double[] getFreqAt(double property, double low, double high, double xstart, double xend, double ystart, double yend){
+	public double[] getFreqAt(int property, double low, double high, double xstart, double xend, double ystart, double yend){
 		ArrayList<Double> al = new ArrayList<Double>();
 		
 		boolean is_in = false;	// Show whether the ending point of the path segment is in the wanted area

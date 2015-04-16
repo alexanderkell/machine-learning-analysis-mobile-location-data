@@ -8,6 +8,6 @@
 	<classpathentry kind="lib" path="lib/Jama-1.0.2.jar"/>
 	<classpathentry kind="lib" path="lib/JTransforms-2.4.jar"/>
 	<classpathentry kind="con" path="com.amazonaws.eclipse.sdk.AWS_JAVA_SDK"/>
-	<classpathentry kind="lib" path="lib/comirva-0.36.jar"/>
+	<classpathentry kind="lib" path="/Users/thomas/4th-year-project/BriteYellow/lib/comirva-0.36.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

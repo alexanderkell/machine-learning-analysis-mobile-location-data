@@ -9,8 +9,8 @@ import dynamodb.DataBaseQueries;
 
 public class TrackInfoToCSV {
 	
-	final static String TABLE_NAME = "Sample_Track_Set";
-	final static String FILE_LOCATION = "trackdatafiles/";
+	final static String TABLE_NAME = "The_Big_Track_Analysis";
+	final static String FILE_LOCATION = "trackdatanew";
 	
 	public static void main(String[] args) throws Exception{
 		writeCSV();
@@ -68,12 +68,13 @@ public class TrackInfoToCSV {
 			System.out.println("Done phone: "+ phone_id+".");
 		}
 		
-		csv = new CSVWriter(TABLE_NAME+"/"+FILE_LOCATION+"input");
+		csv = new CSVWriter(TABLE_NAME+"/"+FILE_LOCATION+ "/" +"input");
 		csv.write(TIString.toArray(new String[TIString.size()]), true);
 		csv.finish();
-		csv = new CSVWriter(TABLE_NAME+"/"+FILE_LOCATION+"output");
+		csv = new CSVWriter(TABLE_NAME+"/"+FILE_LOCATION+ "/" +"output");
 		csv.write(output.toArray(new String[output.size()]), true);
 		csv.finish();
+		System.out.println("Stored in: " + TABLE_NAME+"/"+FILE_LOCATION);
 		System.out.println("Finished Writing.");
 	}
 	
@@ -88,7 +89,7 @@ public class TrackInfoToCSV {
 		String title = "PHONE_ID ,TRACK_NO,PATH_LENGTH,TIME_STOPPED,NO_STOPS,TIME_SPENT,INACTIVE_TIME,STHETACHANGE,STHETAIN,STHETAOUT,STHETAINOUT,TIMEPERSTOP,TOTAVRGSPEED,TIMESSTOPPEDHERE,X1,Y1,X2,Y2";
 		String titlewithout = ",PATH_LENGTH,TIME_STOPPED,NO_STOPS,TIME_SPENT,INACTIVE_TIME,STHETACHANGE,STHETAIN,STHETAOUT,STHETAINOUT,TIMEPERSTOP,TOTAVRGSPEED,TIMESSTOPPEDHERE,X1,Y1,X2,Y2";
 		
-		for(int i = 0; i < 14; i++){
+		for(int i = 0; i < 15; i++){
 			title += titlewithout;
 		}
 		
@@ -146,12 +147,13 @@ public class TrackInfoToCSV {
 
 		}
 		
-		csv = new CSVWriter(TABLE_NAME+"/"+FILE_LOCATION+"zonedinput");
+		csv = new CSVWriter(TABLE_NAME+"/"+FILE_LOCATION+ "/" +"zonedinput");
 		csv.write(TIString.toArray(new String[TIString.size()]), true);
 		csv.finish();
-		csv = new CSVWriter(TABLE_NAME+"/"+FILE_LOCATION+"zonedoutput");
+		csv = new CSVWriter(TABLE_NAME+"/"+FILE_LOCATION+ "/" +"zonedoutput");
 		csv.write(output.toArray(new String[output.size()]), true);
 		csv.finish();
+		System.out.println("Stored in: " + TABLE_NAME+"/"+FILE_LOCATION);
 		System.out.println("Finished Writing.");
 	}
 	
@@ -166,7 +168,7 @@ public class TrackInfoToCSV {
 		String title = "PHONE_ID ,TRACK_NO,PATH_LENGTH,TIME_STOPPED,NO_STOPS,TIME_SPENT,INACTIVE_TIME,STHETACHANGE,STHETAIN,STHETAOUT,STHETAINOUT,TIMEPERSTOP,TOTAVRGSPEED,TIMESSTOPPEDHERE";
 		String titlewithout = ",PATH_LENGTH,TIME_STOPPED,NO_STOPS,TIME_SPENT,INACTIVE_TIME,STHETACHANGE,STHETAIN,STHETAOUT,STHETAINOUT,TIMEPERSTOP,TOTAVRGSPEED,TIMESSTOPPEDHERE";
 		
-		for(int i = 0; i < 14; i++){
+		for(int i = 0; i < 15; i++){
 			title += titlewithout;
 		}
 		
@@ -203,18 +205,18 @@ public class TrackInfoToCSV {
 			for(int j = 0; j < TI.size(); j++){
 				
 				if(j==0){
-					temp = TI.get(j).toCSV();
+					temp = TI.get(j).toCSVNoXY();
 				}
 				else{
 					boolean samephone = TI.get(j).getPHONE_ID().equalsIgnoreCase(TI.get(j-1).getPHONE_ID());
 				
 					if(TI.get(j).getTRACK_NO() == TI.get(j-1).getTRACK_NO() && samephone == true){
-						temp += "," + TI.get(j).toCSVNoRef();
+						temp += "," + TI.get(j).toCSVNoXYNoRef();
 					}else{
 						temp += "\n";
 						TIString.add(temp);
 						output.add(behaviour);
-						temp = TI.get(j).toCSV();
+						temp = TI.get(j).toCSVNoXY();
 					}
 				}
 				
@@ -224,12 +226,13 @@ public class TrackInfoToCSV {
 
 		}
 		
-		csv = new CSVWriter(TABLE_NAME+"/"+FILE_LOCATION+"zonedinput noXY");
+		csv = new CSVWriter(TABLE_NAME+"/"+FILE_LOCATION+ "/" +"zonedinput noXY");
 		csv.write(TIString.toArray(new String[TIString.size()]), true);
 		csv.finish();
-		csv = new CSVWriter(TABLE_NAME+"/"+FILE_LOCATION+"zonedoutput noXY");
+		csv = new CSVWriter(TABLE_NAME+"/"+FILE_LOCATION+ "/" +"zonedoutput noXY");
 		csv.write(output.toArray(new String[output.size()]), true);
 		csv.finish();
+		System.out.println("Stored in: " + TABLE_NAME+"/"+FILE_LOCATION);
 		System.out.println("Finished Writing.");
 	}
 	

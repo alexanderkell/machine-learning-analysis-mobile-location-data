@@ -32,19 +32,19 @@ public class trackGeneratorTestB {
 		double[][] cumAngle = DA.distToCumulative(angleDist);
 		
 		
-		
+/*		
 		XYPlot xyp = new XYPlot();
 		//xyp.plot(cumSpeed[0], cumSpeed[1], cumSpeed[0], cumSpeed[1], cumSpeed[0], cumSpeed[1], "Cumulative Speed Distribution", "Cumulative Speed Distribution - Shopper", "Speed (coordinates/sec)", "Cumulative Probability", "5");	
 		xyp.plot(cumAngle[0], cumAngle[1], cumAngle[0], cumAngle[1], cumAngle[0], cumAngle[1], "Cumulative Angle Distribution", "Cumulative Angle Distribution - Shopper", "Angle (rad)", "Cumulative Probability", "5");
-	
+*/
 	
 		coordinatesGenerator test = new coordinatesGenerator();
 		int numberofPoints = 10000;
 		ArrayList<Coordinates> path = test.generatePath(cumSpeed, cumAngle, numberofPoints);
 
 		CoordinatestoPhoneData one = new CoordinatestoPhoneData();
-		//PhoneData[] pdArray = one.convertToPhoneData(path, type);
-		//DataGetter dg = new DataGetter(pdArray);
+		PhoneData[] pdArray = one.convertToPhoneData(path, type);
+		DataGetter dg = new DataGetter(pdArray);
 		//System.out.println(dg.getDistanceBetween(10));
 		
 		

@@ -3,11 +3,15 @@ package Bootstrapping;
 import graphing.XYPlot;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Random;
 
+import maths.DataGetter;
+import objects.PhoneData;
+
 public class coordinatesGenerator {
-	public static void main(String args[]){
+	public static void main(String args[]) throws ParseException{
 		coordinatesGenerator test = new coordinatesGenerator();
 		double cumSpeed[][] = new double[2][10];
 		cumSpeed[0][0] = 0;
@@ -54,7 +58,7 @@ public class coordinatesGenerator {
 		cumAngle[1][7] = 40;
 		cumAngle[1][8] = 45;
 		cumAngle[1][9] = 50;
-		int numberofPoints = 10000;
+		int numberofPoints = 100;
 		ArrayList<Coordinates> path = test.generatePath(cumSpeed, cumAngle, numberofPoints);
 
 		double x[] = new double[path.size()];
@@ -64,6 +68,10 @@ public class coordinatesGenerator {
 			x[i] = path.get(i).getX();
 			y[i] = path.get(i).getY();
 		}
+		
+		CoordinatestoPhoneData one = new CoordinatestoPhoneData();
+		PhoneData[] pdArray = one.convertToPhoneData(path, "H");
+		DataGetter dg = new DataGetter(pdArray);
 		
 		XYPlot xyp = new XYPlot();
 		xyp.plot(x, y, x, y, x, y, "trackGenerator", "Generated Tracks", "x-axis", "y-axis", "5");	
@@ -76,35 +84,32 @@ public class coordinatesGenerator {
 		
 		double randSpeed = returnRandomCumulative(cumSpeed);
 		double randAngle = returnRandomCumulative(cumAngle);
+		
 		double distance = distanceTravelled(randSpeed);
 		double newCords[] = calcNewXandY(first, randAngle, distance);
 		ArrayList<Coordinates> track = createPoint(first, newCords[0], newCords[1]);
 		for(int i =0; i<numberofPoints; i++){
 			double randSpeed1 = returnRandomCumulative(cumSpeed);
 			double randAngle1 = returnRandomCumulative(cumAngle);
+			System.out.print("Random Speed ="+randSpeed1+" Random Angle = "+randAngle1);
 			double distance1 = distanceTravelled(randSpeed1);
 			double newCords1[] = calcNewXandY(track, randAngle1, distance1);
-		
+			System.out.print("x: "+newCords1[0]+", y: "+newCords1[0]);
 			track = createPoint(track, newCords1[0], newCords1[1]);
 		}
-		return xy;
+		return track;
 	}
 	
 	public ArrayList<Coordinates> createPoint(ArrayList<Coordinates> last, double newX, double newY){
-		Coordinates co = new Coordinates();
-		
-		
-		
-		Long time = last.get(last.size()-1).tsLong;
+		Coordinates co = new Coordinates();		
+		long time = last.get(last.size()-1).tsLong;
 		double x = last.get(last.size()-1).x;
 		double y = last.get(last.size()-1).y;
 
 		double x_new = x+newX;
 		double y_new = y+newY;
-		Long time_new = time+1;
-		Long time1; 
+		long time_new = time+1000;
 		if(y_new < 302 || y_new > 364){ //Reflect if bigger than shop
-			// x_new = x-newX;
 			y_new = y-newY;
 		}
 
@@ -139,7 +144,7 @@ public class coordinatesGenerator {
 			coord1.setX(200); //Set person at far left of corridor
 			coord1.setY(first_Y); //Decides at what y value we start from
 			coord1.setTimestamp(1429189207);
-			coord.setTsLong(1429189207);
+			coord1.setTsLong(1429189207);
 			
 			xy.add(coord1);
 			
@@ -246,7 +251,7 @@ public class coordinatesGenerator {
 		
 	public int randInt(int min, int max){
 		Random rand = new Random();
-		int randomNum = rand.nextInt((max-min)+1)+min;
+		int randomNum = rand.nextInt(max-min+1)+min;
 		return randomNum;
 	}
 	

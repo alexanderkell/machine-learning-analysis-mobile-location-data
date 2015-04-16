@@ -1,8 +1,9 @@
 package Bootstrapping;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class Coordinates {
+public class Coordinates implements Serializable {
 	
 	double x;
 	double y;
@@ -30,7 +31,6 @@ public class Coordinates {
 	}
 	public void setTimestamp(long tsLong){
 		Timestamp timestamp = new Timestamp(tsLong);
-		timestamp.setTime(tsLong);
 		this.timestamp = timestamp;
 	}
 	

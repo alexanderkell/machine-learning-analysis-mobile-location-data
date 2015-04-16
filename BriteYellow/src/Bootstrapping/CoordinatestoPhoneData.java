@@ -12,11 +12,12 @@ public class CoordinatestoPhoneData {
 		PhoneData pd[] = new PhoneData[co.size()];
 		for(int i = 0; i<co.size(); i++){
 //			pd[i].ts = co.get(i).getTimestamp();
-			pd[i].ts = co.get(i).timestamp;
+			System.out.println(co.get(i).x);
 			pd[i].x = co.get(i).x;
 			pd[i].y = co.get(i).y;
 			pd[i].z = 0;
 			pd[i].phone_id = phoneID;
+			pd[i].ts = co.get(i).timestamp;
 		}
 		return pd;
 	}

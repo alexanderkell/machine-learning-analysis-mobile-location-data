@@ -11,9 +11,9 @@ import Bootstrapping.*;
 public class trackGeneratorTestB {
 	public static void main(String args[]) throws Exception{
 		MLearningOptimisation MLOp = new MLearningOptimisation(200, 10, 10, 2);
-//		String type = "ZX1B23QBS53771758c578bbd85"; //Security
+		String type = "ZX1B23QBS53771758c578bbd85"; //Security
 //		String type = "ZX1B23QFSP48abead89f52e3bb"; //Business
-		String type = "TA92903URNf067ff16fcf8e045"; //Shopper
+//		String type = "TA92903URNf067ff16fcf8e045"; //Shopper
 		ArrayList<PhoneData> pd = MLOp.selectPhoneandFilter(type);//Security
 		//ArrayList<PhoneData> pd = MLOp.selectPhoneandFilter("ZX1B23QFSP48abead89f52e3bb");//Business
 		//ArrayList<PhoneData> pd = MLOp.selectPhoneandFilter("TA92903URNf067ff16fcf8e045");//Shopper
@@ -42,11 +42,11 @@ public class trackGeneratorTestB {
 		int numberofPoints = 10000;
 		ArrayList<Coordinates> path = test.generatePath(cumSpeed, cumAngle, numberofPoints);
 
-		CoordinatestoPhoneData one = new CoordinatestoPhoneData();
-		PhoneData[] pdArray = one.convertToPhoneData(path, type);
-		DataGetter dg = new DataGetter(pdArray);
+		//CoordinatestoPhoneData one = new CoordinatestoPhoneData();
+		//PhoneData[] pdArray = one.convertToPhoneData(path, type);
+		//DataGetter dg = new DataGetter(pdArray);
 		//System.out.println(dg.getDistanceBetween(10));
-		
+		System.out.println("Hi!");
 		
 		double x[] = new double[path.size()];
 		double y[] = new double[path.size()];
@@ -56,8 +56,8 @@ public class trackGeneratorTestB {
 			y[i] = path.get(i).getY();
 		}
 		
-		//XYPlot xyp = new XYPlot();
-		//xyp.plot(x, y, x, y, x, y, "trackGenerator", "Generated Tracks", "x-axis", "y-axis", "5");	
+		XYPlot xyp = new XYPlot();
+		xyp.plot(x, y, x, y, x, y, "trackGenerator", "Generated Tracks - Shopper", "x-axis", "y-axis", "5");	
 	
 		
 //		System.out.println("hi");

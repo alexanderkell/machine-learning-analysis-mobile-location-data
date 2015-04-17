@@ -272,6 +272,10 @@ public class StatsGenerator extends ProbabilityList{
 		double[] p1 = getFreqAt(property, low, high, xstart, xend, ystart, yend);
 		double p1total = 0;
 		
+		// If p1 is null (might be because the person has not entered the area, return 0
+		if(p1 == null)
+			return 0;
+		
 		for(int i = 0; i < p1.length; i++){
 			p1total += p1[i];
 		}
@@ -494,7 +498,7 @@ public class StatsGenerator extends ProbabilityList{
 					// Calculate the modulus distance between the first and last point
 					// 1. calculate the sum of square of x y z distance between 
 					for(int d = 0; d < lastpoint.length; d++){
-						double diff = lastpoint[i] - firstpoint[i];
+						double diff = lastpoint[d] - firstpoint[d];
 						result += diff*diff;
 					}
 					// 2. square root the result

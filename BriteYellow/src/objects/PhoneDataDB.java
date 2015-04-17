@@ -1,5 +1,15 @@
 package objects;
 
+////////////////////////////////////////////////////////
+//Phone Data Database Object
+//Name: Thomas Smith
+//Date: 01/04/2015
+//Date of Update: 17/04/2015
+//Description: An object for the object persistance model to recognise
+//Reference: Section 6.3 of the Report or User Guide
+//Acknowledgement: Modelled on the DynamoDB Java API Documentation 
+//////////////////////////////////////////////////////
+
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIgnore;
@@ -154,7 +164,7 @@ public class PhoneDataDB extends DataBaseObject{
 	public void setModAcceleration(double modacc){
 		this.modacc = modacc;
 	}
-	@DynamoDBAttribute(attributeName = "Speed_Angle")
+	@DynamoDBAttribute(attributeName = "Acceleration_Angle")
 	public double getAccelerationTheta(){
 		return acctheta;
 	}

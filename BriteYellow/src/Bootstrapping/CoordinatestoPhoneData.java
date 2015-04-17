@@ -11,6 +11,7 @@ public class CoordinatestoPhoneData {
 	public PhoneData[] convertToPhoneData(ArrayList<Coordinates> co, String phoneID){
 		PhoneData pd[] = new PhoneData[co.size()];
 		for(int i = 0; i<co.size(); i++){
+			pd[i] = new PhoneData();
 //			pd[i].ts = co.get(i).getTimestamp();
 			System.out.println(co.get(i).x);
 			pd[i].x = co.get(i).x;

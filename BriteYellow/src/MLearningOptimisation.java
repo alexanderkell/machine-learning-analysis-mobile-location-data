@@ -199,7 +199,7 @@ public class MLearningOptimisation {
 		System.out.println("Write complete");
 	}
 	
-	private ArrayList<TrackInfo> writeTrackStats(PhoneData[] newdata) throws ParseException, java.text.ParseException{
+	ArrayList<TrackInfo> writeTrackStats(PhoneData[] newdata) throws ParseException, java.text.ParseException{
 		TrackSelect TS = new TrackSelect();
 		ArrayList<TrackInfo> totalTI = new ArrayList<TrackInfo>();
 		for(int i=1; i<=TS.getTotalTracks(newdata); i++){

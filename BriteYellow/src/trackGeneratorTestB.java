@@ -50,16 +50,15 @@ public class trackGeneratorTestB {
 			CoordinatestoPhoneData one = new CoordinatestoPhoneData();
 			PhoneData[] pdArray = one.convertToPhoneData(path, type1[i]);
 			DataGetter dg = new DataGetter(pdArray);
-			System.out.println(dg.getDistanceBetween(10));
 			System.out.println("Hi!");
 			PhoneData[] fullPhoneData = dg.getFullPhoneData();
 			MLearningOptimisation mlo = new MLearningOptimisation(200, 0, 0, 0);
-			
+			System.out.println("Creating Track Stats");
 			ArrayList<TrackInfo> TrackAnalysis = mlo.writeTrackStats(fullPhoneData);
-			ArrayList<TrackInfo> trackAnTot = new ArrayList<TrackInfo>();
-			trackAnTot.addAll(TrackAnalysis);
-			
-			writeToDB(trackAnTot);
+			//ArrayList<TrackInfo> trackAnTot = new ArrayList<TrackInfo>();
+			//trackAnTot.addAll(TrackAnalysis);
+			System.out.println("Writing to DB");
+			writeToDB(TrackAnalysis);
 	}
 		
 		
@@ -81,6 +80,7 @@ public class trackGeneratorTestB {
 	public static void writeToDB(ArrayList<TrackInfo> TrackAnalysis) throws Exception{
 		DataBaseOperations DBO = new DataBaseOperations("Generated_Track_Store");
 		//DBO.deleteTable();
+		System.out.println("Creating Track Table");
 		DBO.createTracksTable();
 		System.out.println("Writing to Database");
 		DBO.batchWrite(TrackAnalysis);

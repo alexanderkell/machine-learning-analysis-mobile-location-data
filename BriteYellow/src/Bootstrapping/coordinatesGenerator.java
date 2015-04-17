@@ -7,11 +7,13 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Random;
 
+import dynamodb.DataBaseOperations;
 import maths.DataGetter;
 import objects.PhoneData;
+import objects.TrackInfo;
 
 public class coordinatesGenerator {
-	public static void main(String args[]) throws ParseException{
+	public static void main(String args[]) throws Exception{
 		coordinatesGenerator test = new coordinatesGenerator();
 		double cumSpeed[][] = new double[2][10];
 		cumSpeed[0][0] = 0;
@@ -73,6 +75,19 @@ public class coordinatesGenerator {
 		PhoneData[] pdArray = one.convertToPhoneData(path, "H");
 		DataGetter dg = new DataGetter(pdArray);
 		
+		
+		System.out.println("Hi!");
+		PhoneData[] fullPhoneData = dg.getFullPhoneData();
+		
+		System.out.println("Creating Track Stats");
+		Mlearning mlo = new Mlearning(200, 0, 0, 0);
+		ArrayList<TrackInfo> TrackAnalysis = mlo.writeTrackStats(fullPhoneData);
+		//ArrayList<TrackInfo> trackAnTot = new ArrayList<TrackInfo>();
+		//trackAnTot.addAll(TrackAnalysis);
+		System.out.println("Writing to DB");
+		writeToDB(TrackAnalysis);
+		
+		
 		XYPlot xyp = new XYPlot();
 		xyp.plot(x, y, x, y, x, y, "trackGenerator", "Generated Tracks", "x-axis", "y-axis", "5");	
 	}
@@ -113,7 +128,7 @@ public class coordinatesGenerator {
 			y_new = y-newY;
 		}
 
-		if(x_new < 180 || x_new > 860){
+		if(x_new < 180 || x_new > 900){
 			x_new = x-newX;
 			//y_new = y-newY;
 		}
@@ -149,11 +164,11 @@ public class coordinatesGenerator {
 			xy.add(coord1);
 			
 		}else{
-			coord.setX(854);
+			coord.setX(904);
 			coord.setY(first_Y);
 			coord.setTimestamp(1429189206);
 			xy.add(coord);
-			coord1.setX(850);
+			coord1.setX(900);
 			coord1.setY(first_Y);
 			coord1.setTimestamp(1429189207);
 			xy.add(coord1);
@@ -253,6 +268,16 @@ public class coordinatesGenerator {
 		Random rand = new Random();
 		int randomNum = rand.nextInt(max-min+1)+min;
 		return randomNum;
+	}
+	
+	public static void writeToDB(ArrayList<TrackInfo> TrackAnalysis) throws Exception{
+		DataBaseOperations DBO = new DataBaseOperations("Generated_Track_Store");
+		//DBO.deleteTable();
+		System.out.println("Creating Track Table");
+		DBO.createTracksTable();
+		System.out.println("Writing to Database");
+		DBO.batchWrite(TrackAnalysis);
+		System.out.println("Write complete");
 	}
 	
 }

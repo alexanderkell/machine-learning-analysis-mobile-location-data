@@ -1,3 +1,5 @@
+package Bootstrapping;
+
 import distribution.StatsGenerator;
 import dynamodb.DataBaseOperations;
 import dynamodb.DataBaseQueries;
@@ -24,7 +26,7 @@ import graphing.*;
 
 
 
-public class MLearningOptimisation {
+public class Mlearning {
 	/*
 	public  int[] xbounds = {
 		200,850
@@ -80,7 +82,7 @@ public class MLearningOptimisation {
 		System.out.println("What is the max speed, x-Kalman Factor, y-Kalman Factor, and Interpolation value?");
 		int speed = sc.nextInt(), xkalm = sc.nextInt(), ykalm = sc.nextInt(), Interp = sc.nextInt();
 		
-		MLearningOptimisation ml = new MLearningOptimisation(speed, xkalm, ykalm, Interp);
+		Mlearning ml = new Mlearning(speed, xkalm, ykalm, Interp);
 		
 		ArrayList<TrackInfo> data = ml.queryAndProcess();
 		/*
@@ -99,7 +101,7 @@ public class MLearningOptimisation {
 				
 	}
 	
-	public MLearningOptimisation(int speed, int xkalm, int ykalm, int Interp){
+	public Mlearning(int speed, int xkalm, int ykalm, int Interp){
 		this.speed = speed;
 		this.xkalm = xkalm;
 		this.ykalm = ykalm;

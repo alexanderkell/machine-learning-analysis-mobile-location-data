@@ -214,83 +214,124 @@ public class Mlearning {
 
 			for(int j = 0; j<xbounds.length-1; j++){
 				for(int k =0; k<ybounds.length-1; k++){	
-						//Setting of data					
-						TrackInfo TI = new TrackInfo();
-						if(Double.isFinite(statGen.getTotalAverage(StatsGenerator.INACTIVE_TIME, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1])))
-							TI.setINACTIVE_TIME(statGen.getTotalAverage(StatsGenerator.INACTIVE_TIME, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
-						else
-							TI.setINACTIVE_TIME(0);
-						if(Double.isFinite(statGen.getTotalAverage(StatsGenerator.NO_STOPS, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1])))
-							TI.setNO_STOPS(statGen.getTotalAverage(StatsGenerator.NO_STOPS, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
-						else
-							TI.setNO_STOPS(0);
-						if(Double.isFinite(statGen.getTotalAverage(StatsGenerator.PATH_LENGTH, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1])))
-							TI.setPATH_LENGTH(statGen.getTotalAverage(StatsGenerator.PATH_LENGTH, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
-						else
-							TI.setPATH_LENGTH(0);
-						TI.setPHONE_ID(track[0].phone_id);
-						if(Double.isFinite(statGen.getTotalAverage(StatsGenerator.STHETACHANGE, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1])))
-							TI.setSTHETACHANGE(statGen.getTotalAverage(StatsGenerator.STHETACHANGE, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
-						else
-							TI.setSTHETACHANGE(0);
-	//					TI.setSTHETAIN(statGen.getTotalAverage(property[1], 200, 850, 302, 364));
-	//					TI.setSTHETAOUT(statGen.getTotalAverage(property[1], 200, 850, 302, 364));
-	//					TI.setTIME_STOPPED(statGen.getTotalAverage(property[1], 200, 850, 302, 364));
-	//					TI.setSTHETAINOUT(statGen.getTotalAverage(StatsGenerator.STHETACHANGE_NO, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
-						if(Double.isFinite(statGen.getTotalAverage(StatsGenerator.TIME_PER_STOP, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1])))
-							TI.setTIMEPERSTOP(statGen.getTotalAverage(StatsGenerator.TIME_PER_STOP, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
-						else
-							TI.setTIMEPERSTOP(0);
-						if(Double.isFinite(statGen.getTotalAverage(StatsGenerator.FREQ_IN_AREA, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1])))
-							TI.setTIMESSTOPPEDHERE(statGen.getTotalAverage(StatsGenerator.FREQ_IN_AREA, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
-						else
-							TI.setTIMESSTOPPEDHERE(0);
-						if(Double.isFinite(statGen.getTotalAverage(StatsGenerator.AVERAGE_SPEED, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1])))
-							TI.setTOTAVRGSPEED(statGen.getTotalAverage(StatsGenerator.AVERAGE_SPEED, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
-						else
-							TI.setTOTAVRGSPEED(0);
-						if(Double.isFinite(statGen.getTotalAverage(StatsGenerator.TIME_STOPPED, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1])))
-							TI.setTIMESSTOPPEDHERE(statGen.getTotalAverage(StatsGenerator.TIME_STOPPED, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
-						else
-							TI.setTIME_SPENT(0);
-						if(Double.isFinite(statGen.getTotalAverage(StatsGenerator.TIME_SPENT, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1])))
-							TI.setTIME_SPENT(statGen.getTotalAverage(StatsGenerator.TIME_SPENT, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
-						else
-							TI.setTIME_SPENT(0);
-						if(Double.isFinite(statGen.getTotalAverage(StatsGenerator.TIME_SPENT, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1])))
-							TI.setTRACK_NO(i);
-						else
-							TI.setTRACK_NO(-1);
-						//if(Double.isFinite(statGen.getTotalAverage(StatsGenerator.PATH_PER_SHORTEST_PATH, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1])))
-						//	TI.setPathPerShortest(statGen.getTotalAverage(StatsGenerator.PATH_PER_SHORTEST_PATH, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
-						//else
-						//	TI.setPathPerShortest(0);
-						if(Double.isFinite(statGen.getTotalAverage(StatsGenerator.SHORTEST_PATH_LENGTH, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1])))
-							TI.setTimePerShortest(statGen.getTotalAverage(StatsGenerator.SHORTEST_PATH_LENGTH, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
-						else
-							TI.setTimePerShortest(0);
-						
+					//Setting of data					
+					TrackInfo TI = new TrackInfo();
+					if(Double.isFinite(statGen.getTotalAverage(StatsGenerator.INACTIVE_TIME, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1])))
+						TI.setINACTIVE_TIME(statGen.getTotalAverage(StatsGenerator.INACTIVE_TIME, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
+					else
+						TI.setINACTIVE_TIME(0);
+					if(Double.isFinite(statGen.getTotalAverage(StatsGenerator.NO_STOPS, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1])))
+						TI.setNO_STOPS(statGen.getTotalAverage(StatsGenerator.NO_STOPS, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
+					else
+						TI.setNO_STOPS(0);
+					if(Double.isFinite(statGen.getTotalAverage(StatsGenerator.PATH_LENGTH, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1])))
+						TI.setPATH_LENGTH(statGen.getTotalAverage(StatsGenerator.PATH_LENGTH, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
+					else
+						TI.setPATH_LENGTH(0);
+					TI.setPHONE_ID(track[0].phone_id);
+					if(Double.isFinite(statGen.getTotalAverage(StatsGenerator.STHETACHANGE, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1])))
+						TI.setSTHETACHANGE(statGen.getTotalAverage(StatsGenerator.STHETACHANGE, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
+					else
+						TI.setSTHETACHANGE(0);
+//					TI.setSTHETAIN(statGen.getTotalAverage(property[1], 200, 850, 302, 364));
+//					TI.setSTHETAOUT(statGen.getTotalAverage(property[1], 200, 850, 302, 364));
+//					TI.setTIME_STOPPED(statGen.getTotalAverage(property[1], 200, 850, 302, 364));
+//					TI.setSTHETAINOUT(statGen.getTotalAverage(StatsGenerator.STHETACHANGE_NO, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
+					if(Double.isFinite(statGen.getTotalAverage(StatsGenerator.TIME_PER_STOP, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1])))
+						TI.setTIMEPERSTOP(statGen.getTotalAverage(StatsGenerator.TIME_PER_STOP, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
+					else
+						TI.setTIMEPERSTOP(0);
+					if(Double.isFinite(statGen.getTotalAverage(StatsGenerator.FREQ_IN_AREA, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1])))
+						TI.setTIMESSTOPPEDHERE(statGen.getTotalAverage(StatsGenerator.FREQ_IN_AREA, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
+					else
+						TI.setTIMESSTOPPEDHERE(0);
+					if(Double.isFinite(statGen.getTotalAverage(StatsGenerator.AVERAGE_SPEED, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1])))
+						TI.setTOTAVRGSPEED(statGen.getTotalAverage(StatsGenerator.AVERAGE_SPEED, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
+					else
+						TI.setTOTAVRGSPEED(0);
+					if(Double.isFinite(statGen.getTotalAverage(StatsGenerator.TIME_STOPPED, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1])))
+						TI.setTIMESSTOPPEDHERE(statGen.getTotalAverage(StatsGenerator.TIME_STOPPED, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
+					else
+						TI.setTIME_SPENT(0);
+					if(Double.isFinite(statGen.getTotalAverage(StatsGenerator.TIME_SPENT, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1])))
+						TI.setTIME_SPENT(statGen.getTotalAverage(StatsGenerator.TIME_SPENT, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
+					else
+						TI.setTIME_SPENT(0);
+					if(Double.isFinite(statGen.getTotalAverage(StatsGenerator.TIME_SPENT, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1])))
+						TI.setTRACK_NO(i);
+					else
+						TI.setTRACK_NO(-1);
+					if(Double.isFinite(statGen.getTotalAverage(StatsGenerator.PATH_PER_SHORTEST_PATH, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1])))
+						TI.setPathPerShortest(statGen.getTotalAverage(StatsGenerator.PATH_PER_SHORTEST_PATH, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
+					else
+						TI.setPathPerShortest(0);
+					if(Double.isFinite(statGen.getTotalAverage(StatsGenerator.SHORTEST_PATH_LENGTH, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1])))
+						TI.setTimePerShortest(statGen.getTotalAverage(StatsGenerator.SHORTEST_PATH_LENGTH, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
+					else
+						TI.setTimePerShortest(0);
 
-						double speedlessthan3 = statGen.getTotalFreqAt(StatsGenerator.AVERAGE_SPEED, 2, 3, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]);
-						if(Double.isFinite(speedlessthan3))
-							TI.setSpeedLessThan3(speedlessthan3);
-						else
-							TI.setSpeedLessThan3(0);
-						
-						
-						double speedlargerthan10 = statGen.getTotalFreqAt(StatsGenerator.AVERAGE_SPEED, 10, Double.POSITIVE_INFINITY, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]);
-						if(Double.isFinite(speedlargerthan10))
-							TI.setSpeedLargerThan10(speedlargerthan10);
-						else
-							TI.setSpeedLargerThan10(0);
-						
-						TI.setX1(xbounds[j]);
-						TI.setX2(xbounds[j+1]);
-						TI.setY1(ybounds[k]);
-						TI.setY2(ybounds[k+1]);
-						TI.setCharacteristic(characteristicType(track[0].phone_id));
-						totalTI.add(TI);
-					}
+					double speedlessthan1 = statGen.getTotalFreqAt(StatsGenerator.AVERAGE_SPEED, 0, 1, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]);
+					if(Double.isFinite(speedlessthan1))
+						TI.setSpeedLessThan1(speedlessthan1);
+					else
+						TI.setSpeedLessThan1(0);
+
+					double speedlessthan2 = statGen.getTotalFreqAt(StatsGenerator.AVERAGE_SPEED, 1, 2, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]);
+					if(Double.isFinite(speedlessthan2))
+						TI.setSpeedLessThan2(speedlessthan2);
+					else
+						TI.setSpeedLessThan2(0);
+	
+					double speedlessthan3 = statGen.getTotalFreqAt(StatsGenerator.AVERAGE_SPEED, 2, 3, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]);
+					if(Double.isFinite(speedlessthan3))
+						TI.setSpeedLessThan3(speedlessthan3);
+					else
+						TI.setSpeedLessThan3(0);
+
+					double speedlargerthan10 = statGen.getTotalFreqAt(StatsGenerator.AVERAGE_SPEED, 3, Double.POSITIVE_INFINITY, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]);
+					if(Double.isFinite(speedlargerthan10))
+						TI.setSpeedLargerThan10(speedlargerthan10);
+					else
+						TI.setSpeedLargerThan10(0);
+
+					double anglelargerthan5 = statGen.getTotalFreqAt(StatsGenerator.STHETACHANGE, 0, 0.5, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]);
+					if(Double.isFinite(anglelargerthan5))
+						TI.setangleLargerThan5(anglelargerthan5);
+					else
+						TI.setangleLargerThan5(0);
+
+					double anglelargerthan10 = statGen.getTotalFreqAt(StatsGenerator.STHETACHANGE, 0.5, 1, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]);
+					if(Double.isFinite(anglelargerthan10))
+						TI.setangleLargerThan10(anglelargerthan10);
+					else
+						TI.setangleLargerThan10(0);
+					
+					double anglelargerthan15 = statGen.getTotalFreqAt(StatsGenerator.STHETACHANGE, 1, 1.5, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]);
+					if(Double.isFinite(anglelargerthan15))
+						TI.setangleLargerThan15(anglelargerthan15);
+					else
+						TI.setangleLargerThan15(0);
+					
+					
+					double anglelargerthan20 = statGen.getTotalFreqAt(StatsGenerator.STHETACHANGE, 1.5, 2, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]);
+					if(Double.isFinite(anglelargerthan20))
+						TI.setangleLargerThan20(anglelargerthan20);
+					else
+						TI.setangleLargerThan20(0);
+		
+					double anglelargerthan25 = statGen.getTotalFreqAt(StatsGenerator.STHETACHANGE, 2, Double.POSITIVE_INFINITY, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]);
+					if(Double.isFinite(anglelargerthan20))
+						TI.setangleLargerThan10(anglelargerthan20);
+					else
+						TI.setangleLargerThan20(0);
+
+					TI.setX1(xbounds[j]);
+					TI.setX2(xbounds[j+1]);
+					TI.setY1(ybounds[k]);
+					TI.setY2(ybounds[k+1]);
+					TI.setCharacteristic(characteristicType(track[0].phone_id));
+					totalTI.add(TI);
+				}
 				}
 			}
 		}

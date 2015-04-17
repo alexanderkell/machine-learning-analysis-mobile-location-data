@@ -17,6 +17,15 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIndexRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
+////////////////////////////////////////////////////////
+//Phone Data Database Object
+//Name: Thomas Smith
+//Date: 01/04/2015
+//Date of Update: 17/04/2015
+//Description: An object for the object persistance model to recognise
+//Reference: Section 6.3 of the Report or User Guide
+//Acknowledgement: Modelled on the DynamoDB Java API Documentation 
+//////////////////////////////////////////////////////
 
 @DynamoDBTable(tableName = "REPLACED_BY_VALUE_IN_PROPERTIES_FILE") 
 public class PhoneDataDB extends DataBaseObject{

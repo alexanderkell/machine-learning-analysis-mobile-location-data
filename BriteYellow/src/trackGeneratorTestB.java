@@ -12,11 +12,12 @@ import Bootstrapping.*;
 
 public class trackGeneratorTestB {
 	public static void main(String args[]) throws Exception{
-		for(int i = 0; i<3; i++){
-			System.out.println("How many points would you like to generate?");
-			Scanner sc = new Scanner(System.in);
-			int x = sc.nextInt();
-			
+		
+		
+		System.out.println("How many points would you like to generate?");
+		Scanner sc = new Scanner(System.in);
+		int x = sc.nextInt();
+		for(int i = 0; i<3; i++){	
 			MLearningOptimisation MLOp = new MLearningOptimisation(200, 10, 10, 2);
 			String type1[] = new String[3];
 			type1[0] = "ZX1B23QBS53771758c578bbd85"; //Security
@@ -79,7 +80,7 @@ public class trackGeneratorTestB {
 	
 	public static void writeToDB(ArrayList<TrackInfo> TrackAnalysis) throws Exception{
 		DataBaseOperations DBO = new DataBaseOperations("Generated_Track_Store");
-		//DBO.deleteTable();
+		DBO.deleteTable();
 		System.out.println("Creating Track Table");
 		DBO.createTracksTable();
 		System.out.println("Writing to Database");

@@ -30,31 +30,87 @@ public class TrackInfo extends DataBaseObject {
 	private double pathPerShortest;
 	private double timePerShortest;
 	private double speedLessThan3;
+	private double speedLessThan2;
+	private double speedLessThan1;
+	private double anglelargerthan5;
+	private double anglelargerthan10;
+	private double anglelargerthan15;
+	private double anglelargerthan20;
+	
+	
+
 	private double speedLargerThan10;
 	private double x1;
 	private double y1;
 	private double x2;
 	private double y2;
 	private int characteristic;
+	@DynamoDBAttribute (attributeName = "SpeedBelow2")
+	public double getSpeedLessThan2() {
+		return speedLessThan2;
+	}
+	public void setSpeedLessThan2(double speedLessThan2) {
+		this.speedLessThan2 = speedLessThan2;
+	}
+	@DynamoDBAttribute (attributeName = "SpeedBelow1")
+	public double getSpeedLessThan1() {
+		return speedLessThan1;
+	}
+	public void setSpeedLessThan1(double speedLessThan1) {
+		this.speedLessThan1 = speedLessThan1;
+	}
 
+	@DynamoDBAttribute (attributeName = "AngleBelow5")
+	public double getanglelargerthan5() {
+		return anglelargerthan5;
+	}
+	public void setangleLargerThan5(double anglelargerthan5) {
+		this.anglelargerthan5 = anglelargerthan5;
+	}
+	@DynamoDBAttribute (attributeName = "AngleBelow10")
+	public double getangleLargerThan10() {
+		return anglelargerthan10;
+	}
+	public void setangleLargerThan10(double anglelargerthan10) {
+		this.anglelargerthan10 = anglelargerthan10;
+	}
+	@DynamoDBAttribute (attributeName = "AngleBelow15")
+	public double getangleLargerThan15() {
+		return anglelargerthan15;
+	}
+	public void setangleLargerThan15(double anglelargerthan15) {
+		this.anglelargerthan15 = anglelargerthan15;
+	}
+	@DynamoDBAttribute (attributeName = "AngleBelow20")
+	public double getangleLargerThan20() {
+		return anglelargerthan20;
+	}
+	public void setangleLargerThan20(double anglelargerthan20) {
+		this.anglelargerthan20 = anglelargerthan20;
+	}
+	
+	@DynamoDBAttribute (attributeName = "SpeedBelow3")
 	public double getSpeedLessThan3(){
 		return speedLessThan3;
 	}
 	public void setSpeedLessThan3(double speedLessThan3){
 		this.speedLessThan3 = speedLessThan3;
 	}
+	@DynamoDBAttribute (attributeName = "SpeedAbove10")
 	public double getSpeedLargerThan10(){
 		return speedLargerThan10;
 	}
 	public void setSpeedLargerThan10(double speedLargerThan10){
 		this.speedLargerThan10 = speedLargerThan10;
 	}
+	@DynamoDBAttribute (attributeName = "Path per shortest")
 	public double getPathPerShortest() {
 		return pathPerShortest;
 	}
 	public void setPathPerShortest(double pathPerShortest) {
 		this.pathPerShortest = pathPerShortest;
 	}
+	@DynamoDBAttribute (attributeName = "Time per Shortest")
 	public double getTimePerShortest() {
 		return timePerShortest;
 	}

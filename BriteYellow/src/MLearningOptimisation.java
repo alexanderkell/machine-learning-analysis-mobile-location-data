@@ -259,16 +259,32 @@ public class MLearningOptimisation {
 							TI.setTRACK_NO(i);
 						else
 							TI.setTRACK_NO(-1);
-						//if(Double.isFinite(statGen.getTotalAverage(StatsGenerator.PATH_PER_SHORTEST_PATH, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1])))
-						//	TI.setPathPerShortest(statGen.getTotalAverage(StatsGenerator.PATH_PER_SHORTEST_PATH, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
-						//else
-						//	TI.setPathPerShortest(0);
+						if(Double.isFinite(statGen.getTotalAverage(StatsGenerator.PATH_PER_SHORTEST_PATH, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1])))
+							TI.setPathPerShortest(statGen.getTotalAverage(StatsGenerator.PATH_PER_SHORTEST_PATH, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
+						else
+							TI.setPathPerShortest(0);
 						if(Double.isFinite(statGen.getTotalAverage(StatsGenerator.SHORTEST_PATH_LENGTH, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1])))
 							TI.setTimePerShortest(statGen.getTotalAverage(StatsGenerator.SHORTEST_PATH_LENGTH, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
 						else
 							TI.setTimePerShortest(0);
 						
 
+						double speedlessthan1 = statGen.getTotalFreqAt(StatsGenerator.AVERAGE_SPEED, 0, 1, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]);
+						if(Double.isFinite(speedlessthan1))
+							TI.setSpeedLessThan1(speedlessthan1);
+						else
+							TI.setSpeedLessThan1(0);
+						
+						
+						
+						double speedlessthan2 = statGen.getTotalFreqAt(StatsGenerator.AVERAGE_SPEED, 1, 2, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]);
+						if(Double.isFinite(speedlessthan2))
+							TI.setSpeedLessThan2(speedlessthan2);
+						else
+							TI.setSpeedLessThan2(0);
+						
+						
+						
 						double speedlessthan3 = statGen.getTotalFreqAt(StatsGenerator.AVERAGE_SPEED, 2, 3, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]);
 						if(Double.isFinite(speedlessthan3))
 							TI.setSpeedLessThan3(speedlessthan3);
@@ -281,6 +297,46 @@ public class MLearningOptimisation {
 							TI.setSpeedLargerThan10(speedlargerthan10);
 						else
 							TI.setSpeedLargerThan10(0);
+						
+						
+						
+
+						double anglelargerthan5 = statGen.getTotalFreqAt(StatsGenerator.STHETACHANGE, 0, 0.5, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]);
+						if(Double.isFinite(anglelargerthan5))
+							TI.setangleLargerThan5(anglelargerthan5);
+						else
+							TI.setangleLargerThan5(0);
+		
+						
+
+						double anglelargerthan10 = statGen.getTotalFreqAt(StatsGenerator.STHETACHANGE, 0.5, 1, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]);
+						if(Double.isFinite(anglelargerthan10))
+							TI.setangleLargerThan10(anglelargerthan10);
+						else
+							TI.setangleLargerThan10(0);
+						
+						double anglelargerthan15 = statGen.getTotalFreqAt(StatsGenerator.STHETACHANGE, 1, 1.5, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]);
+						if(Double.isFinite(anglelargerthan15))
+							TI.setangleLargerThan15(anglelargerthan15);
+						else
+							TI.setangleLargerThan15(0);
+						
+						
+						double anglelargerthan20 = statGen.getTotalFreqAt(StatsGenerator.STHETACHANGE, 1.5, 2, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]);
+						if(Double.isFinite(anglelargerthan20))
+							TI.setangleLargerThan20(anglelargerthan20);
+						else
+							TI.setangleLargerThan20(0);
+						
+						
+						double anglelargerthan25 = statGen.getTotalFreqAt(StatsGenerator.STHETACHANGE, 2, Double.POSITIVE_INFINITY, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]);
+						if(Double.isFinite(anglelargerthan20))
+							TI.setangleLargerThan10(anglelargerthan20);
+						else
+							TI.setangleLargerThan20(0);
+						
+						
+						
 						
 						TI.setX1(xbounds[j]);
 						TI.setX2(xbounds[j+1]);

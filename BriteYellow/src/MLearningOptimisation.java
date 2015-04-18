@@ -82,7 +82,7 @@ public class MLearningOptimisation {
 		
 		MLearningOptimisation ml = new MLearningOptimisation(speed, xkalm, ykalm, Interp);
 		
-		ArrayList<TrackInfo> data = ml.queryAndProcess();
+		//ArrayList<TrackInfo> data = ml.queryAndProcess();
 		/*
 		float[][] x =getCoords(data, SmartTrackInfo.TOTAVRGSPEED);
 		float[][] y = getCoords(data, SmartTrackInfo.NO_STOPS);

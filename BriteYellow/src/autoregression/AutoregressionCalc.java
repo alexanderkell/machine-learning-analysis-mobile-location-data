@@ -1,5 +1,5 @@
 package autoregression;
-import jama.*;
+import Jama.*;
 
 
 /**
@@ -142,7 +142,7 @@ public class AutoregressionCalc {
 		   	}
 			
 			Matrix matrix = new Matrix(mat);
-			Matrix coefficients = new jama.Matrix(order,1);
+			Matrix coefficients = new Jama.Matrix(order,1);
 			for(int i=0;i<order;i++){
 				coefficients.set(i, 0, coef[i]);
 			}

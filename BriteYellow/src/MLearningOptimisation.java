@@ -25,14 +25,15 @@ import graphing.*;
 
 
 public class MLearningOptimisation {
-	/*
-	public  int[] xbounds = {
+	
+	/*public  int[] xbounds = {
 		200,850
 	};
 	public  int[] ybounds = {
 		302,364
-	};
-	*/
+	};*/
+	
+	private final String WRITE_DB_NAME = "The_Big_Track_Analysis";
 	
 	private int speed, xkalm, ykalm, Interp;
 	
@@ -191,7 +192,7 @@ public class MLearningOptimisation {
 	}
 	
 	public void writeToDB(ArrayList<TrackInfo> TrackAnalysis) throws Exception{
-		DataBaseOperations DBO = new DataBaseOperations("The_Big_Track_Analysis");
+		DataBaseOperations DBO = new DataBaseOperations(WRITE_DB_NAME);
 		DBO.deleteTable();
 		DBO.createTracksTable();
 		System.out.println("Writing to Database");
@@ -303,37 +304,37 @@ public class MLearningOptimisation {
 
 						double anglelargerthan5 = statGen.getTotalFreqAt(StatsGenerator.STHETACHANGE, 0, 0.5, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]);
 						if(Double.isFinite(anglelargerthan5))
-							TI.setangleLargerThan5(anglelargerthan5);
+							TI.setAngleLargerThan5(anglelargerthan5);
 						else
-							TI.setangleLargerThan5(0);
+							TI.setAngleLargerThan5(0);
 		
 						
 
 						double anglelargerthan10 = statGen.getTotalFreqAt(StatsGenerator.STHETACHANGE, 0.5, 1, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]);
 						if(Double.isFinite(anglelargerthan10))
-							TI.setangleLargerThan10(anglelargerthan10);
+							TI.setAngleLargerThan10(anglelargerthan10);
 						else
-							TI.setangleLargerThan10(0);
+							TI.setAngleLargerThan10(0);
 						
 						double anglelargerthan15 = statGen.getTotalFreqAt(StatsGenerator.STHETACHANGE, 1, 1.5, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]);
 						if(Double.isFinite(anglelargerthan15))
-							TI.setangleLargerThan15(anglelargerthan15);
+							TI.setAngleLargerThan15(anglelargerthan15);
 						else
-							TI.setangleLargerThan15(0);
+							TI.setAngleLargerThan15(0);
 						
 						
 						double anglelargerthan20 = statGen.getTotalFreqAt(StatsGenerator.STHETACHANGE, 1.5, 2, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]);
 						if(Double.isFinite(anglelargerthan20))
-							TI.setangleLargerThan20(anglelargerthan20);
+							TI.setAngleLargerThan20(anglelargerthan20);
 						else
-							TI.setangleLargerThan20(0);
+							TI.setAngleLargerThan20(0);
 						
 						
 						double anglelargerthan25 = statGen.getTotalFreqAt(StatsGenerator.STHETACHANGE, 2, Double.POSITIVE_INFINITY, xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]);
 						if(Double.isFinite(anglelargerthan20))
-							TI.setangleLargerThan10(anglelargerthan20);
+							TI.setAngleLargerThan10(anglelargerthan20);
 						else
-							TI.setangleLargerThan20(0);
+							TI.setAngleLargerThan20(0);
 						
 						
 						

@@ -236,8 +236,13 @@ public class StatsGenerator extends ProbabilityList{
 			if(shortest_path == 0)
 				return 0;
 			// Get and return either path_length / shortest_path or time_spent / shortest_path
-			return getTotalAverage(property, xstart, xend, ystart, yend) / 
-					shortest_path;
+			if(property == PATH_PER_SHORTEST_PATH)
+				return getTotalAverage(PATH_LENGTH, xstart, xend, ystart, yend) / 
+						shortest_path;
+			else
+				return getTotalAverage(TIME_SPENT, xstart, xend, ystart, yend) / 
+						shortest_path;
+			
 			
 		} else if(property == PATH_LENGTH || property == TIME_SPENT || property == INACTIVE_TIME ||
 				property == NO_STOPS || property == TIME_STOPPED || property == STHETACHANGE ||

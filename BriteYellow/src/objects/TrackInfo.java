@@ -276,20 +276,29 @@ public class TrackInfo extends DataBaseObject {
 	public void setSTHETAINOUT(double sThetaInOut) {
 		this.sThetaInOut = sThetaInOut;
 	}
+	
+	
+	
 	@Override
 	public String toString() {
-		return "TrackInfo [id=" + id + ", pathLength=" + pathLength
-				+ ", timeStopped=" + timeStopped + ", noStops=" + noStops
-				+ ", timeSpent=" + timeSpent + ", inactiveTime=" + inactiveTime
+		return "TrackInfo [pathLength=" + pathLength + ", timeStopped="
+				+ timeStopped + ", noStops=" + noStops + ", timeSpent="
+				+ timeSpent + ", inactiveTime=" + inactiveTime
 				+ ", sThetaChange=" + sThetaChange + ", sThetaIn=" + sThetaIn
 				+ ", sThetaOut=" + sThetaOut + ", sThetaInOut=" + sThetaInOut
 				+ ", timePerStop=" + timePerStop + ", totAvrgSpeed="
 				+ totAvrgSpeed + ", timesStoppedHere=" + timesStoppedHere
 				+ ", pathPerShortest=" + pathPerShortest + ", timePerShortest="
-				+ timePerShortest + ", x1=" + x1 + ", y1=" + y1 + ", x2=" + x2
-				+ ", y2=" + y2 + ", characteristic=" + characteristic + "]";
+				+ timePerShortest + ", speedLessThan3=" + speedLessThan3
+				+ ", speedLessThan2=" + speedLessThan2 + ", speedLessThan1="
+				+ speedLessThan1 + ", anglelargerthan5=" + anglelargerthan5
+				+ ", anglelargerthan10=" + anglelargerthan10
+				+ ", anglelargerthan15=" + anglelargerthan15
+				+ ", anglelargerthan20=" + anglelargerthan20
+				+ ", speedLargerThan10=" + speedLargerThan10 + ", x1=" + x1
+				+ ", y1=" + y1 + ", x2=" + x2 + ", y2=" + y2
+				+ ", characteristic=" + characteristic + "]";
 	}
-	
 	public String toCSV() {
 		return phone_id + "," + track_no + "," + pathLength + ","
 				+ timeStopped + "," + noStops + ","
@@ -298,7 +307,16 @@ public class TrackInfo extends DataBaseObject {
 				+ "," + sThetaOut + "," + sThetaInOut
 				+ "," + timePerStop + ","
 				+ totAvrgSpeed + "," + timesStoppedHere
-				+ "," + x1 + "," + y1 + "," + x2 + "," + y2
+				+ "," + pathPerShortest + ","
+				+ timePerShortest + "," + speedLessThan3
+				+ "," + speedLessThan2 + ","
+				+ speedLessThan1 + "," + anglelargerthan5
+				+ "," + anglelargerthan10
+				+ "," + anglelargerthan15
+				+ "," + anglelargerthan20
+				+ "," + speedLargerThan10 + "," + x1
+				+ "," + y1 + "," + x2 + "," + y2
+				+ "," + characteristic
 				 ;
 	}
 	
@@ -310,7 +328,16 @@ public class TrackInfo extends DataBaseObject {
 				+ "," + sThetaOut + "," + sThetaInOut
 				+ "," + timePerStop + ","
 				+ totAvrgSpeed + "," + timesStoppedHere
-				+ "," + x1 + "," + y1 + "," + x2 + "," + y2
+				+ "," + pathPerShortest + ","
+				+ timePerShortest + "," + speedLessThan3
+				+ "," + speedLessThan2 + ","
+				+ speedLessThan1 + "," + anglelargerthan5
+				+ "," + anglelargerthan10
+				+ "," + anglelargerthan15
+				+ "," + anglelargerthan20
+				+ "," + speedLargerThan10 + "," + x1
+				+ "," + y1 + "," + x2 + "," + y2
+				+ "," + characteristic
 				 ;
 	}
 	
@@ -321,7 +348,15 @@ public class TrackInfo extends DataBaseObject {
 				+ "," + sThetaChange + "," + sThetaIn
 				+ "," + sThetaOut + "," + sThetaInOut
 				+ "," + timePerStop + ","
-				+ totAvrgSpeed + "," + timesStoppedHere;
+				+ totAvrgSpeed + "," + timesStoppedHere
+				+ "," + pathPerShortest + ","
+				+ timePerShortest + "," + speedLessThan3
+				+ "," + speedLessThan2 + ","
+				+ speedLessThan1 + "," + anglelargerthan5
+				+ "," + anglelargerthan10
+				+ "," + anglelargerthan15
+				+ "," + anglelargerthan20
+				+ "," + speedLargerThan10 + "," + characteristic;
 	}
 	
 	public String toCSVNoXYNoRef() {
@@ -331,7 +366,15 @@ public class TrackInfo extends DataBaseObject {
 				+ "," + sThetaChange + "," + sThetaIn
 				+ "," + sThetaOut + "," + sThetaInOut
 				+ "," + timePerStop + ","
-				+ totAvrgSpeed + "," + timesStoppedHere;
+				+ totAvrgSpeed + "," + timesStoppedHere
+				+ "," + pathPerShortest + ","
+				+ timePerShortest + "," + speedLessThan3
+				+ "," + speedLessThan2 + ","
+				+ speedLessThan1 + "," + anglelargerthan5
+				+ "," + anglelargerthan10
+				+ "," + anglelargerthan15
+				+ "," + anglelargerthan20
+				+ "," + speedLargerThan10 + "," + characteristic;
 	}
 	
 	

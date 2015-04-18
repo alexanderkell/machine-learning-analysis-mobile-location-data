@@ -29,8 +29,8 @@ public class TrackInfoToCSV {
 		ArrayList<String> TIString = new ArrayList<String>();
 		ArrayList<String> output = new ArrayList<String>();
 
-		//TIString.add("PHONE_ID ,TRACK_NO,PATH_LENGTH,TIME_STOPPED,NO_STOPS,TIME_SPENT,INACTIVE_TIME,STHETACHANGE,STHETAIN,STHETAOUT,STHETAINOUT,TIMEPERSTOP,TOTAVRGSPEED,TIMESSTOPPEDHERE,X1,Y1,X2,Y2\n");
-		//output.add("Businessman,Shopper,Security"+"\n");
+		TIString.add("phone_id,track_no,pathLength,timeStopped,noStops,timeSpent,inactiveTime,sThetaChange,sThetaIn,sThetaOut,sThetaInOut,timePerStop,totAvrgSpeed,timesStoppedHere,pathPerShortest,timePerShortest,speedLessThan3,speedLessThan2,speedLessThan1,anglelargerthan5,anglelargerthan10,anglelargerthan15,anglelargerthan20,speedLargerThan10,x1,y1,x2,y2,characteristic\n");
+		output.add("Businessman,Shopper,Security"+"\n");
 		String behaviour = "0,0,0\n";
 		
 		
@@ -86,15 +86,15 @@ public class TrackInfoToCSV {
 		ArrayList<TrackInfo> TI = new ArrayList<TrackInfo>();
 		ArrayList<String> TIString = new ArrayList<String>();
 		ArrayList<String> output = new ArrayList<String>();
-		String title = "PHONE_ID ,TRACK_NO,PATH_LENGTH,TIME_STOPPED,NO_STOPS,TIME_SPENT,INACTIVE_TIME,STHETACHANGE,STHETAIN,STHETAOUT,STHETAINOUT,TIMEPERSTOP,TOTAVRGSPEED,TIMESSTOPPEDHERE,X1,Y1,X2,Y2";
-		String titlewithout = ",PATH_LENGTH,TIME_STOPPED,NO_STOPS,TIME_SPENT,INACTIVE_TIME,STHETACHANGE,STHETAIN,STHETAOUT,STHETAINOUT,TIMEPERSTOP,TOTAVRGSPEED,TIMESSTOPPEDHERE,X1,Y1,X2,Y2";
+		String title = "phone_id,track_no,pathLength,timeStopped,noStops,timeSpent,inactiveTime,sThetaChange,sThetaIn,sThetaOut,sThetaInOut,timePerStop,totAvrgSpeed,timesStoppedHere,pathPerShortest,timePerShortest,speedLessThan3,speedLessThan2,speedLessThan1,anglelargerthan5,anglelargerthan10,anglelargerthan15,anglelargerthan20,speedLargerThan10,x1,y1,x2,y2,characteristic";
+		String titlewithout = ",pathLength,timeStopped,noStops,timeSpent,inactiveTime,sThetaChange,sThetaIn,sThetaOut,sThetaInOut,timePerStop,totAvrgSpeed,timesStoppedHere,pathPerShortest,timePerShortest,speedLessThan3,speedLessThan2,speedLessThan1,anglelargerthan5,anglelargerthan10,anglelargerthan15,anglelargerthan20,speedLargerThan10,x1,y1,x2,y2,characteristic";
 		
-		for(int i = 0; i < 15; i++){
+		for(int i = 0; i < 14; i++){
 			title += titlewithout;
 		}
 		
-		//TIString.add(title + "\n");
-		//output.add("Businessman,Shopper,Security"+"\n");
+		TIString.add(title + "\n");
+		output.add("Businessman,Shopper,Security"+"\n");
 		
 		String behaviour = "0,0,0\n";
 		String temp = new String();
@@ -165,15 +165,15 @@ public class TrackInfoToCSV {
 		ArrayList<TrackInfo> TI = new ArrayList<TrackInfo>();
 		ArrayList<String> TIString = new ArrayList<String>();
 		ArrayList<String> output = new ArrayList<String>();
-		String title = "PHONE_ID ,TRACK_NO,PATH_LENGTH,TIME_STOPPED,NO_STOPS,TIME_SPENT,INACTIVE_TIME,STHETACHANGE,STHETAIN,STHETAOUT,STHETAINOUT,TIMEPERSTOP,TOTAVRGSPEED,TIMESSTOPPEDHERE";
-		String titlewithout = ",PATH_LENGTH,TIME_STOPPED,NO_STOPS,TIME_SPENT,INACTIVE_TIME,STHETACHANGE,STHETAIN,STHETAOUT,STHETAINOUT,TIMEPERSTOP,TOTAVRGSPEED,TIMESSTOPPEDHERE";
+		String title = "phone_id,track_no,pathLength,timeStopped,noStops,timeSpent,inactiveTime,sThetaChange,sThetaIn,sThetaOut,sThetaInOut,timePerStop,totAvrgSpeed,timesStoppedHere,pathPerShortest,timePerShortest,speedLessThan3,speedLessThan2,speedLessThan1,anglelargerthan5,anglelargerthan10,anglelargerthan15,anglelargerthan20,speedLargerThan10,characteristic";
+		String titlewithout = ",pathLength,timeStopped,noStops,timeSpent,inactiveTime,sThetaChange,sThetaIn,sThetaOut,sThetaInOut,timePerStop,totAvrgSpeed,timesStoppedHere,pathPerShortest,timePerShortest,speedLessThan3,speedLessThan2,speedLessThan1,anglelargerthan5,anglelargerthan10,anglelargerthan15,anglelargerthan20,speedLargerThan10,characteristic";
 		
-		for(int i = 0; i < 15; i++){
+		for(int i = 0; i < 14; i++){
 			title += titlewithout;
 		}
 		
-		//TIString.add(title + "\n");
-		//output.add("Businessman,Shopper,Security"+"\n");
+		TIString.add(title + "\n");
+		output.add("Businessman,Shopper,Security"+"\n");
 		
 		String behaviour = "0,0,0\n";
 		String temp = new String();

@@ -61,31 +61,31 @@ public class TrackInfo extends DataBaseObject {
 	}
 
 	@DynamoDBAttribute (attributeName = "AngleBelow5")
-	public double getanglelargerthan5() {
+	public double getAngleLargerThan5() {
 		return anglelargerthan5;
 	}
-	public void setangleLargerThan5(double anglelargerthan5) {
+	public void setAngleLargerThan5(double anglelargerthan5) {
 		this.anglelargerthan5 = anglelargerthan5;
 	}
 	@DynamoDBAttribute (attributeName = "AngleBelow10")
-	public double getangleLargerThan10() {
+	public double getAngleLargerThan10() {
 		return anglelargerthan10;
 	}
-	public void setangleLargerThan10(double anglelargerthan10) {
+	public void setAngleLargerThan10(double anglelargerthan10) {
 		this.anglelargerthan10 = anglelargerthan10;
 	}
 	@DynamoDBAttribute (attributeName = "AngleBelow15")
-	public double getangleLargerThan15() {
+	public double getAngleLargerThan15() {
 		return anglelargerthan15;
 	}
-	public void setangleLargerThan15(double anglelargerthan15) {
+	public void setAngleLargerThan15(double anglelargerthan15) {
 		this.anglelargerthan15 = anglelargerthan15;
 	}
 	@DynamoDBAttribute (attributeName = "AngleBelow20")
-	public double getangleLargerThan20() {
+	public double getAngleLargerThan20() {
 		return anglelargerthan20;
 	}
-	public void setangleLargerThan20(double anglelargerthan20) {
+	public void setAngleLargerThan20(double anglelargerthan20) {
 		this.anglelargerthan20 = anglelargerthan20;
 	}
 	

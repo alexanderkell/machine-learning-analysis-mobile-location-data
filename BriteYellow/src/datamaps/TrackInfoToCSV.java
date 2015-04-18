@@ -29,8 +29,8 @@ public class TrackInfoToCSV {
 		ArrayList<String> TIString = new ArrayList<String>();
 		ArrayList<String> output = new ArrayList<String>();
 
-		TIString.add("PHONE_ID ,TRACK_NO,PATH_LENGTH,TIME_STOPPED,NO_STOPS,TIME_SPENT,INACTIVE_TIME,STHETACHANGE,STHETAIN,STHETAOUT,STHETAINOUT,TIMEPERSTOP,TOTAVRGSPEED,TIMESSTOPPEDHERE,X1,Y1,X2,Y2\n");
-		output.add("Businessman,Shopper,Security"+"\n");
+		//TIString.add("PHONE_ID ,TRACK_NO,PATH_LENGTH,TIME_STOPPED,NO_STOPS,TIME_SPENT,INACTIVE_TIME,STHETACHANGE,STHETAIN,STHETAOUT,STHETAINOUT,TIMEPERSTOP,TOTAVRGSPEED,TIMESSTOPPEDHERE,X1,Y1,X2,Y2\n");
+		//output.add("Businessman,Shopper,Security"+"\n");
 		String behaviour = "0,0,0\n";
 		
 		
@@ -93,8 +93,8 @@ public class TrackInfoToCSV {
 			title += titlewithout;
 		}
 		
-		TIString.add(title + "\n");
-		output.add("Businessman,Shopper,Security"+"\n");
+		//TIString.add(title + "\n");
+		//output.add("Businessman,Shopper,Security"+"\n");
 		
 		String behaviour = "0,0,0\n";
 		String temp = new String();
@@ -172,8 +172,8 @@ public class TrackInfoToCSV {
 			title += titlewithout;
 		}
 		
-		TIString.add(title + "\n");
-		output.add("Businessman,Shopper,Security"+"\n");
+		//TIString.add(title + "\n");
+		//output.add("Businessman,Shopper,Security"+"\n");
 		
 		String behaviour = "0,0,0\n";
 		String temp = new String();

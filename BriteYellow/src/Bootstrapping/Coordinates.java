@@ -4,13 +4,20 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 public class Coordinates implements Serializable {
-	
+
 	double x;
 	double y;
+	int track;
 	long tsLong;
 	int character;
 	Timestamp timestamp;
 	
+	public int getTrack() {
+		return track;
+	}
+	public void setTrack(int track) {
+		this.track = track;
+	}
 	public double getX() {
 		return x;
 	}

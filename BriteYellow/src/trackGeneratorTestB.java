@@ -14,7 +14,7 @@ public class trackGeneratorTestB {
 	public static void main(String args[]) throws Exception{
 		
 		
-		System.out.println("How many points would you like to generate?");
+		System.out.println("How many tracks would you like to generate?");
 		Scanner sc = new Scanner(System.in);
 		int x = sc.nextInt();
 		for(int i = 0; i<3; i++){	
@@ -43,37 +43,44 @@ public class trackGeneratorTestB {
 			//xyp.plot(cumSpeed[0], cumSpeed[1], cumSpeed[0], cumSpeed[1], cumSpeed[0], cumSpeed[1], "Cumulative Speed Distribution", "Cumulative Speed Distribution - Shopper", "Speed (coordinates/sec)", "Cumulative Probability", "5");	
 			xyp.plot(cumAngle[0], cumAngle[1], cumAngle[0], cumAngle[1], cumAngle[0], cumAngle[1], "Cumulative Angle Distribution", "Cumulative Angle Distribution - Shopper", "Angle (rad)", "Cumulative Probability", "5");
 	*/
-		
 			coordinatesGenerator test = new coordinatesGenerator();
-			int numberofPoints = x;
-			ArrayList<Coordinates> path = test.generatePath(cumSpeed, cumAngle, numberofPoints);
-	
+			int numberofTracks = x;
+			ArrayList<Coordinates> path = new ArrayList<Coordinates>();
+			for(int j=0; j<numberofTracks; j++){
+				ArrayList<Coordinates> track = test.generatePath(cumSpeed, cumAngle, 1000, j);
+				if(track.get(track.size()-1).getX() < 364 && track.get(track.size()-1).getX() > 302){
+					path.addAll(track);
+				}else
+					j--;	
+			}
 			CoordinatestoPhoneData one = new CoordinatestoPhoneData();
 			PhoneData[] pdArray = one.convertToPhoneData(path, type1[i]);
-			DataGetter dg = new DataGetter(pdArray);
+			//DataGetter dg = new DataGetter(pdArray);
 			System.out.println("Hi!");
-			PhoneData[] fullPhoneData = dg.getFullPhoneData();
-			MLearningOptimisation mlo = new MLearningOptimisation(200, 0, 0, 0);
-			System.out.println("Creating Track Stats");
-			ArrayList<TrackInfo> TrackAnalysis = mlo.writeTrackStats(fullPhoneData);
+			//PhoneData[] fullPhoneData = dg.getFullPhoneData();
+			//MLearningOptimisation mlo = new MLearningOptimisation(200, 0, 0, 0);
+			//System.out.println("Creating Track Stats");
+			
+			//ArrayList<TrackInfo> TrackAnalysis = mlo.writeTrackStats(fullPhoneData);
 			//ArrayList<TrackInfo> trackAnTot = new ArrayList<TrackInfo>();
 			//trackAnTot.addAll(TrackAnalysis);
 			System.out.println("Writing to DB");
-			writeToDB(TrackAnalysis);
-	}
+			//writeToDB(TrackAnalysis);
+	
+			
 		
+			double x1[] = new double[path.size()];
+			double y[] = new double[path.size()];
+			for(int i1 = 0; i1<path.size(); i1++){
+				//System.out.println("Time: "+path.get(i).timestamp+"s Coordinate: "+path.get(i).getX()+", "+path.get(i).getY());
+				x1[i1] = path.get(i1).getX();
+				y[i1] = path.get(i1).getY();
+			}
 		
-		
-	/*	
-		double x[] = new double[path.size()];
-		double y[] = new double[path.size()];
-		for(int i = 0; i<path.size(); i++){
-			//System.out.println("Time: "+path.get(i).timestamp+"s Coordinate: "+path.get(i).getX()+", "+path.get(i).getY());
-			x[i] = path.get(i).getX();
-			y[i] = path.get(i).getY();
+		XYPlot xyp = new XYPlot();
+		//xyp.plot(cumSpeed[0], cumSpeed[1], cumSpeed[0], cumSpeed[1], cumSpeed[0], cumSpeed[1], "Cumulative Speed Distribution", "Cumulative Speed Distribution - Shopper", "Speed (coordinates/sec)", "Cumulative Probability", "5");	
+		xyp.plot(x1, y, x1, y, x1, y, "Cumulative Angle Distribution", "Cumulative Angle Distribution - Shopper", "Angle (rad)", "Cumulative Probability", "5");
 		}
-		
-		*/
 		
 //		System.out.println("hi");
 	}

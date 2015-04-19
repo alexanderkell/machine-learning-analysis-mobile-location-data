@@ -19,6 +19,7 @@ public class CoordinatestoPhoneData {
 			pd[i].z = 0;
 			pd[i].phone_id = phoneID;
 			pd[i].ts = co.get(i).timestamp;
+			pd[i].track_no = co.get(i).track;
 		}
 		return pd;
 	}

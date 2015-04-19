@@ -181,16 +181,25 @@ public class coordinatesGenerator {
 		double x_new = x+newX;
 		double y_new = y+newY;
 		long time_new = time+1000;
+		double stop=0;
 		if(y_new < 302 || y_new > 364){ //Reflect if bigger than shop
-			double[] coordsCh = reachLimit(last,1);
-			ArrayList<Coordinates> ret = createBoundPoint(last, coordsCh[0], coordsCh[1], Track);
-			return ret;
+			stop++;
+			if(stop < 20){
+				double[] coordsCh = reachLimit(last,1);
+				ArrayList<Coordinates> ret = createBoundPoint(last, coordsCh[0], coordsCh[1], Track);
+				return ret;
+			}
+				
 		}
+			
 
 		if(x < 180 || x > 900){
-			double[] coordsCh = reachLimit(last,2);
-			ArrayList<Coordinates> ret = createBoundPoint(last, coordsCh[0], coordsCh[1], Track);
-			return ret;
+			stop++;
+			if(stop < 20){
+				double[] coordsCh = reachLimit(last,2);
+				ArrayList<Coordinates> ret = createBoundPoint(last, coordsCh[0], coordsCh[1], Track);
+				return ret;
+			}
 		}
 		co.setX(x_new);
 		co.setY(y_new);

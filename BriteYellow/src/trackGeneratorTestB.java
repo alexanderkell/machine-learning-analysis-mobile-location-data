@@ -87,14 +87,11 @@ public class trackGeneratorTestB {
 	
 	public static void writeToDB(ArrayList<TrackInfo> TrackAnalysis) throws Exception{
 		DataBaseOperations DBO = new DataBaseOperations("Generated_Track_Store");
-		DBO.deleteTable();
+		//DBO.deleteTable();
 		System.out.println("Creating Track Table");
 		DBO.createTracksTable();
 		System.out.println("Writing to Database");
 		DBO.batchWrite(TrackAnalysis);
 		System.out.println("Write complete");
-	}
-	
-	
-	
+	}	
 }

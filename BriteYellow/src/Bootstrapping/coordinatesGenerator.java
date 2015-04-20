@@ -92,16 +92,14 @@ public class coordinatesGenerator {
 		DataGetter dg = new DataGetter(pdArray);
 		
 		PhoneData[] fullPhoneData = dg.getFullPhoneData();
-		for(int i =0; i<fullPhoneData.length; i++){
-		System.out.print(fullPhoneData[i].x+" "+fullPhoneData[i].track_no+"| ");
-		}
+		
 		System.out.println("Creating Track Stats");
-		//Mlearning mlo = new Mlearning(200, 0, 0, 0);
-		//ArrayList<TrackInfo> TrackAnalysis = mlo.writeTrackStats(fullPhoneData);
+		Mlearning mlo = new Mlearning(200, 0, 0, 0);
+		ArrayList<TrackInfo> TrackAnalysis = mlo.writeTrackStats(fullPhoneData);
 		//ArrayList<TrackInfo> trackAnTot = new ArrayList<TrackInfo>();
 		//trackAnTot.addAll(TrackAnalysis);
 		System.out.println("Writing to DB");
-		//writeToDB(TrackAnalysis);
+		writeToDB(TrackAnalysis);
 		
 		
 		XYPlot xyp = new XYPlot();
@@ -183,23 +181,18 @@ public class coordinatesGenerator {
 		long time_new = time+1000;
 		double stop=0;
 		if(y_new < 302 || y_new > 364){ //Reflect if bigger than shop
-			stop++;
-			if(stop < 20){
+			y_new=y-newY;
+			/*
 				double[] coordsCh = reachLimit(last,1);
 				ArrayList<Coordinates> ret = createBoundPoint(last, coordsCh[0], coordsCh[1], Track);
 				return ret;
-			}
-				
+			}	
+			*/	
 		}
 			
 
-		if(x < 180 || x > 900){
-			stop++;
-			if(stop < 20){
-				double[] coordsCh = reachLimit(last,2);
-				ArrayList<Coordinates> ret = createBoundPoint(last, coordsCh[0], coordsCh[1], Track);
-				return ret;
-			}
+		if(x < 180 || x > 910){
+			x_new=x-newX;
 		}
 		co.setX(x_new);
 		co.setY(y_new);
@@ -239,7 +232,7 @@ public class coordinatesGenerator {
 		Coordinates coord = new Coordinates();
 		Coordinates coord1 = new Coordinates();
 		double seed = Math.random(); //Decides which side track starts from
-		int plus = 100000000*i;
+		int plus = 10000000*i;
 		int first_Y = randInt(302,364);
 		if(seed<0.5){
 			coord.setX(198); //Set person at far left of corridor

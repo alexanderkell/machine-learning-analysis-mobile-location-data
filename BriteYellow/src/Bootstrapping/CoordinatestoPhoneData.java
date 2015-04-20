@@ -13,7 +13,6 @@ public class CoordinatestoPhoneData {
 		for(int i = 0; i<co.size(); i++){
 			pd[i] = new PhoneData();
 //			pd[i].ts = co.get(i).getTimestamp();
-			System.out.println(co.get(i).x);
 			pd[i].x = co.get(i).x;
 			pd[i].y = co.get(i).y;
 			pd[i].z = 0;

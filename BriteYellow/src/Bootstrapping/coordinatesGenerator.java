@@ -64,7 +64,7 @@ public class coordinatesGenerator {
 		
 		ArrayList<Coordinates> path = new ArrayList<Coordinates>();
 		for(int j=0; j<200; j++){
-			ArrayList<Coordinates> track = test.generatePath(cumSpeed, cumAngle, 1000, j);
+			ArrayList<Coordinates> track = test.generatePath(cumSpeed, cumAngle, 1000, j, path);
 			if(track.get(track.size()-1).getY() < 364 && track.get(track.size()-1).getY() > 302){
 				path.addAll(track);
 				
@@ -107,10 +107,10 @@ public class coordinatesGenerator {
 	}
 	
 	
-	public ArrayList<Coordinates> generatePath(double[][] cumSpeed, double[][] cumAngle, int numberofPoints, int pathNo){
+	public ArrayList<Coordinates> generatePath(double[][] cumSpeed, double[][] cumAngle, int numberofPoints, int pathNo, ArrayList<Coordinates> previous){
 		ArrayList<Coordinates> track = new ArrayList<Coordinates>();
 		ArrayList<Coordinates> xy = new ArrayList();
-		ArrayList<Coordinates> first = firstPoint(xy, pathNo);	
+		ArrayList<Coordinates> first = firstPoint(xy, pathNo, previous);	
 		
 		double randSpeed = returnRandomCumulative(cumSpeed);
 		double randAngle = returnRandomCumulative(cumAngle);
@@ -228,23 +228,28 @@ public class coordinatesGenerator {
 	
 
 
-	public ArrayList<Coordinates> firstPoint(ArrayList<Coordinates> xy, int i){
+	public ArrayList<Coordinates> firstPoint(ArrayList<Coordinates> xy, int i, ArrayList<Coordinates> previous){
 		Coordinates coord = new Coordinates();
 		Coordinates coord1 = new Coordinates();
 		double seed = Math.random(); //Decides which side track starts from
-		int plus = 10000000*i;
+		Long plus;
+		try{
+			Long prev = previous.get(previous.size()-1).getTsLong();
+			plus = previous.get(previous.size()-1).tsLong;
+		}catch(ArrayIndexOutOfBoundsException e){
+			plus = (long) 1429536401;
+		}
 		int first_Y = randInt(302,364);
 		if(seed<0.5){
 			coord.setX(198); //Set person at far left of corridor
 			coord.setY(first_Y); //Decides at what y value we start from
-			Timestamp time;
 			coord.setTimestamp(plus);
 			coord.setTsLong(plus);
 			xy.add(coord);
 			coord1.setX(200); //Set person at far left of corridor
 			coord1.setY(first_Y); //Decides at what y value we start from
-			coord1.setTimestamp(plus+1);
-			coord1.setTsLong(plus+1);
+			coord1.setTimestamp(plus+1000);
+			coord1.setTsLong(plus+1000);
 			
 			xy.add(coord1);
 			
@@ -256,8 +261,8 @@ public class coordinatesGenerator {
 			xy.add(coord);
 			coord1.setX(900);
 			coord1.setY(first_Y);
-			coord1.setTimestamp(plus+1);
-			coord1.setTsLong(plus+1);
+			coord1.setTimestamp(plus+1000);
+			coord1.setTsLong(plus+1000);
 			xy.add(coord1);
 		}
 		return xy;

@@ -41,7 +41,7 @@ public class trackGeneratorTestB {
 			
 			ArrayList<Coordinates> path = new ArrayList<Coordinates>();
 			for(int j=0; j<numberofTracks; j++){
-				ArrayList<Coordinates> track = test.generatePath(cumSpeed, cumAngle, 1000, j);
+				ArrayList<Coordinates> track = test.generatePath(cumSpeed, cumAngle, 1000, j, path);
 				//if(track.get(track.size()-1).getY() < 364 && track.get(track.size()-1).getY() > 302){
 					path.addAll(track);
 				//}else
@@ -53,7 +53,6 @@ public class trackGeneratorTestB {
 			CoordinatestoPhoneData one = new CoordinatestoPhoneData();
 			PhoneData[] pdArray = one.convertToPhoneData(path, type1[i]);
 			DataGetter dg = new DataGetter(pdArray);
-			System.out.println("Hi!");
 			PhoneData[] fullPhoneData = dg.getFullPhoneData();
 			MLearningOptimisation mlo = new MLearningOptimisation(200, 0, 0, 0);
 			System.out.println("Creating Track Stats");

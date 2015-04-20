@@ -9,7 +9,7 @@ import dynamodb.DataBaseQueries;
 
 public class TrackInfoToCSV {
 	
-	final static String TABLE_NAME = "Generated_Track_Store";
+	final static String TABLE_NAME = "Generated_Track_Store_Whole_Corridor";
 	final static String FILE_LOCATION = "trackdatanew";
 	
 	public static void main(String[] args) throws Exception{

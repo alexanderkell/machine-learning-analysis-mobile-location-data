@@ -192,7 +192,7 @@ public class MLearningOptimisation {
 	}
 	
 	public void writeToDB(ArrayList<TrackInfo> TrackAnalysis) throws Exception{
-		DataBaseOperations DBO = new DataBaseOperations(WRITE_DB_NAME);
+		DataBaseOperations DBO = new DataBaseOperations("Generated_Track_Just_Corridor");
 		DBO.deleteTable();
 		DBO.createTracksTable();
 		System.out.println("Writing to Database");

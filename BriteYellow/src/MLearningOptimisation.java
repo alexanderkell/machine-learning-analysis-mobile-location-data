@@ -26,26 +26,26 @@ import graphing.*;
 
 public class MLearningOptimisation {
 	
-	/*public  int[] xbounds = {
+	public  int[] xbounds = {
 		200,850
 	};
 	public  int[] ybounds = {
 		302,364
-	};*/
+	};
 	
 	private final String WRITE_DB_NAME = "The_Big_Track_Analysis";
 	
 	private int speed, xkalm, ykalm, Interp;
 	
 	public FilterMain filtering;
-	
+	/*
 	public int[] xbounds = {
 		200,330,460,590,720,850
 	};
 	public int[] ybounds = {
 		302,322,344,364
 	};
-	
+	*/
 	
 	public int[] property = {
 		StatsGenerator.PATH_LENGTH,	//gettotalaverage

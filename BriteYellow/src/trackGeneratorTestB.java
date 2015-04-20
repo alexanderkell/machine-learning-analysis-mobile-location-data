@@ -13,11 +13,10 @@ import Bootstrapping.*;
 public class trackGeneratorTestB {
 	public static void main(String args[]) throws Exception{
 		
-		
 		System.out.println("How many tracks would you like to generate?");
 		Scanner sc = new Scanner(System.in);
 		int x1 = sc.nextInt();
-		for(int i = 0; i<3; i++){	
+		for(int i = 2; i<3; i++){
 			MLearningOptimisation MLOp = new MLearningOptimisation(200, 10, 10, 2);
 			String type1[] = new String[3];
 			type1[0] = "ZX1B23QBS53771758c578bbd85"; //Security
@@ -52,12 +51,13 @@ public class trackGeneratorTestB {
 		
 			CoordinatestoPhoneData one = new CoordinatestoPhoneData();
 			PhoneData[] pdArray = one.convertToPhoneData(path, type1[i]);
-			DataGetter dg = new DataGetter(pdArray);
-			PhoneData[] fullPhoneData = dg.getFullPhoneData();
+			//DataGetter dg = new DataGetter(pdArray);
+			//PhoneData[] fullPhoneData = dg.getFullPhoneData();
 			MLearningOptimisation mlo = new MLearningOptimisation(200, 0, 0, 0);
 			System.out.println("Creating Track Stats");
 			
-			ArrayList<TrackInfo> TrackAnalysis = mlo.writeTrackStats(fullPhoneData);
+			//ArrayList<TrackInfo> TrackAnalysis = mlo.writeTrackStats(fullPhoneData);
+			ArrayList<TrackInfo> TrackAnalysis = mlo.writeTrackStats(pdArray);
 			ArrayList<TrackInfo> trackAnTot = new ArrayList<TrackInfo>();
 			trackAnTot.addAll(TrackAnalysis);
 			System.out.println("Writing to DB");
@@ -73,13 +73,13 @@ public class trackGeneratorTestB {
 				y[i1] = path.get(i1).getY();
 			}
 		
-		XYPlot xyp = new XYPlot();
+		//XYPlot xyp = new XYPlot();
 		//xyp.plot(cumSpeed[0], cumSpeed[1], cumSpeed[0], cumSpeed[1], cumSpeed[0], cumSpeed[1], "Cumulative Speed Distribution", "Cumulative Speed Distribution - Shopper", "Speed (coordinates/sec)", "Cumulative Probability", "5");	
-		xyp.plot(x2, y, x2, y, x2, y, "Cumulative Angle Distribution", "Cumulative Angle Distribution - Shopper", "Angle (rad)", "Cumulative Probability", "5");
+		//xyp.plot(x2, y, x2, y, x2, y, "Cumulative Angle Distribution", "Cumulative Angle Distribution - Shopper", "Angle (rad)", "Cumulative Probability", "5");
 		}
-		
-//		System.out.println("hi");
 	}
+//		System.out.println("hi");
+	
 	
 	public static void writeToDB(ArrayList<TrackInfo> TrackAnalysis) throws Exception{
 		DataBaseOperations DBO = new DataBaseOperations("Generated_Track_Store");

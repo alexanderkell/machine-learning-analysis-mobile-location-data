@@ -316,7 +316,6 @@ public class TrackInfo extends DataBaseObject {
 				+ "," + anglelargerthan20
 				+ "," + speedLargerThan10 + "," + x1
 				+ "," + y1 + "," + x2 + "," + y2
-				+ "," + characteristic
 				 ;
 	}
 	
@@ -337,7 +336,6 @@ public class TrackInfo extends DataBaseObject {
 				+ "," + anglelargerthan20
 				+ "," + speedLargerThan10 + "," + x1
 				+ "," + y1 + "," + x2 + "," + y2
-				+ "," + characteristic
 				 ;
 	}
 	
@@ -356,7 +354,7 @@ public class TrackInfo extends DataBaseObject {
 				+ "," + anglelargerthan10
 				+ "," + anglelargerthan15
 				+ "," + anglelargerthan20
-				+ "," + speedLargerThan10 + "," + characteristic;
+				+ "," + speedLargerThan10;
 	}
 	
 	public String toCSVNoXYNoRef() {
@@ -374,7 +372,7 @@ public class TrackInfo extends DataBaseObject {
 				+ "," + anglelargerthan10
 				+ "," + anglelargerthan15
 				+ "," + anglelargerthan20
-				+ "," + speedLargerThan10 + "," + characteristic;
+				+ "," + speedLargerThan10;
 	}
 	
 	

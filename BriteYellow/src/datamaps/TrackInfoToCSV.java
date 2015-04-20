@@ -9,7 +9,7 @@ import dynamodb.DataBaseQueries;
 
 public class TrackInfoToCSV {
 	
-	final static String TABLE_NAME = "Whole_Corridor_Track_Analysis";
+	final static String TABLE_NAME = "Generated_Track_Store";
 	final static String FILE_LOCATION = "trackdatanew";
 	
 	public static void main(String[] args) throws Exception{
@@ -29,7 +29,7 @@ public class TrackInfoToCSV {
 		ArrayList<String> TIString = new ArrayList<String>();
 		ArrayList<String> output = new ArrayList<String>();
 
-		TIString.add("phone_id,track_no,pathLength,timeStopped,noStops,timeSpent,inactiveTime,sThetaChange,sThetaIn,sThetaOut,sThetaInOut,timePerStop,totAvrgSpeed,timesStoppedHere,pathPerShortest,timePerShortest,speedLessThan3,speedLessThan2,speedLessThan1,anglelargerthan5,anglelargerthan10,anglelargerthan15,anglelargerthan20,speedLargerThan10,x1,y1,x2,y2,characteristic\n");
+		TIString.add("phone_id,track_no,pathLength,timeStopped,noStops,timeSpent,inactiveTime,sThetaChange,sThetaIn,sThetaOut,sThetaInOut,timePerStop,totAvrgSpeed,timesStoppedHere,pathPerShortest,timePerShortest,speedLessThan3,speedLessThan2,speedLessThan1,anglelargerthan5,anglelargerthan10,anglelargerthan15,anglelargerthan20,speedLargerThan10,x1,y1,x2,y2\n");
 		output.add("Businessman,Shopper,Security"+"\n");
 		String behaviour = "0,0,0\n";
 		
@@ -86,8 +86,8 @@ public class TrackInfoToCSV {
 		ArrayList<TrackInfo> TI = new ArrayList<TrackInfo>();
 		ArrayList<String> TIString = new ArrayList<String>();
 		ArrayList<String> output = new ArrayList<String>();
-		String title = "phone_id,track_no,pathLength,timeStopped,noStops,timeSpent,inactiveTime,sThetaChange,sThetaIn,sThetaOut,sThetaInOut,timePerStop,totAvrgSpeed,timesStoppedHere,pathPerShortest,timePerShortest,speedLessThan3,speedLessThan2,speedLessThan1,anglelargerthan5,anglelargerthan10,anglelargerthan15,anglelargerthan20,speedLargerThan10,x1,y1,x2,y2,characteristic";
-		String titlewithout = ",pathLength,timeStopped,noStops,timeSpent,inactiveTime,sThetaChange,sThetaIn,sThetaOut,sThetaInOut,timePerStop,totAvrgSpeed,timesStoppedHere,pathPerShortest,timePerShortest,speedLessThan3,speedLessThan2,speedLessThan1,anglelargerthan5,anglelargerthan10,anglelargerthan15,anglelargerthan20,speedLargerThan10,x1,y1,x2,y2,characteristic";
+		String title = "phone_id,track_no,pathLength,timeStopped,noStops,timeSpent,inactiveTime,sThetaChange,sThetaIn,sThetaOut,sThetaInOut,timePerStop,totAvrgSpeed,timesStoppedHere,pathPerShortest,timePerShortest,speedLessThan3,speedLessThan2,speedLessThan1,anglelargerthan5,anglelargerthan10,anglelargerthan15,anglelargerthan20,speedLargerThan10,x1,y1,x2,y2";
+		String titlewithout = ",pathLength,timeStopped,noStops,timeSpent,inactiveTime,sThetaChange,sThetaIn,sThetaOut,sThetaInOut,timePerStop,totAvrgSpeed,timesStoppedHere,pathPerShortest,timePerShortest,speedLessThan3,speedLessThan2,speedLessThan1,anglelargerthan5,anglelargerthan10,anglelargerthan15,anglelargerthan20,speedLargerThan10,x1,y1,x2,y2";
 		
 		for(int i = 0; i < 14; i++){
 			title += titlewithout;
@@ -165,8 +165,8 @@ public class TrackInfoToCSV {
 		ArrayList<TrackInfo> TI = new ArrayList<TrackInfo>();
 		ArrayList<String> TIString = new ArrayList<String>();
 		ArrayList<String> output = new ArrayList<String>();
-		String title = "phone_id,track_no,pathLength,timeStopped,noStops,timeSpent,inactiveTime,sThetaChange,sThetaIn,sThetaOut,sThetaInOut,timePerStop,totAvrgSpeed,timesStoppedHere,pathPerShortest,timePerShortest,speedLessThan3,speedLessThan2,speedLessThan1,anglelargerthan5,anglelargerthan10,anglelargerthan15,anglelargerthan20,speedLargerThan10,characteristic";
-		String titlewithout = ",pathLength,timeStopped,noStops,timeSpent,inactiveTime,sThetaChange,sThetaIn,sThetaOut,sThetaInOut,timePerStop,totAvrgSpeed,timesStoppedHere,pathPerShortest,timePerShortest,speedLessThan3,speedLessThan2,speedLessThan1,anglelargerthan5,anglelargerthan10,anglelargerthan15,anglelargerthan20,speedLargerThan10,characteristic";
+		String title = "phone_id,track_no,pathLength,timeStopped,noStops,timeSpent,inactiveTime,sThetaChange,sThetaIn,sThetaOut,sThetaInOut,timePerStop,totAvrgSpeed,timesStoppedHere,pathPerShortest,timePerShortest,speedLessThan3,speedLessThan2,speedLessThan1,anglelargerthan5,anglelargerthan10,anglelargerthan15,anglelargerthan20,speedLargerThan10";
+		String titlewithout = ",pathLength,timeStopped,noStops,timeSpent,inactiveTime,sThetaChange,sThetaIn,sThetaOut,sThetaInOut,timePerStop,totAvrgSpeed,timesStoppedHere,pathPerShortest,timePerShortest,speedLessThan3,speedLessThan2,speedLessThan1,anglelargerthan5,anglelargerthan10,anglelargerthan15,anglelargerthan20,speedLargerThan10";
 		
 		for(int i = 0; i < 14; i++){
 			title += titlewithout;

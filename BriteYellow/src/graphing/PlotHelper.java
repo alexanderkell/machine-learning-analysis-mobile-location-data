@@ -82,6 +82,13 @@ public class PlotHelper extends JFrame {
         chartPanel.setPreferredSize(new Dimension(chart_width, chart_height));
     }
 
+    /**PlotHelper constructor
+     * 
+     * @param title
+     * @param xaxis
+     * @param yaxis
+     * @param str_labels
+     */
     public PlotHelper(String title, String xaxis, String yaxis, String[] str_labels) {
         this(title, xaxis, yaxis, str_labels, DEFAULT_CHART_WIDTH, DEFAULT_CHART_HEIGHT);
     }

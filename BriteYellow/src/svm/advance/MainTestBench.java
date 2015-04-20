@@ -10,7 +10,7 @@ import csvexport.CSVWriter;
 public class MainTestBench {
 
 	// File containing the track analysis data
-	final static String filename = "The_Big_Track_Analysis\\trackdatafiles\\input.csv";
+	final static String filename = "Whole_Corridor_Track_Analysis\\trackdatanew\\input3.csv";
 
 	// For filtering track with x y bounds
 	final static int[][] xy = new int[][]{
@@ -18,14 +18,17 @@ public class MainTestBench {
 			{850,364}
 	};
 	// For PCA analysis
-	final static int pca_dimension = 6;
+	final static int pca_dimension = 3;
 	final static int[] pca_columns = new int[]{
-			2,4
+			1,3
 	};
 	// 1,3
 	// For normal analysis
-	final static String[] cols = new String[]{
-		"TIMESSTOPPEDHERE","TOTAVRGSPEED"
+/*	final static String[] cols = new String[]{
+		"pathLength","timeStopped","noStops","timeSpent","inactiveTime","sThetaChange","sThetaIn","sThetaOut","sThetaInOut","timePerStop","totAvrgSpeed","timesStoppedHere","pathPerShortest","timePerShortest","speedLessThan3","speedLessThan2","speedLessThan1","anglelargerthan5","anglelargerthan10","anglelargerthan15","anglelargerthan20","speedLargerThan10"
+	};
+*/	final static String[] cols = new String[]{
+		"pathLength","timeSpent","sThetaChange","timePerStop","totAvrgSpeed","timesStoppedHere","pathPerShortest","timePerShortest","speedLessThan3","speedLessThan2","speedLessThan1","anglelargerthan5","anglelargerthan10","anglelargerthan15","anglelargerthan20","speedLargerThan10"
 	};
 		
 	/**
@@ -40,17 +43,20 @@ public class MainTestBench {
 		String[] types = tir.getTypes();
 		double[][] data = tir.getData();
 
-//		plot(types,data,tir);
-		
 		
 //		write(types,data);
 //		plot(types,data,tir);
-		plot(types,data, tir,pca_columns);
+//		plot(types,data, tir,pca_columns);
+		predict(types,data,tir);
 	}
 	
 	public static void plot(String[] types, double[][] data, TrackInfoReader tir, int... columns) throws IOException{
 		// For extracting the columns for PCA analysis
-		double[][] data2 = tir.getExtractedColumns(1,2,3,4,5,6,7,8,9,10,11,12);
+		int[] headercolumns = new int[tir.findAxisLocation("x1")-1];
+		for(int i = 0; i < headercolumns.length; i++){
+			headercolumns[i] = i+1;
+		}
+		double[][] data2 = tir.getExtractedColumns(headercolumns);
 		PCA pca = new PCA(data2,pca_dimension);
 		
 		double[][] pca_result = pca.getPCATransformedDataAsDoubleArray();
@@ -104,15 +110,15 @@ public class MainTestBench {
 		sth.svmTrain(columns);
 		
 		
-		// For plotting hyperplanes
-		String[] headers = tir.getHeaders();
-		sth.plot_graph("From ("+xy[0][0]+","+xy[0][1]+") to ("+xy[1][0]+","+xy[1][1]+")" , headers[columns[0]], headers[columns[1]], null);
+//		// For plotting hyperplanes
+//		String[] headers = tir.getHeaders();
+//		sth.plot_graph("From ("+xy[0][0]+","+xy[0][1]+") to ("+xy[1][0]+","+xy[1][1]+")" , headers[columns[0]], headers[columns[1]], null);
 	}
 	public static void predict(String[] types, double[][] data, TrackInfoReader tir) throws IOException{
 		System.out.println(types.length);
 		
-		STrainHelper sth = new STrainHelper(types, data);
-		sth.setParam(STrainHelper._t, 2);
+/*		STrainHelper sth = new STrainHelper(types, data);
+		sth.setParam(STrainHelper._t, 0);
 		sth.setParam(STrainHelper._h, 0);
 		int[] columns = new int[cols.length];
 		for(int i=0; i<cols.length; i++){
@@ -120,9 +126,9 @@ public class MainTestBench {
 		}
 		sth.svmTrain(columns);
 		double[][] trained_data = sth.getTrainedData();
-		SPredictHelper sph = new SPredictHelper(sth.getModel(),sth.getStrNumConverter());
+*/		SPredictHelper sph = new SPredictHelper("src\\svm\\models\\new.train.model","src\\svm\\models\\new.train.snc");
 		for(int i = 0; i < data.length; i++){
-			sph.predict(types[i], trained_data[i]);
+			sph.predict(types[i], data[i]);
 		}
 		System.out.println(
 				"Correct/Tested: "+sph.getCorrect()+"/"+sph.getTotal()+" (Accuracy: "+sph.getAcurracy()*100+"%)"

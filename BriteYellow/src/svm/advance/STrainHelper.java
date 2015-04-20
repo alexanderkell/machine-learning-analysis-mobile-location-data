@@ -424,37 +424,55 @@ public class STrainHelper extends SParam{
 	public String getSNCFileName(){
 		return file_name+snc_file_ext;
 	}
+	
+	///////////////////////////////////////////////////////////////////
+	// Test bench for the STrainHelper class
+	// Name: Chun Bong Cheung
+	// Date: 15/04/2015
+	// Description: Generates some test data, perform SVM analysis, and
+	// 				plot the resultant hyperplane
+	///////////////////////////////////////////////////////////////////
 	/**Test bench for the STrainHelper class
 	 * @param args
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
-		String[] a = new String[]{"A", "A", "A", "A", "B", "B", "A", "A", "C", "C", "C", "C"};
+		// The test data labels (3 types with names "A", "B", "C")
+		String[] labels = new String[]{
+				"A", "A", "A", "A","A", 
+				"A", "A", "B", "B", "B",
+				"B", "B", "B", "B", "B", 
+				"C", "C", "C", "C", "C"
+				};
 		
-		double[][] b = new double[][]{
-				{2, 2, 0},
-				{2, 2, 1},
-				{2, 2, 2},
-				{2, 2, 3},
-				{1, 1, 3},
-				{1, 1, 5},
-				{2, 2, 4},
-				{2, 2, 5},
-				{4, 4, 0},
-				{4, 4, 2},
-				{4, 4, 4},
-				{4, 4, 6}
+		/* The test data with 3 columns with corresponding labels to the
+		 * above String array e.g. for {2, 2, 0} - label = "A", 
+		 * column0 = 2, column1 = 2, column2 = 0
+		 */
+		double[][] data = new double[][]{
+				{1.8, 1.8, 0}, {1.8, 1.8, 1}, {2.2, 2.2, 2}, {2, 2, 5},	{2.3, 2.3, 4},
+				{2, 2, 2.5}, {2, 2, 3.5}, {0.8, 0.8, 3}, {1, 1, 5}, {1, 1, 4}, 
+				{1.2, 1.2, 2}, {0.8, 0.8, 3}, {1, 1, 5}, {1, 1, 4}, {1.2, 1.2, 2},
+				{3, 3, 5}, {3, 3, 0}, {3, 3, 2}, {3.5, 3.5, 4},	{2.7, 2.7, 6}
 		};
 		
-		STrainHelper t = new STrainHelper(a, b);
-		t.setParam(_t, LINEAR);
-//		t.setParam(_h, 0);
-		t.svmTrain(0,2);
+		// Initalise STrainHelper with the data labels and test data
+		STrainHelper t = new STrainHelper(labels, data);
+		// Set SVM parameters
+		t.setParam(_t, 0);	// Set kernal to be linear (_t = change kernel, 
+							// 0 = to linear)
+		// Train data columns0 and columns 2
+		t.svmTrain(0,2);	
+		// Plot the hyperplanes
 		t.plot_graph("Sample Plot","Axis 1", "Axis 2", null);
 		
+		// Predict the result of a point (the 5th point is used as an example below
 		SPredictHelper h = new SPredictHelper(t.getModelFileName(), t.getSNCFileName());
-		System.out.println(h.predict(b[4]));		
+		// Nothing will be printed if the below assertion statement is correct
+		// (i.e. predicting {2,2,3,5} would give "A"
+		assert h.predict(data[4]).equals(labels[4]): "Result should be :"+labels[4];
+		
 	}
 
 }

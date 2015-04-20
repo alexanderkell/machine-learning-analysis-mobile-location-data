@@ -40,13 +40,13 @@ public class TrackInfoReader {
 	
 	public void findXsYsLocation(){
 		for(int i = 0; i < headers.length; i++){
-			if(headers[i].equals("X1"))
+			if(headers[i].toLowerCase().equals("x1"))
 				X1 = i;
-			else if(headers[i].equals("X2"))
+			else if(headers[i].toLowerCase().equals("x2"))
 				X2 = i;
-			else if(headers[i].equals("Y1"))
+			else if(headers[i].toLowerCase().equals("y1"))
 				Y1 = i;
-			else if(headers[i].equals("Y2"))
+			else if(headers[i].toLowerCase().equals("y2"))
 				Y2 = i;
 		}
 

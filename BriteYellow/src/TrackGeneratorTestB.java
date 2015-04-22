@@ -10,7 +10,7 @@ import objects.TrackInfo;
 import Bootstrapping.*;
 
 
-public class trackGeneratorTestB {
+public class TrackGeneratorTestB {
 	public static void main(String args[]) throws Exception{
 		
 		System.out.println("How many tracks would you like to generate?");

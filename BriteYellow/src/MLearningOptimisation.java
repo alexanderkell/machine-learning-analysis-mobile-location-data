@@ -33,7 +33,11 @@ public class MLearningOptimisation {
 		302,364
 	};
 	
-	private final String WRITE_DB_NAME = "The_Big_Track_Analysis";
+	//PUT THE NAMES OF THE TABLES TO READ AND WRITE HERE!!!!!!!!
+	
+	private final String READ_DB_NAME = "March_Data";
+	
+	private final String WRITE_DB_NAME = "March_Data_Track_Analysis";
 	
 	private int speed, xkalm, ykalm, Interp;
 	
@@ -109,7 +113,7 @@ public class MLearningOptimisation {
 	}
 	
 	public ArrayList<PhoneData> queryAndFilter() throws Exception{
-		DataBaseQueries DBQ= new DataBaseQueries("3D_Cloud_Pan_Data");
+		DataBaseQueries DBQ= new DataBaseQueries(READ_DB_NAME);
 		PhoneNames phoneNames = new PhoneNames();
 		ArrayList<PhoneDataDB> outputDB;
 		ArrayList<PhoneData> raw = new ArrayList<PhoneData>();
@@ -136,7 +140,7 @@ public class MLearningOptimisation {
 	
 
 	public ArrayList<PhoneData> selectPhoneandFilter(String PhoneID) throws Exception{
-		DataBaseQueries DBQ= new DataBaseQueries("3D_Cloud_Pan_Data");
+		DataBaseQueries DBQ= new DataBaseQueries(READ_DB_NAME);
 		PhoneNames phoneNames = new PhoneNames();
 		ArrayList<PhoneDataDB> outputDB;
 		ArrayList<PhoneData> raw = new ArrayList<PhoneData>();
@@ -192,7 +196,7 @@ public class MLearningOptimisation {
 	}
 	
 	public void writeToDB(ArrayList<TrackInfo> TrackAnalysis) throws Exception{
-		DataBaseOperations DBO = new DataBaseOperations("Generated_Track_Just_Corridor");
+		DataBaseOperations DBO = new DataBaseOperations(WRITE_DB_NAME);
 		DBO.deleteTable();
 		DBO.createTracksTable();
 		System.out.println("Writing to Database");

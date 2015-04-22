@@ -46,8 +46,8 @@ public class DataBaseQueries{
 	
 	//view main method in comments for details
 	public static void main(String args[]) throws Exception{
-		/*DataBaseQueries dbq = new DataBaseQueries("The_Big_Track_Analysis");
-		ArrayList<TrackInfoNoXY> ppp2 = dbq.queryTrackTableNoXY("HT25TW5055273593c875a9898b00", 1);
+		//DataBaseQueries dbq = new DataBaseQueries("Processed_Data");
+		/*ArrayList<TrackInfoNoXY> ppp2 = dbq.queryTrackTableNoXY("HT25TW5055273593c875a9898b00", 1);
 		for(int i = 0; i < ppp2.size(); i++){
 			System.out.println(ppp2.get(i).toString());
 		}*/
@@ -246,7 +246,12 @@ public class DataBaseQueries{
 		try{
 			test = queryTable(PHONE_ID, 'a');
 		}catch(AmazonServiceException e){
-			test = queryTrackTable(PHONE_ID, 'a');
+			try{
+				test = queryTrackTable(PHONE_ID, 'a');
+				}catch(AmazonServiceException e2){
+					test = null;
+					System.err.println("Either turn up the throughput or some the other connection issue e.g. the table not exsisting, contact your friendly neighbourhood backend developer Thomas");
+				}
 		}
 		for(int i = test.size()-1; i > 0; i--){
 			max = test.get(i).getTRACK_NO();

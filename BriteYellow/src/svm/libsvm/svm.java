@@ -3,6 +3,8 @@ package svm.libsvm;
 import java.io.*;
 import java.util.*;
 
+import javax.swing.JOptionPane;
+
 //
 // Kernel Cache
 //

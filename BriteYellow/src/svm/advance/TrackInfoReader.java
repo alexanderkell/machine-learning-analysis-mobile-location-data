@@ -72,6 +72,11 @@ public class TrackInfoReader {
 				
 		}
 	}
+	/**Extract the wanted columns of data
+	 * 
+	 * @param cols
+	 * @return the extracted columns of data
+	 */
 	public double[][] getExtractedColumns(int... cols){
 		double[][] result = new double[filtereddata.size()][cols.length];
 		for(int i = 0; i < filtereddata.size(); i++){
@@ -96,11 +101,11 @@ public class TrackInfoReader {
 	
 	private void readFile() throws IOException{
 		try{
-			//
+			// reader headers, skip the first 2 headers (phone id and track)
 			String[] h = fr.readLine().split(",");
-			headers = new String[h.length-1];
+			headers = new String[h.length-2];
 			for(int i = 0; i < headers.length; i++){
-				headers[i] = h[i+1];
+				headers[i] = h[i+2];
 			}
 			
 			while(true){
@@ -110,10 +115,10 @@ public class TrackInfoReader {
 				// The type of person (at column 0)
 				String type = String.valueOf(characteristicType(segments[0]));
 				
-				// The rest of the attributes (starting from column 1)
-				double[] d = new double[segments.length-1];
+				// The rest of the attributes (starting from column 2)
+				double[] d = new double[segments.length-2];
 				for(int i = 0; i < d.length; i++){
-					d[i] = Double.parseDouble(segments[i+1]);
+					d[i] = Double.parseDouble(segments[i+2]);
 				}
 				
 				// Add the type and the attributes

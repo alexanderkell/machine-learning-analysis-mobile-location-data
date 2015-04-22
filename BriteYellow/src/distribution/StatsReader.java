@@ -123,7 +123,7 @@ public class StatsReader {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				frame.dispose();
+//				frame.dispose();
 				plot(cbox1.getSelectedIndex(), cbox2.getSelectedIndex());
 			}
 			
@@ -149,7 +149,7 @@ public class StatsReader {
 				plothelper.addData(categories[2], data.get(i)[index1], data.get(i)[index2]);
 
 		}
-		plothelper.showDialog();
+		plothelper.showDialog(JFrame.DISPOSE_ON_CLOSE);
 	}
 	
 	public static void main(String args[]){

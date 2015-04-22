@@ -58,9 +58,16 @@ public class STrainHelper extends SParam{
 	private StrNumConverter snc;
 	private String file_name = new File("").getAbsolutePath()+"/src/svm/models/new";
 	private int[] columns = null;
+	private CustomChartProgressListener ccpl = null;
 	
 	public STrainHelper(String[] str_labels, double[][] train){
+		this(str_labels,train,null);
+	}
+	public STrainHelper(String[] str_labels, double[][] train, CustomChartProgressListener ccpl){
 		super();
+		this.ccpl = ccpl;
+		log("Initialising STrainHelper...");
+		
 		this.str_labels = str_labels;
 		num_labels = new double[str_labels.length];
 		snc = new StrNumConverter();
@@ -119,13 +126,15 @@ public class STrainHelper extends SParam{
 	        prob.y[i] = num_labels[i];
 	    }
 
-	    System.out.println("Training "+ dataCount+" records...");
+	    log("Training "+ dataCount+" records...");
+	    svm.svm_set_print_string_function(ccpl);
 	    model = svm.svm_train(prob, super.getParam());
+	    
 	    File parent = new File(file_name).getParentFile();
 	    if(!parent.exists()){
 	    	parent.mkdirs();
 	    }
-	    System.out.println("Filepath for model files: \""+parent.getAbsolutePath()+"\"");
+	    log("Filepath for model files: \""+parent.getAbsolutePath()+"\"");
 	    svm.svm_save_model(file_name+model_file_ext,model);
 	    snc.save2File(file_name+model_file_ext, file_name+snc_file_ext);
 	    return model;
@@ -142,6 +151,9 @@ public class STrainHelper extends SParam{
 			}
 		}
 		return result;
+	}
+	public void setChartProgressListener(CustomChartProgressListener ccpl){
+		this.ccpl = ccpl;
 	}
 	public double[][] getBounds(double percent_ext){
 		
@@ -220,12 +232,11 @@ public class STrainHelper extends SParam{
 		return resultSV;
 	}
 	
-	public void plot_graph(final String title, final String axis_name1, final String axis_name2, 
-			final CustomChartProgressListener progress_listener){
+	public void plot_graph(final String title, final String axis_name1, final String axis_name2){
 		
 		if(columns.length != 2)
 			throw new IllegalArgumentException("This plot graph only works with data with 2 axis");
-		System.out.println("Plotting graph...");
+		log("Plotting graph...");
 		final JLabel error_label = new JLabel();
 		final Thread b = new Thread(){
 			final JFrame load_frame = new JFrame("Plotting graph...");
@@ -235,6 +246,7 @@ public class STrainHelper extends SParam{
 				load_frame.validate();
 				load_frame.repaint();
 				load_frame.pack();
+				log("<html><font color = \"red\">Oops :( An error has occurred. </font></html>");
 			}
 			public void run(){
 				// For the loading dialog
@@ -267,8 +279,8 @@ public class STrainHelper extends SParam{
 							// TODO Auto-generated method stub
 							if(dots_drawn < total_dots && total_dots!=0){
 								int value = total_dots == 0 ? 0 : 100*dots_drawn/total_dots;
+								setProgress(value);
 								pbar.setValue(value);
-								
 							}
 						}
 					};	// end new TimerTask
@@ -288,8 +300,8 @@ public class STrainHelper extends SParam{
 							timer.cancel();
 							load_frame.dispose();
 							dia2.dispose();
-							if(progress_listener != null)
-								progress_listener.onAbort();
+							if(ccpl != null)
+								ccpl.onAbort();
 							System.err.println("User aborted plotting graph");
 						}
 					});
@@ -363,7 +375,7 @@ public class STrainHelper extends SParam{
 						dots_drawn ++;
 					}
 					
-					double[][] dots = generateDots(200, 200);
+					double[][] dots = generateDots(180, 180);
 					
 					for(int i=0; i<dots.length; i++){
 						String result = pp.predict(dots[i]);
@@ -394,15 +406,15 @@ public class STrainHelper extends SParam{
 								timer.cancel();
 								dia2.setTitle(title);
 								load_frame.setVisible(false);
-								System.out.print("Done plotting graph");
-								
+								log("Done plotting graph");
+								finish();
 							}
 						}
 				    };
 				    demo.addProgressListener(progress_listener2);
 				    
-				    if(progress_listener != null)
-				    	demo.addProgressListener(progress_listener);
+				    if(ccpl != null)
+				    	demo.addProgressListener(ccpl);
 				    
 				    
 				   	cp.setVisible(true);
@@ -457,15 +469,54 @@ public class STrainHelper extends SParam{
 				{3, 3, 5}, {3, 3, 0}, {3, 3, 2}, {3.5, 3.5, 4},	{2.7, 2.7, 6}
 		};
 		
+		final SVMProgressDialog svmpd = new SVMProgressDialog("Training in progress");
+		svmpd.updateProgress("Training "+data.length+" records...");
 		// Initalise STrainHelper with the data labels and test data
 		STrainHelper t = new STrainHelper(labels, data);
+		t.setSaveFileName("src/svm/samples/svm_sample_results");
+		t.setChartProgressListener(new CustomChartProgressListener(){
+
+			@Override
+			public void chartProgress(ChartProgressEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void print(String s) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onAbort() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void finish() {
+				// TODO Auto-generated method stub
+				svmpd.finish();
+			}
+
+			@Override
+			public void progressUpdated(int percent) {
+				// TODO Auto-generated method stub
+				svmpd.updateProgress(percent);
+			}
+			
+		});
 		// Set SVM parameters
 		t.setParam(_t, 0);	// Set kernal to be linear (_t = change kernel, 
 							// 0 = to linear)
 		// Train data columns0 and columns 2
 		t.svmTrain(0,2);	
 		// Plot the hyperplanes
-		t.plot_graph("Sample Plot","Axis 1", "Axis 2", null);
+		svmpd.updateProgress("Plotting graph");
+		t.plot_graph("Sample Plot","Axis 1", "Axis 2");
+		
+		
 		
 		// Predict the result of a point (the 5th point is used as an example below
 		SPredictHelper h = new SPredictHelper(t.getModelFileName(), t.getSNCFileName());
@@ -475,4 +526,20 @@ public class STrainHelper extends SParam{
 		
 	}
 
+	private void log(String msg){
+		if(ccpl != null){
+			ccpl.print(msg+"\n");
+		}
+		System.out.println(msg);
+	}
+	private void finish(){
+		if(ccpl != null){
+			ccpl.finish();
+		}
+	}
+	private void setProgress(int percent){
+		if(ccpl != null){
+			ccpl.progressUpdated(percent);
+		}
+	}
 }

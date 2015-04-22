@@ -53,8 +53,8 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		"X", "Y", "Z", "WholeDate","Phone id", "Time Between values", "Xspeed", "YSpeed", "ZSpeed", "ModSpd", "STheta", "Xacc", 
 		"Yacc", "Zacc", "ModAcc", "ATheta"
 	};
-	static Font labelFont = new Font("", Font.BOLD, 14);
-	static Font labelFontLarge = new Font("", Font.BOLD, 18);
+	static Font labelFont = new Font("normal", Font.BOLD, 14);
+	static Font labelFontLarge = new Font("large", Font.BOLD, 18);
 	final static String PLAYSYMBOL = ""+(char)9658;
 	final static String PAUSESYMBOL = ""+(char)73+(char)73;
 	final static String STOPSYMBOL = ""+(char)9632;

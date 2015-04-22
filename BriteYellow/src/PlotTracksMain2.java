@@ -1,4 +1,5 @@
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -15,12 +16,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import objects.PhoneData;
+import dialogs.ProgressDialog;
 import dynamodb.NoSQLDownload;
 import dynamodb.NoSQLDownload.SQLListener;
 import graphing.PlotTracks;
@@ -42,7 +43,7 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, Change
 	
 	public static void main(String args[]) throws Exception{
 		
-		System.out.println("PlotTracksMain");
+		System.out.println("PlotTracksMain2");
 		
 		new PlotTracksMain2().getPhoneIDAndPlot();
 				
@@ -85,7 +86,7 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, Change
 		ptm.finish(0, null);
 	}
 	
-	protected static JLabel timelabel;
+//	protected static JLabel timelabel;
 
 	private JFrame frame;
 
@@ -101,27 +102,36 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, Change
 	private void getPhoneIDAndPlot() {
 		// TODO Auto-generated method stub
 		frame = new JFrame();
-		frame.setResizable(false);
 		
-		JLabel selectlabel = new JLabel("Select a phone: ");
-		selectlabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		frame.setPreferredSize(
+				new Dimension(ProgressDialog.DEFAULT_WIDTH/3*2, 
+						ProgressDialog.DEFAULT_HEIGHT/3*2)
+				);
+		JLabel selectlabel = new JLabel("<html><b>Please select a phone</b></html>");
+		selectlabel.setFont(ProgressDialog.progressfontNormal);
+		selectlabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		cbox1 = new JComboBox<String>(phones);
+//		cbox1.setFont(ProgressDialog.progressfontNormal);
 		cbox1.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		okbutton = new JButton("Plot it");
+//		okbutton.setFont(ProgressDialog.progressfontNormal);
 		okbutton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		offlinecheckbox = new JCheckBox("Offline mode");
+//		offlinecheckbox.setFont(ProgressDialog.progressfontNormal);
 		offlinecheckbox.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		offlinelabel = new JLabel("<html><font color = 'red'><i>Local data copy will be used if available<br>" +
 				"Be aware that it might not be up-to-date</font></i></html>");
+//		offlinelabel.setFont(ProgressDialog.progressfontNormal);
 		offlinelabel.setVisible(offlinecheckbox.isSelected());
 		offlinelabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+//		panel.add(Box.createVerticalGlue());
 		panel.add(selectlabel);
 		panel.add(Box.createVerticalStrut(10));
 		panel.add(cbox1);
@@ -129,10 +139,11 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, Change
 		panel.add(okbutton);
 		panel.add(offlinecheckbox);
 		panel.add(offlinelabel);
+		panel.add(Box.createVerticalGlue());
 		okbutton.addActionListener(this);
 		offlinecheckbox.addChangeListener(this);
 		
-		frame.setTitle("Select axis - StatsReader");
+		frame.setTitle("Select phone - PlotTracksMain2");
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.add(panel);
 		frame.pack();
@@ -144,17 +155,13 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, Change
 
 	private JButton cancelbutton;
 
-	private JLabel cancellabel;
+//	private JLabel cancellabel;
 
 	private String phoneid;
 
 	private Thread plotthread;
 
-
-	private JLabel oklabel;
-
-
-	private JProgressBar jpb;
+	private ProgressDialog dialog;
 
 	public void startTimer(long starttime){
 		this.starttime = starttime;
@@ -165,14 +172,14 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, Change
 	public void finishTimer(){
 		long elapsed = (System.currentTimeMillis() - starttime)/1000;
 		timer.cancel();
-		timelabel.setText("Time spent: "+elapsed+" second(s)");
+		dialog.updateInfo2("Time spent: "+elapsed+" second(s)");
 	}
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
 		// TODO Auto-generated method stub
 		long elapsed = (System.currentTimeMillis() - starttime)/1000;
-		timelabel.setText("Elapsed Time: "+elapsed+" second(s)");
+		dialog.updateInfo2("Elapsed Time: "+elapsed+" second(s)");
 
 	}
 
@@ -182,33 +189,22 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, Change
 		final JButton button = (JButton)e.getSource();
 		if(button == okbutton){
 
-			panel.removeAll();
-			frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-			oklabel = new JLabel("Please Wait ...");
-			oklabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-			panel.add(oklabel);
-			panel.add(Box.createVerticalStrut(5));
-			jpb = new JProgressBar();
-			jpb.setAlignmentX(Component.CENTER_ALIGNMENT);
-			panel.add(jpb);
-			panel.add(Box.createVerticalStrut(10));
-			timelabel = new JLabel();
-			timelabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-			jpb.setIndeterminate(true);
+			frame.dispose();
 			
-			panel.add(timelabel);
+			dialog = new ProgressDialog("Please wait... - PlotTrackMain2");
+			dialog.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+			dialog.updateProgress("Please wait...");
+			
 			panel.add(Box.createVerticalStrut(15));
 			
-			cancellabel = new JLabel("This process will resume next time if cancelled");
-			cancellabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+			
 			cancelbutton = new JButton("Cancel");
+			cancelbutton.setFont(ProgressDialog.progressfontSmall);
 			cancelbutton.setAlignmentX(Component.CENTER_ALIGNMENT);
 			cancelbutton.addActionListener(this);
-			panel.add(cancellabel);
-			panel.add(Box.createVerticalStrut(5));
-			panel.add(cancelbutton);
-			frame.pack();
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			
+			dialog.addComponent(Box.createVerticalStrut(5),dialog.getComponentCount()-2);
+			dialog.addComponent(cancelbutton,dialog.getComponentCount()-2);
 
 			startTimer(System.currentTimeMillis());
 			
@@ -251,12 +247,9 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, Change
 						if(this!=null && this.isAlive())
 							finishTimer();
 						StackTraceElement trace = e1.getStackTrace()[0];
-						statusUpdated(0, "Oops! An error has occured: \n<font color = 'red'><i>"+e1.toString()+"\n at line "+trace.getLineNumber()+
+						statusUpdated(-1, "Oops! An error has occured: \n<font color = 'red'><i>"+e1.toString()+"\n at line "+trace.getLineNumber()+
 								" in class \""+ trace.getClassName()+"\"</i></font>\n\nPlease also check the console for the full error message");
-	//					oklabel.setText("<html>Oops! An error has occured: <br><font color = 'red'><i>"+e1.toString()+"<br> at line "+trace.getLineNumber()+
-	//							" in class \""+ trace.getClassName()+"\"</i></font><br><br>Please also check the console for the full error message</html>");
 						// Revalidate and repaint the label as it may have changed size
-
 						e1.printStackTrace();
 						frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 					}
@@ -265,30 +258,39 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, Change
 			};
 			plotthread.start();
 		} else if(button == cancelbutton){
-			frame.dispose();
-			System.err.println("User aborted");
-			System.exit(1);
+			exit(0);
 		}
 	}
-	
+	public void exit(int exit_code){
+		System.err.println("User aborted");
+		System.exit(exit_code);
+	}
 	@Override
 	public void statusUpdated(int step, String msg) {
 		// TODO Auto-generated method stub
 		// Replace all \n with <br> and the whole message into
 		// html format
-		final String newmsg = "<html>"+msg.replaceAll("\n", "<br>")+"</html>";
-		SwingUtilities.invokeLater(new Runnable(){
-
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				oklabel.setHorizontalAlignment(JLabel.CENTER);
-				oklabel.setText(newmsg);
-				frame.pack();
-			}
-			
-		});
 		
+		final String newmsg = "<html>"+msg.replaceAll("\n", "<br>")+"</html>";
+		if(step == -1){
+			dialog.updateProgress(":( An error has occurred");
+			dialog.updateInfo("Check console for details");
+			JOptionPane.showMessageDialog(null, newmsg, "An error has occurred", JOptionPane.ERROR_MESSAGE);
+			exit(1);
+			
+		} else {
+			
+			SwingUtilities.invokeLater(new Runnable(){
+	
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					dialog.updateProgress(newmsg);
+				
+				}
+				
+			});
+		}
 		
 	}
 
@@ -297,12 +299,12 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, Change
 			int percent) {
 		// TODO Auto-generated method stub
 		if(percent>=0){
-			jpb.setIndeterminate(false);
-			jpb.setValue(percent);
+			dialog.updateProgress(percent);
 		} else {
-			jpb.setIndeterminate(true);
+			dialog.updateProgress(-1);
 		}
 		if(step == 3 && percent > 0){
+			dialog.updateInfo("The download will resume next time if cancelled");
 			totaltracks = msd.getTotalTracks();
 			if(totaltracks>0){
 				tracks_done = totaltracks*percent/100;
@@ -313,14 +315,13 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, Change
 				//System.out.println("tracks_done "+tracks_done);
 			}
 		}
-		frame.pack();
 	}
 
 	@Override
 	public void finish(int exit, String msg) {
 		// TODO Auto-generated method stub
 		finishTimer();
-		frame.dispose();
+		dialog.finish();
 	}
 	
 	public void plottracks(){

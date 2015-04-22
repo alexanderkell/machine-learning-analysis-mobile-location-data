@@ -10,6 +10,7 @@ import org.jfree.chart.event.ChartProgressEvent;
 import comirva.util.*;
 
 import csvexport.CSVWriter;
+import dialogs.ProgressDialog;
 
 public class MainTestBench {
 
@@ -130,7 +131,7 @@ public class MainTestBench {
 		final int totalsteps = 3;
 		
 		// For extracting the columns for PCA analysis
-		final SVMProgressDialog svmpd = new SVMProgressDialog("SVM training in progress");
+		final ProgressDialog svmpd = new ProgressDialog("SVM training in progress");
 
 		// Get the types of person corresponding to the track
 		String[] types = tir.getTypes();
@@ -246,7 +247,7 @@ public class MainTestBench {
 		final int totalsteps = 3;
 		
 		// For extracting the columns for PCA analysis
-		final SVMProgressDialog svmpd = new SVMProgressDialog("SVM predicting in progress");
+		final ProgressDialog svmpd = new ProgressDialog("SVM predicting in progress");
 
 		// Get the types of person corresponding to the track
 		String[] types = tir.getTypes();

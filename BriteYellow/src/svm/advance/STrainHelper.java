@@ -25,6 +25,8 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.event.ChartProgressEvent;
 import org.jfree.chart.event.ChartProgressListener;
 
+import dialogs.ProgressDialog;
+
 import svm.libsvm.svm;
 import svm.libsvm.svm_model;
 import svm.libsvm.svm_node;
@@ -469,7 +471,7 @@ public class STrainHelper extends SParam{
 				{3, 3, 5}, {3, 3, 0}, {3, 3, 2}, {3.5, 3.5, 4},	{2.7, 2.7, 6}
 		};
 		
-		final SVMProgressDialog svmpd = new SVMProgressDialog("Training in progress");
+		final ProgressDialog svmpd = new ProgressDialog("Training in progress");
 		svmpd.updateProgress("Training "+data.length+" records...");
 		// Initalise STrainHelper with the data labels and test data
 		STrainHelper t = new STrainHelper(labels, data);

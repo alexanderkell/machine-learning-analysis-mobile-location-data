@@ -33,10 +33,10 @@ public class DistanceVerify {
 	 * @param high
 	 * @return
 	 */
-	public boolean compare(int index, double high){
+	private boolean compare(int index, double high){
 		return (ph.get(index).modspd > high);
 	}
-	public void reanalyse(int index){
+	private void reanalyse(int index){
 		double xdiff = ph.get(index).rsx - ph.get(index-1).rsx;
 		double ydiff = ph.get(index).rsy - ph.get(index-1).rsy;
 		ph.get(index).modspd = Math.sqrt(xdiff*xdiff + ydiff*ydiff);

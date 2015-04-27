@@ -12,6 +12,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -20,7 +21,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 public class ProgressDialog extends JFrame implements ActionListener{
-	
+	public interface ProgressDialogListener{
+		public abstract void onAbort();
+	}
 
 	private JLabel progresslabel;
 	private JTextArea logarea;
@@ -31,16 +34,16 @@ public class ProgressDialog extends JFrame implements ActionListener{
 	private Timer timer;
 	private JProgressBar progressbar;
 	private JLabel infolabel2;
+	private JButton cancelbutton;
+	private ProgressDialogListener progress_dialog_listener;
 	
 	
-	public final static Font progressfontLarge = new Font("large", Font.TRUETYPE_FONT, 22);
-	public final static Font progressfontNormal = new Font("normal", Font.TRUETYPE_FONT, 16);
-	public final static Font progressfontSmall = new Font("small", Font.BOLD, 13);
+	public final static Font progressfontLarge = new Font("large", Font.TRUETYPE_FONT, 21);
+	public final static Font progressfontNormal = new Font("normal", Font.TRUETYPE_FONT, 15);
+	public final static Font progressfontSmall = new Font("small", Font.BOLD, 12);
 
-	public final static int DEFAULT_WIDTH = 480;
-	public final static int DEFAULT_HEIGHT = 320;
-	private int width;
-	private int height;
+	public final static int DEFAULT_WIDTH = 600;
+	public final static int DEFAULT_HEIGHT = 400;
 	
 	public ProgressDialog(String title){
 		this(title, DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -49,23 +52,20 @@ public class ProgressDialog extends JFrame implements ActionListener{
 		super.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setTitle(title);
 		
-		this.width = width;
-		this.height = height;
-		
 		mainpanel = new JPanel();
 		mainpanel.setLayout(new BoxLayout(mainpanel, BoxLayout.PAGE_AXIS));
 		
 		// Icon gif downloaded at: http://preloaders.net/en/circular/windows8-loader/
 		ImageIcon loading = new ImageIcon("src\\dialogs\\loading.gif", "Loading");
 		progresslabel = new JLabel("Initialising...",loading, JLabel.CENTER);
-		infolabel = new JLabel(" ");
-		infolabel2 = new JLabel(" ");
+		infolabel = new JLabel();
+		infolabel2 = new JLabel();
 		
 		progressbar = new JProgressBar();
-		logarea = new JTextArea(" ");
-		loglabel = new JLabel("<html>Progress logs</html>",JLabel.LEFT);
+		logarea = new JTextArea();
+		loglabel = new JLabel("<html><i>Progress logs</i></html>",JLabel.LEFT);
 	    scroll = new JScrollPane (logarea);
-	    
+	    cancelbutton = new JButton("Cancel");
 
 		// Setup swing components
 	    progresslabel.setFont(progressfontLarge);
@@ -81,23 +81,28 @@ public class ProgressDialog extends JFrame implements ActionListener{
 		logarea.setAutoscrolls(true);
 		logarea.setAlignmentX(CENTER_ALIGNMENT);
 		
+		cancelbutton.setFont(ProgressDialog.progressfontSmall);
+		cancelbutton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		cancelbutton.addActionListener(this);
+		
 		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
     
 
         // Add components to the main panel
-		mainpanel.add(Box.createVerticalStrut(40));
+		mainpanel.add(Box.createVerticalStrut(30));
 		mainpanel.add(progresslabel);
 		mainpanel.add(Box.createVerticalStrut(10));
+		mainpanel.add(progressbar);
 		mainpanel.add(infolabel);
 		mainpanel.add(Box.createVerticalStrut(10));
 		mainpanel.add(infolabel2);
-		mainpanel.add(progressbar);
-		mainpanel.add(Box.createVerticalStrut(20));
+		mainpanel.add(Box.createVerticalStrut(10));
 		mainpanel.add(loglabel);
 		mainpanel.add(scroll);
+		mainpanel.add(cancelbutton);
 		
 		add(mainpanel);
-		setPreferredSize(new Dimension(width,height));
+		setMinimumSize(new Dimension(width,height));
 		super.pack();
 		super.setLocationRelativeTo(null);
 		super.setVisible(true);
@@ -105,6 +110,15 @@ public class ProgressDialog extends JFrame implements ActionListener{
 	}
 	public void addComponent(Component component, int position){
 		mainpanel.add(component,position);
+	}
+	
+	public void setCancelButtonEnabled(boolean enable){
+		cancelbutton.setEnabled(enable);
+		cancelbutton.setVisible(enable);
+	}
+	
+	public boolean getCancelButtonEnabled(boolean enable){
+		return cancelbutton.isEnabled();
 	}
 	public int getComponentCount(){
 		return mainpanel.getComponentCount();
@@ -128,6 +142,8 @@ public class ProgressDialog extends JFrame implements ActionListener{
 		}
 	}
 	public void updateLog(String msg){
+		if(!msg.endsWith("\n"))
+			msg = msg+"\n";
 		logarea.append(msg);
 		logarea.setCaretPosition(logarea.getDocument().getLength());
 	}
@@ -147,11 +163,20 @@ public class ProgressDialog extends JFrame implements ActionListener{
 		super.dispose();
 	}
 	
+	public void setProgressDialogListener(ProgressDialogListener progress_dialog_listener){
+		this.progress_dialog_listener = progress_dialog_listener;
+		
+	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		updateInfo("This might take a while");
-		timer.stop();
+		if(e.getSource() == cancelbutton){
+			if(progress_dialog_listener!=null)
+				progress_dialog_listener.onAbort();
+		}else{
+			updateInfo("This might take a while");
+			timer.stop();
+		}
 	}
 	
 	public static void main(String args[]){
@@ -206,4 +231,3 @@ class FadingLabel extends JLabel implements ActionListener{
 		}
 	}
 }
-

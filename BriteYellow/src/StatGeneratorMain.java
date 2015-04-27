@@ -1,6 +1,3 @@
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,28 +6,26 @@ import java.text.ParseException;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import objects.PhoneData;
 import csvexport.CSVWriter;
+import dialogs.ProgressDialog;
+import dialogs.ProgressDialog.ProgressDialogListener;
 import distribution.StatsGenerator;
 import dynamodb.NoSQLDownload;
 import dynamodb.NoSQLDownload.SQLListener;
 
 
-public class StatGeneratorMain extends TimerTask implements ActionListener, ChangeListener, SQLListener{
+public class StatGeneratorMain extends TimerTask implements ActionListener, ChangeListener, ProgressDialogListener, SQLListener{
 
 	public final static String[] phones = {
 		"HT25TW5055273593c875a9898b00",
@@ -40,10 +35,10 @@ public class StatGeneratorMain extends TimerTask implements ActionListener, Chan
         "ZX1B23QFSP48abead89f52e3bb",
 	};
 	
-	public static int[] xbounds = {
+	public static double[] xbounds = {
 		200,850
 	};
-	public static int[] ybounds = {
+	public static double[] ybounds = {
 		302,364
 	};
 	
@@ -56,6 +51,10 @@ public class StatGeneratorMain extends TimerTask implements ActionListener, Chan
 		302,322,344,364
 	};
 	*/
+	
+	// The name of this app
+	final static String TITLE = "StatGenerator";
+	
 	public static int[] property = {
 		StatsGenerator.PATH_LENGTH,	//gettotalaverage
 		StatsGenerator.TIME_STOPPED, //gettotalaverage
@@ -79,26 +78,16 @@ public class StatGeneratorMain extends TimerTask implements ActionListener, Chan
 		
 	};
 	public static double[][] property2 = {
-/*		{StatsGenerator.AVERAGE_SPEED, 0, 3},
-		{StatsGenerator.AVERAGE_SPEED, 10, 100},
+		{StatsGenerator.AVERAGE_SPEED, 0, 3},
+/*		{StatsGenerator.AVERAGE_SPEED, 10, 100},
 		{StatsGenerator.STHETACHANGE_NO, -Math.PI/8,Math.PI/8},
 		{StatsGenerator.STHETACHANGE_NO, -Math.PI,Math.PI},
 */	};
 	
-	private JProgressBar jpb;
 
 	private long starttime;
-	private JFrame jframe;
-
-	private JLabel statuslabel;
-	private JLabel timelabel;
-	private JLabel infolabel;
 	
 	private Timer timer;
-
-	private JPanel panel;
-
-	private JButton cancelbutton;
 
 	private JFrame jframe2;
 
@@ -107,10 +96,12 @@ public class StatGeneratorMain extends TimerTask implements ActionListener, Chan
 	private JLabel offlinelabel;
 
 	private JButton startbutton;
+
+	private ProgressDialog dialog;
 	public void setupWelcomeGUI(){
 		jframe2 = new JFrame();
 		jframe2.setLayout(new GridLayout(0,1));
-		jframe2.setTitle("Start screen - StatsGeneratorMain");
+		jframe2.setTitle("Start screen - "+TITLE);
 		jframe2.add(new JLabel("Press \"start\" to begin downloading tracks and generating stats"));
 		offlinecheckbox = new JCheckBox("Offline mode");
 		offlinecheckbox.addChangeListener(this);
@@ -129,45 +120,16 @@ public class StatGeneratorMain extends TimerTask implements ActionListener, Chan
 		jframe2.setVisible(true);
 	}
 	public void setupProcessGUI(){
-		jpb = new JProgressBar();
-		statuslabel = new JLabel("<html>Preparing ...<br> &nbsp</html>");
-		timelabel = new JLabel(" ");
+		dialog = new ProgressDialog(TITLE);
 		
-		infolabel = new JLabel("The download process will be resume if cancelled");
-		cancelbutton = new JButton("Cancel");
+		statusUpdated(1, "Preparing", null);
 		
-		// Configure components
-		jpb.setAlignmentX(Component.CENTER_ALIGNMENT);
-		statuslabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-		statuslabel.setHorizontalAlignment(JLabel.LEFT);
-		timelabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-		timelabel.setHorizontalAlignment(JLabel.LEFT);
-		infolabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-		infolabel.setHorizontalAlignment(JLabel.LEFT);
-		cancelbutton.setAlignmentX(Component.CENTER_ALIGNMENT);
-		cancelbutton.addActionListener(this);
+		dialog.updateInfo("The download process will be resume if cancelled");
+
 		
+		dialog.setProgressDialogListener(this);
 		
-		panel = new JPanel();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-		panel.add(statuslabel);
-		panel.add(Box.createVerticalStrut(5));
-		panel.add(jpb);
-		panel.add(Box.createVerticalStrut(15));
-		panel.add(timelabel);
-		panel.add(Box.createVerticalStrut(10));
-		panel.add(infolabel);	
-		panel.add(Box.createVerticalStrut(5));
-		panel.add(cancelbutton);
-		jframe = new JFrame();
-		jframe.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		jframe.setTitle("Generating stats - StatsGeneratorMain");
-		jframe.add(panel, BorderLayout.CENTER);
-		jframe.pack();
-		jframe.setLocationRelativeTo(jframe2);
-		jframe.setResizable(false);
-		jframe.setMinimumSize(new Dimension(500,170));
-		jframe.setVisible(true);
+
 		
 		starttime = System.currentTimeMillis();
 		timer = new Timer();
@@ -179,55 +141,58 @@ public class StatGeneratorMain extends TimerTask implements ActionListener, Chan
 
 		timer.cancel();
 		final long elapsed = (System.currentTimeMillis() - starttime)/1000;
-		timelabel.setText("Total Time spent: "+elapsed+" second(s)");
-		jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		dialog.updateInfo2("Total Time spent: "+elapsed+" second(s)");
+		dialog.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		if(exit == 0){
-			jpb.setValue(100);
-			statuslabel.setText("Finished! Closing in 5 seconds");
+			statusUpdated(4,"Finished! Closing in 5 seconds",null);
 
 			try{
 				Thread.sleep(5000);
 			} catch (InterruptedException e){
 				
 			}
-			jframe.dispose();
+			dialog.dispose();
 		} else {
-			infolabel.setText("<html>Run time error: <br><font color='red'>"+err_msg+"</font><br><br>Close this dialog when you have finished with it</html>");
-			jframe.pack();
-			jframe.revalidate();
-			jframe.repaint();
+			statusUpdated(-1,"Run time error",err_msg);
+			dialog.updateInfo("Close this dialog when you have finished with it");
 		}
 	}
 	
 	@Override
-	public void statusUpdated(int step, String msg) {
+	public void statusUpdated(int step, String mainmsg, String submsg) {
 		// TODO Auto-generated method stub
 		// Replace all \n with <br> and the whole message into
 		// html format
-		msg = "<html>"+msg.replaceAll("\n", "<br>")+"</html>";
-		statuslabel.setText(msg);
-		jframe.pack();
+		if(submsg == null){
+			dialog.updateLog(mainmsg);
+		} else
+			dialog.updateLog(mainmsg+" "+submsg);
+		if(step == -1){
+			final String newmsg = "<html>"+mainmsg+" "+submsg.replaceAll("\n", "<br>")+"</html>";
+			dialog.updateProgress(":( An error has occurred");
+			dialog.updateInfo("Check console for details");
+			JOptionPane.showMessageDialog(null, newmsg, "An error has occurred", JOptionPane.ERROR_MESSAGE);
+			exit(1);
+			
+		} else {
+			dialog.setTitle(mainmsg+" - "+TITLE);
+			if(submsg == null)
+				dialog.updateProgress(mainmsg);
+			else
+				dialog.updateProgress("<html><center>"+mainmsg+"<br><font size=-1>"+submsg+"</font></center></html>");
+				
+		}
+		
 	}
+
 	@Override
 	public void stepProgressUpdated(int step, int percent) {
 		// TODO Auto-generated method stub
 		if(step == 3){
-			if(percent == 0){
-				phoneindexcount++;
-			}
-
-			jpb.setValue(phoneindexcount*20+percent/5);
-		}
-		else if(percent>=0){
-			if(step>=4){
-				cancelbutton.setVisible(false);
-				infolabel.setText("To terminate: go to console and press \"Ctrl\" + \"C\"");
-			}
-			jpb.setIndeterminate(false);
-			jpb.setValue(percent);
-		} else {
-			jpb.setIndeterminate(true);
+			dialog.updateProgress(phoneindexcount*20+percent/5);
+		} else if(step == 4){
+			dialog.updateProgress(percent);
 		}
 	}
 
@@ -235,7 +200,7 @@ public class StatGeneratorMain extends TimerTask implements ActionListener, Chan
 	public void run() {
 		// TODO Auto-generated method stub
 		long elapsed = (System.currentTimeMillis() - starttime)/1000;
-		timelabel.setText("Elapsed Time: "+elapsed+" second(s)");
+		dialog.updateInfo2("Elapsed Time: "+elapsed+" second(s)");
 	}
 	/**
 	 * @param args
@@ -249,7 +214,7 @@ public class StatGeneratorMain extends TimerTask implements ActionListener, Chan
 	
 	public StatGeneratorMain(){
 		// TODO Auto-generated method stub
-		System.out.println("StatGenerator main method");
+		System.out.println(TITLE);
 		// set up the GUI
 		setupWelcomeGUI();
 	}
@@ -266,11 +231,11 @@ public class StatGeneratorMain extends TimerTask implements ActionListener, Chan
 			for(int i = 0; i<phones.length; i++){
 				boolean success = msd.downloadAndSerialise(phones[i], offline);
 				totaltracks[i] = msd.getTotalTracks();
-				if (!success)
+				if (!success && !offline)
 					JOptionPane.showMessageDialog(null, "Unable to connect to database and check for updates\nLocal copy of data will be used instead", "Unable to connect to database", JOptionPane.WARNING_MESSAGE);
+				phoneindexcount++;
 			}
-			statusUpdated(4, "Analysing tracks ...");
-			stepProgressUpdated(4, 100);
+			statusUpdated(4, "Analysing tracks ...",null);
 		
 		
 			// Create CSVWriters
@@ -297,8 +262,9 @@ public class StatGeneratorMain extends TimerTask implements ActionListener, Chan
 			}
 				
 			for(int i = 0; i<phones.length; i++){
-								
+				
 				System.out.println("PhoneID "+phones[i]+" has "+totaltracks[i]+" tracks");
+				dialog.updateLog("PhoneID "+phones[i]+" has "+totaltracks[i]+" tracks");
 				
 				for(int track = 1; track <= totaltracks[i]; track++){
 					
@@ -317,14 +283,14 @@ public class StatGeneratorMain extends TimerTask implements ActionListener, Chan
 									results[l+2] = String.valueOf(sg.getTotalAverage(property[l], xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
 								}
 								for(int m = 0; m < property2.length; m++){
-									results[m+property.length+2] = String.valueOf(sg.getTotalFreqAt(property2[m][0], property2[m][1],property2[m][2],xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
+									results[m+property.length+2] = String.valueOf(sg.getTotalFreqAt((int)property2[m][0], property2[m][1],property2[m][2],xbounds[j], xbounds[j+1], ybounds[k], ybounds[k+1]));
 								}
 								// Write the stats
 								cw[index].write(results);
 							}
 						}
 					}
-					
+					stepProgressUpdated(4, 100*i/phones.length + 100/phones.length*track/totaltracks[i]);
 				}
 			}
 			
@@ -336,21 +302,17 @@ public class StatGeneratorMain extends TimerTask implements ActionListener, Chan
 		} catch (Exception e){
 			finish(1, e.toString()+" (at line "+e.getStackTrace()[0].getLineNumber()+")");
 		}
-
+		
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		JButton but = (JButton)e.getSource();
-		if(but == cancelbutton){
-			jframe.dispose();
-			System.err.println("User aborted");
-			System.exit(1);
-		} else if(but == startbutton){
-			// Dispose the welcome screen
-			jframe2.dispose();
+		if(but == startbutton){
 			// Prepare the process screen
 			setupProcessGUI();
+			// Dispose the welcome screen
+			jframe2.dispose();
 			// Run the actual process
 			// New thread is necessary to allow the process screen to initalise before
 			// this actual process is run
@@ -382,4 +344,13 @@ public class StatGeneratorMain extends TimerTask implements ActionListener, Chan
 		}
 	}
 
+	public void exit(int exit_code){
+		System.err.println("User aborted");
+		System.exit(exit_code);
+	}
+	@Override
+	public void onAbort() {
+		// TODO Auto-generated method stub
+		exit(0);
+	}
 }

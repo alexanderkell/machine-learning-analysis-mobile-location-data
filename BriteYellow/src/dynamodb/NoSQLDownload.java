@@ -13,7 +13,7 @@ import objects.PhoneData;
 
 public class NoSQLDownload{
 	public interface SQLListener{
-		public abstract void statusUpdated(int step, String msg);
+		public abstract void statusUpdated(int step, String mainmsg, String submsg);
 		public abstract void stepProgressUpdated(int step, int percent);
 		public abstract void finish(int exit, String msg);
 	}
@@ -122,37 +122,36 @@ public class NoSQLDownload{
 			if(!offline)
 				connect();
 			
-				
 			if(date == null)
 				throw new NullPointerException();
-//			System.out.println("Total tracks: "+dbq.findMaxTrackNo(phoneid));
 			totaltracks = checkProperties(phoneid, date);
 			if(totaltracks == -1){
 				totaltracks = dbq.findMaxTrackNo(phoneid);
-//				totaltracks = 500;
 				System.out.println(totaltracks);
 				serialiseProperies(phoneid, date, totaltracks);
 			}
 
-			if(ptm!=null){
-				ptm.statusUpdated(3, "Updating local copies of the tracks  for phone "+phoneid+ "\n(Database last updated ("+date+"))...");
+			if(ptm!=null){				
+				ptm.statusUpdated(3, "Checking local tracks","for phone "+phoneid);
 				ptm.stepProgressUpdated(3, 0);
 			}
 				
 			for(int i = 1; i <= totaltracks; i++){
-
 				if(!NoSQLDownload.checkATrack(phoneid, i, date)){
 					ArrayList<PhoneData> filtered = query(phoneid,i);
 					if(filtered!= null){
+						if(ptm!=null){
+							ptm.statusUpdated(3, "Downloading tracks","for phone "+phoneid+ " ("+(i)+"/"+totaltracks+")");
+						}
 						PhoneData[] filteredarray = filtered.toArray(new PhoneData[filtered.size()]);
 						serialiseATrack(phoneid, i, filteredarray, date);	
-						if(ptm!=null){
-							ptm.statusUpdated(3, "Updating local copies of the tracks for phone "+phoneid+ " ("+(i)+"/"+totaltracks+") \n(Database version 10 ("+date+"))");
-							ptm.stepProgressUpdated(3, 100*(i)/totaltracks);
-						}
+
 					} else {
 						break;
 					}
+				}
+				if(ptm!=null){
+					ptm.stepProgressUpdated(3, 100*(i)/totaltracks);
 				}
 	
 			}
@@ -221,16 +220,17 @@ public class NoSQLDownload{
 	public void connect() throws Exception{
 		if(date == null){
 			if(ptm!=null){
-				ptm.statusUpdated(1, "Connecting to the NoSQL server ...");
+				ptm.statusUpdated(1, "Connecting to the NoSQL server",null);
 			}
 			dbq = new DataBaseQueries(tablename);
 			if(ptm!=null){
-				ptm.statusUpdated(2, "Checking database version ...");
+				ptm.statusUpdated(2, "Checking database version",null);
 //				ptm.stepProgressUpdated(2, 0);
 			}
 //			date = "NODATE";
 			try{
 				date = dbq.readStats().toString();
+				ptm.statusUpdated(2, "Checking database version","database last updated ("+date+")");
 				System.out.println("Database last updated: "+date.toString());
 			} catch (NullPointerException e){
 				

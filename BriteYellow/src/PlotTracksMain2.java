@@ -16,19 +16,21 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import objects.PhoneData;
 import dialogs.ProgressDialog;
+import dialogs.ProgressDialog.ProgressDialogListener;
 import dynamodb.NoSQLDownload;
 import dynamodb.NoSQLDownload.SQLListener;
 import graphing.PlotTracks;
 import graphing.TrackChangeListener;
 
-public class PlotTracksMain2 extends TimerTask implements ActionListener, ChangeListener, SQLListener{
+public class PlotTracksMain2 extends TimerTask implements ActionListener, ChangeListener, ProgressDialogListener, SQLListener{
 	
+	// The name of this app
+	final static String TITLE = "PlotTracksMain2";
 
 	public final static String[] phones = {
 		"HT25TW5055273593c875a9898b00",
@@ -37,13 +39,12 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, Change
 		"YT910K6675876ded0861342065",
 		"ZX1B23QFSP48abead89f52e3bb"
 	};
-
 	
 	private static Timer timer;
 	
 	public static void main(String args[]) throws Exception{
 		
-		System.out.println("PlotTracksMain2");
+		System.out.println(TITLE);
 		
 		new PlotTracksMain2().getPhoneIDAndPlot();
 				
@@ -74,7 +75,7 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, Change
 					);
 		// Update the number of tracks done
 		tracks_done = totaltracks;
-		ptm.statusUpdated(4, "Please wait ...");
+		ptm.statusUpdated(4, "Please wait ...",null);
 		ptm.stepProgressUpdated(4, -1);
 		
 		
@@ -86,8 +87,6 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, Change
 		ptm.finish(0, null);
 	}
 	
-//	protected static JLabel timelabel;
-
 	private JFrame frame;
 
 	private JComboBox<String> cbox1;
@@ -103,7 +102,7 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, Change
 		// TODO Auto-generated method stub
 		frame = new JFrame();
 		
-		frame.setPreferredSize(
+		frame.setMinimumSize(
 				new Dimension(ProgressDialog.DEFAULT_WIDTH/3*2, 
 						ProgressDialog.DEFAULT_HEIGHT/3*2)
 				);
@@ -112,33 +111,34 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, Change
 		selectlabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		cbox1 = new JComboBox<String>(phones);
-//		cbox1.setFont(ProgressDialog.progressfontNormal);
+//		cbox1.setFont(ProgressDialog.progressfontSmall);
 		cbox1.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		okbutton = new JButton("Plot it");
-//		okbutton.setFont(ProgressDialog.progressfontNormal);
+		okbutton.setFont(ProgressDialog.progressfontSmall);
 		okbutton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		offlinecheckbox = new JCheckBox("Offline mode");
-//		offlinecheckbox.setFont(ProgressDialog.progressfontNormal);
+//		offlinecheckbox.setFont(ProgressDialog.progressfontSmall);
 		offlinecheckbox.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		offlinelabel = new JLabel("<html><font color = 'red'><i>Local data copy will be used if available<br>" +
 				"Be aware that it might not be up-to-date</font></i></html>");
-//		offlinelabel.setFont(ProgressDialog.progressfontNormal);
-		offlinelabel.setVisible(offlinecheckbox.isSelected());
+//		offlinelabel.setFont(ProgressDialog.progressfontSmall);
 		offlinelabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-//		panel.add(Box.createVerticalGlue());
+		panel.add(Box.createVerticalGlue());
 		panel.add(selectlabel);
-		panel.add(Box.createVerticalStrut(10));
-		panel.add(cbox1);
 		panel.add(Box.createVerticalStrut(15));
+		panel.add(cbox1);
+		panel.add(Box.createVerticalStrut(20));
 		panel.add(okbutton);
+		panel.add(Box.createVerticalStrut(10));
 		panel.add(offlinecheckbox);
 		panel.add(offlinelabel);
+
 		panel.add(Box.createVerticalGlue());
 		okbutton.addActionListener(this);
 		offlinecheckbox.addChangeListener(this);
@@ -149,13 +149,11 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, Change
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
+		
+		offlinelabel.setVisible(offlinecheckbox.isSelected());
 	}
 	
 	private long starttime;
-
-	private JButton cancelbutton;
-
-//	private JLabel cancellabel;
 
 	private String phoneid;
 
@@ -194,17 +192,10 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, Change
 			dialog = new ProgressDialog("Please wait... - PlotTrackMain2");
 			dialog.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 			dialog.updateProgress("Please wait...");
+
+
+			dialog.setProgressDialogListener(this);
 			
-			panel.add(Box.createVerticalStrut(15));
-			
-			
-			cancelbutton = new JButton("Cancel");
-			cancelbutton.setFont(ProgressDialog.progressfontSmall);
-			cancelbutton.setAlignmentX(Component.CENTER_ALIGNMENT);
-			cancelbutton.addActionListener(this);
-			
-			dialog.addComponent(Box.createVerticalStrut(5),dialog.getComponentCount()-2);
-			dialog.addComponent(cancelbutton,dialog.getComponentCount()-2);
 
 			startTimer(System.currentTimeMillis());
 			
@@ -247,7 +238,7 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, Change
 						if(this!=null && this.isAlive())
 							finishTimer();
 						StackTraceElement trace = e1.getStackTrace()[0];
-						statusUpdated(-1, "Oops! An error has occured: \n<font color = 'red'><i>"+e1.toString()+"\n at line "+trace.getLineNumber()+
+						statusUpdated(-1, "Oops! An error has occured", "\n<font color = 'red'><i>"+e1.toString()+"\n at line "+trace.getLineNumber()+
 								" in class \""+ trace.getClassName()+"\"</i></font>\n\nPlease also check the console for the full error message");
 						// Revalidate and repaint the label as it may have changed size
 						e1.printStackTrace();
@@ -257,8 +248,6 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, Change
 				}
 			};
 			plotthread.start();
-		} else if(button == cancelbutton){
-			exit(0);
 		}
 	}
 	public void exit(int exit_code){
@@ -266,30 +255,28 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, Change
 		System.exit(exit_code);
 	}
 	@Override
-	public void statusUpdated(int step, String msg) {
+	public void statusUpdated(int step, String mainmsg, String submsg) {
 		// TODO Auto-generated method stub
 		// Replace all \n with <br> and the whole message into
 		// html format
-		
-		final String newmsg = "<html>"+msg.replaceAll("\n", "<br>")+"</html>";
+		if(submsg == null){
+			dialog.updateLog(mainmsg);
+		} else
+			dialog.updateLog(mainmsg+" "+submsg);
 		if(step == -1){
+			final String newmsg = "<html>"+mainmsg+" "+submsg.replaceAll("\n", "<br>")+"</html>";
 			dialog.updateProgress(":( An error has occurred");
 			dialog.updateInfo("Check console for details");
 			JOptionPane.showMessageDialog(null, newmsg, "An error has occurred", JOptionPane.ERROR_MESSAGE);
 			exit(1);
 			
 		} else {
-			
-			SwingUtilities.invokeLater(new Runnable(){
-	
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					dialog.updateProgress(newmsg);
+			dialog.setTitle(mainmsg+" - "+TITLE);
+			if(submsg == null)
+				dialog.updateProgress(mainmsg);
+			else
+				dialog.updateProgress("<html><center>"+mainmsg+"<br><font size=-1>"+submsg+"</font></center></html>");
 				
-				}
-				
-			});
 		}
 		
 	}
@@ -326,24 +313,18 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, Change
 	
 	public void plottracks(){
 		PlotTracks.plotTrack2(PlotTracks.X, PlotTracks.Y, 0.1f, tcl, totaltracks);
-
 	}
 	@Override
 	public void stateChanged(ChangeEvent e) {
 		// TODO Auto-generated method stub
 		JComponent component = (JComponent)e.getSource();
-		if(component == offlinecheckbox){
-			SwingUtilities.invokeLater(new Runnable(){
-
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					offlinelabel.setVisible(offlinecheckbox.isSelected());
-					frame.pack();
-				}
-				
-			});
-					
-		}
+		if(component == offlinecheckbox)
+			offlinelabel.setVisible(offlinecheckbox.isSelected());					
+	}
+	
+	@Override
+	public void onAbort() {
+		// TODO Auto-generated method stub
+		exit(0);
 	}
 }

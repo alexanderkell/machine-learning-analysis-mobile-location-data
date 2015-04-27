@@ -1174,7 +1174,7 @@ class TimeLine{
 			// Add the estimated point to the before filtering series as well so that a line is drawn between the last and estimated points
 			plot.addData(labels[0], result[0], result[1]);
 			
-			if(after != null){
+			if(after != null && iafter<after.length-1){
 				if(plot.getItemCount(labels[1])>0)
 					plot.removeData(labels[1],  plot.getItemCount(labels[1])-1);
 				// Add all points whose timestamp is behind the current time by looping this while loop

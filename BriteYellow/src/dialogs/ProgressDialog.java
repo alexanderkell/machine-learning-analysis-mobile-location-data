@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.TimerTask;
+
 import javax.swing.Timer;
 
 import javax.swing.Box;
@@ -31,11 +33,14 @@ public class ProgressDialog extends JFrame implements ActionListener{
 	private JScrollPane scroll;
 	private JLabel infolabel;
 	private JLabel loglabel;
-	private Timer timer;
+	private java.util.Timer util_timer;
+	private javax.swing.Timer swing_timer;
 	private JProgressBar progressbar;
 	private JLabel infolabel2;
 	private JButton cancelbutton;
 	private ProgressDialogListener progress_dialog_listener;
+	private TimerTask timertask;
+	private long starttime;
 	
 	
 	public final static Font progressfontLarge = new Font("large", Font.TRUETYPE_FONT, 21);
@@ -116,7 +121,36 @@ public class ProgressDialog extends JFrame implements ActionListener{
 		cancelbutton.setEnabled(enable);
 		cancelbutton.setVisible(enable);
 	}
-	
+	public void startTimer(){
+		timertask = new TimerTask(){
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				long elapsed = (System.currentTimeMillis() - starttime)/1000;
+				String elapsed_time_msg = "Elapsed Time: "+elapsed+" second";
+				if(elapsed != 1){
+					elapsed_time_msg += "s";
+				}
+				updateInfo2(elapsed_time_msg);
+			}
+			
+		};
+		if(util_timer != null){
+			util_timer.cancel();
+		}
+		util_timer = new java.util.Timer();
+		starttime = System.currentTimeMillis();
+		util_timer.scheduleAtFixedRate(timertask, 0, 1000);
+	}
+	public long stopTimer(){
+		util_timer.cancel();
+		final long elapsed = (System.currentTimeMillis() - starttime)/1000;
+		String timespentmsg = "Total Time spent: "+elapsed+" second(s)";
+		updateInfo2(timespentmsg);
+		updateLog(timespentmsg);
+		return elapsed;
+	}
 	public boolean getCancelButtonEnabled(boolean enable){
 		return cancelbutton.isEnabled();
 	}
@@ -175,7 +209,7 @@ public class ProgressDialog extends JFrame implements ActionListener{
 				progress_dialog_listener.onAbort();
 		}else{
 			updateInfo("This might take a while");
-			timer.stop();
+			swing_timer.stop();
 		}
 	}
 	

@@ -3,9 +3,11 @@ package distribution;
 import java.text.ParseException;
 import java.util.ArrayList;
 
+import maths.DataGetter;
+
 import objects.PhoneData;
 
-public class StatsGenerator extends ProbabilityList{
+public class StatsGenerator extends DataGetter{
 
 	public final static int PATH_LENGTH = 100;
 	public final static int SHORTEST_PATH_LENGTH = 101;
@@ -438,6 +440,8 @@ public class StatsGenerator extends ProbabilityList{
 		double[] firstpoint = null;
 		final int starting_index = 2;
 		for(int i=starting_index; i<length; i++){
+
+			
 			double x1 = getXYZValue(i-1)[0];
 			double y1 = getXYZValue(i-1)[1];
 			double x2 = getXYZValue(i)[0];
@@ -456,6 +460,8 @@ public class StatsGenerator extends ProbabilityList{
 				was_in = false;
 			}
 //			System.out.println(fraction);
+			if(getTimeBetweenValue(i)>150 && property != INACTIVE_TIME)
+				continue;
 			if(property == PATH_LENGTH){
 				if(fraction > 0)
 					result += getDistanceBetween(i) * fraction;

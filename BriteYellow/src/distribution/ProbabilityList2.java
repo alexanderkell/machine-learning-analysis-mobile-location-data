@@ -15,7 +15,7 @@ import maths.DataGetter;
 /**
  *
  */
-public class ProbabilityList extends DataGetter{
+public class ProbabilityList2 extends DataGetter{
 
 	// variable secret codes
 //	final static int POSITION = 10;	//X Y Z position
@@ -51,12 +51,12 @@ public class ProbabilityList extends DataGetter{
 	 * @param opt option
 	 * @throws ParseException 
 	 */
-	public ProbabilityList(int opt, String fn) throws ParseException{
+	public ProbabilityList2(int opt, String fn) throws ParseException{
 		super(opt, fn);
 		length = getLength();
 	}
 	
-	public ProbabilityList(PhoneData[] ph) throws ParseException{
+	public ProbabilityList2(PhoneData[] ph) throws ParseException{
 		super(ph);
 		length = getLength();
 	}
@@ -67,7 +67,7 @@ public class ProbabilityList extends DataGetter{
 	 * @param opt option
 	 * @throws ParseException 
 	 */
-	public ProbabilityList(String fn, int opt) throws ParseException{
+	public ProbabilityList2(String fn, int opt) throws ParseException{
 		super(opt, fn);
 	}
 	
@@ -98,13 +98,27 @@ public class ProbabilityList extends DataGetter{
 	
 	
 	private double getTotal(ArrayList<Integer> indices, int result_property){
+		int removedpoints = 0;
+		int removedpoints2 = 0;
 		double result = 0;
 		
 		for(int i=0; i<indices.size(); i++){
-//			if(dfo.getTimeBetweenValue(indices.get(i))> 20)
-//				continue;
+			if(super.getTimeBetweenValue(indices.get(i))> 150){
+				if(super.getTimeBetweenValue(indices.get(i))> 1000){
+					removedpoints2++;
+				}
+				removedpoints++;
+				continue;
+			}
 			if(super.getTrackNo(indices.get(i)) == -1)
 				continue;
+			if(indices.get(i)>1)
+				if(super.getTrackNo(indices.get(i)-1) == -1)
+					continue;
+
+			if(super.getModSValue(indices.get(i)) < 0.1)
+					continue;
+			
 			if(result_property == DIST){
 				result += getDistanceBetween(indices.get(i));
 			} else if(result_property == XDIST){
@@ -124,6 +138,8 @@ public class ProbabilityList extends DataGetter{
 			} else
 				throw new IllegalArgumentException("You might be using the wrong argument for \"result_property\".");
 		}
+		System.out.println("Removed points for tb>150,1000: "+removedpoints +
+				", "+removedpoints2);
 		return result;
 	}
 	
@@ -162,6 +178,11 @@ public class ProbabilityList extends DataGetter{
 				"Lower limit \"low\" must be smaller than the higher limit \"high\""
 				);
 		
+		ArrayList<Integer> still_list = null;
+		if (compare_property == STILL){
+			still_list = StatsGenerator.processStoodStill(getFullPhoneData());
+		}
+		
 		// value for storing the result of the compare property
 		double value = 0;
 		// ArrayList for storing the indices of the data which matches the criteria
@@ -194,7 +215,7 @@ public class ProbabilityList extends DataGetter{
 			}else if(compare_property == ATHETACHANGE){
 				value = getAThetaChange(indices.get(i));
 			}else if(compare_property == STILL){
-				if(isStandingStill(indices.get(i))){
+				if(still_list.contains(indices.get(i))){
 					if(!was_still)
 						value = 0;
 					value += getTimeBetweenValue(indices.get(i));
@@ -428,9 +449,9 @@ public class ProbabilityList extends DataGetter{
 		if(property == ZSPD)
 			return "points/sec";
 		if(property == STHETA)
-			return "radians";
+			return "degrees";
 		if(property == STHETACHANGE)
-			return "radians";
+			return "degrees";
 		if(property == MODACC)
 			return "points/sec^2";
 		if(property == XACC)
@@ -480,33 +501,47 @@ public class ProbabilityList extends DataGetter{
 				"1:4", "4:8", "8:12", "12:16", "16:20", "20:24", "24:28", "28:32", "32:40", "40:44", "44:48", ">48"
 			};
 */
-		final String[] slabels = {
-			"-72:-54", "-54:-36","-36:-18","-18:-1","-1:1","1:18", "18:36","36:54", "54:72"
-
-		};
-
 /*		final String[] slabels = {
-				"60-120", "120-180","180-240","240-300","300-360","360-420","420-480", "480-540", "540-600", "600-660", "660-720", "720-800", "800-880", "880-960", ">960"
-			};
-
-		final String[] slabels = {
-			"60-240", "240-480", "480-720", "720-960", "960-1200", "1200-1440", "1440-1680", "1680-1920", "1920-2160", "2160-2400", "2400-2640", "2640-2880", ">2880"
+			"<-2","-2:-1","-1:-0.1","-0.1:0.1","0.1:1","1:2",">2"
 
 		};
 */
 /*		final String[] slabels = {
-			"<0.01", "0.01:5", "5:10", "10:15", "15:20", "20:25", "25:30", "30:35", "35:40", ">40"
+				"<-20", "-20:-5","-5:-1","-1:1","1:5","5:20",">20"
+
+			};
+*//*
+		final String[] slabels = {
+				"60-120", "120-180","180-240","240-300","300-360","360-420","420-480", "480-540", "540-600", "600-660", "660-720", "720-800", "800-880", "880-960", ">960"
+			};
+*/
+/*		final String[] slabels = {
+			"1:1.5", "1.5:2.3", "2.3:3.4", "3.4:5.1", "5.1:7.6", "7.6:11.4", "11.4:17.1", "17:25.7", ">25.7"
+
+		};
+*/
+/*		final String[] slabels = {
+				">10"
+
+			};
+*/
+/*		final String[] slabels = {
+			"0.01:2", "2:4", "4:6", "6:8", "8:10", "10:12", "12:14", "14:16", "16:18", ">18"
 		};
 */		
+		final String[] slabels = {
+				"0.01:0.5", "0.5:1", "1:2", "2:4", "4:8", "8:16", "16:32", ">32"
+			};
+
 /*		
 		final String[] slabels = {
 			"<0.01", "0.01:10", "10:20", "20:30", "30:40", "40:50", "50:60", "60:70", "70:80", "80:90", "90:100", ">100"
 		};final String[] slabels = {
 				"0:100"
 			};
-*/		float lower_bound = 0;
+*/		final float lower_bound = 1;
 		final float higher_bound = 1000;
-		final boolean within_bounds = true;
+		final boolean within_bounds = false;
 		final double xstart = 200, xend = 850, ystart = 302, yend = 364;
 		final int compare_pro = MODSPD;
 		final int result_pro = TIME;
@@ -571,7 +606,7 @@ public class ProbabilityList extends DataGetter{
 		
 		CSVWriter writer = null;
 		try {
-			writer = new CSVWriter("src/Distribution/Filtered_"+CHARTTITLE+".csv");
+			writer = new CSVWriter("src/Distribution/filtered/Filtered_"+CHARTTITLE+".csv");
 			writer.write(new String[]{CHARTTITLE});
 			writer.write(new String[]{XAXIS});
 			writer.write(new String[]{YAXIS});
@@ -595,13 +630,15 @@ public class ProbabilityList extends DataGetter{
 				ArrayList<PhoneData> filteredlist = fm.FilterTot(dg.getFullPhoneDataList());
 				PhoneData[] filtered = filteredlist.toArray(new PhoneData[filteredlist.size()]);
 				
-				ProbabilityList pl = new ProbabilityList(filtered);
+				ProbabilityList2 pl = new ProbabilityList2(filtered);
 
 				
 				double denominator = pl.get(lower_bound,higher_bound,xstart, xend, ystart, yend, compare_pro, result_pro);
 	//			double denominator2 = pl.get(step,100000,xstart, xend, ystart, yend, compare_pro, result_pro);
 				double denominator2 = pl.getTotal(xstart, xend, ystart, yend, result_pro);
-				System.out.println((float)(pl.getTotal(xstart, xend, ystart, yend,DIST) / pl.getTotal(xstart, xend, ystart, yend,TIME)));
+//				System.out.println(pl.getTotal(xstart, xend, ystart, yend,STHETACHANGE) + " / "+ pl.getTotal(xstart, xend, ystart, yend,DIST));
+
+				System.out.println((float)(pl.getTotal(xstart, xend, ystart, yend,STHETACHANGE) / pl.getTotal(xstart, xend, ystart, yend,DIST)));
 
 //				float[] result = new float[slabels.length];
 				for(int i=0; i<slabels.length; i++){

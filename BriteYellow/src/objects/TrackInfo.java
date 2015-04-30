@@ -36,15 +36,25 @@ public class TrackInfo extends DataBaseObject {
 	private double anglelargerthan10;
 	private double anglelargerthan15;
 	private double anglelargerthan20;
-	
-	
-
 	private double speedLargerThan10;
+	
 	private double x1;
 	private double y1;
 	private double x2;
 	private double y2;
 	private int characteristic;
+	
+	private double[] autocorrelation;
+	
+	
+	@DynamoDBIgnore
+	public double[] getAutocorrelation() {
+		return autocorrelation;
+	}
+	public void setAutocorrelation(double[] autocorrelation) {
+		this.autocorrelation = autocorrelation;
+	}
+	
 	@DynamoDBAttribute (attributeName = "SpeedBelow2")
 	public double getSpeedLessThan2() {
 		return speedLessThan2;

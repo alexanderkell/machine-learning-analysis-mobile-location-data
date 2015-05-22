@@ -103,8 +103,8 @@ public class PlotTracksMain2 extends TimerTask implements ActionListener, Change
 		frame = new JFrame();
 		
 		frame.setMinimumSize(
-				new Dimension(ProgressDialog.DEFAULT_WIDTH/3*2, 
-						ProgressDialog.DEFAULT_HEIGHT/3*2)
+				new Dimension(ProgressDialog.DEFAULT_WIDTH/4*3, 
+						ProgressDialog.DEFAULT_HEIGHT/2)
 				);
 		JLabel selectlabel = new JLabel("<html><b>Please select a phone</b></html>");
 		selectlabel.setFont(ProgressDialog.progressfontNormal);

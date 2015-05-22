@@ -2,6 +2,7 @@ package graphing;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -19,6 +20,8 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Timer;
@@ -31,6 +34,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -47,12 +51,14 @@ import objects.PhoneData;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.plot.XYPlot;
 
-public class PlotTracks implements ActionListener,ChangeListener, KeyListener,MouseListener,MouseMotionListener, WindowFocusListener{
+public class PlotTracks implements ActionListener,ChangeListener, KeyListener,MouseListener,MouseMotionListener, WindowFocusListener, PropertyChangeListener{
 	
 	public final static String[] COLUMNS = {		
 		"X", "Y", "Z", "WholeDate","Phone id", "Time Between values", "Xspeed", "YSpeed", "ZSpeed", "ModSpd", "STheta", "Xacc", 
 		"Yacc", "Zacc", "ModAcc", "ATheta"
 	};
+	
+	static ImageIcon loading = new ImageIcon("src\\dialogs\\loadingSmall.gif", "Loading");
 	static Font labelFont = new Font("normal", Font.BOLD, 14);
 	static Font labelFontLarge = new Font("large", Font.BOLD, 18);
 	final static String PLAYSYMBOL = ""+(char)9658;
@@ -105,7 +111,7 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 	private String STOP;
 	private String PAUSE2;
 	private boolean helddown;
-	final private JLabel jlabelA;
+	final private JButton jlabelA;
 	private Thread butthread;
 	private JSpinner jspinner1;
 	private JButton jbuttonDone;
@@ -133,6 +139,12 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 	private JPanel subpanel1a;
 	private Thread updateTrackThread;
 	private PhoneData[] before;
+
+	private JDialog internal_dialogA;
+
+	private JFormattedTextField jFTextFieldA1;
+
+	private JButton jbuttonDoneA;
 	
 
 	/**
@@ -397,8 +409,9 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		jlabel1 = new JButton();	// Label for showing the current point number
 		jlabel2 = new JLabel();	// Label for showing start time
 		jlabel3 = new JLabel();	// Label for showing end time
-		jlabelA = new JLabel(PLAY); // Label for showing the player status
+		jlabelA = new JButton(PLAY); // Label for showing the player status
 		jlabelA.setHorizontalAlignment(JLabel.RIGHT);
+		
 		
 		jbutton1.setFont(labelFontLarge);
 		jbutton1.setPreferredSize(new Dimension(45,40));
@@ -411,6 +424,9 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		jlabelA.setFont(labelFont);
 
 		jlabel1.addActionListener(this);
+		jlabelA.addActionListener(this);
+		jlabelA.setToolTipText("Click to change the playing speed");
+		customiseButtons(jlabelA,3,2);
 		
 		// For the pop up dialog for changing points
 		SpinnerModel spinnerModel =
@@ -455,18 +471,18 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		subpanel1a = new JPanel();
 //		subpanel1a.setAlignmentX(Component.CENTER_ALIGNMENT);
 		subpanel1.setLayout(new BorderLayout());
-		subpanel1.setAlignmentX(Container.LEFT_ALIGNMENT);
+		subpanel1.setAlignmentX(Container.CENTER_ALIGNMENT);
 		subpanel1.add(jbutton1, BorderLayout.WEST);
 		subpanel1.add(subpanel1a, BorderLayout.CENTER);
 		// Add a horizontal glue so that the jlabelA can be appear at the right hand side of the frame
 		
 		subpanel1.add(jlabelA, BorderLayout.EAST);
-		
+		subpanel1.setBorder(BorderFactory.createEmptyBorder(0, 3, 0, 3));
 		
 		// Create and configure components
 		JPanel subpanel2 = new JPanel();
 		subpanel2.setLayout(new BoxLayout(subpanel2, BoxLayout.LINE_AXIS));
-		subpanel2.setAlignmentX(Container.LEFT_ALIGNMENT);
+		subpanel2.setAlignmentX(Container.CENTER_ALIGNMENT);
 		subpanel2.add(jbutton2);
 		subpanel2.add(jlabel1);
 		subpanel2.add(jbutton3);
@@ -478,16 +494,19 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 			subpanel2.add(Box.createHorizontalStrut(5));
 			subpanel2.add(jlabel3);
 		}
+		subpanel2.setBorder(BorderFactory.createEmptyBorder(0, 3, 0, 3));
 		
 		durationbar = new JProgressBar();
 		durationbar.setPreferredSize(new Dimension(durationbar.getWidth(), 4));
 		durationbar.setForeground(new Color(50,50,255));
 		durationbar.setBorderPainted(false);
 		
-		panel.add(durationbar);
+		
 		panel.add(subpanel2);
 		panel.add(subpanel1);
+		panel.add(durationbar);
 		
+		// setup the progressbar showing the time between the current and next point
 		jpb.setForeground(new Color(100,100,255));
 		jpb.setBackground(Color.WHITE);
 		jpb.setBorder(BorderFactory.createLineBorder(subpanel2.getBackground()));
@@ -499,6 +518,7 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		
 	
 		TimerEventsListener tel = setupTEL();
+		// Refresh rate of TimeLine is 10/second
 		tl = new TimeLine(before, after, (int)(100/period), tel, row, col, label[0], label[1], label[2], label[3]);
 
 		
@@ -539,10 +559,7 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		customiseButtons(jbutton2,3,1);
 		customiseButtons(jbutton3,3,1);
 		customiseButtons(jlabel1,3,1);
-		jlabel1.setToolTipText("Click to change current point");
-		// Prevent the play button from changing size
-//		jbutton1.setPreferredSize(new Dimension(jbutton1.getWidth(),jbutton1.getHeight()+5));
-		
+		jlabel1.setToolTipText("Click to change current point");	
 		jbutton2.setToolTipText("Previous Point (\u2190)");
 		jbutton3.setToolTipText("Next Point (\u2192)");
 		
@@ -560,6 +577,43 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		jpb.addMouseMotionListener(this);
 		frame.setVisible(true);
 		play();
+		
+		
+		JPanel jpanelA = new JPanel();
+		jpanelA.setLayout(new BoxLayout(jpanelA,BoxLayout.LINE_AXIS));
+
+		
+		JLabel jlabelA1 = new JLabel("Speed: ");
+		jlabelA1.setFont(labelFont);
+		JLabel jlabelA2 = new JLabel();
+		jlabelA2.setFont(labelFont);
+		if(points_or_time == TIME){
+			jlabelA2.setText(" x");
+		} else if(points_or_time == POINTS){
+			jlabelA2.setText(" points/second");
+		}
+		
+		jbuttonDoneA = new JButton("Done");
+		jbuttonDoneA.setFont(labelFont);
+		jbuttonDoneA.addActionListener(this);
+		
+		jpanelA.add(jlabelA1);
+		jFTextFieldA1 = new JFormattedTextField();
+		jFTextFieldA1.setValue(1/period);
+
+		jFTextFieldA1.addPropertyChangeListener("value", this);
+		jpanelA.add(jFTextFieldA1);
+
+		jpanelA.add(jlabelA2);
+		jpanelA.add(Box.createHorizontalStrut(5));
+		jpanelA.add(jbuttonDoneA);
+		jpanelA.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+		
+		internal_dialogA = new JDialog();
+		internal_dialogA.add(jpanelA);
+		internal_dialogA.setUndecorated(true);
+		internal_dialogA.pack();
+		internal_dialogA.addWindowFocusListener(this);
 	}
 
 	private TimerEventsListener setupTEL(){
@@ -800,6 +854,12 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 			internal_dialog2.setVisible(true);
 		} else if (but == jbuttonDone2){
 			internal_dialog2.setVisible(false);
+		} else if (but == jlabelA){
+			Point point = jlabelA.getLocationOnScreen();
+			internal_dialogA.setLocation(point.x, point.y+jlabelA.getHeight());
+			internal_dialogA.setVisible(true);
+		} else if (but == jbuttonDoneA){
+			internal_dialogA.setVisible(false);
 		}
 	}
 	/**
@@ -809,6 +869,7 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 	private void updateTrackLabel(final int index){
 		if(updateTrackThread == null || !updateTrackThread.isAlive()){
 			final String old_name = jlabelB.getText();
+			jlabelB.setIcon(loading);
 			jlabelB.setText("Loading ...");
 			// New thread is required for the loading message to show
 			updateTrackThread = new Thread(){
@@ -835,7 +896,7 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 					} else {
 						jlabelB.setText(old_name);
 					}
-					
+					jlabelB.setIcon(null);
 				}
 			};
 			updateTrackThread.start();
@@ -870,6 +931,8 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 			internal_dialog.setVisible(false);
 		else if(e.getSource() == internal_dialog2)
 			internal_dialog2.setVisible(false);
+		else if(e.getSource() == internal_dialogA)
+			internal_dialogA.setVisible(false);
 	}
 	
 	private void customiseButtons(JButton b, int width, int height){
@@ -918,6 +981,29 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 	}
 	private void fastforward(){
 		tl.setCurrentPoint(tl.getCurrentPoint()+1);
+	}
+
+
+	@Override
+	public void propertyChange(PropertyChangeEvent arg0) {
+		// TODO Auto-generated method stub
+		JFormattedTextField source = (JFormattedTextField) arg0.getSource();
+		float value = Float.parseFloat(source.getText());
+		if(value>0f){
+			period = 1/Float.parseFloat(source.getText());
+			tl.setTimeInterval((int)(100/period));
+			if(points_or_time == TIME){
+				PLAY = PLAYSYMBOL+" Playing at "+(1.0f/period)+"x speed";
+			} else if(points_or_time == POINTS){
+				PLAY = PLAYSYMBOL+" Showing "+(10.f/period)+" point(s) / second";	
+			}
+			if(!paused)
+				jlabelA.setText(PLAY);
+		} else{
+			source.setValue(1/period);
+			if(value == 0f && !paused)
+				playOrPause(true);
+		}
 	}
 	
 }

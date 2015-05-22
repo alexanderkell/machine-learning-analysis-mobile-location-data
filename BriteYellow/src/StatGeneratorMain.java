@@ -3,8 +3,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -12,6 +10,8 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -25,7 +25,7 @@ import dynamodb.NoSQLDownload;
 import dynamodb.NoSQLDownload.SQLListener;
 
 
-public class StatGeneratorMain extends TimerTask implements ActionListener, ChangeListener, ProgressDialogListener, SQLListener{
+public class StatGeneratorMain implements ActionListener, ChangeListener, ProgressDialogListener, SQLListener{
 
 	public final static String[] phones = {
 		"HT25TW5055273593c875a9898b00",
@@ -85,10 +85,6 @@ public class StatGeneratorMain extends TimerTask implements ActionListener, Chan
 */	};
 	
 
-	private long starttime;
-	
-	private Timer timer;
-
 	private JFrame jframe2;
 
 	private JCheckBox offlinecheckbox;
@@ -98,6 +94,7 @@ public class StatGeneratorMain extends TimerTask implements ActionListener, Chan
 	private JButton startbutton;
 
 	private ProgressDialog dialog;
+
 	public void setupWelcomeGUI(){
 		jframe2 = new JFrame();
 		jframe2.setLayout(new GridLayout(0,1));
@@ -119,6 +116,7 @@ public class StatGeneratorMain extends TimerTask implements ActionListener, Chan
 		jframe2.setLocationRelativeTo(null);
 		jframe2.setVisible(true);
 	}
+	
 	public void setupProcessGUI(){
 		dialog = new ProgressDialog(TITLE);
 		
@@ -129,19 +127,12 @@ public class StatGeneratorMain extends TimerTask implements ActionListener, Chan
 		
 		dialog.setProgressDialogListener(this);
 		
-
-		
-		starttime = System.currentTimeMillis();
-		timer = new Timer();
-		timer.scheduleAtFixedRate(this, 0, 1000);
+		dialog.startTimer();
 	}
 
 	@Override
 	public void finish(final int exit, final String err_msg){
-
-		timer.cancel();
-		final long elapsed = (System.currentTimeMillis() - starttime)/1000;
-		dialog.updateInfo2("Total Time spent: "+elapsed+" second(s)");
+		dialog.stopTimer();
 		dialog.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		if(exit == 0){
@@ -169,10 +160,19 @@ public class StatGeneratorMain extends TimerTask implements ActionListener, Chan
 		} else
 			dialog.updateLog(mainmsg+" "+submsg);
 		if(step == -1){
-			final String newmsg = "<html>"+mainmsg+" "+submsg.replaceAll("\n", "<br>")+"</html>";
+//			final String newmsg = "<html>"+mainmsg+" "+submsg.replaceAll("\n", "<br>")+"</html>";
 			dialog.updateProgress(":( An error has occurred");
+			dialog.setTitle("An error has occurred - "+TITLE);
 			dialog.updateInfo("Check console for details");
-			JOptionPane.showMessageDialog(null, newmsg, "An error has occurred", JOptionPane.ERROR_MESSAGE);
+			JTextArea errorarea = new JTextArea();
+		  	errorarea.setLineWrap(true);
+			errorarea.setEditable(false);
+			errorarea.setSize(500, 400);
+			errorarea.setText(mainmsg+" "+submsg);
+			JScrollPane scrollpane = new JScrollPane(errorarea);
+			scrollpane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+			scrollpane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			JOptionPane.showMessageDialog(null, scrollpane, "An error has occurred", JOptionPane.ERROR_MESSAGE);
 			exit(1);
 			
 		} else {
@@ -180,7 +180,7 @@ public class StatGeneratorMain extends TimerTask implements ActionListener, Chan
 			if(submsg == null)
 				dialog.updateProgress(mainmsg);
 			else
-				dialog.updateProgress("<html><center>"+mainmsg+"<br><font size=-1>"+submsg+"</font></center></html>");
+				dialog.updateProgress("<html>"+mainmsg+"<br><font size=-1>"+submsg+"</font></html>");
 				
 		}
 		
@@ -196,12 +196,6 @@ public class StatGeneratorMain extends TimerTask implements ActionListener, Chan
 		}
 	}
 
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		long elapsed = (System.currentTimeMillis() - starttime)/1000;
-		dialog.updateInfo2("Elapsed Time: "+elapsed+" second(s)");
-	}
 	/**
 	 * @param args
 	 * @throws ParseException 

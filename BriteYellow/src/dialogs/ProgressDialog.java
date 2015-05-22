@@ -10,6 +10,7 @@ import java.util.TimerTask;
 
 import javax.swing.Timer;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
@@ -21,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.border.EmptyBorder;
 
 public class ProgressDialog extends JFrame implements ActionListener{
 	public interface ProgressDialogListener{
@@ -32,7 +34,7 @@ public class ProgressDialog extends JFrame implements ActionListener{
 	private JPanel mainpanel;
 	private JScrollPane scroll;
 	private JLabel infolabel;
-	private JLabel loglabel;
+//	private JLabel loglabel;
 	private java.util.Timer util_timer;
 	private javax.swing.Timer swing_timer;
 	private JProgressBar progressbar;
@@ -41,13 +43,17 @@ public class ProgressDialog extends JFrame implements ActionListener{
 	private ProgressDialogListener progress_dialog_listener;
 	private TimerTask timertask;
 	private long starttime;
+	private JPanel infopanel2;
+	private JLabel progresspic;
+	private JPanel infopanel1;
+	private JPanel infopanel3;
 	
 	
-	public final static Font progressfontLarge = new Font("large", Font.TRUETYPE_FONT, 21);
-	public final static Font progressfontNormal = new Font("normal", Font.TRUETYPE_FONT, 15);
+	public final static Font progressfontLarge = new Font("large", Font.TRUETYPE_FONT, 18);
+	public final static Font progressfontNormal = new Font("normal", Font.TRUETYPE_FONT, 14);
 	public final static Font progressfontSmall = new Font("small", Font.BOLD, 12);
 
-	public final static int DEFAULT_WIDTH = 600;
+	public final static int DEFAULT_WIDTH = 500;
 	public final static int DEFAULT_HEIGHT = 400;
 	
 	public ProgressDialog(String title){
@@ -60,27 +66,52 @@ public class ProgressDialog extends JFrame implements ActionListener{
 		mainpanel = new JPanel();
 		mainpanel.setLayout(new BoxLayout(mainpanel, BoxLayout.PAGE_AXIS));
 		
-		// Icon gif downloaded at: http://preloaders.net/en/circular/windows8-loader/
+		// Icon gif downloaded at: http://preloaders.net/generator.php?image=482&speed=10&fore_color=000000&back_color=FFFFFF&size=28x28&transparency=1&reverse=0&orig_colors=1&gray_transp=1&image_type=1&inverse=0&flip=0&frames_amount=12&word=130-144-11-32-115-140-54-36-36-36&download&uncacher=6.369215785525739
 		ImageIcon loading = new ImageIcon("src\\dialogs\\loading.gif", "Loading");
-		progresslabel = new JLabel("Initialising...",loading, JLabel.CENTER);
-		infolabel = new JLabel();
-		infolabel2 = new JLabel();
+		progresspic = new JLabel(null ,loading, JLabel.CENTER);
+		progresslabel = new JLabel("Initialising...", JLabel.LEFT);
+		infolabel = new JLabel("", JLabel.LEFT);
+		infolabel2 = new JLabel("", JLabel.LEFT);
 		
 		progressbar = new JProgressBar();
 		logarea = new JTextArea();
-		loglabel = new JLabel("<html><i>Progress logs</i></html>",JLabel.LEFT);
+		infopanel1 = new JPanel();
+		infopanel2 = new JPanel();
+		infopanel3 = new JPanel();
+		
+//		loglabel = new JLabel("<html><i>Progress logs</i></html>",JLabel.LEFT);
 	    scroll = new JScrollPane (logarea);
 	    cancelbutton = new JButton("Cancel");
 
 		// Setup swing components
+	    infopanel1.setLayout(new BoxLayout(infopanel1, BoxLayout.LINE_AXIS));
+	    infopanel1.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 20));
+	    infopanel1.setAlignmentX(CENTER_ALIGNMENT);
+//	    infopanel1.setBackground(new Color(140,183,189));
+	    infopanel2.setLayout(new BoxLayout(infopanel2, BoxLayout.PAGE_AXIS));
+	    infopanel2.setAlignmentX(LEFT_ALIGNMENT);
+	    infopanel2.setAlignmentY(TOP_ALIGNMENT);
+//	    infopanel3.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+	    infopanel3.setLayout(new BoxLayout(infopanel3, BoxLayout.PAGE_AXIS));
+	    infopanel3.setAlignmentX(LEFT_ALIGNMENT);
+	    progresspic.setAlignmentY(TOP_ALIGNMENT);
+	    progresspic.setBorder(new EmptyBorder(0, 10, 10, 10) );
+	    // Setup the labels
 	    progresslabel.setFont(progressfontLarge);
-	    progresslabel.setAlignmentX(CENTER_ALIGNMENT);
-	    infolabel.setFont(progressfontNormal);
-	    infolabel.setAlignmentX(CENTER_ALIGNMENT);
+	    progresslabel.setAlignmentX(LEFT_ALIGNMENT);
+	    infolabel.setFont(progressfontSmall);
+	    infolabel.setAlignmentX(LEFT_ALIGNMENT);
 	    infolabel2.setFont(progressfontSmall);
-	    infolabel2.setAlignmentX(CENTER_ALIGNMENT);
-	    progressbar.setAlignmentX(CENTER_ALIGNMENT);
-	    loglabel.setAlignmentX(CENTER_ALIGNMENT);
+	    infolabel2.setAlignmentX(LEFT_ALIGNMENT);
+	    // Setup progress bar
+	    progressbar.setAlignmentX(LEFT_ALIGNMENT);
+	    progressbar.setBorderPainted(false);
+	    progressbar.setBackground(Color.WHITE);
+	    progressbar.setForeground(new Color(100,100,245));
+	    progressbar.setPreferredSize(new Dimension(width, 4));
+	    // Setup the "Progress log" label
+//	    loglabel.setAlignmentX(CENTER_ALIGNMENT);
+	    // Setup the text log area
 	  	logarea.setLineWrap(true);
 		logarea.setEditable(false);
 		logarea.setAutoscrolls(true);
@@ -88,23 +119,29 @@ public class ProgressDialog extends JFrame implements ActionListener{
 		
 		cancelbutton.setFont(ProgressDialog.progressfontSmall);
 		cancelbutton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		cancelbutton.setAlignmentY(TOP_ALIGNMENT);
 		cancelbutton.addActionListener(this);
 		
 		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-    
 
         // Add components to the main panel
-		mainpanel.add(Box.createVerticalStrut(30));
-		mainpanel.add(progresslabel);
+//		mainpanel.add(Box.createVerticalStrut(10));
+		infopanel2.add(progresslabel);
+		infopanel2.add(Box.createVerticalStrut(10));
+		
+		infopanel3.add(infolabel);
+		infopanel3.add(Box.createVerticalStrut(10));
+		infopanel3.add(infolabel2);
+		infopanel1.add(progresspic);
+		infopanel1.add(infopanel2);
+		infopanel1.add(cancelbutton);
+		infopanel2.add(infopanel3);
+		infopanel2.add(Box.createVerticalStrut(5));
+		infopanel2.add(progressbar);
+		mainpanel.add(infopanel1);
 		mainpanel.add(Box.createVerticalStrut(10));
-		mainpanel.add(progressbar);
-		mainpanel.add(infolabel);
-		mainpanel.add(Box.createVerticalStrut(10));
-		mainpanel.add(infolabel2);
-		mainpanel.add(Box.createVerticalStrut(10));
-		mainpanel.add(loglabel);
 		mainpanel.add(scroll);
-		mainpanel.add(cancelbutton);
+		
 		
 		add(mainpanel);
 		setMinimumSize(new Dimension(width,height));

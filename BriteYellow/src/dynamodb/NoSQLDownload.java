@@ -18,14 +18,14 @@ public class NoSQLDownload{
 		public abstract void finish(int exit, String msg);
 	}
 
-	private String tablename;
+	private final String tablename;
 	public NoSQLDownload(String tablename){
 		this.tablename = tablename;
 	}
 	public static void serialiseATrack(final String phoneid, final int track, final PhoneData[] data, final String date){
 		// Folder which stores tracks
-		String folder = "Tracks/"+phoneid+"/";
-		String file = phoneid+" track "+track+".track";
+		final String folder = "Tracks/"+phoneid+"/";
+		final String file = phoneid+" track "+track+".track";
 		
 		try {
 			FileOutputStream fout = new FileOutputStream(folder+file);
@@ -130,13 +130,14 @@ public class NoSQLDownload{
 				System.out.println(totaltracks);
 				serialiseProperies(phoneid, date, totaltracks);
 			}
-
+			
 			if(ptm!=null){				
 				ptm.statusUpdated(3, "Checking local tracks","for phone "+phoneid);
 				ptm.stepProgressUpdated(3, 0);
 			}
 				
 			for(int i = 1; i <= totaltracks; i++){
+				
 				if(!NoSQLDownload.checkATrack(phoneid, i, date)){
 					ArrayList<PhoneData> filtered = query(phoneid,i);
 					if(filtered!= null){

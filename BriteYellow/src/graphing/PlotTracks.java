@@ -2,7 +2,6 @@ package graphing;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -32,6 +31,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
@@ -145,6 +145,8 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 	private JFormattedTextField jFTextFieldA1;
 
 	private JButton jbuttonDoneA;
+
+	private JComboBox<String> jlabelA2;
 	
 
 	/**
@@ -585,13 +587,17 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		
 		JLabel jlabelA1 = new JLabel("Speed: ");
 		jlabelA1.setFont(labelFont);
-		JLabel jlabelA2 = new JLabel();
+		jlabelA2 = new JComboBox<String>(
+				new String[]{"x"," points/second"}
+				);
 		jlabelA2.setFont(labelFont);
 		if(points_or_time == TIME){
-			jlabelA2.setText(" x");
+			jlabelA2.setSelectedIndex(0);
 		} else if(points_or_time == POINTS){
-			jlabelA2.setText(" points/second");
+			jlabelA2.setSelectedIndex(1);
 		}
+		
+		jlabelA2.addActionListener(this);
 		
 		jbuttonDoneA = new JButton("Done");
 		jbuttonDoneA.setFont(labelFont);
@@ -831,35 +837,50 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
-		JButton but = (JButton) arg0.getSource();
-		if(but == jbutton1){
+		JComponent com = (JComponent) arg0.getSource();
+		if(com == jbutton1){
 			playOrPause(!paused);
-		}else if (but == jlabel1){
+		}else if (com == jlabel1){
 			playOrPause(true);
 			jspinner1.setValue(tl.getCurrentPoint()+1);
 			Point point = jlabel1.getLocationOnScreen();
 			internal_dialog.pack();
 			internal_dialog.setLocation(point.x, point.y+jlabel1.getHeight());
 			internal_dialog.setVisible(true);
-		} else if (but == jbuttonDone){
+		} else if (com == jbuttonDone){
 			internal_dialog.setVisible(false);
-		} else if (but == jbutton4){	// Previous track button pressed
+		} else if (com == jbutton4){	// Previous track button pressed
 			updateTrackLabel(current_track-1);
-		} else if (but == jbutton5){	// Next track button pressed
+		} else if (com == jbutton5){	// Next track button pressed
 			updateTrackLabel(current_track+1);
-		} else if (but == jlabelB){
+		} else if (com == jlabelB){
 			Point point = jlabelB.getLocationOnScreen();
 			jspinner2.setValue(current_track);
 			internal_dialog2.setLocation(point.x, point.y+jlabelB.getHeight());
 			internal_dialog2.setVisible(true);
-		} else if (but == jbuttonDone2){
+		} else if (com == jbuttonDone2){
 			internal_dialog2.setVisible(false);
-		} else if (but == jlabelA){
+		} else if (com == jlabelA){
 			Point point = jlabelA.getLocationOnScreen();
 			internal_dialogA.setLocation(point.x, point.y+jlabelA.getHeight());
 			internal_dialogA.setVisible(true);
-		} else if (but == jbuttonDoneA){
+		} else if (com == jbuttonDoneA){
 			internal_dialogA.setVisible(false);
+		} else if (com == jlabelA2){
+			int selected = jlabelA2.getSelectedIndex();
+			points_or_time = selected == 0 ? TIME : POINTS;
+			if(points_or_time == TIME){
+				PLAY = PLAYSYMBOL+" Playing at "+(1.0f/period)+"x speed";
+			} else if(points_or_time == POINTS){
+				PLAY = PLAYSYMBOL+" Showing "+(1.0f/period)+" point(s) / second";	
+			}
+			
+			ttask.setPlayAgainst(points_or_time);
+			if(!paused){
+				playOrPause(true);
+				playOrPause(false);
+			}
+			
 		}
 	}
 	/**
@@ -995,10 +1016,13 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 			if(points_or_time == TIME){
 				PLAY = PLAYSYMBOL+" Playing at "+(1.0f/period)+"x speed";
 			} else if(points_or_time == POINTS){
-				PLAY = PLAYSYMBOL+" Showing "+(10.f/period)+" point(s) / second";	
+				PLAY = PLAYSYMBOL+" Showing "+(1.0f/period)+" point(s) / second";	
+				
 			}
-			if(!paused)
-				jlabelA.setText(PLAY);
+			if(!paused){
+				playOrPause(true);
+				playOrPause(false);
+			}
 		} else{
 			source.setValue(1/period);
 			if(value == 0f && !paused)
@@ -1048,6 +1072,10 @@ class ExtendedTimerTask extends TimerTask{
 		else if(play_against == PlotTracks.POINTS)
 			tl.setCurrentPoint(tl.getCurrentPoint()+1);
 		else throw new IllegalArgumentException ("Unrecognised paramter passed to the constructor");
+	}
+	
+	public void setPlayAgainst(int play_against){
+		this.play_against = play_against;
 	}
 }
 class TimeLine{

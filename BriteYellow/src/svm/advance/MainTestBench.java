@@ -15,18 +15,19 @@ import dialogs.ProgressDialog;
 public class MainTestBench {
 
 	// File containing the track analysis data
-	final static String filename = "Generated_Track_Store_Whole_Corridor\\trackdatanew\\inputtrain.csv";
-	
+	final static String filename = "Generated_Track_Store_Whole_Corridor\\trackdatanew\\oldKmeans\\kmeans_train.csv";
+	final static String testfilename = "Generated_Track_Store_Whole_Corridor\\trackdatanew\\oldKmeans\\kmeans_test.csv";;
+
 	// For filtering track with x y bounds
 	final static int[][] xy = new int[][]{
 			{200,302},
 			{850,364}
 	};
 	// For PCA analysis
-	final static boolean pca = true;	// Perform PCA analysis or not
+	final static boolean pca = false;	// Perform PCA analysis or not
 	final static int pca_dimension = 6;
 	final static int[] pca_columns = new int[]{
-			2,4
+			1,2,3,4,5,6
 	};
 	// 1,3
 	// For normal analysis
@@ -34,7 +35,8 @@ public class MainTestBench {
 		"pathLength","timeStopped","noStops","timeSpent","inactiveTime","sThetaChange","sThetaIn","sThetaOut","sThetaInOut","timePerStop","totAvrgSpeed","timesStoppedHere","pathPerShortest","timePerShortest","speedLessThan3","speedLessThan2","speedLessThan1","anglelargerthan5","anglelargerthan10","anglelargerthan15","anglelargerthan20","speedLargerThan10"
 	};
 */	final static String[] cols = new String[]{
-		"pathLength","timeSpent","sThetaChange","timePerStop","totAvrgSpeed","timesStoppedHere","pathPerShortest","timePerShortest","speedLessThan3","speedLessThan2","speedLessThan1","anglelargerthan5","anglelargerthan10","anglelargerthan15","anglelargerthan20","speedLargerThan10"
+//		"pathLength","timeSpent","sThetaChange","timePerStop","totAvrgSpeed","timesStoppedHere","pathPerShortest","timePerShortest","speedLessThan3","speedLessThan2","speedLessThan1","anglelargerthan5","anglelargerthan10","anglelargerthan15","anglelargerthan20","speedLargerThan10"
+		"DistToCluster1","DistToCluster2","DistToCluster3"
 	};
 		
 	/**
@@ -51,7 +53,10 @@ public class MainTestBench {
 //		write(types,data);
 //		plotWithOutAnalysis(types,data, tir,pca_columns);
 		plot(tir);
-//		predict(tir);
+		tir = new TrackInfoReader(testfilename);
+		
+		tir.filter(xy[0][0],xy[0][1],xy[1][0],xy[1][1]);
+		predict(tir);
 	}
 	
 	public static void plotWithOutAnalysis(String[] types, double[][] data, TrackInfoReader tir, int... columns){
@@ -121,8 +126,12 @@ public class MainTestBench {
 	public static STrainHelper train(String[] types, double[][] data, CustomChartProgressListener ccpl, int... columns) throws IOException{
 		STrainHelper sth = new STrainHelper(types, data,ccpl);
 		
-		sth.setParam(STrainHelper._t, STrainHelper.LINEAR);
-		sth.setParam(STrainHelper._h, 0);
+		sth.setParam(STrainHelper._t, 1);
+//		sth.setParam(STrainHelper._h, 0);
+		sth.setParam(STrainHelper._g, 3);
+		sth.setParam(STrainHelper._r, 3);
+		sth.setParam(STrainHelper._c, 10);
+		sth.setParam(STrainHelper._d, 6);
 		sth.svmTrain(columns);
 		return sth;
 	}
@@ -147,7 +156,6 @@ public class MainTestBench {
 		double[][] data = tir.getData();
 		if(pca){
 			// Get the right columns
-
 			double[][] pca_data = tir.getExtractedColumns(columns);
 			svmpd.updateProgress("Performing PCA analysis (Step "+ step+"/"+totalsteps+")");
 			pca_result  = pca(types, pca_data, pca_columns);
@@ -225,7 +233,7 @@ public class MainTestBench {
 				);
 	}
 	
-	public static void plot(String[] types, double[][] data, TrackInfoReader tir) throws IOException{
+/*	public static void plot(String[] types, double[][] data, TrackInfoReader tir) throws IOException{
 		System.out.println(types.length);
 		
 		STrainHelper sth = new STrainHelper(types, data);
@@ -242,7 +250,7 @@ public class MainTestBench {
 //		String[] headers = tir.getHeaders();
 //		sth.plot_graph("From ("+xy[0][0]+","+xy[0][1]+") to ("+xy[1][0]+","+xy[1][1]+")" , headers[columns[0]], headers[columns[1]], null);
 	}
-	public static void predict(TrackInfoReader tir) throws IOException{
+*/	public static void predict(TrackInfoReader tir) throws IOException{
 		int step = 0;
 		final int totalsteps = 3;
 		
@@ -318,18 +326,30 @@ public class MainTestBench {
 			for(int i = 0;i<pca_columns2.length; i++)
 				pca_columns2[i] = pca_columns[i]-1;
 		}
-		SPredictHelper sph = new SPredictHelper(new File("").getAbsolutePath()+"/src/svm/models/new.train.model","src\\svm\\models\\new.train.snc");
-		for(int i = 0; i<types.length; i++){
-			if(pca){
-				
-				sph.predict(types[i], pca_result[i], pca_columns2);
-			}else
-				sph.predict(types[i], data[i], columns);
-		}
-		ccpl.finish();
-		System.out.println(
-				"Correct/Tested: "+sph.getCorrect()+"/"+sph.getTotal()+" (Accuracy: "+sph.getAcurracy()*100+"%)"
-				);
+		String[] phones = new String[]{
+				"Shopper",
+				"Security",
+				"Business",
+		};
+		
+		for(int h = 0; h<phones.length; h++){
+			SPredictHelper sph = new SPredictHelper(new File("").getAbsolutePath()+"/src/svm/models/new.train.model","src\\svm\\models\\new.train.snc");
+
+			for(int i = 0; i<types.length; i++){
+//				System.out.println(types[i]);
+				if(types[i].equals(phones[h])){
+					if(pca){
+						
+						sph.predict(types[i], pca_result[i], pca_columns2);
+					}else
+						sph.predict(types[i], data[i], columns);
+				}
+			}
+			ccpl.finish();
+			System.out.println(
+					"Correct/Tested: "+sph.getCorrect()+"/"+sph.getTotal()+" (Accuracy: "+sph.getAcurracy()*100+"%)"
+					);
+		};
 	}
 	
 	public static void write(String[] types, double[][] data) throws IOException{

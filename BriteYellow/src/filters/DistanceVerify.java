@@ -6,6 +6,7 @@ import objects.PhoneData;
 
 public class DistanceVerify {
 	private ArrayList<PhoneData> result;
+
 	private double high;
 	
 	public DistanceVerify(ArrayList<PhoneData> ph, double high){
@@ -32,13 +33,13 @@ public class DistanceVerify {
 	 * @param high
 	 * @return
 	 */
-	private boolean compare(int index, double high){
-		return (result.get(index).modspd > high);
+	public boolean compare(int index, double high){
+		return (result.get(index).moddisp > high);
 	}
-	private void reanalyse(int index){
-		double xdiff = result.get(index).rsx - result.get(index-1).rsx;
-		double ydiff = result.get(index).rsy - result.get(index-1).rsy;
-		result.get(index).modspd = Math.sqrt(xdiff*xdiff + ydiff*ydiff);
+	public void reanalyse(int index){
+		double xdiff = result.get(index).x - result.get(index-1).x;
+		double ydiff = result.get(index).y - result.get(index-1).y;
+		result.get(index).moddisp = Math.sqrt(xdiff*xdiff + ydiff*ydiff);
 	}
 	public ArrayList<PhoneData> getFull(){
 		return result;

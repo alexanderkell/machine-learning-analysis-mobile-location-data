@@ -9,8 +9,8 @@ import csvexport.CSVWriter;
 import filters.DistanceVerify;
 import maths.DataGetter;
 import mysql.insertMySQL;
-import Distribution.ProbabilityList;
-import Distribution.ProbabilityList.Labels;
+import distribution.ProbabilityList;
+import distribution.ProbabilityList.Labels;
 
 
 public class main2 {

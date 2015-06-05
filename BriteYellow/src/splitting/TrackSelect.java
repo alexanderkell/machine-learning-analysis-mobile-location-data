@@ -57,14 +57,7 @@ public class TrackSelect
 		}
 		return 0;
 	}
-	public static int getNumberOfTracks(PhoneData[] fn){
-		for(int i = fn.length-1; i>=0; i--){
-			if(fn[i].track_no!=-1)
-				return fn[i].track_no;
-		}
-		return 0;
-	}
-	
+
 	public static PhoneData[] selecter(PhoneData[] fn,int select)
 	{
 		ArrayList<PhoneData> pdlist = new ArrayList<PhoneData>();

@@ -66,7 +66,8 @@ public class StatGeneratorMain implements ActionListener, ChangeListener, Progre
 		StatsGenerator.TIME_PER_STOP, //gettotalaverage
 		StatsGenerator.AVERAGE_SPEED, //gettotalaverage
 		StatsGenerator.FREQ_IN_AREA, //gettotalaverage
-		
+		StatsGenerator.PATH_PER_SHORTEST_PATH,
+		StatsGenerator.TIME_PER_SHORTEST_PATH
 		
 		
 //		StatsGenerator.STHETAIN, 
@@ -79,6 +80,15 @@ public class StatGeneratorMain implements ActionListener, ChangeListener, Progre
 	};
 	public static double[][] property2 = {
 		{StatsGenerator.AVERAGE_SPEED, 0, 3},
+		{StatsGenerator.AVERAGE_SPEED, 0, 2},
+		{StatsGenerator.AVERAGE_SPEED, 0, 1},
+		{StatsGenerator.AVERAGE_SPEED, 10, Double.POSITIVE_INFINITY},
+		{StatsGenerator.STHETACHANGE, 5/180*Math.PI, Double.POSITIVE_INFINITY},
+		{StatsGenerator.STHETACHANGE, 10/180*Math.PI, Double.POSITIVE_INFINITY},
+		{StatsGenerator.STHETACHANGE, 15/180*Math.PI, Double.POSITIVE_INFINITY},
+		{StatsGenerator.STHETACHANGE, 20/180*Math.PI, Double.POSITIVE_INFINITY},
+		
+		{StatsGenerator.STHETACHANGE, -Math.PI/8,Math.PI/8},
 /*		{StatsGenerator.AVERAGE_SPEED, 10, 100},
 		{StatsGenerator.STHETACHANGE_NO, -Math.PI/8,Math.PI/8},
 		{StatsGenerator.STHETACHANGE_NO, -Math.PI,Math.PI},

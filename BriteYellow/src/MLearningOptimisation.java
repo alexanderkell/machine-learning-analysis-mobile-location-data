@@ -5,6 +5,7 @@ import dynamodb.NoSQLDownload;
 import dynamodb.ObjectConversion;
 import filters.FilterMain;
 import maths.DataGetter;
+import csvexport.CSVWriter;
 import csvimport.*;
 
 import java.util.ArrayList;
@@ -35,9 +36,9 @@ public class MLearningOptimisation {
 	
 	//PUT THE NAMES OF THE TABLES TO READ AND WRITE HERE!!!!!!!!
 	
-	private final String READ_DB_NAME = "March_Data";
+	private final String READ_DB_NAME = "3D_Cloud_Pan_Data";
 	
-	private final String WRITE_DB_NAME = "March_Data_Track_Analysis";
+	private final String WRITE_DB_NAME = "Fixed_Data_TrackAnalysis";
 	
 	private int speed, xkalm, ykalm, Interp;
 	
@@ -97,11 +98,56 @@ public class MLearningOptimisation {
 		*/
 		
 		
-		ArrayList<TrackInfo> toWrite = ml.queryAndProcess();
-		ml.writeToDB(toWrite);
+/*		ArrayList<TrackInfo> toWrite = ml.queryAndProcess();
+		DataBaseOperations dbo = new DataBaseOperations("Fixed_Data_TrackAnalysis");
+		dbo.createTracksTable();
+		dbo.batchWrite(toWrite);
+*///		ml.writeToDB(toWrite);
 		
-
-				
+		ArrayList<PhoneData> result = ml.queryAndFilter();
+//		DataBaseOperations dbo = new DataBaseOperations("Point_Data_Analysis");
+//		dbo.createTable();
+//		dbo.batchWrite(result);
+		CSVWriter ce = new CSVWriter("Attributes/Point_Data_Analysis_Input");
+		CSVWriter cw = new CSVWriter("Attributes/Point_Data_Analysis_Output");
+		ce.write(new String[]{
+				"Character","PhoneID","TRACK","X","Y","Z","TimeStamp",
+				"Tb","XDISP","YDISP",
+				"ZDISP","MODDISP","RSX","RSY",
+				"RSZ","RAX","RAY","RAZ",
+				"MODSPD","MODACC","SPDTHETA","ACCTHETA",
+				"Interpolated"
+		});
+		cw.write(new String[] {"Businessman","Shopper","Security"});
+		for(int j = 0; j <result.size(); j++){
+			String character = null;
+			String output = null;
+			String id = result.get(j).phone_id;
+			if(id.equals("HT25TW5055273593c875a9898b00")||
+					id.equals("ZX1B23QFSP48abead89f52e3bb")){
+				character = "Business";
+				output = "1,0,0";
+			} else if (id.equals("ZX1B23QBS53771758c578bbd85")){
+				character = "Security";
+				output = "0,1,0";
+			} else if (id.equals("TA92903URNf067ff16fcf8e045")||
+					id.equals("YT910K6675876ded0861342065")){
+				character = "Shopper";
+				output = "0,0,1";
+			}
+			ce.write(new String[]{
+					character, result.get(j).phone_id,String.valueOf(result.get(j).track_no),String.valueOf(result.get(j).x), String.valueOf(result.get(j).y), String.valueOf(result.get(j).z), result.get(j).ts.toString(),
+					String.valueOf(result.get(j).tb), String.valueOf(result.get(j).xdisp), String.valueOf(result.get(j).ydisp),
+					String.valueOf(result.get(j).zdisp),String.valueOf(result.get(j).moddisp), String.valueOf(result.get(j).rsx), String.valueOf(result.get(j).rsy),
+					String.valueOf(result.get(j).rsz), String.valueOf(result.get(j).rax), String.valueOf(result.get(j).ray), String.valueOf(result.get(j).raz),
+					String.valueOf(result.get(j).modspd), String.valueOf(result.get(j).modacc), String.valueOf(result.get(j).spdtheta), String.valueOf(result.get(j).acctheta),
+					String.valueOf(result.get(j).interpolated)
+			});
+			cw.write(new String[]{output});
+		}
+		ce.finish();
+		cw.finish();
+		
 	}
 	
 	public MLearningOptimisation(int speed, int xkalm, int ykalm, int Interp){
@@ -123,6 +169,7 @@ public class MLearningOptimisation {
 		PhoneData[] newdata;
 		ArrayList<TrackInfo> TrackAnalysis;
 		
+		ArrayList<PhoneData> result = new ArrayList<PhoneData>();
 		for(int i = 1; i < 6; i++){ 
 			String PhoneID = phoneNames.numberToName(i); 
 			System.out.println("Querying tracks for phone: " + PhoneID); 
@@ -131,10 +178,10 @@ public class MLearningOptimisation {
 			raw = ObjectConversion.convertFrom(outputDB);
 			System.out.println("Processing tracks for phone: " + PhoneID);
 			filtered = filtering.FilterTot(raw);
-			
+			result.addAll(filtered);
 		}
 
-		return filtered;
+		return result;
 	}
 	
 	
@@ -195,8 +242,8 @@ public class MLearningOptimisation {
 		return trackAnTot;
 	}
 	
-	public void writeToDB(ArrayList<TrackInfo> TrackAnalysis) throws Exception{
-		DataBaseOperations DBO = new DataBaseOperations(WRITE_DB_NAME);
+	public void writeToDB(ArrayList<TrackInfo> TrackAnalysis, String tableName) throws Exception{
+		DataBaseOperations DBO = new DataBaseOperations(tableName);
 		DBO.deleteTable();
 		DBO.createTracksTable();
 		System.out.println("Writing to Database");

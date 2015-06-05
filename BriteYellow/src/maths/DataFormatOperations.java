@@ -61,6 +61,7 @@ public class DataFormatOperations{
 		length = ph.length;
 		cdcalc2 = ph;
 		cdcalc = new String[20][length];
+
 		if(cdcalc2[0].ts == null){
 			makeTimeStamp();
 		}
@@ -256,7 +257,11 @@ public class DataFormatOperations{
 					track++; 
 				} 
 				cdcalc2[i].track_no = -1; 
-			}else{ 
+			} else {
+				if(cdcalc2[i].tb>180){
+					if(i>=1 && cdcalc2[i-1].track_no == track)
+						track++;
+				}
 				cdcalc2[i].track_no = track; 
 				cdcalc[16][i] = String.valueOf(track); 
 			} 

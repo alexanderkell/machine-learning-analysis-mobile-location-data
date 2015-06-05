@@ -41,7 +41,7 @@ public class FilterMain {
 	public ArrayList<PhoneData> FilterTot(ArrayList<PhoneData> output) throws Exception{
 		//Cut big speeds
 	
-		DistanceVerify cutBig = new DistanceVerify(output,maxSpeed);
+		SpeedVerify cutBig = new SpeedVerify(output,maxSpeed);
 		cutBig.check();
 		ArrayList<PhoneData> reana = cutBig.getFull();
 	
@@ -66,7 +66,7 @@ public class FilterMain {
 	 * @param input The ArrayList of PhoneData
 	 * @return The interpolated ArrayList of PhoneData
 	 */
-	public ArrayList<PhoneData> interpolate(int tstep, ArrayList<PhoneData> input){
+	public static ArrayList<PhoneData> interpolate(int tstep, ArrayList<PhoneData> input){
 		
 		// The process cannot continue if result.size() <= 1
 		if(input.size() <= 1){

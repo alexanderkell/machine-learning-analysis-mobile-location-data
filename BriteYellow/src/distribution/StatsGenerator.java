@@ -460,7 +460,9 @@ public class StatsGenerator extends DataGetter{
 				was_in = false;
 			}
 //			System.out.println(fraction);
-			if(getTimeBetweenValue(i)>150 && property != INACTIVE_TIME)
+			
+			// Skips the points with "TimeBetweenValue" variable > 150 seconds
+			if(getTimeBetweenValue(i)>180 && property != INACTIVE_TIME)
 				continue;
 			if(property == PATH_LENGTH){
 				if(fraction > 0)

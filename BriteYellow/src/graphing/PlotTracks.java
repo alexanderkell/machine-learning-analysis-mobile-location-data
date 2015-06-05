@@ -313,7 +313,7 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 	}
 
 	private PlotTracks(final int row, final int col, int points_or_time, float period, TrackChangeListener tcl, int max_tracks){
-		this(tcl.setTrack(current_track), null, row, col, points_or_time, period);
+		this(tcl.setTrack(current_track), null, row, col, points_or_time, period, true);
 		this.tcl = tcl;
 		this.max_tracks = max_tracks;	// Total amount of tracks
 		
@@ -378,6 +378,18 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 		
 	}
 	private PlotTracks(final PhoneData[] before,final PhoneData[] after, final int row, final int col, int points_or_time, float period){
+		this(before, after, row,  col, points_or_time, period, true);
+		JLabel track_time_length_label = new JLabel("Track duration: ("+before[0].ts.toString()+" - "+before[before.length-1].ts.toString()+")");
+		track_time_length_label.setFont(labelFont);
+		// create an empty border around the label so that the text position can be lower
+		track_time_length_label.setBorder(BorderFactory.createEmptyBorder(6, 0, 2, 0));
+		subpanel1a.add(Box.createHorizontalGlue());
+		subpanel1a.add(track_time_length_label);
+		subpanel1a.add(Box.createHorizontalGlue());
+	}
+	private PlotTracks(final PhoneData[] before,final PhoneData[] after, final int row, final int col, int points_or_time, float period, boolean check_value){
+		if(!check_value)
+			throw new IllegalArgumentException("This \"PlotTracks\" constructor should not be called directly");
 		this.points_or_time = points_or_time;
 		this.period = period;
 		this.before = before;
@@ -995,8 +1007,8 @@ public class PlotTracks implements ActionListener,ChangeListener, KeyListener,Mo
 	private void rewind(){
 		tl.setCurrentPoint(tl.getCurrentPoint()-1);
 		if(!tl.getTimeLineFinished() && paused){
-			jbutton1.setText(PLAYSYMBOL);
-			jbutton1.setToolTipText(PLAY);
+			// Updated jbutton1 and jlabelA
+			jbutton1.setToolTipText("Play (space)");
 			jlabelA.setText(PAUSE);
 		}
 	}
@@ -1288,13 +1300,14 @@ class TimeLine{
 			// Add the estimated point to the before filtering series as well so that a line is drawn between the last and estimated points
 			plot.addData(labels[0], result[0], result[1]);
 			
-			if(after != null && iafter<after.length-1){
+			if(after != null){
 				if(plot.getItemCount(labels[1])>0)
 					plot.removeData(labels[1],  plot.getItemCount(labels[1])-1);
+				
+//				System.out.println(iafter+", "+after.length+" "+current_time+" "+after[iafter+1].ts.getTime());
 				// Add all points whose timestamp is behind the current time by looping this while loop
-				while((iafter<after.length && (current_time - after[iafter].ts.getTime())>=0)){
-					points_time_diff2 = (iafter<after.length - 1)? after[iafter+1].ts.getTime() - after[iafter].ts.getTime() : 0;
-
+				while((iafter<after.length-1 && (current_time - after[iafter].ts.getTime())>=0)){
+//					System.out.println(iafter+", "+after.length);
 					// Get the attributes
 					Double r;
 					Double c;
@@ -1307,18 +1320,20 @@ class TimeLine{
 					}
 
 					plot.addData(labels[1], r, c);
-					if(iafter == after.length)
+					if(iafter == after.length-1)
 						break;
 					iafter++;
 				}
 				
+				// Update points_time_diff2
+				points_time_diff2 = (iafter<after.length)? after[iafter].ts.getTime() - after[iafter-1].ts.getTime() : 0;
 				
 				// Calculate time difference between the current time and latest added after filtering point
 				curr_time_diff2 = current_time - after[iafter-1].ts.getTime();
 				
 				// Calculate the estimated after filtering position
 				if(finished)
-					result = estPosition(after[iafter-1], null, curr_time_diff2, points_time_diff2);
+					result = estPosition(after[iafter], null, curr_time_diff2, points_time_diff2);
 				else 
 					result = estPosition(after[iafter-1], after[iafter], curr_time_diff2, points_time_diff2);
 				

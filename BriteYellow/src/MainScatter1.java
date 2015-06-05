@@ -8,7 +8,7 @@ import objects.PhoneData;
 import csvexport.CSVWriter;
 import filters.DistanceVerify;
 import mysql.insertMySQL;
-import Distribution.Ratios;
+import distribution.Ratios;
 //for whole divided area
 
 public class MainScatter1 {

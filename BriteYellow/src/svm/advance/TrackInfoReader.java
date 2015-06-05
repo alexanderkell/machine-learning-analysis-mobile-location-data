@@ -61,7 +61,7 @@ public class TrackInfoReader {
 	public void filter(final double x1, final double y1, final double x2, final double y2){
 		filteredtypes = new ArrayList<String>();
 		filtereddata = new ArrayList<double[]>();
-		
+
 		for(int i = 0; i < data_list.size(); i++){
 			double[] subdata = data_list.get(i);
 //			System.out.println(subdata[X1]+" "+subdata[X2]+" "+subdata[Y1]+" "+subdata[Y2]);
@@ -71,6 +71,7 @@ public class TrackInfoReader {
 			}
 				
 		}
+		
 	}
 	/**Extract the wanted columns of data
 	 * 
@@ -81,6 +82,7 @@ public class TrackInfoReader {
 		double[][] result = new double[filtereddata.size()][cols.length];
 		for(int i = 0; i < filtereddata.size(); i++){
 			double[] subdata = filtereddata.get(i);
+			
 //			System.out.println(subdata[X1]+" "+subdata[X2]+" "+subdata[Y1]+" "+subdata[Y2]);
 			for(int j = 0; j < cols.length; j++){
 				result[i][j] = subdata[cols[j]];
